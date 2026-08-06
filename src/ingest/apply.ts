@@ -54,7 +54,11 @@ function main(): void {
     if (blocked) continue;
 
     // Pass 2: apply.
-    let mutated = false;
+    // Two kinds of change, tracked separately because they mean different things:
+    //   contentChanged — a claim or its provenance state moved  → ledger entry + updated_at
+    //   reverified     — the source still agrees                → freshness stamp only
+    let contentChanged = false;
+    let reverified = false;
     const history: HistoryEntry[] = [];
     const usedFactIds: string[] = [];
 
@@ -76,20 +80,20 @@ function main(): void {
         if (slot.rendered_from === 'seed') {
           // The seed literal happened to already match the source. It is now
           // verified rather than merely asserted, so its provenance changes even
-          // though its text does not.
+          // though its text does not — that IS a state change, so it is logged.
           slot.rendered_from = 'tier-a';
-          mutated = true;
+          contentChanged = true;
           history.push({
             at: now, tier: 'A', action: 'verify', generator: GENERATOR, slot: name,
             facts: [...slot.facts].sort(),
             reason: 'Seed literal matched the deterministic source exactly; promoted from seed to tier-a with no text change.',
           });
         } else {
-          history.push({
-            at: now, tier: 'A', action: 'verify', generator: GENERATOR, slot: name,
-            facts: [...slot.facts].sort(), reason: 'Re-verified against the deterministic source; value unchanged.',
-          });
-          mutated = true;
+          // Re-verification with no change is NOT a ledger event. Appending one
+          // per slot per run would add thousands of "nothing happened" entries a
+          // year and bury the real corrections — which is the same as deleting
+          // them. Only the freshness stamp moves.
+          reverified = true;
         }
       } else {
         outcomes.push({ card: card.card_id, slot: name, kind: 'correct', before: slot.rendered, after: res.text });
@@ -100,10 +104,10 @@ function main(): void {
         });
         slot.rendered = res.text;
         slot.rendered_from = 'tier-a';
-        mutated = true;
+        contentChanged = true;
       }
     }
-    if (blocked || !mutated) continue;
+    if (blocked || (!contentChanged && !reverified)) continue;
 
     // Citation (FR-7): one source entry per backing fact set, latest fetch wins.
     card.sources = mergeSources(card.sources, sourcesFor(store, usedFactIds));
@@ -114,8 +118,11 @@ function main(): void {
 
     card.confidence = deriveConfidence(card);
     card.provenance.tier = 'A';
-    card.provenance.history.push(...history);
-    card.updated_at = now;
+    if (contentChanged) {
+      card.provenance.history.push(...history);
+      // updated_at means "the content moved", not "we looked again".
+      card.updated_at = now;
+    }
 
     if (!dryRun) saveCard(card);
     written.push(card.card_id);

@@ -52,9 +52,19 @@ Legend: `[x]` done · `[ ]` not started · `[-]` deliberately deferred to a late
       provenance record
 - [x] T2.8 Record what the deterministic sources *cannot* substantiate
       (design §4.1) rather than overreaching
+- [x] T2.9 Re-base the parity gate on the durable invariant: the deck must be
+      identical to the original **except** where a deterministic source
+      corrected a fact-governed slot. The original "nothing changed" form was
+      going to be permanently red the moment ingest worked, which would have
+      trained everyone to ignore it.
 
 **Exit:** one card provably auto-corrected from deterministic data, zero model
 involvement, evidenced by the before/after diff and the provenance record.
+
+**Result:** met. Five corrections across AC-05, AC-18 and AC-19. Headline —
+AC-19 `region_availability` moved from *"previewed in four regions … expanded
+steadily since"* to *"available in 19 AWS regions, including Asia Pacific
+(Sydney)"*, sourced from SSM with a content hash. Commit `2750b06`.
 
 ## P3 — Read plane + frontend at scale (not in this run)
 
@@ -120,3 +130,5 @@ involvement, evidenced by the before/after diff and the provenance record.
 | Feature-level region facts (e.g. Evaluations "9 regions") | — | No deterministic source exists. Slot stays `seed` + `needs_review` with the reason recorded. Not a gap: a limit. |
 | AWS Architecture Icons | P3 | Licence terms must be verified before shipping. |
 | IaC for the read plane | P3 | Target account unconfirmed; this run must create no AWS resource. |
+| Page chrome staleness | P3 | The shell's header hardcodes *"Content is current to mid-2026"* and *"GA OCT 2025 · SYD REGION YES"*. These are factual claims living outside the card schema, so no slot governs them and no ingest job can correct them. P3 should either drive them from the fact store or delete them — a self-maintaining deck with a hand-maintained "current to" line is a bad joke. |
+| `dist/` not committed | — | The parent vault's `.gitignore` excludes `dist`. Regenerable from `cards/` + `facts/` via `node src/build.ts`, and the P1 baseline copy under `tests/fixtures/` is committed, so no evidence is lost. |

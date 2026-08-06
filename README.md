@@ -95,7 +95,11 @@ build) but npm is only a task runner here; there are no packages to install.
 | A missing fact never fakes freshness | `apply` leaves the card untouched and exits non-zero rather than stamping `verified_at` on an unverified claim |
 | Card ids are never reused | append-only ledger in `content/card-id-ledger.json`; `validate` fails if an id disappears |
 | Retirement never deletes | tombstones, `aka[]`, `superseded_by` — all modelled from P0 |
-| Rendering matches the original | `verify-parity`: data, template, 84 face renders, and the shell byte-compared |
+| Rendering matches the original | `verify-parity`: the deck must be identical to the original **except** where a deterministic source corrected a slot — data, template, 84 face renders and the shell byte-compared |
+
+`dist/` is not committed (the parent vault's `.gitignore` excludes it) but is
+fully regenerable from `cards/` + `facts/`. The P1 pre-ingest snapshot lives in
+`tests/fixtures/p1-parity-baseline/`.
 
 ## What the deterministic sources cannot do
 
