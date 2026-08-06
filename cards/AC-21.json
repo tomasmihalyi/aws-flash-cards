@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-21",
+  "kind": "mental-model",
+  "lifecycle": "ga",
+  "service": "bedrock-agentcore",
+  "category": "operate-adopt",
+  "tags": [
+    "agentcore",
+    "mental-model",
+    "recall"
+  ],
+  "badge_variant": "core",
+  "badge_text": "MENTAL MODEL",
+  "art": "map",
+  "title": "The one-screen mental map",
+  "hook": "Seven verbs to remember the whole platform by.",
+  "back": {
+    "lead": "Each service maps to one plain verb. If you can recite these, you can whiteboard AgentCore from memory:",
+    "kv": [
+      {
+        "k": "Run",
+        "v": "Runtime (or harness) executes the agent in an isolated microVM."
+      },
+      {
+        "k": "Remember",
+        "v": "Memory keeps session events and distilled long-term knowledge."
+      },
+      {
+        "k": "Reach",
+        "v": "Gateway + Code Interpreter + Browser let it touch tools, code, and the web."
+      },
+      {
+        "k": "Prove",
+        "v": "Identity establishes who the agent is and who it acts for."
+      },
+      {
+        "k": "Restrain",
+        "v": "Policy enforces hard boundaries at the Gateway."
+      },
+      {
+        "k": "Watch",
+        "v": "Observability traces every step over OTEL."
+      },
+      {
+        "k": "Improve",
+        "v": "Evaluations + recommendations + A/B tests close the quality loop."
+      }
+    ],
+    "hookline": "Run · Remember · Reach · Prove · Restrain · Watch · Improve — the full lifecycle in seven words."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [
+    "AC-04",
+    "AC-05",
+    "AC-06",
+    "AC-07",
+    "AC-08",
+    "AC-09",
+    "AC-10",
+    "AC-11",
+    "AC-12",
+    "AC-13",
+    "AC-15"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z"
+}

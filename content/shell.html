@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentCore Field Deck — @@COUNT@@ Flashcards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDF1F7;
+  --card:#FFFFFF;
+  --ink:#0E1B2C;
+  --slate:#55637A;
+  --line:#D4DCE8;
+  --blue:#1F5EFF;
+  --blue-soft:#E8EEFF;
+  --amber:#B36B00;
+  --amber-soft:#FFF3DC;
+  --mint:#0B7A54;
+  --mint-soft:#E2F5EC;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --disp:'Space Grotesk',system-ui,sans-serif;
+  --body:system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.5;
+  background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:22px 22px}
+.wrap{max-width:680px;margin:0 auto;padding:18px 16px 90px}
+
+/* ---------- header ---------- */
+header{margin-bottom:14px}
+.eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600}
+h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;margin:.2rem 0 .3rem}
+.sub{color:var(--slate);font-size:.86rem;max-width:46ch}
+.meta{font-family:var(--mono);font-size:.66rem;color:var(--slate);margin-top:.5rem;display:flex;gap:.9rem;flex-wrap:wrap}
+.meta b{color:var(--ink)}
+
+/* ---------- filters ---------- */
+.chips{display:flex;gap:7px;overflow-x:auto;padding:12px 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{font-family:var(--mono);font-size:.7rem;font-weight:500;white-space:nowrap;border:1px solid var(--line);
+  background:var(--card);color:var(--slate);border-radius:3px;padding:7px 12px;cursor:pointer;transition:all .15s}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ---------- progress ---------- */
+.progress{display:flex;align-items:center;gap:10px;margin:2px 0 14px}
+.bar{flex:1;height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--blue);width:0;transition:width .3s}
+.count{font-family:var(--mono);font-size:.7rem;color:var(--slate);min-width:64px;text-align:right}
+
+/* ---------- card ---------- */
+.stage{perspective:1600px;min-height:520px}
+.cardShell{position:relative;width:100%;min-height:520px;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.2,.7,.2,1);cursor:pointer}
+.cardShell.flipped{transform:rotateY(180deg)}
+@media (prefers-reduced-motion:reduce){
+  .cardShell{transition:none}
+  .bar i{transition:none}
+}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  background:var(--card);border:1px solid var(--line);border-radius:6px;
+  box-shadow:0 1px 2px rgba(14,27,44,.05),0 10px 28px rgba(14,27,44,.08);
+  display:flex;flex-direction:column;overflow:hidden}
+.back{transform:rotateY(180deg)}
+
+/* datasheet header strip */
+.strip{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:10px 16px;font-family:var(--mono);font-size:.64rem;letter-spacing:.08em}
+.partno{color:var(--blue);font-weight:600}
+.badge{padding:2px 8px;border-radius:2px;font-weight:600;text-transform:uppercase}
+.badge.ga{background:var(--mint-soft);color:var(--mint)}
+.badge.pv{background:var(--amber-soft);color:var(--amber)}
+.badge.core{background:var(--blue-soft);color:var(--blue)}
+
+/* front */
+.front .art{display:flex;justify-content:center;padding:26px 0 8px}
+.front .art svg{width:150px;height:150px}
+.front h2{font-family:var(--disp);font-weight:700;font-size:1.5rem;text-align:center;padding:4px 20px 0;line-height:1.2}
+.front .hook{color:var(--slate);text-align:center;font-size:.88rem;padding:8px 26px 0;max-width:44ch;margin:0 auto}
+.front .tap{margin-top:auto;text-align:center;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;color:var(--slate);padding:16px;text-transform:uppercase}
+.front .tap::before{content:"";display:block;width:26px;height:1px;background:var(--line);margin:0 auto 10px}
+
+/* back */
+.back .body{padding:16px 18px 18px;overflow-y:auto;font-size:.85rem}
+.back h3{font-family:var(--disp);font-size:1.05rem;margin-bottom:8px}
+.back p{margin-bottom:10px;color:#22314A}
+.kv{border-top:1px dashed var(--line);margin-top:4px;padding-top:10px}
+.kv .row{display:flex;gap:10px;margin-bottom:8px}
+.kv .k{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);min-width:86px;padding-top:2px;font-weight:600}
+.kv .v{flex:1;color:#22314A}
+.hookline{background:var(--blue-soft);border-left:2px solid var(--blue);padding:8px 10px;border-radius:0 3px 3px 0;font-size:.8rem;margin-top:6px}
+.hookline b{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:2px}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(237,241,247,.92);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+.nav .in{max-width:680px;margin:0 auto;display:flex;gap:8px;padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.btn{flex:1;font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid var(--ink);background:var(--card);color:var(--ink);border-radius:3px;padding:12px 0;cursor:pointer;transition:all .12s}
+.btn.pri{background:var(--ink);color:#fff}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.3;cursor:default}
+.btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.btn.sm{flex:0 0 auto;padding:12px 14px}
+.empty{text-align:center;color:var(--slate);font-family:var(--mono);font-size:.75rem;padding:60px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Amazon Bedrock · Field Deck</div>
+    <h1>AgentCore Flashcards</h1>
+    <p class="sub">The full platform, one primitive per card. Tap a card to flip it. Content is current to mid-2026 — including Policy/Evaluations GA, the managed harness, CLI, and Agent Registry.</p>
+    <div class="meta"><span>CARDS <b id="mTotal">@@COUNT@@</b></span><span>GA <b>OCT 2025</b></span><span>SYD REGION <b>YES</b></span></div>
+  </header>
+
+  <div class="chips" id="chips" role="tablist" aria-label="Filter by category"></div>
+
+  <div class="progress"><div class="bar"><i id="barFill"></i></div><div class="count" id="count">1 / @@COUNT@@</div></div>
+
+  <div class="stage" id="stage"></div>
+</div>
+
+<nav class="nav"><div class="in">
+  <button class="btn sm" id="prevBtn" aria-label="Previous card">‹ Prev</button>
+  <button class="btn pri" id="flipBtn">Flip card</button>
+  <button class="btn sm" id="shufBtn" aria-label="Shuffle deck">⇄</button>
+  <button class="btn sm" id="nextBtn" aria-label="Next card">Next ›</button>
+</div></nav>
+
+<script>
+/* ---- pictogram library: consistent 1.5px line-art schematic style ---- */
+const S = (inner)=>`<svg viewBox="0 0 120 120" fill="none" stroke="#1F5EFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
+const ART = {
+platform:S(`<rect x="20" y="20" width="80" height="80" rx="4"/><rect x="34" y="34" width="22" height="22" rx="2"/><rect x="64" y="34" width="22" height="22" rx="2"/><rect x="34" y="64" width="22" height="22" rx="2"/><rect x="64" y="64" width="22" height="22" rx="2"/><path d="M56 45h8M45 56v8M75 56v8M56 75h8" stroke-dasharray="2 3"/><circle cx="60" cy="60" r="4" fill="#1F5EFF" stroke="none"/>`),
+modular:S(`<rect x="18" y="46" width="26" height="26" rx="3"/><rect x="76" y="46" width="26" height="26" rx="3"/><rect x="47" y="18" width="26" height="26" rx="3"/><rect x="47" y="76" width="26" height="26" rx="3"/><path d="M44 59h32M60 44v32" stroke-dasharray="3 4"/><circle cx="60" cy="59" r="3.5"/>`),
+protocol:S(`<circle cx="30" cy="60" r="13"/><circle cx="90" cy="60" r="13"/><path d="M43 60h34"/><path d="M64 52l8 8-8 8"/><path d="M56 68l-8-8 8-8"/><path d="M30 55v10M25 60h10M85 55l10 10M95 55l-10 10"/>`),
+runtime:S(`<rect x="22" y="30" width="76" height="60" rx="4"/><path d="M22 44h76"/><circle cx="30" cy="37" r="2" fill="#1F5EFF" stroke="none"/><circle cx="38" cy="37" r="2" fill="#1F5EFF" stroke="none"/><path d="M36 58l10 9-10 9"/><path d="M52 76h16"/><rect x="70" y="52" width="20" height="14" rx="2" stroke-dasharray="3 3"/><path d="M80 52v-8h18"/>`),
+memory:S(`<rect x="30" y="24" width="60" height="16" rx="2"/><rect x="30" y="52" width="60" height="16" rx="2"/><rect x="30" y="80" width="60" height="16" rx="2"/><path d="M60 40v12M60 68v12"/><circle cx="40" cy="32" r="2" fill="#1F5EFF" stroke="none"/><circle cx="40" cy="60" r="2" fill="#1F5EFF" stroke="none"/><circle cx="40" cy="88" r="2" fill="#1F5EFF" stroke="none"/><path d="M96 32c8 0 8 56 0 56" stroke-dasharray="3 4"/>`),
+gateway:S(`<rect x="48" y="40" width="24" height="40" rx="3"/><path d="M18 46h30M18 60h30M18 74h30"/><circle cx="18" cy="46" r="2.5"/><circle cx="18" cy="60" r="2.5"/><circle cx="18" cy="74" r="2.5"/><path d="M72 60h30"/><path d="M94 52l8 8-8 8"/><path d="M56 50v20M64 50v20" stroke-dasharray="2 3"/>`),
+identity:S(`<circle cx="60" cy="44" r="14"/><path d="M36 92c0-14 11-22 24-22s24 8 24 22"/><rect x="72" y="66" width="26" height="20" rx="3" fill="#fff"/><path d="M78 66v-5a7 7 0 0 1 14 0v5"/><circle cx="85" cy="76" r="2.5" fill="#1F5EFF" stroke="none"/>`),
+code:S(`<rect x="20" y="26" width="80" height="68" rx="4"/><path d="M42 50l-12 11 12 11M78 50l12 11-12 11M66 46l-12 42"/><path d="M20 26l-4-4M100 26l4-4M20 94l-4 4M100 94l4 4" stroke-dasharray="2 3"/>`),
+browser:S(`<rect x="20" y="26" width="80" height="68" rx="4"/><path d="M20 42h80"/><circle cx="29" cy="34" r="2" fill="#1F5EFF" stroke="none"/><circle cx="37" cy="34" r="2" fill="#1F5EFF" stroke="none"/><rect x="30" y="52" width="34" height="30" rx="2" stroke-dasharray="3 3"/><path d="M72 56h18M72 66h18M72 76h12"/><path d="M60 100l6-8 6 4" stroke-width="1.4"/>`),
+observe:S(`<path d="M20 84l16-20 14 10 16-28 14 14 12-10" /><circle cx="36" cy="64" r="3"/><circle cx="66" cy="46" r="3"/><circle cx="94" cy="50" r="3"/><path d="M20 92h84M20 92V28" stroke-dasharray="2 4"/><circle cx="84" cy="76" r="12"/><path d="M93 85l8 8"/>`),
+policy:S(`<path d="M60 22l32 12v22c0 22-14 36-32 42-18-6-32-20-32-42V34z"/><path d="M46 60h28M46 70h20" /><path d="M50 44l8 8 14-16"/>`),
+evals:S(`<rect x="24" y="24" width="72" height="72" rx="4"/><path d="M38 44l7 7 12-14M38 70l7 7 12-14"/><path d="M64 48h22M64 74h22"/><path d="M24 60h-6M102 60h-6" stroke-dasharray="2 3"/>`),
+optimize:S(`<path d="M60 22a38 38 0 1 1-27 11"/><path d="M33 33l-2-14 14 2"/><circle cx="60" cy="60" r="16"/><circle cx="60" cy="60" r="6"/><path d="M60 44v-6M76 60h6" stroke-dasharray="2 3"/>`),
+registry:S(`<rect x="26" y="22" width="68" height="20" rx="3"/><rect x="26" y="50" width="68" height="20" rx="3"/><rect x="26" y="78" width="68" height="20" rx="3"/><circle cx="36" cy="32" r="3"/><circle cx="36" cy="60" r="3"/><circle cx="36" cy="88" r="3"/><path d="M46 32h32M46 60h32M46 88h22"/><path d="M94 22l8-8" stroke-dasharray="2 3"/>`),
+harness:S(`<circle cx="60" cy="60" r="30"/><rect x="50" y="50" width="20" height="20" rx="3"/><path d="M60 30v-10M60 100V90M30 60H20M100 60H90M39 39l-7-7M88 88l-7-7M81 39l7-7M32 88l7-7"/>`),
+cli:S(`<rect x="20" y="30" width="80" height="60" rx="4"/><path d="M32 48l12 10-12 10"/><path d="M50 68h20"/><path d="M20 30l80 60" stroke="none"/><circle cx="90" cy="42" r="2" fill="#1F5EFF" stroke="none"/><path d="M78 42h6" />`),
+payments:S(`<rect x="22" y="38" width="76" height="46" rx="5"/><path d="M22 52h76"/><rect x="32" y="62" width="18" height="10" rx="2"/><path d="M70 68h18"/><circle cx="98" cy="34" r="12" fill="#fff"/><path d="M98 28v12M94 31h7a3 3 0 0 1 0 6h-6a3 3 0 0 0 0 6h7" stroke-width="1.4"/>`),
+pricing:S(`<path d="M60 20v80M40 36h30a12 12 0 0 1 0 24H50a12 12 0 0 0 0 24h34" /><path d="M20 100h80" stroke-dasharray="2 4"/><path d="M20 100c14-26 22-40 40-40" stroke-dasharray="3 3"/>`),
+regions:S(`<circle cx="60" cy="60" r="36"/><path d="M60 24c-14 10-14 62 0 72M60 24c14 10 14 62 0 72M26 50h68M26 70h68"/><circle cx="78" cy="76" r="4" fill="#1F5EFF" stroke="none"/>`),
+migrate:S(`<rect x="18" y="44" width="30" height="30" rx="3" stroke-dasharray="4 3"/><rect x="72" y="38" width="34" height="42" rx="4"/><path d="M48 59h18"/><path d="M60 51l8 8-8 8"/><path d="M80 50h18M80 60h18M80 70h12"/>`),
+map:S(`<circle cx="60" cy="60" r="8"/><rect x="18" y="18" width="24" height="18" rx="2"/><rect x="78" y="18" width="24" height="18" rx="2"/><rect x="18" y="84" width="24" height="18" rx="2"/><rect x="78" y="84" width="24" height="18" rx="2"/><path d="M40 34l14 18M80 34L66 52M40 86l14-18M80 86L66 68" stroke-dasharray="3 3"/>`)
+};
+
+/* ---- deck ---- */
+const CAT = ["Foundations","Core services","Built-in tools","Governance & quality","New in 2026","Operate & adopt"];
+/*__DECK__*/
+
+/* ---- state & render ---- */
+let filter=-1, order=DECK.map((_,i)=>i), pos=0, flipped=false;
+const stage=document.getElementById('stage');
+
+function visible(){return filter<0?order:order.filter(i=>DECK[i].c===filter);}
+
+function render(){
+  const v=visible();
+  const total=v.length;
+  document.getElementById('count').textContent=total?`${pos+1} / ${total}`:'0 / 0';
+  document.getElementById('barFill').style.width=total?((pos+1)/total*100)+'%':'0%';
+  document.getElementById('prevBtn').disabled=pos===0;
+  document.getElementById('nextBtn').disabled=pos>=total-1;
+  if(!total){stage.innerHTML='<div class="empty">No cards in this filter.</div>';return;}
+  const d=DECK[v[pos]];
+  stage.innerHTML=`
+  <div class="cardShell ${flipped?'flipped':''}" id="card" role="button" tabindex="0" aria-label="Flashcard: ${d.t}. Press to flip.">
+    <div class="face front">
+      <div class="strip"><span class="partno">${d.id} · ${CAT[d.c].toUpperCase()}</span><span class="badge ${d.b}">${d.bt}</span></div>
+      <div class="art">${ART[d.art]}</div>
+      <h2>${d.t}</h2>
+      <p class="hook">${d.hook}</p>
+      <div class="tap">Tap to flip</div>
+    </div>
+    <div class="face back">
+      <div class="strip"><span class="partno">${d.id} · DETAIL</span><span class="badge ${d.b}">${d.bt}</span></div>
+      <div class="body">
+        <h3>${d.t}</h3>
+        <p>${d.back.lead}</p>
+        <div class="kv">${d.back.kv.map(r=>`<div class="row"><div class="k">${r[0]}</div><div class="v">${r[1]}</div></div>`).join('')}</div>
+        <div class="hookline"><b>Memory hook</b>${d.back.hookline}</div>
+      </div>
+    </div>
+  </div>`;
+  const card=document.getElementById('card');
+  card.addEventListener('click',flip);
+  card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flip();}});
+}
+function flip(){flipped=!flipped;const c=document.getElementById('card');if(c)c.classList.toggle('flipped',flipped);}
+function go(d){const t=visible().length;const n=Math.min(Math.max(pos+d,0),t-1);if(n!==pos){pos=n;flipped=false;render();}}
+function shuffle(){for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}pos=0;flipped=false;render();}
+
+/* chips */
+const chipsEl=document.getElementById('chips');
+["All",...CAT].forEach((label,i)=>{
+  const b=document.createElement('button');
+  b.className='chip'+(i===0?' on':'');b.textContent=label;b.setAttribute('role','tab');
+  b.onclick=()=>{filter=i-1;pos=0;flipped=false;
+    chipsEl.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};
+  chipsEl.appendChild(b);
+});
+
+document.getElementById('prevBtn').onclick=()=>go(-1);
+document.getElementById('nextBtn').onclick=()=>go(1);
+document.getElementById('flipBtn').onclick=flip;
+document.getElementById('shufBtn').onclick=shuffle;
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft')go(-1);
+  if(e.key==='ArrowRight')go(1);
+  if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();flip();}
+});
+render();
+</script>
+</body>
+</html>

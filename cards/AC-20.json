@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-20",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock-agentcore",
+  "category": "operate-adopt",
+  "tags": [
+    "agentcore",
+    "bedrock-agents-classic",
+    "migration",
+    "rename"
+  ],
+  "badge_variant": "core",
+  "badge_text": "MIGRATION",
+  "art": "migrate",
+  "title": "Bedrock Agents → AgentCore",
+  "hook": "The original Bedrock Agents is now 'Classic': closed to new customers after July 30, 2026.",
+  "back": {
+    "lead": "AgentCore is the successor to Bedrock Agents (Nov 2023), now renamed Bedrock Agents Classic and closed to new customers after July 30 2026, with existing customers in maintenance mode. AgentCore is a re-architecture, not a rename.",
+    "kv": [
+      {
+        "k": "What changed",
+        "v": "Classic was a single-agent framework with basic tool calling; AgentCore supports multi-agent systems with shared memory, delegation, and a unified Gateway."
+      },
+      {
+        "k": "Playbook",
+        "v": "Keep Classic running in maintenance, build all new features on AgentCore, migrate incrementally."
+      },
+      {
+        "k": "Watch for",
+        "v": "Gateway normalizes tool calls (fewer custom integrations) but adds its own per-request charges to the bill."
+      }
+    ],
+    "hookline": "If you're starting today there is no decision: AgentCore is the only door that's open."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z",
+  "notes": "P5 rename fixture. The renamed entity is Bedrock Agents → Bedrock Agents Classic; when that gains its own card, this card sets supersedes[] and the Classic card carries the aka[] entry plus the closed-to-new-customers date. No aka[] here: AgentCore itself was never renamed."
+}

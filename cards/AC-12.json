@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-12",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock-agentcore",
+  "category": "governance-quality",
+  "tags": [
+    "agentcore",
+    "evaluations",
+    "quality"
+  ],
+  "badge_variant": "ga",
+  "badge_text": "GA MAR 2026",
+  "art": "evals",
+  "title": "Evaluations",
+  "hook": "Continuous, managed quality scoring of real agent behavior — sessions, responses, and tool calls.",
+  "back": {
+    "lead": "Evaluations continuously monitors agent quality against real-world behavior. Built-in evaluators (13 at launch) score dimensions like correctness, helpfulness, and safety; custom evaluators cover business-specific criteria. It runs against sampled production traffic or on demand.",
+    "kv": [
+      {
+        "k": "One bar",
+        "v": "The same evaluators run in dev, in CI/CD gates, and in production monitoring — one quality standard across the lifecycle."
+      },
+      {
+        "k": "GA adds",
+        "v": "Ground-truth support (reference answers, behavioral assertions, expected tool trajectories) and custom code evaluators hosted in Lambda."
+      },
+      {
+        "k": "Regions",
+        "v": "{{slot:evaluations_regions}}"
+      }
+    ],
+    "hookline": "External verifiers scoring agent output — the managed version of 'never trust the agent's self-report'."
+  },
+  "slots": {
+    "evaluations_regions": {
+      "tier": "A",
+      "template": "GA in 9 regions incl. Sydney, Tokyo, Singapore, Frankfurt, Ireland, and US East/West.",
+      "facts": [],
+      "rendered": "GA in 9 regions incl. Sydney, Tokyo, Singapore, Frankfurt, Ireland, and US East/West.",
+      "rendered_from": "seed",
+      "seed_text": "GA in 9 regions incl. Sydney, Tokyo, Singapore, Frankfurt, Ireland, and US East/West.",
+      "unresolvable_reason": "Feature-level region availability. SSM /aws/service/global-infrastructure exposes service-level regions for bedrock-agentcore only; it cannot substantiate the region list for the Evaluations feature specifically. Needs a Tier C source (What’s New post or docs page) before this claim can be verified."
+    }
+  },
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "low",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "Slot \"evaluations_regions\" has no deterministic source: Feature-level region availability. SSM /aws/service/global-infrastructure exposes service-level regions for bedrock-agentcore only; it cannot substantiate the region list for the Evaluations feature specifically. Needs a Tier C source (What’s New post or docs page) before this claim can be verified.",
+      "raised_at": "2026-08-06T12:57:02.398Z",
+      "raised_by": "tools/extract-legacy.ts"
+    }
+  ],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      },
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "flag-review",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Slot \"evaluations_regions\" has no deterministic source: Feature-level region availability. SSM /aws/service/global-infrastructure exposes service-level regions for bedrock-agentcore only; it cannot substantiate the region list for the Evaluations feature specifically. Needs a Tier C source (What’s New post or docs page) before this claim can be verified."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z"
+}

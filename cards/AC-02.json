@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-02",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock-agentcore",
+  "category": "foundations",
+  "tags": [
+    "agentcore",
+    "architecture",
+    "modularity"
+  ],
+  "badge_variant": "core",
+  "badge_text": "ARCHITECTURE",
+  "art": "modular",
+  "title": "Modular by design",
+  "hook": "Nine-plus composable services. Use one, some, or all — nothing forces a full-stack commitment.",
+  "back": {
+    "lead": "AgentCore is a kit of independent services: Runtime, Memory, Gateway, Identity, Code Interpreter, Browser, Observability, plus the newer Policy, Evaluations, and Registry. Each has its own API and pricing; they interoperate but never require each other.",
+    "kv": [
+      {
+        "k": "Mix freely",
+        "v": "E.g. run agents on your own compute but use only Gateway for tool access, or only Memory for context."
+      },
+      {
+        "k": "Enterprise",
+        "v": "All services support VPC connectivity and PrivateLink for private-network access."
+      },
+      {
+        "k": "Why it matters",
+        "v": "You can adopt incrementally — wrap an existing local agent loop with one AgentCore service at a time."
+      }
+    ],
+    "hookline": "Think 'LEGO for agent infrastructure', not a monolithic agent product."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [
+    "AC-04",
+    "AC-05",
+    "AC-06",
+    "AC-07",
+    "AC-08",
+    "AC-09",
+    "AC-10",
+    "AC-11",
+    "AC-12",
+    "AC-14"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z"
+}

@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-13",
+  "kind": "service-fact",
+  "lifecycle": "preview",
+  "service": "bedrock-agentcore",
+  "category": "new-in-2026",
+  "tags": [
+    "agentcore",
+    "evaluations",
+    "optimization",
+    "prompt-engineering"
+  ],
+  "badge_variant": "pv",
+  "badge_text": "PREVIEW APR 2026",
+  "art": "optimize",
+  "title": "Recommendations, batch evals & A/B tests",
+  "hook": "Closes the loop: observe → evaluate → improve, with validated changes instead of intuition.",
+  "back": {
+    "lead": "Announced April 30 2026, these capabilities turn evaluation findings into action. Recommendations analyzes your production traces and eval outputs to generate optimized system prompts and tool descriptions tailored to your workload; batch evaluations and A/B tests then validate the changes before rollout.",
+    "kv": [
+      {
+        "k": "Problem solved",
+        "v": "Agent quality degrades quietly as models evolve and user behavior shifts; fixing it was manual guesswork."
+      },
+      {
+        "k": "Batch evals",
+        "v": "Score a candidate configuration against a whole dataset offline."
+      },
+      {
+        "k": "A/B tests",
+        "v": "Compare configurations on live traffic with eval metrics as the judge."
+      }
+    ],
+    "hookline": "Prompt engineering becomes an optimization loop with measurement, not vibes."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [
+    "AC-10",
+    "AC-12"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z"
+}

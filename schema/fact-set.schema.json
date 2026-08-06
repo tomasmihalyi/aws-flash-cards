@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tomasmihalyi.dev/schema/flashcard-fact-set-v1.json",
+  "title": "Deterministic Fact Set",
+  "description": "Numbers, prices, dates and region lists. Written ONLY by deterministic ingest jobs. A model may never author a value in this file — that restriction is the architectural form of the rule 'numbers are never model-generated'.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "fact_set_id", "tier", "generator", "verified_at", "source", "facts"],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+
+    "fact_set_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*$",
+      "description": "Namespace, e.g. agentcore.regions, agentcore.pricing.ap-southeast-2, agentcore.api-surface."
+    },
+
+    "tier": {
+      "const": "A",
+      "description": "Fact sets are Tier A by definition. There is no model-authored fact set."
+    },
+
+    "generator": {
+      "type": "string",
+      "description": "Path of the ingest job that produced this file. Reproducibility handle."
+    },
+
+    "verified_at": { "type": "string", "format": "date-time" },
+
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "url", "fetched_at", "content_hash"],
+      "properties": {
+        "kind": { "enum": ["ssm-public-parameter", "price-list-api", "botocore-model"] },
+        "url": { "type": "string", "minLength": 1 },
+        "fetched_at": { "type": "string", "format": "date-time" },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "Over the canonicalised payload actually returned — not over this file — so formatting churn is not a false positive and a value change cannot be a false negative."
+        },
+        "retrieved_by": {
+          "type": "string",
+          "description": "The exact read-only command or API call, so a human can reproduce it."
+        },
+        "aws_account": { "type": "string" },
+        "aws_region": { "type": "string" }
+      }
+    },
+
+    "facts": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "value"],
+        "properties": {
+          "type": { "enum": ["integer", "number", "string", "boolean", "region_list", "string_list", "money"] },
+          "value": {},
+          "unit": { "type": "string" },
+          "currency": { "type": "string" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+
+    "previous": {
+      "type": "object",
+      "description": "Prior values, retained so a diff-driven pipeline can tell a change from a first observation.",
+      "additionalProperties": true
+    }
+  }
+}

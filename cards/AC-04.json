@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-04",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock-agentcore",
+  "category": "core-services",
+  "tags": [
+    "agentcore",
+    "compute",
+    "isolation",
+    "runtime"
+  ],
+  "badge_variant": "core",
+  "badge_text": "CORE SERVICE",
+  "art": "runtime",
+  "title": "AgentCore Runtime",
+  "hook": "Serverless agent hosting: one isolated microVM per session, executions up to 8 hours.",
+  "back": {
+    "lead": "Runtime hosts your agent (or tool) code. Every session gets a dedicated microVM with full session isolation, so one user's context can never leak into another's. It auto-scales, needs zero infrastructure management, and supports long-running work up to eight hours.",
+    "kv": [
+      {
+        "k": "Deploy",
+        "v": "Container-based (ECR) or direct code deployment (artifacts in S3). Framework-agnostic entry point."
+      },
+      {
+        "k": "Isolation",
+        "v": "MicroVM per session — filesystem, memory, and compute are per-user, then destroyed."
+      },
+      {
+        "k": "Long tasks",
+        "v": "8-hour execution window is industry-leading; built for deep research, pipelines, and headless loops."
+      },
+      {
+        "k": "Billing",
+        "v": "Pay only for active CPU/memory consumption — not for time spent waiting on LLM or API I/O."
+      }
+    ],
+    "hookline": "Runtime = 'Lambda for agents', but with sessions, statefulness, and hours-long lifetimes."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z"
+}

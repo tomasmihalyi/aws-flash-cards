@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-03",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock-agentcore",
+  "category": "foundations",
+  "tags": [
+    "a2a",
+    "agentcore",
+    "mcp",
+    "protocols"
+  ],
+  "badge_variant": "core",
+  "badge_text": "PROTOCOLS",
+  "art": "protocol",
+  "title": "MCP & A2A support",
+  "hook": "Standard protocols glue it together: MCP for tools, Agent-to-Agent for inter-agent calls.",
+  "back": {
+    "lead": "AgentCore leans on open protocols rather than proprietary interfaces. Gateway speaks Model Context Protocol so any MCP-compatible agent can discover and call tools; Runtime added Agent-to-Agent (A2A) support at GA so agents can invoke each other directly.",
+    "kv": [
+      {
+        "k": "MCP",
+        "v": "Gateway exposes tools over MCP and can also proxy to your existing MCP servers."
+      },
+      {
+        "k": "A2A",
+        "v": "Enables multi-agent systems: delegation, sub-agents, and agent-as-tool patterns across Runtime deployments."
+      },
+      {
+        "k": "Dev tooling",
+        "v": "An open-source AgentCore MCP Server lets coding assistants (Claude Code, Kiro, Q Developer) drive AgentCore itself."
+      }
+    ],
+    "hookline": "Protocol-first design is why 'any framework' is credible — the contract is MCP/A2A, not an SDK lock-in."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [
+    "AC-04",
+    "AC-06"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z"
+}

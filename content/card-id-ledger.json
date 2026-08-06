@@ -1,0 +1,26 @@
+{
+  "comment": "Append-only. Every card id ever issued. A card id is stable for the life of the concept and is NEVER reused, even after retirement (FR-9). validate.ts fails if an id disappears from cards/ without a tombstone.",
+  "issued": [
+    "AC-01",
+    "AC-02",
+    "AC-03",
+    "AC-04",
+    "AC-05",
+    "AC-06",
+    "AC-07",
+    "AC-08",
+    "AC-09",
+    "AC-10",
+    "AC-11",
+    "AC-12",
+    "AC-13",
+    "AC-14",
+    "AC-15",
+    "AC-16",
+    "AC-17",
+    "AC-18",
+    "AC-19",
+    "AC-20",
+    "AC-21"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "aws-flash-cards",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Self-maintaining flashcard deck for the AI-native development domain. Numbers, prices, dates and region lists come from deterministic AWS sources, never from a model.",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "comment": "Zero dependencies by design (NFR-1). TypeScript runs directly on Node's native type stripping — no bundler, no lockfile, no supply chain.",
+  "scripts": {
+    "validate": "node src/validate.ts",
+    "validate:strict": "node src/validate.ts --strict",
+    "build": "node src/build.ts",
+    "parity": "node src/verify-parity.ts",
+    "ingest:regions": "node src/ingest/ssm-regions.ts",
+    "ingest:pricing": "node src/ingest/pricelist.ts",
+    "ingest:api": "node src/ingest/botocore-diff.ts",
+    "ingest": "npm run ingest:regions && npm run ingest:pricing && npm run ingest:api",
+    "apply": "node src/ingest/apply.ts",
+    "apply:dry": "node src/ingest/apply.ts --dry-run",
+    "refresh": "npm run ingest && npm run apply && npm run build",
+    "ledger": "node tools/sync-id-ledger.ts",
+    "migrate": "node tools/extract-legacy.ts"
+  }
+}

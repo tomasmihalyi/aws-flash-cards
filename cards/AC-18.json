@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-18",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock-agentcore",
+  "category": "operate-adopt",
+  "tags": [
+    "agentcore",
+    "cost-control",
+    "economics",
+    "pricing"
+  ],
+  "badge_variant": "core",
+  "badge_text": "ECONOMICS",
+  "art": "pricing",
+  "title": "Pricing model",
+  "hook": "Pure consumption pricing — and you don't pay while the agent waits on the model or an API.",
+  "back": {
+    "lead": "Every AgentCore service is pay-as-you-go with no upfront commitment or minimums. The headline economic feature: Runtime, Browser, and Code Interpreter bill per-second on active CPU/memory only — and agentic workloads typically spend 30–70% of wall-clock time in I/O wait.",
+    "kv": [
+      {
+        "k": "Compute",
+        "v": "{{slot:compute_price}}"
+      },
+      {
+        "k": "Gateway",
+        "v": "{{slot:gateway_price}}"
+      },
+      {
+        "k": "Memory",
+        "v": "Billed on event/data volume; short and long term priced separately."
+      },
+      {
+        "k": "Storage",
+        "v": "Direct-code deploys billed at S3 rates; container deploys at ECR rates; browser profiles at S3 rates."
+      }
+    ],
+    "hookline": "An agent that 'thinks' for 60s but computes for 6s bills roughly like 6s — that's the whole pitch vs. always-on containers."
+  },
+  "slots": {
+    "compute_price": {
+      "tier": "A",
+      "template": "Per-second vCPU + memory for Runtime / Browser / Code Interpreter, on active consumption only — {{fact:agentcore.pricing.ap-southeast-2.runtime.vcpu.usd-per-vcpu-hour}} per vCPU-hour and {{fact:agentcore.pricing.ap-southeast-2.runtime.memory.usd-per-gb-hour}} per GB-hour in Asia Pacific (Sydney).",
+      "facts": [
+        "agentcore.pricing.ap-southeast-2.runtime.vcpu.usd-per-vcpu-hour",
+        "agentcore.pricing.ap-southeast-2.runtime.memory.usd-per-gb-hour"
+      ],
+      "rendered": "Per-second CPU + memory for Runtime / Browser / Code Interpreter (active consumption only).",
+      "rendered_from": "seed",
+      "seed_text": "Per-second CPU + memory for Runtime / Browser / Code Interpreter (active consumption only)."
+    },
+    "gateway_price": {
+      "tier": "A",
+      "template": "Per tool invocation — {{fact:agentcore.pricing.ap-southeast-2.gateway.api-invocations.usd-per-1k}} per 1,000 API invocations in Asia Pacific (Sydney) — plus tool-indexing and data-processing charges.",
+      "facts": [
+        "agentcore.pricing.ap-southeast-2.gateway.api-invocations.usd-per-1k"
+      ],
+      "rendered": "Per tool invocation (launched around $0.005 per 1,000 calls) plus request charges.",
+      "rendered_from": "seed",
+      "seed_text": "Per tool invocation (launched around $0.005 per 1,000 calls) plus request charges."
+    }
+  },
+  "facts_used": [
+    "agentcore.pricing.ap-southeast-2.gateway.api-invocations.usd-per-1k",
+    "agentcore.pricing.ap-southeast-2.runtime.memory.usd-per-gb-hour",
+    "agentcore.pricing.ap-southeast-2.runtime.vcpu.usd-per-vcpu-hour"
+  ],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "low",
+  "depends_on": [
+    "AC-04",
+    "AC-05",
+    "AC-06",
+    "AC-08",
+    "AC-09"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z"
+}

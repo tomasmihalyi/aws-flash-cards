@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-16",
+  "kind": "service-fact",
+  "lifecycle": "preview",
+  "service": "bedrock-agentcore",
+  "category": "new-in-2026",
+  "tags": [
+    "agentcore",
+    "claude-code",
+    "cli",
+    "developer-experience",
+    "kiro",
+    "q-developer"
+  ],
+  "badge_variant": "pv",
+  "badge_text": "APR 2026",
+  "art": "cli",
+  "title": "AgentCore CLI & dev tooling",
+  "hook": "Idea → running agent in minutes: CLI, starter toolkit, and skills for AI coding assistants.",
+  "back": {
+    "lead": "April 2026 shipped a developer-experience wave: the AgentCore CLI for managing the full agent lifecycle from one interface, plus AgentCore skills that teach coding assistants how to build on the platform.",
+    "kv": [
+      {
+        "k": "CLI",
+        "v": "Create, configure, deploy, and manage agents and AgentCore resources from the terminal."
+      },
+      {
+        "k": "Skills",
+        "v": "Packaged knowledge for coding assistants (Claude Code, Kiro, Q Developer) so they scaffold AgentCore projects correctly."
+      },
+      {
+        "k": "Starter toolkit",
+        "v": "Deploys a local agent to AgentCore with zero infrastructure setup; SDK is Python-first."
+      }
+    ],
+    "hookline": "AWS is optimizing for agents that build agents — the CLI and skills exist so your coding assistant can drive AgentCore."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z"
+}

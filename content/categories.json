@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "categories": [
+    { "id": "foundations",        "label": "Foundations" },
+    { "id": "core-services",      "label": "Core services" },
+    { "id": "built-in-tools",     "label": "Built-in tools" },
+    { "id": "governance-quality", "label": "Governance & quality" },
+    { "id": "new-in-2026",        "label": "New in 2026" },
+    { "id": "operate-adopt",      "label": "Operate & adopt" }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-09",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock-agentcore",
+  "category": "built-in-tools",
+  "tags": [
+    "agentcore",
+    "automation",
+    "browser",
+    "tools"
+  ],
+  "badge_variant": "core",
+  "badge_text": "BUILT-IN TOOL",
+  "art": "browser",
+  "title": "Browser tool",
+  "hook": "A managed cloud browser so agents can navigate sites, fill forms, and finish web tasks.",
+  "back": {
+    "lead": "The Browser tool provides fast, secure, cloud-hosted browser sessions that agents drive to interact with real web applications — navigation, form-filling, and multi-step web workflows — with sub-second latency and session isolation.",
+    "kv": [
+      {
+        "k": "Isolation",
+        "v": "VM-level isolation per session plus audit-friendly recording of what the agent did."
+      },
+      {
+        "k": "Profiles",
+        "v": "Browser profiles persist cookies/local storage between sessions (stored in S3, billed at S3 rates from Apr 2026) — so agents stay logged in."
+      },
+      {
+        "k": "When to use",
+        "v": "Sites without APIs, legacy portals, and end-to-end tasks where the web UI is the only interface."
+      }
+    ],
+    "hookline": "API when you can, browser when you must — this is the 'when you must' escape hatch, fully managed."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z"
+}

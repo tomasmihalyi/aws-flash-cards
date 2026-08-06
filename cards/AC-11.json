@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-11",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock-agentcore",
+  "category": "governance-quality",
+  "tags": [
+    "agentcore",
+    "governance",
+    "policy",
+    "security"
+  ],
+  "badge_variant": "ga",
+  "badge_text": "GA MAR 2026",
+  "art": "policy",
+  "title": "Policy",
+  "hook": "Hard, enforced boundaries on agent actions — defined in natural language, enforced at the Gateway.",
+  "back": {
+    "lead": "Policy lets you define what agents may and may not do — in natural language — and enforces it outside the model's reasoning loop. A policy engine attached to a Gateway intercepts every tool call before it executes and permits or denies it.",
+    "kv": [
+      {
+        "k": "Enforce vs log",
+        "v": "Run a policy in log-only mode to validate it against live traffic, then flip to enforce."
+      },
+      {
+        "k": "Examples",
+        "v": "'Never modify financial records directly'; 'Require human approval for refunds over $X'; 'Only read data for the logged-in user'."
+      },
+      {
+        "k": "Why it matters",
+        "v": "These are infrastructure-level constraints, not system-prompt suggestions — prompt injection can't talk its way past them."
+      },
+      {
+        "k": "Timeline",
+        "v": "Preview at re:Invent (Dec 2 2025) → GA March 2026."
+      }
+    ],
+    "hookline": "The auditor-friendly distinction: 'we hope the agent behaves' vs 'we can prove it can't misbehave'."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [
+    "AC-06"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z"
+}

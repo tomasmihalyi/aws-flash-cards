@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-05",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock-agentcore",
+  "category": "core-services",
+  "tags": [
+    "agentcore",
+    "context",
+    "memory"
+  ],
+  "badge_variant": "core",
+  "badge_text": "CORE SERVICE",
+  "art": "memory",
+  "title": "AgentCore Memory",
+  "hook": "Managed short-term and long-term memory so agents remember across turns — and across sessions.",
+  "back": {
+    "lead": "Memory gives agents managed recall. Short-term memory captures raw session events (the conversation as it happens). Long-term memory runs extraction strategies over those events to distill durable knowledge that persists across sessions.",
+    "kv": [
+      {
+        "k": "Strategies",
+        "v": "Built-in: semantic facts, summaries, and user preferences. A self-managed strategy (GA) lets you run your own extraction/consolidation pipeline."
+      },
+      {
+        "k": "Episodic",
+        "v": "Added at re:Invent 2025: per-user episodic memory for personal preferences (seat choice, budget caps, style)."
+      },
+      {
+        "k": "Streaming",
+        "v": "Memory streaming (2026) reduces the lag between an event happening and it becoming retrievable."
+      },
+      {
+        "k": "Pricing",
+        "v": "{{slot:memory_price}}"
+      }
+    ],
+    "hookline": "Short-term = the transcript. Long-term = what a good assistant would write in their notebook afterwards."
+  },
+  "slots": {
+    "memory_price": {
+      "tier": "A",
+      "template": "Consumption-based. Short-term memory events are billed at {{fact:agentcore.pricing.ap-southeast-2.memory.short-term.usd-per-1k-events}} per 1,000 events in Asia Pacific (Sydney); long-term storage and retrieval are priced separately.",
+      "facts": [
+        "agentcore.pricing.ap-southeast-2.memory.short-term.usd-per-1k-events"
+      ],
+      "rendered": "Consumption-based; short-term events billed per volume (launched around $0.25 per 1,000 events).",
+      "rendered_from": "seed",
+      "seed_text": "Consumption-based; short-term events billed per volume (launched around $0.25 per 1,000 events)."
+    }
+  },
+  "facts_used": [
+    "agentcore.pricing.ap-southeast-2.memory.short-term.usd-per-1k-events"
+  ],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "low",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z"
+}

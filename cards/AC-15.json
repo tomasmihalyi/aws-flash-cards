@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-15",
+  "kind": "service-fact",
+  "lifecycle": "preview",
+  "service": "bedrock-agentcore",
+  "category": "new-in-2026",
+  "tags": [
+    "agentcore",
+    "declarative",
+    "harness",
+    "runtime"
+  ],
+  "badge_variant": "pv",
+  "badge_text": "PREVIEW APR 2026",
+  "art": "harness",
+  "title": "Managed harness",
+  "hook": "Define model + system prompt + tools; AgentCore runs the whole agent loop. Zero orchestration code.",
+  "back": {
+    "lead": "The managed harness lets you stand up a working agent by declaring a model, a system prompt, and tools — no loop code. The harness manages reasoning, tool selection, action execution, and response streaming, with each session in its own microVM with filesystem and shell access.",
+    "kv": [
+      {
+        "k": "Model-agnostic",
+        "v": "Switch models mid-session; any create-time configuration can be overridden per invocation, so you experiment without redeploying."
+      },
+      {
+        "k": "Contrast",
+        "v": "Runtime hosts your loop; the harness is the loop. Choose based on how much control your architecture needs."
+      },
+      {
+        "k": "Sweet spot",
+        "v": "Fast prototyping, straightforward tool-use agents, and per-request experimentation."
+      }
+    ],
+    "hookline": "Prompt-and-tools declarative agents — bring code only when your loop logic genuinely needs it."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [
+    "AC-04"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z"
+}

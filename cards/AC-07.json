@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-07",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock-agentcore",
+  "category": "core-services",
+  "tags": [
+    "agentcore",
+    "auth",
+    "identity",
+    "security"
+  ],
+  "badge_variant": "core",
+  "badge_text": "CORE SERVICE",
+  "art": "identity",
+  "title": "AgentCore Identity",
+  "hook": "Auth built for non-human identities: agents acting as themselves or on a user's behalf.",
+  "back": {
+    "lead": "Identity handles authentication, authorization, and credential management for agents. It covers inbound auth (who may invoke the agent) and outbound auth (what the agent may access), with a secure token vault for refresh tokens.",
+    "kv": [
+      {
+        "k": "Providers",
+        "v": "Integrates with Cognito, Microsoft Entra ID, Okta and other IdPs — no user migration or rebuilt auth flows."
+      },
+      {
+        "k": "Mechanisms",
+        "v": "OAuth 2.0 flows, API keys, and AWS SigV4."
+      },
+      {
+        "k": "Delegation",
+        "v": "Agents can act on behalf of users with pre-authorized consent, or autonomously with their own identity — to services like GitHub, Slack, Salesforce."
+      },
+      {
+        "k": "GA adds",
+        "v": "Identity-aware authorization and vault storage for refresh tokens."
+      }
+    ],
+    "hookline": "The key question Identity answers: 'the agent called an API — as whom, and who said it could?'"
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "seed",
+    "authored_by": "legacy-import",
+    "history": [
+      {
+        "at": "2026-08-06T12:57:02.398Z",
+        "tier": "seed",
+        "action": "import",
+        "generator": "tools/extract-legacy.ts",
+        "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      }
+    ]
+  },
+  "created_at": "2026-08-06T12:57:02.398Z",
+  "updated_at": "2026-08-06T12:57:02.398Z"
+}

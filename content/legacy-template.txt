@@ -1,0 +1,19 @@
+
+  <div class="cardShell ${flipped?'flipped':''}" id="card" role="button" tabindex="0" aria-label="Flashcard: ${d.t}. Press to flip.">
+    <div class="face front">
+      <div class="strip"><span class="partno">${d.id} · ${CAT[d.c].toUpperCase()}</span><span class="badge ${d.b}">${d.bt}</span></div>
+      <div class="art">${ART[d.art]}</div>
+      <h2>${d.t}</h2>
+      <p class="hook">${d.hook}</p>
+      <div class="tap">Tap to flip</div>
+    </div>
+    <div class="face back">
+      <div class="strip"><span class="partno">${d.id} · DETAIL</span><span class="badge ${d.b}">${d.bt}</span></div>
+      <div class="body">
+        <h3>${d.t}</h3>
+        <p>${d.back.lead}</p>
+        <div class="kv">${d.back.kv.map(r=>`<div class="row"><div class="k">${r[0]}</div><div class="v">${r[1]}</div></div>`).join('')}</div>
+        <div class="hookline"><b>Memory hook</b>${d.back.hookline}</div>
+      </div>
+    </div>
+  </div>
