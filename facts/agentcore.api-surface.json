@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "fact_set_id": "agentcore.api-surface",
+  "tier": "A",
+  "generator": "src/ingest/botocore-diff.ts",
+  "verified_at": "2026-08-06T13:01:12.459Z",
+  "source": {
+    "kind": "botocore-model",
+    "url": "file://botocore/data · botocore 1.43.3 · bedrock-agentcore, bedrock-agentcore-control",
+    "fetched_at": "2026-08-06T13:01:12.459Z",
+    "content_hash": "sha256:dffdbc698f8c87c3e504c862f12b3f7c40810e392c60ae18f7f237dee86bc0d6",
+    "retrieved_by": "gunzip + parse botocore/data/bedrock-agentcore/<api-version>/service-2.json.gz, botocore/data/bedrock-agentcore-control/<api-version>/service-2.json.gz"
+  },
+  "facts": {
+    "agentcore.api-surface.bedrock-agentcore.operation-count": {
+      "type": "integer",
+      "value": 54,
+      "note": "Operations in botocore model bedrock-agentcore-2024-02-28."
+    },
+    "agentcore.api-surface.bedrock-agentcore.operations-fingerprint": {
+      "type": "string",
+      "value": "sha256:6502f1a5e2fda44c5e4cb4962ddf4a3b75f1bdcc7bc0bf20653e4069b748543a",
+      "note": "Sorted operation-name set. Changes on add/remove/rename only."
+    },
+    "agentcore.api-surface.bedrock-agentcore.schema-fingerprint": {
+      "type": "string",
+      "value": "sha256:4e2713c1b07c96384188964789601c6a396d2dc48337e4fd87337077b3431a07",
+      "note": "Canonical input/output/error skeletons. Changes on parameter or shape edits; unaffected by documentation."
+    },
+    "agentcore.api-surface.bedrock-agentcore-control.operation-count": {
+      "type": "integer",
+      "value": 115,
+      "note": "Operations in botocore model bedrock-agentcore-control-2023-06-05."
+    },
+    "agentcore.api-surface.bedrock-agentcore-control.operations-fingerprint": {
+      "type": "string",
+      "value": "sha256:a9292e3e7ac271e2e8b9aacf6ab470e30ed2595f44fa22889284905e40c38147",
+      "note": "Sorted operation-name set. Changes on add/remove/rename only."
+    },
+    "agentcore.api-surface.bedrock-agentcore-control.schema-fingerprint": {
+      "type": "string",
+      "value": "sha256:a7225769cb99df4b2fb798f5ab9383401661d580769ee0ef51f9adeb93821e32",
+      "note": "Canonical input/output/error skeletons. Changes on parameter or shape edits; unaffected by documentation."
+    }
+  }
+}

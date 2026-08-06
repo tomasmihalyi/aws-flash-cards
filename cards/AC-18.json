@@ -46,8 +46,8 @@
         "agentcore.pricing.ap-southeast-2.runtime.vcpu.usd-per-vcpu-hour",
         "agentcore.pricing.ap-southeast-2.runtime.memory.usd-per-gb-hour"
       ],
-      "rendered": "Per-second CPU + memory for Runtime / Browser / Code Interpreter (active consumption only).",
-      "rendered_from": "seed",
+      "rendered": "Per-second vCPU + memory for Runtime / Browser / Code Interpreter, on active consumption only — $0.0895 per vCPU-hour and $0.00945 per GB-hour in Asia Pacific (Sydney).",
+      "rendered_from": "tier-a",
       "seed_text": "Per-second CPU + memory for Runtime / Browser / Code Interpreter (active consumption only)."
     },
     "gateway_price": {
@@ -56,8 +56,8 @@
       "facts": [
         "agentcore.pricing.ap-southeast-2.gateway.api-invocations.usd-per-1k"
       ],
-      "rendered": "Per tool invocation (launched around $0.005 per 1,000 calls) plus request charges.",
-      "rendered_from": "seed",
+      "rendered": "Per tool invocation — $0.005 per 1,000 API invocations in Asia Pacific (Sydney) — plus tool-indexing and data-processing charges.",
+      "rendered_from": "tier-a",
       "seed_text": "Per tool invocation (launched around $0.005 per 1,000 calls) plus request charges."
     }
   },
@@ -66,9 +66,17 @@
     "agentcore.pricing.ap-southeast-2.runtime.memory.usd-per-gb-hour",
     "agentcore.pricing.ap-southeast-2.runtime.vcpu.usd-per-vcpu-hour"
   ],
-  "sources": [],
-  "verified_at": null,
-  "confidence": "low",
+  "sources": [
+    {
+      "url": "https://api.pricing.us-east-1.amazonaws.com/ · GetProducts ServiceCode=AmazonBedrockAgentCore regionCode=ap-southeast-2",
+      "title": "agentcore.pricing.ap-southeast-2 (price-list-api)",
+      "kind": "price-list-api",
+      "fetched_at": "2026-08-06T13:00:04.915Z",
+      "content_hash": "sha256:07118f8c9240cfa8e15bd076bb4e1cb20c7a26a4890544559d085d7cd3b2dec7"
+    }
+  ],
+  "verified_at": "2026-08-06T13:00:04.915Z",
+  "confidence": "high",
   "depends_on": [
     "AC-04",
     "AC-05",
@@ -82,7 +90,7 @@
   "needs_review": false,
   "review_reasons": [],
   "provenance": {
-    "tier": "seed",
+    "tier": "A",
     "authored_by": "legacy-import",
     "history": [
       {
@@ -91,9 +99,36 @@
         "action": "import",
         "generator": "tools/extract-legacy.ts",
         "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      },
+      {
+        "at": "2026-08-06T13:03:30.537Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply.ts",
+        "slot": "compute_price",
+        "before": "Per-second CPU + memory for Runtime / Browser / Code Interpreter (active consumption only).",
+        "after": "Per-second vCPU + memory for Runtime / Browser / Code Interpreter, on active consumption only — $0.0895 per vCPU-hour and $0.00945 per GB-hour in Asia Pacific (Sydney).",
+        "facts": [
+          "agentcore.pricing.ap-southeast-2.runtime.memory.usd-per-gb-hour",
+          "agentcore.pricing.ap-southeast-2.runtime.vcpu.usd-per-vcpu-hour"
+        ],
+        "reason": "Deterministic source disagreed with the rendered claim. Corrected with zero model involvement."
+      },
+      {
+        "at": "2026-08-06T13:03:30.537Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply.ts",
+        "slot": "gateway_price",
+        "before": "Per tool invocation (launched around $0.005 per 1,000 calls) plus request charges.",
+        "after": "Per tool invocation — $0.005 per 1,000 API invocations in Asia Pacific (Sydney) — plus tool-indexing and data-processing charges.",
+        "facts": [
+          "agentcore.pricing.ap-southeast-2.gateway.api-invocations.usd-per-1k"
+        ],
+        "reason": "Deterministic source disagreed with the rendered claim. Corrected with zero model involvement."
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-06T12:57:02.398Z"
+  "updated_at": "2026-08-06T13:03:30.537Z"
 }

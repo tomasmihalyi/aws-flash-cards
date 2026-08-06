@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "fact_set_id": "agentcore.pricing.ap-southeast-2",
+  "tier": "A",
+  "generator": "src/ingest/pricelist.ts",
+  "verified_at": "2026-08-06T13:00:04.915Z",
+  "source": {
+    "kind": "price-list-api",
+    "url": "https://api.pricing.us-east-1.amazonaws.com/ · GetProducts ServiceCode=AmazonBedrockAgentCore regionCode=ap-southeast-2",
+    "fetched_at": "2026-08-06T13:00:04.915Z",
+    "content_hash": "sha256:07118f8c9240cfa8e15bd076bb4e1cb20c7a26a4890544559d085d7cd3b2dec7",
+    "retrieved_by": "aws pricing get-products --service-code AmazonBedrockAgentCore --filters Type=TERM_MATCH,Field=regionCode,Value=ap-southeast-2 --profile default --region us-east-1",
+    "aws_account": "<dev-account>",
+    "aws_region": "us-east-1"
+  },
+  "facts": {
+    "agentcore.pricing.ap-southeast-2.gateway.api-invocations.usd-per-1k": {
+      "type": "money",
+      "value": 0.005,
+      "currency": "USD",
+      "unit": "per 1,000 API invocations",
+      "note": "Price List usagetype APS2-Gateway:Consumption-based:API-Invocations; API unit Invocations at 0.0000050000 USD, quoted per 1,000 API invocations."
+    },
+    "agentcore.pricing.ap-southeast-2.memory.short-term.usd-per-1k-events": {
+      "type": "money",
+      "value": 0.25,
+      "currency": "USD",
+      "unit": "per 1,000 events",
+      "note": "Price List usagetype APS2-Memory:Consumption-based:Short-Term-Memory; API unit Events at 0.0002500000 USD, quoted per 1,000 events."
+    },
+    "agentcore.pricing.ap-southeast-2.runtime.vcpu.usd-per-vcpu-hour": {
+      "type": "money",
+      "value": 0.0895,
+      "currency": "USD",
+      "unit": "per vCPU-hour",
+      "note": "Price List usagetype APS2-Runtime:Consumption-based:vCPU; API unit vCPU-Hours at 0.0895000000 USD, quoted per vCPU-hour."
+    },
+    "agentcore.pricing.ap-southeast-2.runtime.memory.usd-per-gb-hour": {
+      "type": "money",
+      "value": 0.00945,
+      "currency": "USD",
+      "unit": "per GB-hour",
+      "note": "Price List usagetype APS2-Runtime:Consumption-based:Memory; API unit GB-Hours at 0.0094500000 USD, quoted per GB-hour."
+    }
+  }
+}
