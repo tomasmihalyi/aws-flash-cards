@@ -91,8 +91,13 @@ deploy half is parked until a repo and CI exist.
       never the page. The template is now injected into the shell at build time.
 - [x] T3.13 Cards size to their content. A fixed 520px height clipped the
       longest backs once the provenance footer was added.
-- [ ] T3.3 Taxonomy + tag filtering, full-text search
-- [ ] T3.4 Deep-linkable card URLs that survive rename via `aka[]`
+- [x] T3.3 Taxonomy + tag filtering, full-text search. Tags derived from the
+      cards so the taxonomy cannot drift from the content; search is AND across
+      tokens (an OR search over 200+ cards returns the deck and is worse than
+      none) and ranked by where the match lands — id, title, tag, hook, body.
+- [x] T3.4 Deep-linkable card URLs that survive rename via `aka[]`. The hash
+      names a card *slug*, never an index, and resolves through aliases so a link
+      shared before a rename still lands on the right card.
 - [ ] T3.5 Spaced repetition (FSRS or SM-2), progress in `localStorage`
 - [ ] T3.6 Tracks (AgentCore deep dive, agentic coding practices, Quick-vs-Kiro,
       ANZ-relevant)

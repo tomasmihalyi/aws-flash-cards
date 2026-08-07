@@ -13,9 +13,11 @@
  * state machine rather than a TS original and a shipped JS copy that can drift.
  *
  * @typedef {{c:number,id:string,b:string,bt:string,art:string,t:string,hook:string,
- *            back:{lead:string,kv:[string,string][],hookline:string}}} DeckCard
- * @typedef {{cards:DeckCard[],order:number[],filter:number,pos:number,
- *            flipped:boolean,rand:()=>number}} DeckState
+ *            back:{lead:string,kv:[string,string][],hookline:string},
+ *            tags?:string[],slug?:string,aliases?:string[],search?:string}} DeckCard
+ * @typedef {{cards:DeckCard[],order:number[],filter:number,tag:string|null,
+ *            query:string,pos:number,flipped:boolean,rand:()=>number,
+ *            categories:{id:string,label:string}[]}} DeckState
  */
 
 /**
@@ -37,7 +39,7 @@ export function makeRandom(seed) {
 
 /**
  * @param {DeckCard[]} cards
- * @param {{seed?:number}} [opts]
+ * @param {{seed?:number,categories?:{id:string,label:string}[]}} [opts]
  * @returns {DeckState}
  */
 export function createDeck(cards, opts = {}) {
@@ -45,19 +47,82 @@ export function createDeck(cards, opts = {}) {
     cards,
     order: cards.map((_, i) => i),
     filter: -1,
+    tag: null,
+    query: '',
     pos: 0,
     flipped: false,
     rand: makeRandom(opts.seed ?? (Date.now() & 0x7fffffff)),
+    categories: opts.categories ?? [],
   };
 }
 
+/** Everything a card can be matched on, lowercased once. */
+export function searchBlob(card) {
+  if (card.search) return card.search;
+  return [
+    card.id, card.t, card.hook, card.back.lead, card.back.hookline,
+    ...card.back.kv.flatMap((r) => r),
+    ...(card.tags ?? []),
+    ...(card.aliases ?? []),
+  ].join(' \u00b7 ').toLowerCase();
+}
+
 /**
- * Indices of cards the current filter admits, in deck order.
+ * Relevance score for a query against one card, or 0 for no match.
+ *
+ * Every token must appear somewhere (AND, not OR) — with 200+ cards, an OR
+ * search returns the whole deck and is worse than no search at all. Where a
+ * token appears then decides the ranking.
+ *
+ * @param {DeckCard} card
+ * @param {string[]} tokens lowercased
+ * @returns {number}
+ */
+export function scoreCard(card, tokens) {
+  if (!tokens.length) return 1;
+  const title = card.t.toLowerCase();
+  const tags = (card.tags ?? []).join(' ').toLowerCase();
+  const hook = card.hook.toLowerCase();
+  const blob = searchBlob(card);
+  let score = 0;
+  for (const tok of tokens) {
+    if (!blob.includes(tok)) return 0;
+    if (card.id.toLowerCase() === tok) score += 10;
+    if (title.includes(tok)) score += 4;
+    if (tags.includes(tok)) score += 3;
+    if (hook.includes(tok)) score += 2;
+    score += 1;
+  }
+  return score;
+}
+
+export function tokenise(query) {
+  return query.toLowerCase().split(/\s+/).filter(Boolean);
+}
+
+/**
+ * Indices the current category, tag and query all admit.
+ *
+ * When a query is present the result is ranked by relevance; otherwise it stays
+ * in deck order (which shuffle may have permuted). Sorting only when searching
+ * matters: a learner working through a category expects a stable sequence.
+ *
  * @param {DeckState} s
  * @returns {number[]}
  */
 export function visibleIndices(s) {
-  return s.filter < 0 ? s.order : s.order.filter((i) => s.cards[i].c === s.filter);
+  const tokens = tokenise(s.query);
+  const scored = [];
+  for (const i of s.order) {
+    const card = s.cards[i];
+    if (s.filter >= 0 && card.c !== s.filter) continue;
+    if (s.tag && !(card.tags ?? []).includes(s.tag)) continue;
+    const score = scoreCard(card, tokens);
+    if (score === 0) continue;
+    scored.push([i, score]);
+  }
+  if (tokens.length) scored.sort((a, b) => b[1] - a[1] || a[0] - b[0]);
+  return scored.map(([i]) => i);
 }
 
 /**
@@ -79,6 +144,138 @@ export function setFilter(s, categoryIndex) {
   s.filter = categoryIndex;
   s.pos = 0;
   s.flipped = false;
+  return s;
+}
+
+/**
+ * @param {DeckState} s
+ * @param {string} query
+ * @returns {DeckState}
+ */
+export function setQuery(s, query) {
+  s.query = query ?? '';
+  s.pos = 0;
+  s.flipped = false;
+  return s;
+}
+
+/**
+ * @param {DeckState} s
+ * @param {string|null} tag null clears it
+ * @returns {DeckState}
+ */
+export function setTag(s, tag) {
+  s.tag = tag || null;
+  s.pos = 0;
+  s.flipped = false;
+  return s;
+}
+
+/** Clear category, tag and query in one go. */
+export function clearFilters(s) {
+  s.filter = -1;
+  s.tag = null;
+  s.query = '';
+  s.pos = 0;
+  s.flipped = false;
+  return s;
+}
+
+/** Every tag in the deck with its card count, most common first. */
+export function tagIndex(cards) {
+  const counts = new Map();
+  for (const c of cards) for (const t of c.tags ?? []) counts.set(t, (counts.get(t) ?? 0) + 1);
+  return [...counts.entries()]
+    .map(([tag, count]) => ({ tag, count }))
+    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
+}
+
+/**
+ * Resolve a URL reference to a card index.
+ *
+ * Accepts the card's own slug OR any alias it has ever been known by, which is
+ * what makes a shared link survive a rename (FR-9). Aliases are additive and
+ * never removed, so a link posted in Slack two years ago still lands on the
+ * right card even after the underlying service was renamed.
+ *
+ * @param {DeckCard[]} cards
+ * @param {string} ref
+ * @returns {number} index, or -1
+ */
+export function resolveCardRef(cards, ref) {
+  if (!ref) return -1;
+  const want = slugify(ref);
+  let i = cards.findIndex((c) => (c.slug ?? slugify(c.id)) === want);
+  if (i >= 0) return i;
+  i = cards.findIndex((c) => (c.aliases ?? []).some((a) => slugify(a) === want));
+  return i;
+}
+
+export function slugify(s) {
+  return String(s).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+/**
+ * Serialise the shareable part of the state to a URL hash.
+ *
+ * Card position is expressed as a card SLUG, never an index: an index would
+ * silently point at a different card as soon as the deck grows or is shuffled,
+ * which is the fastest way to make shared links quietly wrong.
+ *
+ * @param {DeckState} s
+ * @returns {string}
+ */
+export function toHash(s) {
+  const card = currentCard(s);
+  const params = new URLSearchParams();
+  if (s.filter >= 0 && s.categories[s.filter]) params.set('cat', s.categories[s.filter].id);
+  if (s.tag) params.set('tag', s.tag);
+  if (s.query) params.set('q', s.query);
+  const qs = params.toString();
+  const path = card ? `/card/${card.slug ?? slugify(card.id)}` : '/';
+  return `#${path}${qs ? '?' + qs : ''}`;
+}
+
+/**
+ * Apply a URL hash to the state. Unknown categories, tags and card refs are
+ * ignored rather than throwing — a stale or hand-edited link should degrade to
+ * the full deck, not a blank page.
+ *
+ * @param {DeckState} s
+ * @param {string} hash
+ * @returns {DeckState}
+ */
+export function fromHash(s, hash) {
+  const raw = String(hash ?? '').replace(/^#/, '');
+  const [path, qs] = raw.split('?');
+  const params = new URLSearchParams(qs ?? '');
+
+  const cat = params.get('cat');
+  const catIndex = cat ? s.categories.findIndex((c) => c.id === cat) : -1;
+  s.filter = catIndex;
+
+  const tag = params.get('tag');
+  s.tag = tag && s.cards.some((c) => (c.tags ?? []).includes(tag)) ? tag : null;
+
+  s.query = params.get('q') ?? '';
+  s.flipped = false;
+  s.pos = 0;
+
+  const m = /^\/card\/(.+)$/.exec(path ?? '');
+  if (m) {
+    const idx = resolveCardRef(s.cards, m[1]);
+    if (idx >= 0) {
+      // The card must be reachable under the filters the same link carries;
+      // if it is not, the filters lose — the link named a card, so show it.
+      let vis = visibleIndices(s);
+      if (!vis.includes(idx)) {
+        clearFilters(s);
+        vis = visibleIndices(s);
+      }
+      const at = vis.indexOf(idx);
+      if (at >= 0) s.pos = at;
+    }
+  }
   return s;
 }
 

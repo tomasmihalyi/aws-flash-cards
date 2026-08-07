@@ -27,16 +27,53 @@ export type LegacyShaped = {
   back: { lead: string; kv: [string, string][]; hookline: string };
   /** Provenance footer HTML for the back face. Presentation, not authored content. */
   prov: string;
+  /** Taxonomy for tag filtering. */
+  tags: string[];
+  /** Stable URL slug. */
+  slug: string;
+  /** Every name this card has been known by — what makes a shared link survive a rename. */
+  aliases: string[];
+  /** Precomputed lowercase haystack, so search costs nothing at runtime. */
+  search: string;
 };
 
 /** The authored-content subset — what the migration must have preserved exactly. */
-export type AuthoredText = Omit<LegacyShaped, 'prov'>;
+export type AuthoredText = Omit<LegacyShaped, 'prov' | 'tags' | 'slug' | 'aliases' | 'search'>;
+
+export function slugify(s: string): string {
+  return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
 
 /**
  * Project a card to the renderer's shape, expanding slots into prose.
  */
 export function toLegacyShape(card: Card, categories: Category[]): LegacyShaped {
-  return { ...authoredText(card, categories), prov: provenanceLine(card) };
+  const text = authoredText(card, categories);
+  const aliases = card.aka.map((a) => a.name);
+  const search = [
+    text.id,
+    text.t,
+    text.hook,
+    text.back.lead,
+    text.back.hookline,
+    ...text.back.kv.flatMap((r) => r),
+    ...card.tags,
+    ...aliases,
+    card.service,
+    card.kind,
+    card.lifecycle,
+  ]
+    .join(' \u00b7 ')
+    .toLowerCase();
+
+  return {
+    ...text,
+    prov: provenanceLine(card),
+    tags: card.tags,
+    slug: slugify(card.card_id),
+    aliases,
+    search,
+  };
 }
 
 /**
@@ -160,6 +197,10 @@ export function serialiseDeckLiteral(cards: LegacyShaped[]): string {
       ',t:' + js(d.t) +
       ',hook:' + js(d.hook) +
       ',prov:' + js(d.prov) +
+      ',slug:' + js(d.slug) +
+      ',tags:[' + d.tags.map(js).join(',') + ']' +
+      ',aliases:[' + d.aliases.map(js).join(',') + ']' +
+      ',search:' + js(d.search) +
       ',\nback:{lead:' + js(d.back.lead) +
       ',\nkv:[' + d.back.kv.map((r) => '[' + js(r[0]) + ',' + js(r[1]) + ']').join(',\n') +
       '],\nhookline:' + js(d.back.hookline) +

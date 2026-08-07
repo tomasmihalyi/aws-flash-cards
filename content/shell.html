@@ -45,6 +45,30 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .chip:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
+/* ---------- search ---------- */
+.search{position:relative;margin:10px 0 2px}
+.search input{width:100%;font-family:var(--mono);font-size:.78rem;color:var(--ink);
+  background:var(--card);border:1px solid var(--line);border-radius:3px;padding:10px 34px 10px 12px}
+.search input::placeholder{color:var(--slate)}
+.search input:focus-visible{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
+.search .clear{position:absolute;right:4px;top:50%;transform:translateY(-50%);border:0;background:none;
+  color:var(--slate);font-size:1rem;line-height:1;cursor:pointer;padding:6px 8px;border-radius:3px}
+.search .clear:hover{color:var(--ink)}
+.search .clear:focus-visible{outline:2px solid var(--blue)}
+.search .clear[hidden]{display:none}
+
+/* ---------- tags ---------- */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.tag{font-family:var(--mono);font-size:.64rem;border:1px solid var(--line);background:var(--card);
+  color:var(--slate);border-radius:999px;padding:4px 9px;cursor:pointer;transition:all .12s}
+.tag:hover{border-color:var(--blue);color:var(--blue)}
+.tag.on{background:var(--blue-soft);border-color:var(--blue);color:var(--blue);font-weight:600}
+.tag:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.tag i{font-style:normal;opacity:.55;margin-left:.35em}
+.tagsMore{font-family:var(--mono);font-size:.64rem;color:var(--blue);background:none;border:0;
+  cursor:pointer;padding:4px 6px;text-decoration:underline}
+.tagsMore:focus-visible{outline:2px solid var(--blue)}
+
 /* ---------- progress ---------- */
 .progress{display:flex;align-items:center;gap:10px;margin:2px 0 14px}
 .bar{flex:1;height:3px;background:var(--line);border-radius:2px;overflow:hidden}
@@ -110,6 +134,13 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 .btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .btn.sm{flex:0 0 auto;padding:12px 14px}
 .empty{text-align:center;color:var(--slate);font-family:var(--mono);font-size:.75rem;padding:60px 0}
+.empty b{display:block;color:var(--ink);font-size:.85rem;margin-bottom:6px}
+.empty button{margin-top:14px;font-family:var(--mono);font-size:.7rem;border:1px solid var(--ink);
+  background:var(--card);color:var(--ink);border-radius:3px;padding:9px 14px;cursor:pointer}
+.empty button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+/* Visible to screen readers, not to the eye. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
 </style>
 </head>
 <body>
@@ -122,6 +153,17 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
   </header>
 
   <div class="chips" id="chips" role="tablist" aria-label="Filter by category"></div>
+
+  <div class="search">
+    <label class="sr-only" for="q">Search the deck</label>
+    <input id="q" type="search" autocomplete="off" spellcheck="false"
+           placeholder="Search cards — try &quot;gateway&quot; or &quot;pricing&quot;"
+           aria-describedby="qHelp">
+    <button class="clear" id="qClear" type="button" aria-label="Clear search" hidden>&times;</button>
+  </div>
+  <p class="sr-only" id="qHelp">Results are filtered as you type and announced below.</p>
+  <div class="tags" id="tags" aria-label="Filter by tag"></div>
+  <p class="sr-only" id="live" role="status" aria-live="polite"></p>
 
   <div class="progress"><div class="bar"><i id="barFill"></i></div><div class="count" id="count">1 / @@COUNT@@</div></div>
 
@@ -167,10 +209,55 @@ const CAT = ["Foundations","Core services","Built-in tools","Governance & qualit
 /*__DECK__*/
 
 /* ---- state & render ---- */
-let filter=-1, order=DECK.map((_,i)=>i), pos=0, flipped=false;
+let filter=-1, tag=null, query='', order=DECK.map((_,i)=>i), pos=0, flipped=false;
 const stage=document.getElementById('stage');
 
-function visible(){return filter<0?order:order.filter(i=>DECK[i].c===filter);}
+function tokenise(q){return q.toLowerCase().split(/\s+/).filter(Boolean);}
+
+/* Every token must appear somewhere (AND, not OR). With a few hundred cards an
+   OR search returns the whole deck, which is worse than no search at all. */
+function scoreCard(d,tokens){
+  if(!tokens.length)return 1;
+  const title=d.t.toLowerCase(), tags=(d.tags||[]).join(' ').toLowerCase(), hook=d.hook.toLowerCase();
+  let score=0;
+  for(const tok of tokens){
+    if(!d.search.includes(tok))return 0;
+    if(d.id.toLowerCase()===tok)score+=10;
+    if(title.includes(tok))score+=4;
+    if(tags.includes(tok))score+=3;
+    if(hook.includes(tok))score+=2;
+    score+=1;
+  }
+  return score;
+}
+
+function visible(){
+  const tokens=tokenise(query);
+  const scored=[];
+  for(const i of order){
+    const d=DECK[i];
+    if(filter>=0&&d.c!==filter)continue;
+    if(tag&&!(d.tags||[]).includes(tag))continue;
+    const sc=scoreCard(d,tokens);
+    if(!sc)continue;
+    scored.push([i,sc]);
+  }
+  /* Rank only when searching: a learner working through a category expects a
+     stable sequence, not one that reorders under them. */
+  if(tokens.length)scored.sort((a,b)=>b[1]-a[1]||a[0]-b[0]);
+  return scored.map(x=>x[0]);
+}
+
+function slugify(s){return String(s).toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+
+/* Resolve a URL ref by slug OR by any alias the card has ever had, so a link
+   shared long ago still lands on the right card after a rename. */
+function resolveRef(ref){
+  const want=slugify(ref);
+  let i=DECK.findIndex(d=>d.slug===want);
+  if(i>=0)return i;
+  return DECK.findIndex(d=>(d.aliases||[]).some(a=>slugify(a)===want));
+}
 
 /* The card template is injected here at build time from
    content/card-template.html, so the runtime render and the deck.json faces come
@@ -185,13 +272,40 @@ function render(){
   document.getElementById('barFill').style.width=total?((pos+1)/total*100)+'%':'0%';
   document.getElementById('prevBtn').disabled=pos===0;
   document.getElementById('nextBtn').disabled=pos>=total-1;
-  if(!total){stage.innerHTML='<div class="empty">No cards in this filter.</div>';return;}
+  if(!total){
+    stage.innerHTML='<div class="empty"><b>No cards match.</b>'+
+      escapeHtml(describeFilters())+
+      '<br><button type="button" id="resetBtn">Clear filters</button></div>';
+    const r=document.getElementById('resetBtn');
+    if(r)r.onclick=()=>{filter=-1;tag=null;query='';document.getElementById('q').value='';syncControls();pos=0;flipped=false;render();};
+    announce('No cards match. '+describeFilters());
+    syncHash();
+    return;
+  }
   const d=DECK[v[pos]];
   stage.innerHTML=renderCard(d,flipped,CAT,ART);
   const card=document.getElementById('card');
   card.addEventListener('click',flip);
   card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flip();}});
   fitCard();
+  syncHash();
+}
+
+function describeFilters(){
+  const bits=[];
+  if(query)bits.push('search "'+query+'"');
+  if(tag)bits.push('tag "'+tag+'"');
+  if(filter>=0)bits.push('category "'+CAT[filter]+'"');
+  return bits.length?'Active: '+bits.join(', ')+'.':'';
+}
+
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* A visual count change is invisible to a screen reader, so say it out loud. */
+let announceTimer=null;
+function announce(msg){
+  clearTimeout(announceTimer);
+  announceTimer=setTimeout(()=>{document.getElementById('live').textContent=msg;},250);
 }
 /* Size the card to its tallest face.
    The two faces are absolutely positioned so they can stack for the 3D flip,
@@ -234,22 +348,144 @@ function shuffle(){for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.ran
 const chipsEl=document.getElementById('chips');
 ["All",...CAT].forEach((label,i)=>{
   const b=document.createElement('button');
-  b.className='chip'+(i===0?' on':'');b.textContent=label;b.setAttribute('role','tab');
-  b.onclick=()=>{filter=i-1;pos=0;flipped=false;
-    chipsEl.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};
+  b.className='chip';b.textContent=label;b.setAttribute('role','tab');b.dataset.cat=String(i-1);
+  b.onclick=()=>{filter=i-1;pos=0;flipped=false;syncControls();render();};
   chipsEl.appendChild(b);
 });
+
+/* tags — derived from the cards, so the taxonomy cannot drift from the content */
+const TAGS=(()=>{
+  const counts=new Map();
+  for(const d of DECK)for(const t of (d.tags||[]))counts.set(t,(counts.get(t)||0)+1);
+  return [...counts.entries()].map(([tag,count])=>({tag,count}))
+    .sort((a,b)=>b.count-a.count||a.tag.localeCompare(b.tag));
+})();
+const TAGS_SHOWN=12;
+let tagsExpanded=false;
+const tagsEl=document.getElementById('tags');
+function renderTags(){
+  tagsEl.innerHTML='';
+  const list=tagsExpanded?TAGS:TAGS.slice(0,TAGS_SHOWN);
+  for(const {tag:t,count} of list){
+    const b=document.createElement('button');
+    b.type='button';b.className='tag'+(tag===t?' on':'');
+    b.setAttribute('aria-pressed',tag===t?'true':'false');
+    b.innerHTML=escapeHtml(t)+'<i>'+count+'</i>';
+    b.onclick=()=>{tag=(tag===t?null:t);pos=0;flipped=false;syncControls();render();};
+    tagsEl.appendChild(b);
+  }
+  if(TAGS.length>TAGS_SHOWN){
+    const m=document.createElement('button');
+    m.type='button';m.className='tagsMore';
+    m.textContent=tagsExpanded?'show fewer tags':'+'+(TAGS.length-TAGS_SHOWN)+' more tags';
+    m.setAttribute('aria-expanded',tagsExpanded?'true':'false');
+    m.onclick=()=>{tagsExpanded=!tagsExpanded;renderTags();};
+    tagsEl.appendChild(m);
+  }
+}
+
+/* Reflect state back into the controls. Called after any state change so the
+   controls, the URL and the deck can never disagree about what is filtered. */
+function syncControls(){
+  chipsEl.querySelectorAll('.chip').forEach(x=>{
+    const on=Number(x.dataset.cat)===filter;
+    x.classList.toggle('on',on);
+    x.setAttribute('aria-selected',on?'true':'false');
+  });
+  const qi=document.getElementById('q');
+  if(qi.value!==query)qi.value=query;
+  document.getElementById('qClear').hidden=!query;
+  renderTags();
+}
+
+/* ---- URL as shareable state (deep links) ----
+   Position is expressed as a card SLUG, never an index: an index would silently
+   point at a different card as soon as the deck grows or is shuffled, which is
+   the fastest way to make shared links quietly wrong. */
+let suppressHash=false;
+function syncHash(){
+  const v=visible();
+  const d=v.length?DECK[v[pos]]:null;
+  const params=new URLSearchParams();
+  if(filter>=0)params.set('cat',slugify(CAT[filter]));
+  if(tag)params.set('tag',tag);
+  if(query)params.set('q',query);
+  const qs=params.toString();
+  const next='#'+(d?'/card/'+d.slug:'/')+(qs?'?'+qs:'');
+  if(location.hash===next)return;
+  suppressHash=true;
+  history.replaceState(null,'',next);
+  setTimeout(()=>{suppressHash=false;},0);
+}
+
+/* Unknown categories, tags and card refs are ignored rather than throwing: a
+   stale or hand-edited link should degrade to the full deck, not a blank page. */
+function applyHash(){
+  const raw=(location.hash||'').replace(/^#/,'');
+  const [path,qs]=raw.split('?');
+  const params=new URLSearchParams(qs||'');
+  const cat=params.get('cat');
+  filter=cat?CAT.findIndex(c=>slugify(c)===cat):-1;
+  const t=params.get('tag');
+  tag=(t&&DECK.some(d=>(d.tags||[]).includes(t)))?t:null;
+  query=params.get('q')||'';
+  flipped=false;pos=0;
+  const m=/^\/card\/(.+)$/.exec(path||'');
+  if(m){
+    const idx=resolveRef(m[1]);
+    if(idx>=0){
+      let v=visible();
+      /* The link named a card, so if the filters it carries would hide that
+         card, the filters lose. */
+      if(v.indexOf(idx)<0){filter=-1;tag=null;query='';v=visible();}
+      const at=v.indexOf(idx);
+      if(at>=0)pos=at;
+    }
+  }
+  syncControls();
+  render();
+}
+addEventListener('hashchange',()=>{if(!suppressHash)applyHash();});
+
+/* search — debounced so typing does not re-render on every keystroke */
+let qTimer=null;
+const qInput=document.getElementById('q');
+qInput.addEventListener('input',()=>{
+  clearTimeout(qTimer);
+  qTimer=setTimeout(()=>{
+    query=qInput.value.trim();
+    pos=0;flipped=false;
+    document.getElementById('qClear').hidden=!query;
+    render();
+    const n=visible().length;
+    announce(query?n+(n===1?' card matches ':' cards match ')+'"'+query+'"':'Search cleared, '+n+' cards');
+  },160);
+});
+qInput.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){qInput.value='';query='';pos=0;flipped=false;syncControls();render();}
+});
+document.getElementById('qClear').onclick=()=>{
+  qInput.value='';query='';pos=0;flipped=false;syncControls();render();qInput.focus();
+};
 
 document.getElementById('prevBtn').onclick=()=>go(-1);
 document.getElementById('nextBtn').onclick=()=>go(1);
 document.getElementById('flipBtn').onclick=flip;
 document.getElementById('shufBtn').onclick=shuffle;
 document.addEventListener('keydown',e=>{
+  /* Don't hijack the keyboard while the user is typing — arrow keys belong to
+     the text field, and "/" should reach it rather than being swallowed. */
+  const t=e.target;
+  const typing=t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable);
+  if(typing)return;
+  if(e.key==='/'){e.preventDefault();qInput.focus();qInput.select();return;}
   if(e.key==='ArrowLeft')go(-1);
   if(e.key==='ArrowRight')go(1);
   if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();flip();}
 });
-render();
+/* Start from the URL, not from a blank slate: a shared deep link must land on
+   the card it names on first load, not after an interaction. */
+applyHash();
 </script>
 </body>
 </html>

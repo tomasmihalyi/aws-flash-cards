@@ -72,7 +72,7 @@ stripping. There is no install step.
 
 ```bash
 node src/validate.ts          # schema + lint + citation gate
-node --test tests/*.test.ts   # 58 behavioural + guarantee tests
+node --test tests/*.test.ts   # 84 behavioural + guarantee tests
 node src/build.ts             # → dist/deck.json + dist/agentcore-flashcards.html
 node src/verify-parity.ts     # authored-content parity against the original deck
 
@@ -102,6 +102,19 @@ build. npm is only a task runner here; there are no packages to install.
 | The UX contract still holds | `tests/deck-state.test.ts` — filter, navigate, flip, shuffle, clamping, progress, and the a11y invariant, against a state machine extracted out of the DOM |
 | Exactly one card face is exposed to a screen reader | `aria-hidden` toggling asserted in the state machine, in the tests, and in a real browser |
 | Every claim shown to a learner carries its source | provenance footer on the back face: verification date, source links, and an explicit "Unverified" marker with the reason when no source exists |
+| A shared link survives a rename | the URL hash names a card *slug*, never an index, and resolves through `aka[]` aliases |
+
+## Using the deck
+
+| Action | How |
+|---|---|
+| Search | type in the box, or press `/` from anywhere. Tokens are ANDed and results ranked by where the match lands |
+| Filter | category chips, tag chips (click an active tag again to clear), or both at once — they compose with search |
+| Navigate | `←` `→` or the buttons; `↑` `↓` flips |
+| Share a card | copy the URL — it is `#/card/ac-19?cat=…&tag=…&q=…` and restores the whole view |
+
+A link that names a card wins over filters that would hide it, and an unknown
+slug, tag or category degrades to the full deck rather than a blank page.
 
 `dist/` is not committed (the parent vault's `.gitignore` excludes it) but is
 fully regenerable from `cards/` + `facts/`. The P1 pre-ingest snapshot lives in
@@ -136,8 +149,7 @@ prevent.
 
 ## Next
 
-Local, unblocked: tag filtering and full-text search, deep-linkable card URLs
-that survive rename via `aka[]`, spaced repetition (FSRS or SM-2) in
+Local, unblocked: spaced repetition (FSRS or SM-2) with progress in
 `localStorage`, tracks, and the "what changed this week" deck built from git
 history.
 

@@ -16,7 +16,8 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  createDeck, visibleIndices, currentCard, setFilter, move, flip, shuffle, progress, faceState, makeRandom,
+  createDeck, visibleIndices, currentCard, setFilter, setQuery, setTag, clearFilters, move, flip, shuffle,
+  progress, faceState, makeRandom, scoreCard, tagIndex, toHash, fromHash, resolveCardRef, slugify,
 } from '../src/lib/deck-state.js';
 import { loadCards, loadCategories } from '../src/lib/store.ts';
 import { toLegacyShape, provenanceLine, formatDate } from '../src/lib/render.ts';
@@ -27,6 +28,209 @@ function realDeck() {
   const cats = loadCategories();
   return cards.map((c) => toLegacyShape(c, cats));
 }
+
+describe('search', () => {
+  test('finds a card by a word in its title', () => {
+    const s = setQuery(createDeck(realDeck(), { seed: 1 }), 'gateway');
+    const ids = visibleIndices(s).map((i) => s.cards[i].id);
+    assert.ok(ids.includes('AC-06'), `expected the Gateway card, got ${ids.join(',')}`);
+    assert.equal(ids[0], 'AC-06', 'the card whose TITLE matches must rank first');
+  });
+
+  test('finds a card by its id', () => {
+    const s = setQuery(createDeck(realDeck(), { seed: 1 }), 'ac-19');
+    assert.equal(visibleIndices(s).map((i) => s.cards[i].id)[0], 'AC-19');
+  });
+
+  test('searches the back face, not just the front', () => {
+    const s = setQuery(createDeck(realDeck(), { seed: 1 }), 'privatelink');
+    const ids = visibleIndices(s).map((i) => s.cards[i].id);
+    assert.ok(ids.length > 0, 'a term that only appears in back-face prose must still be findable');
+  });
+
+  test('multiple tokens are AND, not OR', () => {
+    const deck = realDeck();
+    const both = visibleIndices(setQuery(createDeck(deck, { seed: 1 }), 'memory pricing'));
+    const justMemory = visibleIndices(setQuery(createDeck(deck, { seed: 1 }), 'memory'));
+    assert.ok(both.length <= justMemory.length, 'adding a token must never widen the result set');
+    for (const i of both) {
+      const blob = deck[i].search;
+      assert.ok(blob.includes('memory') && blob.includes('pricing'), `${deck[i].id} is missing a token`);
+    }
+  });
+
+  test('a term nothing matches gives an empty result, not the whole deck', () => {
+    const s = setQuery(createDeck(realDeck(), { seed: 1 }), 'kubernetes helm chart');
+    assert.equal(visibleIndices(s).length, 0);
+    assert.equal(currentCard(s), null);
+  });
+
+  test('search is case- and whitespace-insensitive', () => {
+    const deck = realDeck();
+    const a = visibleIndices(setQuery(createDeck(deck, { seed: 1 }), 'GATEWAY'));
+    const b = visibleIndices(setQuery(createDeck(deck, { seed: 1 }), '  gateway  '));
+    assert.deepEqual(a, b);
+  });
+
+  test('an empty query restores the full deck', () => {
+    const s = createDeck(realDeck(), { seed: 1 });
+    setQuery(s, 'gateway');
+    setQuery(s, '');
+    assert.equal(visibleIndices(s).length, 21);
+  });
+
+  test('results are ranked when searching but stay in deck order otherwise', () => {
+    const deck = realDeck();
+    const unsearched = visibleIndices(createDeck(deck, { seed: 1 }));
+    assert.deepEqual(unsearched, [...Array(21).keys()], 'no query means no reordering');
+  });
+
+  test('scoreCard returns 0 for a miss and a positive score for a hit', () => {
+    const card = realDeck().find((d) => d.id === 'AC-06');
+    assert.equal(scoreCard(card, ['nonexistentterm']), 0);
+    assert.ok(scoreCard(card, ['gateway']) > 0);
+    assert.ok(scoreCard(card, ['ac-06']) > scoreCard(card, ['tool']), 'an exact id match must outrank a body match');
+  });
+});
+
+describe('tag filtering', () => {
+  test('the tag index is derived from the cards and ordered by frequency', () => {
+    const tags = tagIndex(realDeck());
+    assert.ok(tags.length > 5, 'expected a real taxonomy');
+    for (let i = 1; i < tags.length; i++) {
+      assert.ok(tags[i - 1].count >= tags[i].count, 'tags must be ordered by count');
+    }
+    assert.equal(tags[0].tag, 'agentcore', 'every card is tagged agentcore, so it should lead');
+    assert.equal(tags[0].count, 21);
+  });
+
+  test('a tag filter admits only cards carrying that tag', () => {
+    const s = setTag(createDeck(realDeck(), { seed: 1 }), 'pricing');
+    const vis = visibleIndices(s);
+    assert.ok(vis.length > 0);
+    for (const i of vis) assert.ok(s.cards[i].tags.includes('pricing'), `${s.cards[i].id} lacks the tag`);
+  });
+
+  test('tag and category compose rather than replacing each other', () => {
+    const deck = realDeck();
+    const s = createDeck(deck, { seed: 1 });
+    setTag(s, 'agentcore');           // every card
+    setFilter(s, 1);                  // core services only
+    const vis = visibleIndices(s);
+    assert.ok(vis.length > 0 && vis.length < 21);
+    for (const i of vis) {
+      assert.equal(deck[i].c, 1);
+      assert.ok(deck[i].tags.includes('agentcore'));
+    }
+  });
+
+  test('tag, category and query all compose', () => {
+    const s = createDeck(realDeck(), { seed: 1 });
+    setTag(s, 'agentcore');
+    setFilter(s, 5);
+    setQuery(s, 'regions');
+    const ids = visibleIndices(s).map((i) => s.cards[i].id);
+    assert.ok(ids.includes('AC-19'), `expected AC-19, got ${ids.join(',') || '(none)'}`);
+  });
+
+  test('an unknown tag yields nothing rather than everything', () => {
+    const s = setTag(createDeck(realDeck(), { seed: 1 }), 'not-a-real-tag');
+    assert.equal(visibleIndices(s).length, 0);
+  });
+
+  test('clearFilters resets category, tag and query together', () => {
+    const s = createDeck(realDeck(), { seed: 1 });
+    setFilter(s, 2); setTag(s, 'pricing'); setQuery(s, 'gateway');
+    clearFilters(s);
+    assert.equal(visibleIndices(s).length, 21);
+    assert.equal(s.filter, -1);
+    assert.equal(s.tag, null);
+    assert.equal(s.query, '');
+  });
+});
+
+describe('deep links', () => {
+  const cats = loadCategories();
+  const mk = () => createDeck(realDeck(), { seed: 1, categories: cats });
+
+  test('a card is addressable by its slug', () => {
+    const s = fromHash(mk(), '#/card/ac-19');
+    assert.equal(currentCard(s).id, 'AC-19');
+  });
+
+  test('the slug is case-insensitive and tolerates a stray form', () => {
+    assert.equal(currentCard(fromHash(mk(), '#/card/AC-19')).id, 'AC-19');
+    assert.equal(currentCard(fromHash(mk(), '/card/ac-19')).id, 'AC-19');
+  });
+
+  test('a link round-trips through toHash and back', () => {
+    const s = mk();
+    setFilter(s, 5); setTag(s, 'regions'); setQuery(s, 'sydney');
+    const before = currentCard(s).id;
+    const hash = toHash(s);
+    const restored = fromHash(mk(), hash);
+    assert.equal(currentCard(restored).id, before);
+    assert.equal(restored.filter, 5);
+    assert.equal(restored.tag, 'regions');
+    assert.equal(restored.query, 'sydney');
+  });
+
+  test('the hash names a card slug, never an index', () => {
+    const s = mk();
+    move(s, 3);
+    const hash = toHash(s);
+    assert.match(hash, /^#\/card\/ac-\d+/, hash);
+    assert.ok(!/\/card\/\d+$/.test(hash), 'an index would point at a different card once the deck grows');
+  });
+
+  test('an unknown card ref degrades to the deck instead of a blank page', () => {
+    const s = fromHash(mk(), '#/card/ac-999');
+    assert.equal(visibleIndices(s).length, 21);
+    assert.equal(s.pos, 0);
+  });
+
+  test('an unknown category or tag in a stale link is ignored', () => {
+    const s = fromHash(mk(), '#/?cat=no-such-category&tag=no-such-tag');
+    assert.equal(s.filter, -1);
+    assert.equal(s.tag, null);
+    assert.equal(visibleIndices(s).length, 21);
+  });
+
+  test('a link naming a card the filters would hide still shows the card', () => {
+    // AC-19 is in operate-adopt; the link also asks for core-services.
+    const s = fromHash(mk(), '#/card/ac-19?cat=core-services');
+    assert.equal(currentCard(s).id, 'AC-19', 'the link named a card, so the filters must yield');
+  });
+
+  test('a card is reachable by an old name it was renamed from (FR-9)', () => {
+    const deck = realDeck();
+    // Simulate a rename: the card keeps its id and gains an alias.
+    deck[0] = { ...deck[0], aliases: ['Bedrock Agents Runtime'] };
+    const s = createDeck(deck, { seed: 1, categories: cats });
+    const idx = resolveCardRef(deck, 'bedrock-agents-runtime');
+    assert.equal(idx, 0, 'an alias must resolve to the card that superseded the old name');
+    assert.equal(currentCard(fromHash(s, '#/card/bedrock-agents-runtime')).id, deck[0].id);
+  });
+
+  test('the current slug wins over an alias when both could match', () => {
+    const deck = realDeck();
+    deck[1] = { ...deck[1], aliases: ['AC-01'] }; // alias collides with card 0's real id
+    assert.equal(resolveCardRef(deck, 'ac-01'), 0, 'a real slug must take precedence over another card\u2019s alias');
+  });
+
+  test('an empty hash is harmless', () => {
+    for (const h of ['', '#', '#/']) {
+      const s = fromHash(mk(), h);
+      assert.equal(visibleIndices(s).length, 21);
+    }
+  });
+
+  test('slugify is stable and URL-safe', () => {
+    assert.equal(slugify('Bedrock Agents Classic'), 'bedrock-agents-classic');
+    assert.equal(slugify('  AC-19  '), 'ac-19');
+    assert.equal(slugify('Quick Suite / Quick Desktop'), 'quick-suite-quick-desktop');
+  });
+});
 
 describe('provenance is visible to the learner (FR-11)', () => {
   test('a verified card shows its verification date and source', () => {

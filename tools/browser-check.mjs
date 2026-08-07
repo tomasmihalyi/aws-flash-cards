@@ -170,6 +170,115 @@ try {
   await page.waitForTimeout(150);
   ok('shuffle preserves the deck size', (await page.textContent('#count')).trim() === all);
 
+  console.log('\n[search]');
+  const q = await page.$('#q');
+  ok('a search input exists', Boolean(q));
+  await page.fill('#q', 'gateway');
+  await page.waitForTimeout(300);
+  const searchCount = (await page.textContent('#count')).trim();
+  const firstHit = (await page.textContent('.front .partno')).trim();
+  ok('search narrows the deck', /^1 \/ \d+$/.test(searchCount) && searchCount !== all, searchCount);
+  ok('the best match ranks first', firstHit.includes('AC-06'), firstHit);
+  ok('the URL carries the query', /q=gateway/.test(page.url()), page.url().split('#')[1] ?? '');
+
+  await page.fill('#q', 'kubernetes helm');
+  await page.waitForTimeout(300);
+  const emptyText = await page.textContent('.empty').catch(() => '');
+  ok('a no-match search shows an empty state, not a broken card', /No cards match/.test(emptyText), emptyText.slice(0, 60));
+  ok('the empty state offers a way out', Boolean(await page.$('#resetBtn')));
+  await page.click('#resetBtn');
+  await page.waitForTimeout(250);
+  ok('clearing filters restores the deck', (await page.textContent('#count')).trim() === all);
+
+  await page.fill('#q', 'pricing');
+  await page.waitForTimeout(300);
+  await page.click('#qClear');
+  await page.waitForTimeout(250);
+  ok('the clear button resets the search', (await page.textContent('#count')).trim() === all);
+
+  console.log('\n[keyboard does not fight the search box]');
+  await page.click('#q');
+  await page.type('#q', 'gate');
+  await page.keyboard.press('ArrowRight');
+  await page.waitForTimeout(250);
+  const stillTyping = await page.inputValue('#q');
+  ok('ArrowRight inside the input does not navigate the deck', stillTyping === 'gate', `input is "${stillTyping}"`);
+  await page.fill('#q', '');
+  await page.waitForTimeout(250);
+  await page.click('body');
+  await page.keyboard.press('/');
+  await page.waitForTimeout(150);
+  const focused = await page.evaluate(() => document.activeElement?.id);
+  ok('"/" focuses the search box', focused === 'q', `focus is on "${focused}"`);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(200);
+
+  console.log('\n[tag filtering]');
+  await page.click('body');
+  const tagButtons = await page.$$eval('.tag', (e) => e.map((x) => x.textContent.trim()));
+  ok('tags are derived and rendered', tagButtons.length > 0, `${tagButtons.length} tags`);
+  ok('tags show a card count', /\d$/.test(tagButtons[0] ?? ''), tagButtons[0] ?? '');
+
+  // The list is folded to the most common tags; expand it so any tag is clickable.
+  const more = await page.$('.tagsMore');
+  if (more) {
+    await more.click();
+    await page.waitForTimeout(150);
+    const expanded = await page.$$eval('.tag', (e) => e.length);
+    ok('the tag list expands', expanded > tagButtons.length, `${tagButtons.length} → ${expanded}`);
+  }
+
+  // Pick a tag that actually narrows: its count must be below the deck size.
+  const total = Number(all.split('/')[1].trim());
+  const narrowing = await page.$$eval('.tag', (els, t) => {
+    const hit = els.find((e) => {
+      const n = Number(e.querySelector('i')?.textContent ?? '0');
+      return n > 0 && n < t;
+    });
+    return hit ? hit.querySelector('i').previousSibling?.textContent?.trim() ?? hit.textContent.trim() : null;
+  }, total);
+  ok('at least one tag narrows the deck', Boolean(narrowing), 'every tag covers every card');
+
+  if (narrowing) {
+    await page.$$eval('.tag', (els, want) => {
+      const hit = els.find((e) => e.textContent.startsWith(want));
+      if (hit) hit.click();
+    }, narrowing);
+    await page.waitForTimeout(250);
+    const tagged = (await page.textContent('#count')).trim();
+    ok(`tag "${narrowing}" narrows the deck`, /^1 \/ \d+$/.test(tagged) && tagged !== all, tagged);
+    ok('the URL carries the tag', page.url().includes(`tag=${encodeURIComponent(narrowing)}`), page.url().split('#')[1] ?? '');
+    ok('the active tag is marked pressed for assistive tech',
+      (await page.$$eval('.tag[aria-pressed="true"]', (e) => e.length)) === 1);
+
+    // Clicking the same tag again is the documented way to clear it.
+    await page.$$eval('.tag', (els, want) => {
+      const hit = els.find((e) => e.textContent.startsWith(want));
+      if (hit) hit.click();
+    }, narrowing);
+    await page.waitForTimeout(250);
+    ok('clicking an active tag clears it', (await page.textContent('#count')).trim() === all);
+  }
+
+  console.log('\n[deep links]');
+  const base = page.url().split('#')[0];
+  await page.goto(`${base}#/card/ac-19`, { waitUntil: 'load' });
+  await page.waitForSelector('#card');
+  ok('a slug deep link lands on the named card',
+    (await page.textContent('.front .partno')).includes('AC-19'),
+    (await page.textContent('.front .partno')).trim());
+  await page.goto(`${base}#/card/ac-19?cat=core-services`, { waitUntil: 'load' });
+  await page.waitForSelector('#card');
+  ok('a link naming a card wins over filters that would hide it',
+    (await page.textContent('.front .partno')).includes('AC-19'));
+  await page.goto(`${base}#/card/ac-999`, { waitUntil: 'load' });
+  await page.waitForSelector('#card');
+  ok('an unknown card ref degrades to the deck, not a blank page',
+    (await page.textContent('#count')).trim() === all, (await page.textContent('#count')).trim());
+  await page.goto(`${base}#/?q=memory&tag=agentcore`, { waitUntil: 'load' });
+  await page.waitForSelector('#card');
+  ok('a link restores search and tag state', (await page.inputValue('#q')) === 'memory');
+
   ok('no console or page errors', errors.length === 0, errors.join(' | '));
   console.log(`\nbrowser-check: ${failures === 0 ? 'PASS' : `FAIL (${failures})`} · screenshots in ${out}`);
 } finally {
