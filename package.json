@@ -7,7 +7,7 @@
   "engines": {
     "node": ">=22.18"
   },
-  "comment": "Zero dependencies by design (NFR-1). TypeScript runs directly on Node's native type stripping — no bundler, no lockfile, no supply chain.",
+  "comment": "Zero dependencies by design (NFR-1). TypeScript runs directly on Node's native type stripping \u2014 no bundler, no lockfile, no supply chain.",
   "scripts": {
     "test": "node --test tests/deck-state.test.ts tests/guarantees.test.ts",
     "validate": "node src/validate.ts",
@@ -23,6 +23,7 @@
     "apply:dry": "node src/ingest/apply.ts --dry-run",
     "refresh": "npm run ingest && npm run apply && npm run build",
     "ledger": "node tools/sync-id-ledger.ts",
-    "migrate": "node tools/extract-legacy.ts"
+    "migrate": "node tools/extract-legacy.ts",
+    "browser-check": "node tools/browser-check.mjs dist/agentcore-flashcards.html"
   }
 }
