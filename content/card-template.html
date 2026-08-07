@@ -1,13 +1,13 @@
 
   <div class="cardShell ${flipped?'flipped':''}" id="card" role="button" tabindex="0" aria-pressed="${flipped?'true':'false'}" aria-label="Flashcard: ${d.t}. ${flipped?'Showing detail. Press to show the question.':'Showing the question. Press to reveal detail.'}">
-    <div class="face front" aria-hidden="${flipped?'true':'false'}">
+    <div class="face front" aria-hidden="${flipped?'true':'false'}" ${flipped?'inert':''}>
       <div class="strip"><span class="partno">${d.id} · ${CAT[d.c].toUpperCase()}</span><span class="badge ${d.b}">${d.bt}</span></div>
       <div class="art">${ART[d.art]}</div>
       <h2>${d.t}</h2>
       <p class="hook">${d.hook}</p>
       <div class="tap">Tap to flip</div>
     </div>
-    <div class="face back" aria-hidden="${flipped?'false':'true'}">
+    <div class="face back" aria-hidden="${flipped?'false':'true'}" ${flipped?'':'inert'}>
       <div class="strip"><span class="partno">${d.id} · DETAIL</span><span class="badge ${d.b}">${d.bt}</span></div>
       <div class="body">
         <h3>${d.t}</h3>

@@ -125,6 +125,10 @@ try {
       .map((f) => f.innerText.replace(/\s+/g, ' ').trim().slice(0, 70)),
   );
   ok('a screen reader sees exactly one face', readable.length === 1, `${readable.length} exposed`);
+  ok('the hidden face is inert, so its links are not tabbable',
+    await page.$eval('#card', (c) => [...c.querySelectorAll('.face')]
+      .filter((f) => f.getAttribute('aria-hidden') === 'true').every((f) => f.inert === true)),
+    'aria-hidden without inert still leaves the face in the tab order');
 
   console.log('\n[provenance footer — FR-11]');
   ok('AC-19 is reachable', await goTo(page, 'AC-19'));
@@ -278,6 +282,89 @@ try {
   await page.goto(`${base}#/?q=memory&tag=agentcore`, { waitUntil: 'load' });
   await page.waitForSelector('#card');
   ok('a link restores search and tag state', (await page.inputValue('#q')) === 'memory');
+
+  console.log('\n[spaced repetition]');
+  await page.goto(`file://${file}`, { waitUntil: 'load' });
+  await page.waitForSelector('#card');
+  const stats = () => page.$eval('#studyStats', (e) => e.innerText.replace(/\s+/g, ' ').trim());
+  console.log('  stats:', await stats());
+  ok('a fresh learner sees every card as new', /NEW 21/.test(await stats()), await stats());
+
+  await page.click('#studyBtn');
+  await page.waitForTimeout(300);
+  ok('study mode is a pressed toggle', (await page.getAttribute('#studyBtn', 'aria-pressed')) === 'true');
+  /* The real invariant is not "grade buttons absent" but "nothing on the hidden
+     face is reachable". Focusable content inside aria-hidden is an a11y
+     violation, and it would let a keyboard user grade a card unseen. */
+  const reachableOnHidden = () => page.$eval('#card', (c) => {
+    const hidden = [...c.querySelectorAll('.face')].filter((f) => f.getAttribute('aria-hidden') === 'true');
+    const sel = 'a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"])';
+    return hidden.flatMap((f) => (f.inert ? [] : [...f.querySelectorAll(sel)])).length;
+  });
+  ok('nothing on the hidden face is keyboard-reachable', (await reachableOnHidden()) === 0,
+    `${await reachableOnHidden()} focusable elements on the hidden face`);
+
+  await page.click('#flipBtn');
+  await page.waitForTimeout(650);
+  const gradeLabels = await page.$$eval('.grades button', (e) => e.map((x) => x.textContent.replace(/\d$/, '').trim()));
+  ok('four grade buttons appear on the back face', gradeLabels.length === 4, gradeLabels.join(','));
+  ok('grades are labelled Again/Hard/Good/Easy',
+    ['Again', 'Hard', 'Good', 'Easy'].every((l) => gradeLabels.includes(l)), gradeLabels.join(','));
+  ok('the grade group is labelled for assistive tech',
+    Boolean(await page.$('.grades[role="group"][aria-label]')));
+  await page.screenshot({ path: `${out}/study-mode.png` });
+
+  const beforeId = (await page.textContent('.back .partno')).trim();
+  await page.click('.grades .g4');
+  await page.waitForTimeout(300);
+  ok('grading advances past the card', (await page.textContent('.front .partno')).trim() !== beforeId,
+    `still on ${beforeId}`);
+  ok('the queue count drops after grading', /NEW 20/.test(await stats()), await stats());
+
+  const stored = await page.evaluate(() => localStorage.getItem('aws-flashcards.progress.v1'));
+  ok('progress is written to localStorage', Boolean(stored && JSON.parse(stored).reviews));
+  const rec = JSON.parse(stored).reviews;
+  const firstKey = Object.keys(rec)[0];
+  ok('the record stores an interval, a due date and a content hash',
+    rec[firstKey].interval >= 1 && Boolean(rec[firstKey].due) && Boolean(rec[firstKey].chash),
+    JSON.stringify(rec[firstKey]));
+
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForSelector('#card');
+  ok('progress survives a reload', /NEW 20/.test(await stats()), await stats());
+
+  console.log('\n[a corrected card is resurfaced — the point of the whole exercise]');
+  // Study a card, then corrupt its stored hash to simulate a Tier A correction
+  // landing after the learner had already learned it.
+  await page.evaluate(() => {
+    const key = 'aws-flashcards.progress.v1';
+    const p = JSON.parse(localStorage.getItem(key));
+    const id = Object.keys(p.reviews)[0];
+    p.reviews[id].chash = 'stale-hash-0000';
+    p.reviews[id].due = '2099-01-01';   // scheduled far away
+    p.reviews[id].interval = 3650;
+    localStorage.setItem(key, JSON.stringify(p));
+    return id;
+  });
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForSelector('#card');
+  const s2 = await stats();
+  ok('the corrected card is counted as changed', /CHANGED 1/.test(s2), s2);
+  await page.click('#studyBtn');
+  await page.waitForTimeout(300);
+  await page.click('#flipBtn');
+  await page.waitForTimeout(650);
+  const warn = await page.$eval('.back .changed', (e) => e.innerText.replace(/\s+/g, ' ').trim()).catch(() => null);
+  ok('the changed card is first in the study queue', Boolean(warn), 'no .changed banner on the first queued card');
+  ok('the banner explains that what they memorised is out of date',
+    Boolean(warn && /out of date/i.test(warn)), warn ?? '');
+  if (warn) console.log('  banner:', warn);
+  ok('a 10-year interval does not suppress it', /CHANGED 1/.test(await stats()), await stats());
+  await page.screenshot({ path: `${out}/changed-card.png` });
+
+  await page.evaluate(() => localStorage.clear());
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForSelector('#card');
 
   ok('no console or page errors', errors.length === 0, errors.join(' | '));
   console.log(`\nbrowser-check: ${failures === 0 ? 'PASS' : `FAIL (${failures})`} · screenshots in ${out}`);

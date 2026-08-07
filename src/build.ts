@@ -22,9 +22,25 @@ import type { Card } from './lib/types.ts';
 
 const DECK_MARKER = '/*__DECK__*/';
 const TEMPLATE_MARKER = '/*__TEMPLATE_FN__*/';
+const SRS_MARKER = '/*__SRS__*/';
 const COUNT_MARKER = '@@COUNT@@';
 const META_MARKER = '@@META@@';
 const FRESHNESS_MARKER = '@@FRESHNESS@@';
+
+/**
+ * Inline an ES module into the single-file HTML.
+ *
+ * The scheduler is authored once in src/lib/srs.js — imported by the tests,
+ * inlined here for the browser. Stripping the `export` keywords is the whole
+ * transform; there is no bundler and no second copy to drift.
+ */
+function inlineModule(source: string, label: string): string {
+  const stripped = source.replace(/^export\s+(?=(function|const|let|class)\s)/gm, '');
+  if (/^\s*(import|export)\s/m.test(stripped)) {
+    throw new Error(`${label}: still contains import/export after stripping — it cannot be inlined`);
+  }
+  return `/* inlined from ${label} — single source of truth, shared with the tests */\n${stripped}`;
+}
 
 /**
  * The header used to hardcode "Content is current to mid-2026" and
@@ -159,16 +175,18 @@ function main(): void {
   // pictograms, state machine, keyboard handling and reduced-motion behaviour:
   // there is no second implementation that could drift.
   const shellHtml = readFileSync(join(paths.content, 'shell.html'), 'utf8');
-  for (const m of [DECK_MARKER, TEMPLATE_MARKER, META_MARKER, FRESHNESS_MARKER]) {
+  for (const m of [DECK_MARKER, TEMPLATE_MARKER, SRS_MARKER, META_MARKER, FRESHNESS_MARKER]) {
     if (!shellHtml.includes(m)) throw new Error(`shell.html is missing ${m}`);
   }
   const { meta, freshness } = headerMeta(cards, store);
   // One template, two consumers: the runtime renderer in the page and the
   // pre-rendered faces in deck.json.
   const templateFn = `function renderCard(d,flipped,CAT,ART){return \`${templateSource}\`;}`;
+  const srs = inlineModule(readFileSync(join(ROOT, 'src', 'lib', 'srs.js'), 'utf8'), 'src/lib/srs.js');
   const html = shellHtml
     .replace(DECK_MARKER, serialiseDeckLiteral(legacyShaped))
     .replace(TEMPLATE_MARKER, templateFn)
+    .replace(SRS_MARKER, srs)
     .split(COUNT_MARKER).join(String(cards.length))
     .replace(META_MARKER, meta)
     .replace(FRESHNESS_MARKER, freshness);

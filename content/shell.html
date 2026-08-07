@@ -69,6 +69,37 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
   cursor:pointer;padding:4px 6px;text-decoration:underline}
 .tagsMore:focus-visible{outline:2px solid var(--blue)}
 
+/* ---------- study mode ---------- */
+.studyBar{display:flex;align-items:center;gap:8px;margin:10px 0 2px;flex-wrap:wrap}
+.studyToggle{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.05em;
+  border:1px solid var(--ink);background:var(--card);color:var(--ink);border-radius:3px;
+  padding:8px 12px;cursor:pointer}
+.studyToggle[aria-pressed="true"]{background:var(--ink);color:#fff}
+.studyToggle:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.studyStats{font-family:var(--mono);font-size:.64rem;color:var(--slate);display:flex;gap:.75rem;flex-wrap:wrap}
+.studyStats b{color:var(--ink)}
+.studyStats .chg{color:var(--amber);font-weight:600}
+.studyDone{background:var(--mint-soft);border-left:2px solid var(--mint);color:var(--mint);
+  font-family:var(--mono);font-size:.7rem;padding:10px 12px;border-radius:0 3px 3px 0;margin:10px 0}
+
+/* the "this changed since you studied it" flag */
+.changed{background:var(--amber-soft);border-left:2px solid var(--amber);padding:8px 10px;
+  border-radius:0 3px 3px 0;font-family:var(--mono);font-size:.62rem;color:var(--amber);
+  margin:0 0 10px;line-height:1.5}
+.changed b{display:block;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+
+/* grade buttons — only shown on the back face in study mode */
+.grades{display:flex;gap:6px;margin-top:12px;border-top:1px dashed var(--line);padding-top:11px}
+.grades button{flex:1;font-family:var(--mono);font-size:.64rem;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;border:1px solid var(--line);background:var(--card);color:var(--slate);
+  border-radius:3px;padding:9px 2px;cursor:pointer;transition:all .12s}
+.grades button:hover{border-color:var(--ink);color:var(--ink)}
+.grades button:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.grades button i{display:block;font-style:normal;font-size:.56rem;opacity:.6;margin-top:2px;text-transform:none}
+.grades .g0:hover{border-color:var(--amber);color:var(--amber)}
+.grades .g5:hover{border-color:var(--mint);color:var(--mint)}
+.sched{font-family:var(--mono);font-size:.6rem;color:var(--slate);margin-top:9px}
+
 /* ---------- progress ---------- */
 .progress{display:flex;align-items:center;gap:10px;margin:2px 0 14px}
 .bar{flex:1;height:3px;background:var(--line);border-radius:2px;overflow:hidden}
@@ -163,6 +194,10 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
   </div>
   <p class="sr-only" id="qHelp">Results are filtered as you type and announced below.</p>
   <div class="tags" id="tags" aria-label="Filter by tag"></div>
+  <div class="studyBar">
+    <button class="studyToggle" id="studyBtn" type="button" aria-pressed="false">Study mode</button>
+    <div class="studyStats" id="studyStats"></div>
+  </div>
   <p class="sr-only" id="live" role="status" aria-live="polite"></p>
 
   <div class="progress"><div class="bar"><i id="barFill"></i></div><div class="count" id="count">1 / @@COUNT@@</div></div>
@@ -208,6 +243,104 @@ map:S(`<circle cx="60" cy="60" r="8"/><rect x="18" y="18" width="24" height="18"
 const CAT = ["Foundations","Core services","Built-in tools","Governance & quality","New in 2026","Operate & adopt"];
 /*__DECK__*/
 
+/* ---- spaced repetition (inlined from src/lib/srs.js at build time) ---- */
+/*__SRS__*/
+
+const SRS_KEY='aws-flashcards.progress.v1';
+let PROGRESS=emptyProgress();
+let studyMode=false;
+
+/* localStorage can throw: private browsing, quota, or a disabled store. A deck
+   that cannot save progress must still be readable, so every access is guarded
+   and failure degrades to an in-memory session rather than a broken page. */
+function loadProgress(){
+  try{
+    const raw=localStorage.getItem(SRS_KEY);
+    PROGRESS=normaliseProgress(raw?JSON.parse(raw):null);
+  }catch(e){PROGRESS=emptyProgress();}
+}
+function saveProgress(){
+  try{localStorage.setItem(SRS_KEY,JSON.stringify(PROGRESS));}catch(e){/* session-only */}
+}
+function today(){return dayStamp(Date.now());}
+
+function renderStudyStats(){
+  const c=studyCounts(DECK,PROGRESS,today());
+  const el=document.getElementById('studyStats');
+  const bits=[];
+  if(c.changed)bits.push('<span class="chg">CHANGED <b>'+c.changed+'</b></span>');
+  bits.push('<span>NEW <b>'+c.new+'</b></span>');
+  bits.push('<span>DUE <b>'+c.due+'</b></span>');
+  bits.push('<span>SCHEDULED <b>'+c.scheduled+'</b></span>');
+  el.innerHTML=bits.join('');
+}
+
+/* Decorate the back face with the grade buttons, the schedule hint and — when
+   the card's facts have moved since it was last studied — a warning that the
+   thing they memorised is no longer what the card says. */
+function decorateForStudy(d){
+  const body=document.querySelector('.back .body');
+  if(!body)return;
+  const st=cardStatus(d,PROGRESS,today());
+
+  if(st.reason===REASON.changed){
+    const warn=document.createElement('div');
+    warn.className='changed';
+    warn.innerHTML='<b>Changed since you studied it</b>A deterministic source corrected this card. What you memorised is out of date \u2014 read it again.';
+    body.insertBefore(warn,body.firstChild);
+  }
+
+  const sched=document.createElement('p');
+  sched.className='sched';
+  sched.textContent=describeSchedule(d,PROGRESS,today());
+  body.appendChild(sched);
+
+  if(!studyMode)return;
+  const wrap=document.createElement('div');
+  wrap.className='grades';
+  wrap.setAttribute('role','group');
+  wrap.setAttribute('aria-label','How well did you recall this card?');
+  const opts=[['again','Again','g0','1'],['hard','Hard','g3','2'],['good','Good','g4','3'],['easy','Easy','g5','4']];
+  for(const [key,label,cls,num] of opts){
+    const b=document.createElement('button');
+    b.type='button';b.className=cls;b.dataset.grade=key;
+    b.innerHTML=label+'<i>'+num+'</i>';
+    b.onclick=e=>{e.stopPropagation();grade(key);};
+    wrap.appendChild(b);
+  }
+  body.appendChild(wrap);
+}
+
+function grade(key){
+  const v=visible();
+  if(!v.length)return;
+  const d=DECK[v[pos]];
+  const g=GRADES[key];
+  if(g===undefined)return;
+  PROGRESS.reviews[d.id]=review(PROGRESS.reviews[d.id],g,today(),d.chash);
+  saveProgress();
+  renderStudyStats();
+  /* The card just left the queue, so pos now points at whatever moved up.
+     Staying put is right: it is the next card to study. */
+  flipped=false;
+  const remaining=visible().length;
+  if(pos>=remaining)pos=Math.max(0,remaining-1);
+  announce(d.id+' graded '+key+'. '+remaining+' card'+(remaining===1?'':'s')+' left in the queue.');
+  render();
+}
+
+function setStudyMode(on){
+  studyMode=on;
+  const b=document.getElementById('studyBtn');
+  b.setAttribute('aria-pressed',on?'true':'false');
+  pos=0;flipped=false;
+  render();
+  const c=studyCounts(DECK,PROGRESS,today());
+  announce(on
+    ?'Study mode on. '+c.total+' card'+(c.total===1?'':'s')+' to review'+(c.changed?', '+c.changed+' changed since you studied them':'')+'.'
+    :'Study mode off, browsing all cards.');
+}
+
 /* ---- state & render ---- */
 let filter=-1, tag=null, query='', order=DECK.map((_,i)=>i), pos=0, flipped=false;
 const stage=document.getElementById('stage');
@@ -245,6 +378,12 @@ function visible(){
   /* Rank only when searching: a learner working through a category expects a
      stable sequence, not one that reorders under them. */
   if(tokens.length)scored.sort((a,b)=>b[1]-a[1]||a[0]-b[0]);
+  /* Study mode reorders whatever the filters admitted into review priority:
+     corrected cards first, then unseen, then most-overdue. */
+  if(studyMode){
+    const allowed=new Set(scored.map(x=>x[0]));
+    return studyQueue(DECK.filter((_,i)=>allowed.has(i)),PROGRESS,today()).map(q=>DECK.indexOf(q.card));
+  }
   return scored.map(x=>x[0]);
 }
 
@@ -273,12 +412,15 @@ function render(){
   document.getElementById('prevBtn').disabled=pos===0;
   document.getElementById('nextBtn').disabled=pos>=total-1;
   if(!total){
-    stage.innerHTML='<div class="empty"><b>No cards match.</b>'+
-      escapeHtml(describeFilters())+
-      '<br><button type="button" id="resetBtn">Clear filters</button></div>';
+    stage.innerHTML='<div class="empty"><b>'+(studyMode?'Nothing left to review.':'No cards match.')+'</b>'+
+      escapeHtml(studyMode?'Everything in scope is scheduled for a future date.':describeFilters())+
+      '<br><button type="button" id="resetBtn">'+(studyMode?'Browse all cards':'Clear filters')+'</button></div>';
     const r=document.getElementById('resetBtn');
-    if(r)r.onclick=()=>{filter=-1;tag=null;query='';document.getElementById('q').value='';syncControls();pos=0;flipped=false;render();};
-    announce('No cards match. '+describeFilters());
+    if(r)r.onclick=()=>{
+      if(studyMode){setStudyMode(false);return;}
+      filter=-1;tag=null;query='';document.getElementById('q').value='';syncControls();pos=0;flipped=false;render();
+    };
+    announce(studyMode?'Nothing left to review.':'No cards match. '+describeFilters());
     syncHash();
     return;
   }
@@ -287,6 +429,7 @@ function render(){
   const card=document.getElementById('card');
   card.addEventListener('click',flip);
   card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flip();}});
+  decorateForStudy(d);
   fitCard();
   syncHash();
 }
@@ -324,13 +467,16 @@ addEventListener('resize',fitCard);
 /* Keep assistive technology in step with the 3D flip.
    backface-visibility hides the reverse face from SIGHT only — a screen reader
    still reads both, so it would announce the answer while the question shows.
-   aria-hidden is the only thing that actually hides it. */
+   aria-hidden fixes what is READ; `inert` fixes what is REACHABLE. Without it a
+   keyboard user can Tab into the invisible face and hit a grade button — or a
+   provenance link — on a side they have not seen. Focusable content inside
+   aria-hidden is also an accessibility violation in its own right. */
 function applyFaceState(){
   const c=document.getElementById('card');if(!c)return;
   c.classList.toggle('flipped',flipped);
   const front=c.querySelector('.face.front'), back=c.querySelector('.face.back');
-  if(front)front.setAttribute('aria-hidden',flipped?'true':'false');
-  if(back)back.setAttribute('aria-hidden',flipped?'false':'true');
+  if(front){front.setAttribute('aria-hidden',flipped?'true':'false');front.inert=flipped;}
+  if(back){back.setAttribute('aria-hidden',flipped?'false':'true');back.inert=!flipped;}
   const v=visible();
   const d=v.length?DECK[v[pos]]:null;
   if(d){
@@ -472,6 +618,7 @@ document.getElementById('prevBtn').onclick=()=>go(-1);
 document.getElementById('nextBtn').onclick=()=>go(1);
 document.getElementById('flipBtn').onclick=flip;
 document.getElementById('shufBtn').onclick=shuffle;
+document.getElementById('studyBtn').onclick=()=>setStudyMode(!studyMode);
 document.addEventListener('keydown',e=>{
   /* Don't hijack the keyboard while the user is typing — arrow keys belong to
      the text field, and "/" should reach it rather than being swallowed. */
@@ -479,12 +626,22 @@ document.addEventListener('keydown',e=>{
   const typing=t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable);
   if(typing)return;
   if(e.key==='/'){e.preventDefault();qInput.focus();qInput.select();return;}
+  if(e.key==='s'||e.key==='S'){setStudyMode(!studyMode);return;}
+  /* Grade with 1-4, but only once the answer is showing — grading a card you
+     have not read is meaningless, and the keys are free otherwise. */
+  if(studyMode&&flipped&&['1','2','3','4'].includes(e.key)){
+    e.preventDefault();
+    grade(['again','hard','good','easy'][Number(e.key)-1]);
+    return;
+  }
   if(e.key==='ArrowLeft')go(-1);
   if(e.key==='ArrowRight')go(1);
   if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();flip();}
 });
 /* Start from the URL, not from a blank slate: a shared deep link must land on
    the card it names on first load, not after an interaction. */
+loadProgress();
+renderStudyStats();
 applyHash();
 </script>
 </body>

@@ -15,6 +15,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Card, Category } from './types.ts';
 import { expandSlots } from './facts.ts';
+import { sha256 } from './hash.ts';
 
 export type LegacyShaped = {
   c: number;
@@ -35,10 +36,17 @@ export type LegacyShaped = {
   aliases: string[];
   /** Precomputed lowercase haystack, so search costs nothing at runtime. */
   search: string;
+  /**
+   * Hash of the learnable content. Spaced repetition stores this at review time
+   * and compares it later: if a Tier A ingest has since corrected a price or a
+   * region count, the learner's memory of this card is stale and it must be
+   * resurfaced regardless of its interval.
+   */
+  chash: string;
 };
 
 /** The authored-content subset — what the migration must have preserved exactly. */
-export type AuthoredText = Omit<LegacyShaped, 'prov' | 'tags' | 'slug' | 'aliases' | 'search'>;
+export type AuthoredText = Omit<LegacyShaped, 'prov' | 'tags' | 'slug' | 'aliases' | 'search' | 'chash'>;
 
 export function slugify(s: string): string {
   return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -73,7 +81,30 @@ export function toLegacyShape(card: Card, categories: Category[]): LegacyShaped 
     slug: slugify(card.card_id),
     aliases,
     search,
+    chash: contentHash(text),
   };
+}
+
+/**
+ * Hash of everything a learner actually memorises.
+ *
+ * Front-face title and hook are included alongside the whole back face, because
+ * a Tier C edit to the framing is as much a reason to re-study as a Tier A
+ * correction to a number. Presentation (badge, art, category) is excluded: a
+ * pictogram change is not a reason to reset someone's schedule.
+ *
+ * Truncated to 16 hex chars — this detects change, it does not defend against an
+ * adversary, and it is stored once per card in every learner's localStorage.
+ */
+export function contentHash(text: AuthoredText): string {
+  const material = [
+    text.t,
+    text.hook,
+    text.back.lead,
+    ...text.back.kv.flatMap((r) => r),
+    text.back.hookline,
+  ].join('\u0000');
+  return sha256(material).replace(/^sha256:/, '').slice(0, 16);
 }
 
 /**
@@ -201,6 +232,7 @@ export function serialiseDeckLiteral(cards: LegacyShaped[]): string {
       ',tags:[' + d.tags.map(js).join(',') + ']' +
       ',aliases:[' + d.aliases.map(js).join(',') + ']' +
       ',search:' + js(d.search) +
+      ',chash:' + js(d.chash) +
       ',\nback:{lead:' + js(d.back.lead) +
       ',\nkv:[' + d.back.kv.map((r) => '[' + js(r[0]) + ',' + js(r[1]) + ']').join(',\n') +
       '],\nhookline:' + js(d.back.hookline) +

@@ -72,7 +72,7 @@ stripping. There is no install step.
 
 ```bash
 node src/validate.ts          # schema + lint + citation gate
-node --test tests/*.test.ts   # 84 behavioural + guarantee tests
+node --test tests/*.test.ts   # 117 behavioural + guarantee tests
 node src/build.ts             # → dist/deck.json + dist/agentcore-flashcards.html
 node src/verify-parity.ts     # authored-content parity against the original deck
 
@@ -103,6 +103,8 @@ build. npm is only a task runner here; there are no packages to install.
 | Exactly one card face is exposed to a screen reader | `aria-hidden` toggling asserted in the state machine, in the tests, and in a real browser |
 | Every claim shown to a learner carries its source | provenance footer on the back face: verification date, source links, and an explicit "Unverified" marker with the reason when no source exists |
 | A shared link survives a rename | the URL hash names a card *slug*, never an index, and resolves through `aka[]` aliases |
+| A corrected card is re-studied, not left memorised wrong | spaced repetition stores a content hash per review; a card whose facts moved is pulled back into the queue whatever its interval says |
+| The hidden card face is unreachable, not just unread | `aria-hidden` **and** `inert`, so a keyboard user cannot Tab onto the side they have not seen |
 
 ## Using the deck
 
@@ -112,6 +114,7 @@ build. npm is only a task runner here; there are no packages to install.
 | Filter | category chips, tag chips (click an active tag again to clear), or both at once — they compose with search |
 | Navigate | `←` `→` or the buttons; `↑` `↓` flips |
 | Share a card | copy the URL — it is `#/card/ac-19?cat=…&tag=…&q=…` and restores the whole view |
+| Study | press `s` or the Study mode button; flip, then grade with `1`–`4` (Again / Hard / Good / Easy). Progress lives in `localStorage`, no account |
 
 A link that names a card wins over filters that would hide it, and an unknown
 slug, tag or category degrades to the full deck rather than a blank page.
@@ -149,9 +152,9 @@ prevent.
 
 ## Next
 
-Local, unblocked: spaced repetition (FSRS or SM-2) with progress in
-`localStorage`, tracks, and the "what changed this week" deck built from git
-history.
+Local, unblocked: tracks (AgentCore deep dive, agentic coding practices,
+Quick-vs-Kiro positioning, ANZ-relevant) and the "what changed this week" deck
+built from git history.
 
 Parked: the P3 read plane (S3 + CloudFront + OAC in `ap-southeast-2`, account
 `<deploy-account>`) needs this project extracted into its own repo with a remote

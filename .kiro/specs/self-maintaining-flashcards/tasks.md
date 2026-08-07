@@ -91,6 +91,11 @@ deploy half is parked until a repo and CI exist.
       never the page. The template is now injected into the shell at build time.
 - [x] T3.13 Cards size to their content. A fixed 520px height clipped the
       longest backs once the provenance footer was added.
+- [x] T3.14 The hidden face is `inert`, not merely `aria-hidden`. Found by the
+      browser check: a keyboard user could Tab onto the unseen face and hit a
+      grade button — or a provenance link — on a side they had not read.
+      `aria-hidden` governs what is *read*; `inert` governs what is *reachable*,
+      and focusable content inside `aria-hidden` is a violation in its own right.
 - [x] T3.3 Taxonomy + tag filtering, full-text search. Tags derived from the
       cards so the taxonomy cannot drift from the content; search is AND across
       tokens (an OR search over 200+ cards returns the deck and is worse than
@@ -98,7 +103,18 @@ deploy half is parked until a repo and CI exist.
 - [x] T3.4 Deep-linkable card URLs that survive rename via `aka[]`. The hash
       names a card *slug*, never an index, and resolves through aliases so a link
       shared before a rename still lands on the right card.
-- [ ] T3.5 Spaced repetition (FSRS or SM-2), progress in `localStorage`
+- [x] T3.5 Spaced repetition, progress in `localStorage`. **SM-2, not FSRS** —
+      FSRS's edge comes from weights that need a few hundred personal reviews to
+      optimise, and its correctness rests on 19 constants and a forgetting curve
+      that cannot be verified offline against reference vectors. Shipping an
+      unverifiable scheduler into a deck built on verifiability would be a quiet
+      contradiction. SM-2 is forty lines and every branch has a test. Revisit
+      FSRS once a real review log exists.
+      **Beyond both algorithms:** a card whose content hash has changed since it
+      was last studied is pulled back into the queue regardless of its interval.
+      Neither SM-2 nor FSRS models a card whose *answer* changed, which is the
+      normal case here — a six-month interval must not keep teaching a price a
+      deterministic source corrected this morning.
 - [ ] T3.6 Tracks (AgentCore deep dive, agentic coding practices, Quick-vs-Kiro,
       ANZ-relevant)
 - [ ] T3.7 "What changed this week" deck from git history
