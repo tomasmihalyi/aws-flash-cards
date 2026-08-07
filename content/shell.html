@@ -92,6 +92,13 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 .hookline{background:var(--blue-soft);border-left:2px solid var(--blue);padding:8px 10px;border-radius:0 3px 3px 0;font-size:.8rem;margin-top:6px}
 .hookline b{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:2px}
 
+/* provenance footer — the source and verification date, visible to the learner */
+.prov{border-top:1px dashed var(--line);margin-top:12px;padding-top:9px;display:flex;flex-direction:column;gap:4px;
+  font-family:var(--mono);font-size:.6rem;line-height:1.5;color:var(--slate)}
+.prov b{color:var(--slate);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-right:.4em}
+.prov a{color:var(--blue);text-decoration:none;border-bottom:1px solid var(--blue-soft)}
+.prov a:hover,.prov a:focus-visible{border-bottom-color:var(--blue)}
+
 /* ---------- nav ---------- */
 .nav{position:fixed;bottom:0;left:0;right:0;background:rgba(237,241,247,.92);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
 .nav .in{max-width:680px;margin:0 auto;display:flex;gap:8px;padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
@@ -110,8 +117,8 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
   <header>
     <div class="eyebrow">Amazon Bedrock · Field Deck</div>
     <h1>AgentCore Flashcards</h1>
-    <p class="sub">The full platform, one primitive per card. Tap a card to flip it. Content is current to mid-2026 — including Policy/Evaluations GA, the managed harness, CLI, and Agent Registry.</p>
-    <div class="meta"><span>CARDS <b id="mTotal">@@COUNT@@</b></span><span>GA <b>OCT 2025</b></span><span>SYD REGION <b>YES</b></span></div>
+    <p class="sub">The full platform, one primitive per card. Tap a card to flip it. @@FRESHNESS@@</p>
+    <div class="meta">@@META@@</div>
   </header>
 
   <div class="chips" id="chips" role="tablist" aria-label="Filter by category"></div>
@@ -165,6 +172,12 @@ const stage=document.getElementById('stage');
 
 function visible(){return filter<0?order:order.filter(i=>DECK[i].c===filter);}
 
+/* The card template is injected here at build time from
+   content/card-template.html, so the runtime render and the deck.json faces come
+   from ONE source. It used to be inlined twice, which silently drifted: the
+   aria-hidden fix and the provenance footer reached deck.json but never the page. */
+/*__TEMPLATE_FN__*/
+
 function render(){
   const v=visible();
   const total=v.length;
@@ -174,30 +187,46 @@ function render(){
   document.getElementById('nextBtn').disabled=pos>=total-1;
   if(!total){stage.innerHTML='<div class="empty">No cards in this filter.</div>';return;}
   const d=DECK[v[pos]];
-  stage.innerHTML=`
-  <div class="cardShell ${flipped?'flipped':''}" id="card" role="button" tabindex="0" aria-label="Flashcard: ${d.t}. Press to flip.">
-    <div class="face front">
-      <div class="strip"><span class="partno">${d.id} · ${CAT[d.c].toUpperCase()}</span><span class="badge ${d.b}">${d.bt}</span></div>
-      <div class="art">${ART[d.art]}</div>
-      <h2>${d.t}</h2>
-      <p class="hook">${d.hook}</p>
-      <div class="tap">Tap to flip</div>
-    </div>
-    <div class="face back">
-      <div class="strip"><span class="partno">${d.id} · DETAIL</span><span class="badge ${d.b}">${d.bt}</span></div>
-      <div class="body">
-        <h3>${d.t}</h3>
-        <p>${d.back.lead}</p>
-        <div class="kv">${d.back.kv.map(r=>`<div class="row"><div class="k">${r[0]}</div><div class="v">${r[1]}</div></div>`).join('')}</div>
-        <div class="hookline"><b>Memory hook</b>${d.back.hookline}</div>
-      </div>
-    </div>
-  </div>`;
+  stage.innerHTML=renderCard(d,flipped,CAT,ART);
   const card=document.getElementById('card');
   card.addEventListener('click',flip);
   card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flip();}});
+  fitCard();
 }
-function flip(){flipped=!flipped;const c=document.getElementById('card');if(c)c.classList.toggle('flipped',flipped);}
+/* Size the card to its tallest face.
+   The two faces are absolutely positioned so they can stack for the 3D flip,
+   which means the container needs an explicit height — and a fixed 520px clipped
+   the longest backs once the provenance footer was added. Measuring beats
+   guessing a number that goes stale as cards grow. */
+function fitCard(){
+  const c=document.getElementById('card');if(!c)return;
+  const body=c.querySelector('.back .body'), strip=c.querySelector('.back .strip');
+  if(!body)return;
+  const needed=Math.max(520,(strip?strip.offsetHeight:0)+body.scrollHeight+2);
+  c.style.minHeight=needed+'px';
+  stage.style.minHeight=needed+'px';
+}
+addEventListener('resize',fitCard);
+/* Keep assistive technology in step with the 3D flip.
+   backface-visibility hides the reverse face from SIGHT only — a screen reader
+   still reads both, so it would announce the answer while the question shows.
+   aria-hidden is the only thing that actually hides it. */
+function applyFaceState(){
+  const c=document.getElementById('card');if(!c)return;
+  c.classList.toggle('flipped',flipped);
+  const front=c.querySelector('.face.front'), back=c.querySelector('.face.back');
+  if(front)front.setAttribute('aria-hidden',flipped?'true':'false');
+  if(back)back.setAttribute('aria-hidden',flipped?'false':'true');
+  const v=visible();
+  const d=v.length?DECK[v[pos]]:null;
+  if(d){
+    c.setAttribute('aria-pressed',flipped?'true':'false');
+    c.setAttribute('aria-label','Flashcard: '+d.t+'. '+(flipped
+      ?'Showing detail. Press to show the question.'
+      :'Showing the question. Press to reveal detail.'));
+  }
+}
+function flip(){flipped=!flipped;applyFaceState();}
 function go(d){const t=visible().length;const n=Math.min(Math.max(pos+d,0),t-1);if(n!==pos){pos=n;flipped=false;render();}}
 function shuffle(){for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}pos=0;flipped=false;render();}
 

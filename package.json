@@ -9,10 +9,12 @@
   },
   "comment": "Zero dependencies by design (NFR-1). TypeScript runs directly on Node's native type stripping — no bundler, no lockfile, no supply chain.",
   "scripts": {
+    "test": "node --test tests/deck-state.test.ts tests/guarantees.test.ts",
     "validate": "node src/validate.ts",
     "validate:strict": "node src/validate.ts --strict",
     "build": "node src/build.ts",
     "parity": "node src/verify-parity.ts",
+    "check": "npm run validate && npm test && npm run build && npm run parity",
     "ingest:regions": "node src/ingest/ssm-regions.ts",
     "ingest:pricing": "node src/ingest/pricelist.ts",
     "ingest:api": "node src/ingest/botocore-diff.ts",

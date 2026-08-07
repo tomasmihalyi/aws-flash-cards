@@ -66,11 +66,31 @@ function main() {
   console.log(`wrote ${legacy.DECK.length} cards with ${slotCount} fact-governed slots`);
 
   writeFileSync(join(ROOT, 'content', 'art.json'), JSON.stringify(legacy.ART, null, 2) + '\n', 'utf8');
-  writeFileSync(join(ROOT, 'content', 'legacy-template.txt'), legacy.templateSource, 'utf8');
-  console.log('wrote content/art.json, content/legacy-template.txt');
+  console.log('wrote content/art.json');
 
-  writeFileSync(join(ROOT, 'content', 'shell.html'), makeShell(legacy.raw), 'utf8');
-  console.log('wrote content/shell.html');
+  // The card template started life as the legacy one but is now OURS: it carries
+  // the aria-hidden accessibility fix and the provenance footer. Silently
+  // overwriting it with the legacy version would quietly reinstate the
+  // screen-reader defect, which is exactly the class of regression this project
+  // exists to prevent — so refuse unless asked twice.
+  const templatePath = join(ROOT, 'content', 'card-template.html');
+  if (existsSync(templatePath) && !process.argv.includes('--force-template')) {
+    console.log('kept content/card-template.html (already exists — pass --force-template to reset it to the legacy version)');
+  } else {
+    writeFileSync(templatePath, legacy.templateSource, 'utf8');
+    console.log('wrote content/card-template.html from the legacy template');
+  }
+
+  // Same reasoning as the template: shell.html now carries the aria-hidden
+  // toggling, the provenance styling and the data-driven header markers.
+  // Regenerating it from the legacy file would throw all three away.
+  const shellPath = join(ROOT, 'content', 'shell.html');
+  if (existsSync(shellPath) && !process.argv.includes('--force-shell')) {
+    console.log('kept content/shell.html (already exists — pass --force-shell to reset it to the legacy version)');
+  } else {
+    writeFileSync(shellPath, makeShell(legacy.raw), 'utf8');
+    console.log('wrote content/shell.html from the legacy file');
+  }
 }
 
 function migrate(d: LegacyCard): Card {

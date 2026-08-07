@@ -9,8 +9,9 @@ Quick business-vs-engineer boundary, Strands/MCP/A2A, and agentic development
 practice. Not all AWS AI: the full IN/OUT boundary is in
 `.kiro/specs/self-maintaining-flashcards/requirements.md` §4.
 
-**Status: P0–P2 complete.** No AWS resource is created, modified or deleted by
-anything in this repo; ingest is read-only and stays that way.
+**Status: P0–P2 complete; P3 frontend in progress, P3 deploy parked.** No AWS
+resource is created, modified or deleted by anything in this repo; ingest is
+read-only and stays that way.
 
 ## The one idea worth knowing
 
@@ -71,8 +72,9 @@ stripping. There is no install step.
 
 ```bash
 node src/validate.ts          # schema + lint + citation gate
+node --test tests/*.test.ts   # 58 behavioural + guarantee tests
 node src/build.ts             # → dist/deck.json + dist/agentcore-flashcards.html
-node src/verify-parity.ts     # the FR-5 gate against the original deck
+node src/verify-parity.ts     # authored-content parity against the original deck
 
 node src/ingest/ssm-regions.ts    # region availability  (read-only AWS)
 node src/ingest/pricelist.ts      # pricing              (read-only AWS)
@@ -82,8 +84,9 @@ node src/ingest/apply.ts          # resolve slots: verify, correct, or fail
 node src/ingest/apply.ts --dry-run   # show the corrections without writing
 ```
 
-`package.json` wraps these as npm scripts (`npm run refresh` = ingest → apply →
-build) but npm is only a task runner here; there are no packages to install.
+`package.json` wraps these as npm scripts — `npm run check` runs the whole gate
+(validate → test → build → parity), `npm run refresh` runs ingest → apply →
+build. npm is only a task runner here; there are no packages to install.
 
 ## Guarantees, and how each one is enforced
 
@@ -95,11 +98,30 @@ build) but npm is only a task runner here; there are no packages to install.
 | A missing fact never fakes freshness | `apply` leaves the card untouched and exits non-zero rather than stamping `verified_at` on an unverified claim |
 | Card ids are never reused | append-only ledger in `content/card-id-ledger.json`; `validate` fails if an id disappears |
 | Retirement never deletes | tombstones, `aka[]`, `superseded_by` — all modelled from P0 |
-| Rendering matches the original | `verify-parity`: the deck must be identical to the original **except** where a deterministic source corrected a slot — data, template, 84 face renders and the shell byte-compared |
+| Authored content survived the migration | `verify-parity`: revert every slot to its `seed_text` and the result must equal the original deck exactly |
+| The UX contract still holds | `tests/deck-state.test.ts` — filter, navigate, flip, shuffle, clamping, progress, and the a11y invariant, against a state machine extracted out of the DOM |
+| Exactly one card face is exposed to a screen reader | `aria-hidden` toggling asserted in the state machine, in the tests, and in a real browser |
+| Every claim shown to a learner carries its source | provenance footer on the back face: verification date, source links, and an explicit "Unverified" marker with the reason when no source exists |
 
 `dist/` is not committed (the parent vault's `.gitignore` excludes it) but is
 fully regenerable from `cards/` + `facts/`. The P1 pre-ingest snapshot lives in
 `tests/fixtures/p1-parity-baseline/`.
+
+### Why the parity gate changed
+
+Through P2 the gate compared the generated HTML byte-for-byte against the
+original file — template, CSS, pictograms, 84 face renders, the whole shell. That
+was the right check for proving the migration lost nothing, and it passed.
+
+It also froze the markup. The deck shipped with a real accessibility defect (both
+faces permanently in the DOM with no `aria-hidden`, so a screen reader read the
+answer aloud while the question was showing), and every remaining frontend item
+changes the DOM by definition. A gate that forbids all of them protects nothing
+worth protecting.
+
+So the guarantee moved rather than weakened: **behaviour** is pinned by tests,
+**authored content** is still pinned byte-for-byte, and **deterministic
+corrections** are reported rather than failed.
 
 ## What the deterministic sources cannot do
 
@@ -114,8 +136,14 @@ prevent.
 
 ## Next
 
-P3 read plane (S3 + CloudFront + OAC, `ap-southeast-2`), the accessibility fix,
-search, spaced repetition and the "what changed this week" deck. P4 adds the
-model-drafted tiers behind a string-matching verifier; P5 rename/retire detection
-and dependency fan-out; P6 content scale-up. Full detail and exit criteria in
+Local, unblocked: tag filtering and full-text search, deep-linkable card URLs
+that survive rename via `aka[]`, spaced repetition (FSRS or SM-2) in
+`localStorage`, tracks, and the "what changed this week" deck built from git
+history.
+
+Parked: the P3 read plane (S3 + CloudFront + OAC in `ap-southeast-2`, account
+`<deploy-account>`) needs this project extracted into its own repo with a remote
+before publish-on-merge can exist. P4 adds the model-drafted tiers behind a
+string-matching verifier; P5 rename/retire detection and dependency fan-out; P6
+content scale-up. Full detail and exit criteria in
 `.kiro/specs/self-maintaining-flashcards/`.

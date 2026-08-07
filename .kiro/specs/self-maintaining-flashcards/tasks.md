@@ -66,22 +66,42 @@ AC-19 `region_availability` moved from *"previewed in four regions … expanded
 steadily since"* to *"available in 19 AWS regions, including Asia Pacific
 (Sydney)"*, sourced from SSM with a content hash. Commit `2750b06`.
 
-## P3 — Read plane + frontend at scale (not in this run)
+## P3 — Read plane + frontend at scale
 
-- [ ] T3.1 Replace the FR-5 parity gate with a behavioural test suite
-      (**must land before any DOM change**)
-- [ ] T3.2 NFR-4 a11y fix: toggle `aria-hidden` on flip
+Split deliberately: the frontend half is entirely local and proceeding; the
+deploy half is parked until a repo and CI exist.
+
+- [x] T3.1 Replace the FR-5 byte-parity gate with a behavioural test suite
+      (**had to land before any DOM change**). State machine extracted to
+      `src/lib/deck-state.js`; 58 tests across `tests/`. `verify-parity` now
+      checks *authored content* parity, not DOM bytes.
+- [x] T3.2 NFR-4 a11y fix: `aria-hidden` toggling on flip, plus `aria-pressed`
+      and a label that states which side is showing. Verified in a real browser,
+      not just in the state machine.
+- [x] T3.8 Per-card provenance display on the back face — verification date,
+      source links, and an explicit "Unverified" marker with the reason when no
+      deterministic source exists.
+- [x] T3.11 Page-chrome staleness closed: the header's hand-maintained
+      *"Content is current to mid-2026"* and unsourced *"GA OCT 2025"* are gone.
+      `CARDS / REGIONS / SYD REGION / VERIFIED` are all derived from cards or
+      fact sets, and anything without a source is omitted rather than guessed.
+- [x] T3.12 Single template source. `content/card-template.html` was being used
+      for `deck.json` while `shell.html` kept its own inlined copy — they had
+      already drifted, so the a11y fix and provenance footer reached the JSON but
+      never the page. The template is now injected into the shell at build time.
+- [x] T3.13 Cards size to their content. A fixed 520px height clipped the
+      longest backs once the provenance footer was added.
 - [ ] T3.3 Taxonomy + tag filtering, full-text search
 - [ ] T3.4 Deep-linkable card URLs that survive rename via `aka[]`
 - [ ] T3.5 Spaced repetition (FSRS or SM-2), progress in `localStorage`
 - [ ] T3.6 Tracks (AgentCore deep dive, agentic coding practices, Quick-vs-Kiro,
       ANZ-relevant)
 - [ ] T3.7 "What changed this week" deck from git history
-- [ ] T3.8 Per-card provenance display on the back face
 - [ ] T3.9 Icon strategy at scale — verify AWS Architecture Icons licence terms
       **before** shipping them
 - [ ] T3.10 S3 + CloudFront + OAC in `ap-southeast-2`; publish on merge
-      (**blocked: target AWS account not yet confirmed**)
+      (**blocked: needs its own repo + remote; deploy account confirmed as
+      `demo` / <deploy-account>**)
 
 ## P4 — Tier B/C loop (not in this run)
 
@@ -126,9 +146,15 @@ steadily since"* to *"available in 19 AWS regions, including Asia Pacific
 
 | Item | Deferred to | Why |
 |---|---|---|
-| a11y `aria-hidden` fix | P3 | Changes the DOM the P1 parity gate pins. Replace the gate first. |
-| Feature-level region facts (e.g. Evaluations "9 regions") | — | No deterministic source exists. Slot stays `seed` + `needs_review` with the reason recorded. Not a gap: a limit. |
+| Feature-level region facts (e.g. Evaluations "9 regions") | — | No deterministic source exists. Slot stays `seed` + `needs_review` with the reason recorded, and the card now says "Unverified" to the learner. Not a gap: a limit. |
 | AWS Architecture Icons | P3 | Licence terms must be verified before shipping. |
-| IaC for the read plane | P3 | Target account unconfirmed; this run must create no AWS resource. |
-| Page chrome staleness | P3 | The shell's header hardcodes *"Content is current to mid-2026"* and *"GA OCT 2025 · SYD REGION YES"*. These are factual claims living outside the card schema, so no slot governs them and no ingest job can correct them. P3 should either drive them from the fact store or delete them — a self-maintaining deck with a hand-maintained "current to" line is a bad joke. |
+| IaC for the read plane | P3 | Needs its own repo + remote first. Deploy target confirmed: `demo` / <deploy-account>, `ap-southeast-2`, CloudFront default domain, no auth. |
+| Repo extraction | when Tomas creates it | Local development only for now; the repo will be created manually under the `tomyister` GitHub account. `git subtree split` preserves the commit history when the time comes. |
 | `dist/` not committed | — | The parent vault's `.gitignore` excludes `dist`. Regenerable from `cards/` + `facts/` via `node src/build.ts`, and the P1 baseline copy under `tests/fixtures/` is committed, so no evidence is lost. |
+
+### Closed since the original list
+
+- **a11y `aria-hidden` fix** — was blocked by the byte-parity gate. Gate replaced
+  (T3.1), fix landed (T3.2), verified in a browser.
+- **Page-chrome staleness** — the hand-maintained "current to mid-2026" line and
+  the unsourced "GA OCT 2025" badge are gone; the header is derived (T3.11).

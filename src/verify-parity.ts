@@ -1,46 +1,44 @@
 /**
- * verify-parity — the FR-5 gate.
+ * verify-parity — content parity against the original hand-authored deck.
  *
- * "Looks the same" is exactly the assurance that fails silently, so this gate is
- * string and hash comparisons with no visual judgement.
+ * WHAT CHANGED, AND WHY IT HAD TO
  *
- * The invariant it enforces is not "the deck never changes" — the whole point of
- * the system is that the deck changes when AWS does. It is the stronger and more
- * useful claim:
+ * This gate used to compare the generated HTML byte-for-byte against the
+ * original file: template source, CSS, pictograms, 84 face renders, and the
+ * whole shell. That was the right check for exactly one job — proving the
+ * migration from a hardcoded DECK array to card JSON lost nothing — and it
+ * passed.
  *
- *     The deck is byte-identical to the original hand-authored deck EXCEPT
- *     where a deterministic source corrected a fact-governed slot.
+ * But it also froze the markup. The deck shipped with a real accessibility
+ * defect (both faces permanently in the DOM with no aria-hidden, so a screen
+ * reader read the answer aloud while the question was showing), and every
+ * frontend improvement in the spec — search, tags, deep links, spaced
+ * repetition, provenance display — necessarily changes the DOM. A gate that
+ * forbids all of those is no longer protecting anything worth protecting.
  *
- * So every card is projected twice: once as it renders now, and once with every
- * slot forced back to its `seed_text`. The seed projection must match the legacy
- * deck exactly — any difference there is unexplained drift and fails the gate.
- * The live projection is then reported as corrections, which are expected.
+ * So the guarantee moved rather than weakened:
+ *   - BEHAVIOUR is now pinned by tests/deck-state.test.ts (filter, navigate,
+ *     flip, shuffle, clamping, progress, and the a11y invariant), against a
+ *     state machine extracted out of the DOM.
+ *   - AUTHORED CONTENT is still pinned here: revert every slot to its seed_text
+ *     and the result must equal the original deck exactly. That is what stops a
+ *     card's wording being lost or quietly edited.
+ *   - DETERMINISTIC CORRECTIONS are reported, not failed — they are the point.
  *
- * Checks:
- *   1. SEED DATA   seed-projected cards deep-equal the legacy DECK literal
- *   2. TEMPLATE    committed template source byte-identical to the legacy file's
- *   3. SEED RENDER the legacy template over legacy data and over seed-projected
- *                  data produces identical HTML, every card, both faces
- *   4. SHELL       generated HTML with its DECK literal swapped for the legacy one
- *                  is byte-identical to the legacy file — proving the CSS,
- *                  pictograms, state machine, keyboard handling and reduced-motion
- *                  rules are the same code, not an equivalent reimplementation
- *   5. ASSETS      CSS and pictogram library hashes
+ * Anything else differing is unexplained drift, and fails.
  *
- * Usage: node src/verify-parity.ts [--baseline] [--verbatim]
- *   --baseline  on pass, write the output to tests/fixtures/p1-parity-baseline/
- *   --verbatim  additionally require ZERO corrections (the P1 exit condition)
+ * Usage: node src/verify-parity.ts [--verbatim]
+ *   --verbatim  additionally require ZERO corrections (the original P1 condition)
  */
 
-import { readFileSync, existsSync, mkdirSync, writeFileSync, copyFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT, paths, loadCards, loadCategories, loadArt } from './lib/store.ts';
-import { loadLegacy, deckLiteralBounds } from './lib/legacy.ts';
-import { toLegacyShape, loadTemplateSource, compileTemplate, splitFaces, type LegacyShaped } from './lib/render.ts';
-import { canonical, sha256 } from './lib/hash.ts';
+import { paths, loadCards, loadCategories } from './lib/store.ts';
+import { loadLegacy } from './lib/legacy.ts';
+import { authoredText } from './lib/render.ts';
+import { canonical } from './lib/hash.ts';
 import type { Card } from './lib/types.ts';
 
-const writeBaseline = process.argv.includes('--baseline');
 const verbatim = process.argv.includes('--verbatim');
 const failures: string[] = [];
 const checks: string[] = [];
@@ -50,7 +48,7 @@ function check(name: string, ok: boolean, detail = ''): void {
   else failures.push(`FAIL  ${name}${detail ? '\n      ' + detail : ''}`);
 }
 
-/** A copy of the card with every slot reverted to the text the deck shipped with. */
+/** The card as the original author wrote it: every slot back to its seed text. */
 function seedProjection(card: Card): Card {
   const clone = JSON.parse(JSON.stringify(card)) as Card;
   for (const slot of Object.values(clone.slots)) slot.rendered = slot.seed_text;
@@ -61,139 +59,75 @@ function main(): void {
   const legacy = loadLegacy(paths.legacyHtml);
   const cards = loadCards().sort((a, b) => a.card_id.localeCompare(b.card_id));
   const categories = loadCategories();
-  const art = loadArt();
-  const catLabels = categories.map((c) => c.label);
 
+  check('card count matches the original deck', cards.length === legacy.DECK.length,
+    `now ${cards.length}, original ${legacy.DECK.length}`);
+
+  // ---- authored content parity ----
+  let unexplained = 0;
+  for (let i = 0; i < Math.min(cards.length, legacy.DECK.length); i++) {
+    const seeded = authoredText(seedProjection(cards[i]), categories);
+    if (canonical(seeded) !== canonical(legacy.DECK[i])) {
+      unexplained++;
+      failures.push(`FAIL  ${legacy.DECK[i].id}: authored text differs in a way no fact-governed slot explains\n${firstDiff(seeded, legacy.DECK[i])}`);
+    }
+  }
+  check(`authored text of all ${legacy.DECK.length} cards preserved (slots reverted to seed)`, unexplained === 0);
+
+  // ---- every card still resolves and renders ----
+  let renderable = 0;
+  for (const card of cards) {
+    try {
+      authoredText(card, categories);
+      renderable++;
+    } catch (e) {
+      failures.push(`FAIL  ${card.card_id}: does not render — ${(e as Error).message}`);
+    }
+  }
+  check(`all ${cards.length} cards resolve their slots and render`, renderable === cards.length);
+
+  // ---- the built artifact reflects the current card data ----
   const generatedPath = join(paths.dist, 'agentcore-flashcards.html');
   if (!existsSync(generatedPath)) {
-    console.error('verify-parity: dist/agentcore-flashcards.html not found — run node src/build.ts first');
-    process.exit(1);
-  }
-  const generated = readFileSync(generatedPath, 'utf8');
-
-  check('data: card count', cards.length === legacy.DECK.length, `new ${cards.length} vs legacy ${legacy.DECK.length}`);
-
-  const live: LegacyShaped[] = cards.map((c) => toLegacyShape(c, categories));
-  const seeded: LegacyShaped[] = cards.map((c) => toLegacyShape(seedProjection(c), categories));
-
-  // ---- 1. SEED DATA: unexplained drift is a failure -------------------------
-  let unexplained = 0;
-  for (let i = 0; i < Math.min(seeded.length, legacy.DECK.length); i++) {
-    if (canonical(seeded[i]) !== canonical(legacy.DECK[i])) {
-      unexplained++;
-      failures.push(
-        `FAIL  data: card ${legacy.DECK[i].id} differs from the original in text no fact-governed slot explains\n${firstDiff(seeded[i], legacy.DECK[i])}`,
-      );
+    failures.push('FAIL  dist/agentcore-flashcards.html not found — run node src/build.ts first');
+  } else {
+    const generated = readFileSync(generatedPath, 'utf8');
+    let missing = 0;
+    for (const card of cards) {
+      const lead = authoredText(card, categories).back.lead;
+      if (!generated.includes(JSON.stringify(lead))) missing++;
     }
-  }
-  check(`data: all ${legacy.DECK.length} cards identical to the original once slots are reverted to seed text`, unexplained === 0);
-
-  // Corrections are expected, not failures — but they are itemised so a reader
-  // can see exactly which claims the pipeline changed and why.
-  const corrected: { id: string; slot: string; before: string; after: string }[] = [];
-  for (const card of cards) {
-    for (const [name, slot] of Object.entries(card.slots)) {
-      if (slot.rendered !== slot.seed_text) {
-        corrected.push({ id: card.card_id, slot: name, before: slot.seed_text, after: slot.rendered });
-      }
-    }
+    check('every card\u2019s current lead text is present in the built HTML', missing === 0, `${missing} missing`);
+    check('the built HTML has no unreplaced build markers',
+      !/@@[A-Z]+@@|\/\*__[A-Z]+__\*\//.test(generated));
+    check('the accessibility fix is present in the built HTML',
+      generated.includes('aria-hidden') && generated.includes('applyFaceState'),
+      'aria-hidden toggling not found — the screen-reader defect would be back');
   }
 
-  // ---- 2. TEMPLATE ----------------------------------------------------------
-  const committedTemplate = loadTemplateSource(ROOT);
-  check(
-    'template: committed source byte-identical to the legacy file',
-    committedTemplate === legacy.templateSource,
-    `committed ${sha256(committedTemplate)} vs legacy ${sha256(legacy.templateSource)}`,
+  // ---- corrections: expected, itemised, never a failure ----
+  const corrected = cards.flatMap((c) =>
+    Object.entries(c.slots)
+      .filter(([, s]) => s.rendered !== s.seed_text)
+      .map(([slot, s]) => ({ id: c.card_id, slot, before: s.seed_text, after: s.rendered })),
   );
-
-  // ---- 3. SEED RENDER -------------------------------------------------------
-  const renderLegacy = compileTemplate(legacy.templateSource);
-  const renderNew = compileTemplate(committedTemplate);
-  let faceMismatches = 0;
-  let facesCompared = 0;
-  for (let i = 0; i < Math.min(seeded.length, legacy.DECK.length); i++) {
-    for (const flipped of [false, true]) {
-      const a = splitFaces(renderLegacy(legacy.DECK[i], flipped, legacy.CAT, legacy.ART));
-      const b = splitFaces(renderNew(seeded[i], flipped, catLabels, art));
-      for (const face of ['front', 'back'] as const) {
-        facesCompared++;
-        if (a[face] !== b[face]) {
-          faceMismatches++;
-          failures.push(
-            `FAIL  render: ${legacy.DECK[i].id} ${face} face (flipped=${flipped})\n      legacy: ${a[face].slice(0, 160)}\n      new:    ${b[face].slice(0, 160)}`,
-          );
-        }
-      }
-    }
-  }
-  check(`render: ${facesCompared} face renders identical (seed projection)`, faceMismatches === 0);
-
-  // ---- 4. SHELL -------------------------------------------------------------
-  const genBounds = deckLiteralBounds(generated);
-  const legBounds = deckLiteralBounds(legacy.raw);
-  const respliced =
-    generated.slice(0, genBounds.start) + legacy.raw.slice(legBounds.start, legBounds.end) + generated.slice(genBounds.end);
-  check(
-    'shell: generated file identical to legacy outside the DECK literal',
-    respliced === legacy.raw,
-    respliced === legacy.raw ? '' : firstTextDiff(legacy.raw, respliced),
-  );
-
-  // ---- 5. ASSETS ------------------------------------------------------------
-  const genView = assetsOf(generated);
-  check('assets: CSS byte-identical', sha256(genView.cssSource) === sha256(legacy.cssSource));
-  check('assets: pictogram library byte-identical', sha256(genView.artSource) === sha256(legacy.artSource));
-
-  // ---- live render sanity: the built HTML must contain what the cards claim --
-  let liveEmbedMismatches = 0;
-  const genDeckLiteral = generated.slice(genBounds.start, genBounds.end);
-  for (const d of live) {
-    if (!genDeckLiteral.includes(JSON.stringify(d.back.lead))) liveEmbedMismatches++;
-  }
-  check('embed: every card\u2019s current lead text present in the generated DECK literal', liveEmbedMismatches === 0, `${liveEmbedMismatches} missing`);
-
   if (verbatim && corrected.length) {
-    failures.push(`FAIL  --verbatim: ${corrected.length} slot(s) have been corrected away from the original text`);
+    failures.push(`FAIL  --verbatim: ${corrected.length} slot(s) corrected away from the original text`);
   }
 
-  report(legacy.DECK.length, facesCompared, generated, corrected);
-}
-
-function assetsOf(raw: string): { cssSource: string; artSource: string } {
-  const sOpen = raw.indexOf('<style>');
-  const sClose = raw.indexOf('</style>');
-  const aStart = raw.indexOf('const ART = {');
-  const aEnd = raw.indexOf('\n};', aStart);
-  if (sOpen < 0 || sClose < 0 || aStart < 0 || aEnd < 0) throw new Error('generated file: style/ART blocks not found');
-  return { cssSource: raw.slice(sOpen + '<style>'.length, sClose), artSource: raw.slice(aStart, aEnd + '\n};'.length) };
+  report(legacy.DECK.length, corrected);
 }
 
 function firstDiff(a: unknown, b: unknown): string {
   const sa = JSON.stringify(a, null, 1).split('\n');
   const sb = JSON.stringify(b, null, 1).split('\n');
   for (let i = 0; i < Math.max(sa.length, sb.length); i++) {
-    if (sa[i] !== sb[i]) return `      new:    ${sa[i] ?? '<end>'}\n      legacy: ${sb[i] ?? '<end>'}`;
+    if (sa[i] !== sb[i]) return `      now:      ${sa[i] ?? '<end>'}\n      original: ${sb[i] ?? '<end>'}`;
   }
   return '';
 }
 
-function firstTextDiff(a: string, b: string): string {
-  const n = Math.min(a.length, b.length);
-  for (let i = 0; i < n; i++) {
-    if (a[i] !== b[i]) {
-      return `first difference at byte ${i}:\n      legacy:    …${JSON.stringify(a.slice(Math.max(0, i - 40), i + 40))}\n      generated: …${JSON.stringify(b.slice(Math.max(0, i - 40), i + 40))}`;
-    }
-  }
-  return `identical for ${n} bytes then lengths differ (legacy ${a.length}, generated ${b.length})`;
-}
-
-function report(
-  cardCount: number,
-  facesCompared: number,
-  generated: string,
-  corrected: { id: string; slot: string; before: string; after: string }[],
-): void {
+function report(cardCount: number, corrected: { id: string; slot: string; before: string; after: string }[]): void {
   for (const c of checks) console.log(c);
   for (const f of failures) console.error(f);
 
@@ -208,34 +142,9 @@ function report(
 
   const ok = failures.length === 0;
   console.log(
-    `\nverify-parity: ${ok ? 'PASS' : 'FAIL'} · ${cardCount} cards · ${facesCompared} face renders · ${checks.length} check(s) passed · ${failures.length} failed · ${corrected.length} deterministic correction(s)`,
+    `\nverify-parity: ${ok ? 'PASS' : 'FAIL'} · ${cardCount} cards · ${checks.length} check(s) passed · ${failures.length} failed · ${corrected.length} deterministic correction(s)`,
   );
-
-  if (ok && writeBaseline) {
-    const dir = join(paths.tests, 'fixtures', 'p1-parity-baseline');
-    mkdirSync(dir, { recursive: true });
-    copyFileSync(join(paths.dist, 'deck.json'), join(dir, 'deck.json'));
-    writeFileSync(join(dir, 'agentcore-flashcards.html'), generated, 'utf8');
-    writeFileSync(
-      join(dir, 'README.md'),
-      [
-        '# P1 parity baseline',
-        '',
-        'The build output at the moment the FR-5 parity gate passed, **before** any',
-        'Tier A ingest ran. Every slot here still renders its unverified `seed`',
-        'literal, so this deck is byte-identical in card content to the original',
-        'hand-authored `agentcore-flashcards.html`.',
-        '',
-        'It exists so the P2 correction has a committed "before" to be a diff',
-        'against. Do not regenerate it after ingest — that would erase the evidence.',
-        '',
-        `Card content hash: ${sha256(readFileSync(join(paths.dist, 'deck.json'), 'utf8'))}`,
-      ].join('\n') + '\n',
-      'utf8',
-    );
-    console.log('verify-parity: baseline written to tests/fixtures/p1-parity-baseline/');
-  }
-
+  console.log('verify-parity: behaviour and a11y are covered by `node --test tests/*.test.ts`, not by this gate');
   process.exit(ok ? 0 : 1);
 }
 
