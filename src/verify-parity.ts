@@ -37,6 +37,7 @@ import { paths, loadCards, loadCategories } from './lib/store.ts';
 import { loadLegacy } from './lib/legacy.ts';
 import { authoredText } from './lib/render.ts';
 import { canonical } from './lib/hash.ts';
+import { originalProjection } from './lib/provenance.ts';
 import type { Card } from './lib/types.ts';
 
 const verbatim = process.argv.includes('--verbatim');
@@ -48,12 +49,6 @@ function check(name: string, ok: boolean, detail = ''): void {
   else failures.push(`FAIL  ${name}${detail ? '\n      ' + detail : ''}`);
 }
 
-/** The card as the original author wrote it: every slot back to its seed text. */
-function seedProjection(card: Card): Card {
-  const clone = JSON.parse(JSON.stringify(card)) as Card;
-  for (const slot of Object.values(clone.slots)) slot.rendered = slot.seed_text;
-  return clone;
-}
 
 function main(): void {
   const legacy = loadLegacy(paths.legacyHtml);
@@ -66,13 +61,13 @@ function main(): void {
   // ---- authored content parity ----
   let unexplained = 0;
   for (let i = 0; i < Math.min(cards.length, legacy.DECK.length); i++) {
-    const seeded = authoredText(seedProjection(cards[i]), categories);
+    const seeded = authoredText(originalProjection(cards[i]), categories);
     if (canonical(seeded) !== canonical(legacy.DECK[i])) {
       unexplained++;
-      failures.push(`FAIL  ${legacy.DECK[i].id}: authored text differs in a way no fact-governed slot explains\n${firstDiff(seeded, legacy.DECK[i])}`);
+      failures.push(`FAIL  ${legacy.DECK[i].id}: authored text differs with no fact-governed slot and no recorded field correction to explain it\n${firstDiff(seeded, legacy.DECK[i])}`);
     }
   }
-  check(`authored text of all ${legacy.DECK.length} cards preserved (slots reverted to seed)`, unexplained === 0);
+  check(`authored text of all ${legacy.DECK.length} cards accounted for (slots reverted to seed, recorded field corrections inverted)`, unexplained === 0);
 
   // ---- every card still resolves and renders ----
   let renderable = 0;

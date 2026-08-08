@@ -2,7 +2,7 @@
   "schema_version": 1,
   "card_id": "AC-16",
   "kind": "service-fact",
-  "lifecycle": "preview",
+  "lifecycle": "ga",
   "service": "bedrock-agentcore",
   "category": "new-in-2026",
   "tags": [
@@ -13,13 +13,13 @@
     "kiro",
     "q-developer"
   ],
-  "badge_variant": "pv",
-  "badge_text": "APR 2026",
+  "badge_variant": "ga",
+  "badge_text": "GA MAR 2026",
   "art": "cli",
   "title": "AgentCore CLI & dev tooling",
   "hook": "Idea → running agent in minutes: CLI, starter toolkit, and skills for AI coding assistants.",
   "back": {
-    "lead": "April 2026 shipped a developer-experience wave: the AgentCore CLI for managing the full agent lifecycle from one interface, plus AgentCore skills that teach coding assistants how to build on the platform.",
+    "lead": "{{slot:cli_timeline}}",
     "kv": [
       {
         "k": "CLI",
@@ -36,17 +36,41 @@
     ],
     "hookline": "AWS is optimizing for agents that build agents — the CLI and skills exist so your coding assistant can drive AgentCore."
   },
-  "slots": {},
+  "slots": {
+    "cli_timeline": {
+      "tier": "C",
+      "template": "The AgentCore CLI launched in public preview in February 2026 and reached general availability in March 2026, managing the full agent lifecycle from one interface. April 2026 added the Agent Inspector, resource import, and bash commands inside the agent’s runtime.",
+      "facts": [],
+      "rendered": "The AgentCore CLI launched in public preview in February 2026 and reached general availability in March 2026, managing the full agent lifecycle from one interface. April 2026 added the Agent Inspector, resource import, and bash commands inside the agent’s runtime.",
+      "rendered_from": "tier-c",
+      "seed_text": "April 2026 shipped a developer-experience wave: the AgentCore CLI for managing the full agent lifecycle from one interface, plus AgentCore skills that teach coding assistants how to build on the platform.",
+      "unresolvable_reason": "Prose describing a feature timeline. The release notes attest the months (CLI preview February 2026, GA March 2026, features April 2026) but composing them into a sentence is authorship, so this slot is Tier C and cannot be resolved deterministically."
+    }
+  },
   "facts_used": [],
-  "sources": [],
-  "verified_at": null,
+  "sources": [
+    {
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html",
+      "title": "agentcore.release-notes (aws-docs-release-notes)",
+      "kind": "aws-docs-release-notes",
+      "fetched_at": "2026-08-08T10:14:52.252Z",
+      "content_hash": "sha256:2ba16e0fde32abf1a06b35cec6b9c90cb6d3eee37ef32d81133d03a428b17036"
+    }
+  ],
+  "verified_at": "2026-08-08T10:14:52.252Z",
   "confidence": "medium",
   "depends_on": [],
   "aka": [],
   "superseded_by": null,
   "supersedes": [],
-  "needs_review": false,
-  "review_reasons": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "Tier C prose correction to the CLI timeline applied by an agent. Needs human sign-off: the design gates judgement rewrites behind a human, and there is no remote to raise a PR against.",
+      "raised_at": "2026-08-08T12:34:04.688Z",
+      "raised_by": "tools/correct-ac16-lead.ts"
+    }
+  ],
   "provenance": {
     "tier": "seed",
     "authored_by": "legacy-import",
@@ -57,9 +81,56 @@
         "action": "import",
         "generator": "tools/extract-legacy.ts",
         "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      },
+      {
+        "at": "2026-08-08T12:33:06.967Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply-lifecycle.ts",
+        "field": "lifecycle",
+        "before": "preview",
+        "after": "ga",
+        "reason": "March 2026 release notes: \"AgentCore CLI is now Generally Available\" (matched on cli)"
+      },
+      {
+        "at": "2026-08-08T12:33:06.967Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply-lifecycle.ts",
+        "field": "badge_variant",
+        "before": "pv",
+        "after": "ga",
+        "reason": "March 2026 release notes: \"AgentCore CLI is now Generally Available\" (matched on cli)"
+      },
+      {
+        "at": "2026-08-08T12:33:06.967Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply-lifecycle.ts",
+        "field": "badge_text",
+        "before": "APR 2026",
+        "after": "GA MAR 2026",
+        "reason": "March 2026 release notes: \"AgentCore CLI is now Generally Available\" (matched on cli)"
+      },
+      {
+        "at": "2026-08-08T12:34:04.688Z",
+        "tier": "C",
+        "action": "correct",
+        "generator": "tools/correct-ac16-lead.ts",
+        "slot": "cli_timeline",
+        "before": "April 2026 shipped a developer-experience wave: the AgentCore CLI for managing the full agent lifecycle from one interface, plus AgentCore skills that teach coding assistants how to build on the platform.",
+        "after": "The AgentCore CLI launched in public preview in February 2026 and reached general availability in March 2026, managing the full agent lifecycle from one interface. April 2026 added the Agent Inspector, resource import, and bash commands inside the agent’s runtime.",
+        "reason": "Card claimed the CLI shipped in April 2026. Release notes: \"AgentCore CLI: Public Preview Launch\" (February 2026) and \"AgentCore CLI is now Generally Available\" (March 2026). April 2026 shipped CLI features, not the CLI."
+      },
+      {
+        "at": "2026-08-08T12:34:04.688Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "tools/correct-ac16-lead.ts",
+        "reason": "Tier C prose correction to the CLI timeline applied by an agent. Needs human sign-off: the design gates judgement rewrites behind a human, and there is no remote to raise a PR against."
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-06T12:57:02.398Z"
+  "updated_at": "2026-08-08T12:34:04.688Z"
 }

@@ -169,7 +169,7 @@
           "url": { "type": "string", "minLength": 1 },
           "title": { "type": "string" },
           "kind": {
-            "enum": ["ssm-public-parameter", "price-list-api", "botocore-model", "aws-docs", "aws-whats-new", "blog", "talk", "paper", "changelog", "other"]
+            "enum": ["ssm-public-parameter", "price-list-api", "botocore-model", "aws-docs-release-notes", "aws-docs", "aws-whats-new", "blog", "talk", "paper", "changelog", "other"]
           },
           "fetched_at": { "type": "string", "format": "date-time" },
           "content_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
@@ -259,6 +259,10 @@
               "action": { "enum": ["import", "verify", "correct", "rename", "supersede", "retire", "flag-review", "clear-review"] },
               "generator": { "type": "string" },
               "slot": { "type": "string" },
+              "field": {
+                "type": "string",
+                "description": "For a correction to a card field rather than a slot (lifecycle, badge_variant, badge_text). Paired with before/after, this is what lets the parity gate allow a real correction while still proving nothing changed without a recorded reason."
+              },
               "before": { "type": "string" },
               "after": { "type": "string" },
               "facts": { "type": "array", "items": { "type": "string" } },

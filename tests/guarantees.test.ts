@@ -18,6 +18,7 @@ import { validate, validateSchemaKeywords } from '../src/lib/schema.ts';
 import { awsRead, AwsWriteRefused } from '../src/lib/aws.ts';
 import { loadCards, loadCategories, loadSchema, loadFactStore, loadIdLedger, paths } from '../src/lib/store.ts';
 import { toLegacyShape, authoredText } from '../src/lib/render.ts';
+import { originalProjection, fieldCorrections } from '../src/lib/provenance.ts';
 import { loadLegacy } from '../src/lib/legacy.ts';
 import type { Card } from '../src/lib/types.ts';
 
@@ -274,15 +275,15 @@ describe('guarantee: card ids are never reused, cards are never deleted (FR-9)',
 });
 
 describe('guarantee: authored content survived the migration unchanged', () => {
-  test('reverting slots to seed text reproduces the original deck exactly', () => {
+  test('reverting slots and inverting recorded field corrections reproduces the original deck', () => {
     const legacy = loadLegacy(paths.legacyHtml);
     const cats = loadCategories();
     const cards = loadCards().sort((a, b) => a.card_id.localeCompare(b.card_id));
     assert.equal(cards.length, legacy.DECK.length);
 
     for (let i = 0; i < cards.length; i++) {
-      const seeded = JSON.parse(JSON.stringify(cards[i])) as Card;
-      for (const s of Object.values(seeded.slots)) s.rendered = s.seed_text;
+      // The shared helper the parity gate uses, so the two cannot drift apart.
+      const seeded = originalProjection(cards[i]);
       // authoredText, not toLegacyShape: the provenance footer is something the
       // pipeline derives, not something the original author wrote, so it is not
       // part of the content the migration had to preserve.
@@ -302,8 +303,30 @@ describe('guarantee: authored content survived the migration unchanged', () => {
         assert.ok(entry, `${c.card_id}.${name}: text changed with no 'correct' entry in the ledger`);
         assert.equal(entry.before, slot.seed_text, `${c.card_id}.${name}: ledger 'before' does not match seed_text`);
         assert.equal(entry.after, slot.rendered, `${c.card_id}.${name}: ledger 'after' does not match rendered`);
-        assert.ok(entry.facts?.length, `${c.card_id}.${name}: correction cites no facts`);
+        // Only a Tier A correction is resolved from facts. A Tier C correction is
+        // a judgement rewrite; demanding facts of it would be incoherent.
+        if (entry.tier === 'A') {
+          assert.ok(entry.facts?.length, `${c.card_id}.${name}: tier A correction cites no facts`);
+        }
       }
+    }
+  });
+
+  test('every field-level correction records both sides, so it can be inverted', () => {
+    for (const c of loadCards()) {
+      for (const fc of fieldCorrections(c)) {
+        assert.ok(fc.before.length > 0, `${c.card_id}: correction to ${fc.field} has no "before" — the original is unrecoverable`);
+        assert.ok(fc.after.length > 0, `${c.card_id}: correction to ${fc.field} has no "after"`);
+        assert.notEqual(fc.before, fc.after, `${c.card_id}: correction to ${fc.field} records no actual change`);
+      }
+    }
+  });
+
+  test('a corrected card still carries the source that justified it', () => {
+    for (const c of loadCards()) {
+      if (!fieldCorrections(c).length) continue;
+      assert.ok(c.sources.length > 0, `${c.card_id}: field corrected with no source cited`);
+      assert.ok(c.verified_at, `${c.card_id}: field corrected but verified_at is null`);
     }
   });
 

@@ -50,41 +50,63 @@ describe('there is a dated source to detect against', () => {
   });
 });
 
-describe('the drift it is supposed to find', () => {
-  test('AC-16: the CLI went GA in March 2026 while the card still says preview', () => {
+describe('the transitions it finds, and the cards now agreeing with them', () => {
+  // These three drifted when the detector was written and have since been
+  // corrected by src/ingest/apply-lifecycle.ts. The assertions now pin BOTH halves:
+  // the source still reports GA, and the card agrees. A regression in either
+  // direction fails.
+  test('AC-16: the CLI reached GA in March 2026, and the card says ga', () => {
     const f = detectLifecycle(byId('AC-16'), ENTRIES);
-    assert.equal(f.card_lifecycle, 'preview');
-    assert.equal(f.drift, true, f.reason);
     assert.equal(f.latest?.lifecycle, 'ga');
     assert.equal(f.latest?.iso_month, '2026-03');
     assert.match(f.latest!.heading, /CLI is now Generally Available/);
+    assert.equal(f.card_lifecycle, 'ga');
+    assert.equal(f.drift, false, f.reason);
   });
 
-  test('AC-16: the preview launch is also found, one month before GA', () => {
+  test('AC-16: the February preview launch is still in the signal history', () => {
     const f = detectLifecycle(byId('AC-16'), ENTRIES);
     const preview = f.signals.find((s) => s.lifecycle === 'preview');
     assert.ok(preview, 'the Feb 2026 preview launch should be in the signal list');
     assert.equal(preview.iso_month, '2026-02');
   });
 
-  test('AC-15: the harness went GA in July 2026', () => {
+  test('AC-15: the harness reached GA in July 2026, and the card says ga', () => {
     const f = detectLifecycle(byId('AC-15'), ENTRIES);
-    assert.equal(f.drift, true, f.reason);
     assert.equal(f.latest?.lifecycle, 'ga');
     assert.match(f.latest!.heading, /Harness is now Generally Available/);
+    assert.equal(f.drift, false, f.reason);
   });
 
-  test('AC-13: recommendations and batch evaluations went GA in July 2026', () => {
+  test('AC-13: recommendations and batch evaluations reached GA in July 2026', () => {
     const f = detectLifecycle(byId('AC-13'), ENTRIES);
-    assert.equal(f.drift, true, f.reason);
     assert.equal(f.latest?.lifecycle, 'ga');
     assert.equal(f.latest?.iso_month, '2026-07');
+    assert.equal(f.drift, false, f.reason);
   });
 
-  test('exactly three cards have drifted — no more, no fewer', () => {
+  test('no card in the deck is currently drifting', () => {
     const drifted = detectAll(CARDS, ENTRIES).filter((f) => f.drift).map((f) => f.card_id);
-    assert.deepEqual(drifted, ['AC-13', 'AC-15', 'AC-16'],
-      `drift set changed: ${drifted.join(', ')}. If a card was corrected, update this test; if the detector regressed, fix the detector.`);
+    assert.deepEqual(drifted, [],
+      `drift appeared on ${drifted.join(', ')}. Either a feature transitioned and the card needs apply-lifecycle, or the detector regressed.`);
+  });
+
+  test('the detector still catches drift if a card regresses', () => {
+    // The corrections above must not be mistaken for the detector going quiet.
+    const card = clone(byId('AC-16'));
+    card.lifecycle = 'preview';
+    const f = detectLifecycle(card, ENTRIES);
+    assert.equal(f.drift, true, 'putting AC-16 back to preview must be caught again');
+    assert.match(f.reason, /CLI is now Generally Available/);
+  });
+
+  test('the badge variant agrees with the corrected lifecycle', () => {
+    for (const id of ['AC-13', 'AC-15', 'AC-16']) {
+      const c = byId(id);
+      assert.equal(c.lifecycle, 'ga', `${id} should be ga`);
+      assert.notEqual(c.badge_variant, 'pv', `${id} still carries a preview badge variant`);
+      assert.match(c.badge_text, /^GA /, `${id} badge text should lead with GA, got ${c.badge_text}`);
+    }
   });
 });
 

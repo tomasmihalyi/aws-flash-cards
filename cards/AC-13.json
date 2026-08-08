@@ -2,7 +2,7 @@
   "schema_version": 1,
   "card_id": "AC-13",
   "kind": "service-fact",
-  "lifecycle": "preview",
+  "lifecycle": "ga",
   "service": "bedrock-agentcore",
   "category": "new-in-2026",
   "tags": [
@@ -11,8 +11,8 @@
     "optimization",
     "prompt-engineering"
   ],
-  "badge_variant": "pv",
-  "badge_text": "PREVIEW APR 2026",
+  "badge_variant": "ga",
+  "badge_text": "GA JUL 2026",
   "art": "optimize",
   "title": "Recommendations, batch evals & A/B tests",
   "hook": "Closes the loop: observe → evaluate → improve, with validated changes instead of intuition.",
@@ -36,8 +36,16 @@
   },
   "slots": {},
   "facts_used": [],
-  "sources": [],
-  "verified_at": null,
+  "sources": [
+    {
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html",
+      "title": "agentcore.release-notes (aws-docs-release-notes)",
+      "kind": "aws-docs-release-notes",
+      "fetched_at": "2026-08-08T10:14:52.252Z",
+      "content_hash": "sha256:2ba16e0fde32abf1a06b35cec6b9c90cb6d3eee37ef32d81133d03a428b17036"
+    }
+  ],
+  "verified_at": "2026-08-08T10:14:52.252Z",
   "confidence": "medium",
   "depends_on": [
     "AC-10",
@@ -58,9 +66,39 @@
         "action": "import",
         "generator": "tools/extract-legacy.ts",
         "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      },
+      {
+        "at": "2026-08-08T12:33:06.967Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply-lifecycle.ts",
+        "field": "lifecycle",
+        "before": "preview",
+        "after": "ga",
+        "reason": "July 2026 release notes: \"Batch Evaluations is now Generally Available\" (matched on batch, evalu)"
+      },
+      {
+        "at": "2026-08-08T12:33:06.967Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply-lifecycle.ts",
+        "field": "badge_variant",
+        "before": "pv",
+        "after": "ga",
+        "reason": "July 2026 release notes: \"Batch Evaluations is now Generally Available\" (matched on batch, evalu)"
+      },
+      {
+        "at": "2026-08-08T12:33:06.967Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply-lifecycle.ts",
+        "field": "badge_text",
+        "before": "PREVIEW APR 2026",
+        "after": "GA JUL 2026",
+        "reason": "July 2026 release notes: \"Batch Evaluations is now Generally Available\" (matched on batch, evalu)"
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-06T12:57:02.398Z"
+  "updated_at": "2026-08-08T12:33:06.967Z"
 }

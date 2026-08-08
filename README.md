@@ -100,7 +100,9 @@ build. npm is only a task runner here; there are no packages to install.
 | A missing fact never fakes freshness | `apply` leaves the card untouched and exits non-zero rather than stamping `verified_at` on an unverified claim |
 | Card ids are never reused | append-only ledger in `content/card-id-ledger.json`; `validate` fails if an id disappears |
 | Retirement never deletes | tombstones, `aka[]`, `superseded_by` — all modelled from P0 |
-| Authored content survived the migration | `verify-parity`: revert every slot to its `seed_text` and the result must equal the original deck exactly |
+| Authored content survived the migration | `verify-parity`: revert every slot to its `seed_text`, invert every recorded field correction, and the result must equal the original deck exactly |
+| Nothing changes without a recorded reason | a correction to a card *field* (a stale `preview` badge) must carry a `before`/`after` provenance entry, or the parity gate fails |
+| A stale lifecycle badge is caught | `check-lifecycle` matches card subjects against dated release-notes headings; `validate` warns on drift |
 | The UX contract still holds | `tests/deck-state.test.ts` — filter, navigate, flip, shuffle, clamping, progress, and the a11y invariant, against a state machine extracted out of the DOM |
 | Exactly one card face is exposed to a screen reader | `aria-hidden` toggling asserted in the state machine, in the tests, and in a real browser |
 | Every claim shown to a learner carries its source | provenance footer on the back face: verification date, source links, and an explicit "Unverified" marker with the reason when no source exists |

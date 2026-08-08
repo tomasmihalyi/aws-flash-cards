@@ -40,6 +40,8 @@ export type HistoryEntry = {
   action: 'import' | 'verify' | 'correct' | 'rename' | 'supersede' | 'retire' | 'flag-review' | 'clear-review';
   generator: string;
   slot?: string;
+  /** A card field rather than a slot — lifecycle, badge_variant, badge_text. */
+  field?: string;
   before?: string;
   after?: string;
   facts?: string[];
