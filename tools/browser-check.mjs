@@ -287,8 +287,12 @@ try {
   await page.goto(`file://${file}`, { waitUntil: 'load' });
   await page.waitForSelector('#card');
   const stats = () => page.$eval('#studyStats', (e) => e.innerText.replace(/\s+/g, ' ').trim());
-  console.log('  stats:', await stats());
-  ok('a fresh learner sees every card as new', /NEW 21/.test(await stats()), await stats());
+  // Derived from the header, because the deck grows and these assertions are not
+  // about its size.
+  const deckSize = Number((await page.$$eval('.meta span', (e) => e.map((x) => x.textContent)))
+    .map((s) => /CARDS\s+(\d+)/.exec(s)?.[1]).find(Boolean));
+  console.log('  stats:', await stats(), `(deck size ${deckSize})`);
+  ok('a fresh learner sees every card as new', new RegExp(`NEW ${deckSize}\\b`).test(await stats()), await stats());
 
   await page.click('#studyBtn');
   await page.waitForTimeout(300);
@@ -319,7 +323,7 @@ try {
   await page.waitForTimeout(300);
   ok('grading advances past the card', (await page.textContent('.front .partno')).trim() !== beforeId,
     `still on ${beforeId}`);
-  ok('the queue count drops after grading', /NEW 20/.test(await stats()), await stats());
+  ok('the queue count drops after grading', new RegExp(`NEW ${deckSize - 1}\\b`).test(await stats()), await stats());
 
   const stored = await page.evaluate(() => localStorage.getItem('aws-flashcards.progress.v1'));
   ok('progress is written to localStorage', Boolean(stored && JSON.parse(stored).reviews));
@@ -331,7 +335,7 @@ try {
 
   await page.reload({ waitUntil: 'load' });
   await page.waitForSelector('#card');
-  ok('progress survives a reload', /NEW 20/.test(await stats()), await stats());
+  ok('progress survives a reload', new RegExp(`NEW ${deckSize - 1}\\b`).test(await stats()), await stats());
 
   console.log('\n[a corrected card is resurfaced — the point of the whole exercise]');
   // Study a card, then corrupt its stored hash to simulate a Tier A correction

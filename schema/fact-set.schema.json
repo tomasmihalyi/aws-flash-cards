@@ -47,15 +47,7 @@
         "content_hash"
       ],
       "properties": {
-        "kind": {
-          "enum": [
-            "ssm-public-parameter",
-            "price-list-api",
-            "botocore-model",
-            "aws-docs-release-notes"
-          ],
-          "description": "Which deterministic source produced this set. aws-docs-release-notes is the AWS documentation release-notes page: authoritative and dated, but only to MONTH precision, which the verifier must respect rather than round up to a day."
-        },
+        "kind": { "enum": ["ssm-public-parameter", "price-list-api", "botocore-model", "aws-docs-release-notes", "aws-docs", "vendor-docs"] },
         "url": {
           "type": "string",
           "minLength": 1

@@ -23,6 +23,16 @@ import { loadCards, loadCategories } from '../src/lib/store.ts';
 import { toLegacyShape, provenanceLine, formatDate } from '../src/lib/render.ts';
 
 /** The real deck, projected into the shape the state machine consumes. */
+/**
+ * The deck grows. Tests that only need "the whole deck" must derive its size,
+ * or every content addition breaks assertions about search and filtering that
+ * have nothing to do with the card count.
+ */
+const DECK_SIZE = (() => {
+  const cats = loadCategories();
+  return loadCards().length;
+})();
+
 function realDeck() {
   const cards = loadCards().sort((a, b) => a.card_id.localeCompare(b.card_id));
   const cats = loadCategories();
@@ -76,13 +86,13 @@ describe('search', () => {
     const s = createDeck(realDeck(), { seed: 1 });
     setQuery(s, 'gateway');
     setQuery(s, '');
-    assert.equal(visibleIndices(s).length, 21);
+    assert.equal(visibleIndices(s).length, DECK_SIZE);
   });
 
   test('results are ranked when searching but stay in deck order otherwise', () => {
     const deck = realDeck();
     const unsearched = visibleIndices(createDeck(deck, { seed: 1 }));
-    assert.deepEqual(unsearched, [...Array(21).keys()], 'no query means no reordering');
+    assert.deepEqual(unsearched, [...Array(DECK_SIZE).keys()], 'no query means no reordering');
   });
 
   test('scoreCard returns 0 for a miss and a positive score for a hit', () => {
@@ -101,7 +111,7 @@ describe('tag filtering', () => {
       assert.ok(tags[i - 1].count >= tags[i].count, 'tags must be ordered by count');
     }
     assert.equal(tags[0].tag, 'agentcore', 'every card is tagged agentcore, so it should lead');
-    assert.equal(tags[0].count, 21);
+    assert.equal(tags[0].count, 21, 'agentcore is on all 21 original cards; new cards carry their own tags');
   });
 
   test('a tag filter admits only cards carrying that tag', () => {
@@ -117,7 +127,7 @@ describe('tag filtering', () => {
     setTag(s, 'agentcore');           // every card
     setFilter(s, 1);                  // core services only
     const vis = visibleIndices(s);
-    assert.ok(vis.length > 0 && vis.length < 21);
+    assert.ok(vis.length > 0 && vis.length < DECK_SIZE);
     for (const i of vis) {
       assert.equal(deck[i].c, 1);
       assert.ok(deck[i].tags.includes('agentcore'));
@@ -142,7 +152,7 @@ describe('tag filtering', () => {
     const s = createDeck(realDeck(), { seed: 1 });
     setFilter(s, 2); setTag(s, 'pricing'); setQuery(s, 'gateway');
     clearFilters(s);
-    assert.equal(visibleIndices(s).length, 21);
+    assert.equal(visibleIndices(s).length, DECK_SIZE);
     assert.equal(s.filter, -1);
     assert.equal(s.tag, null);
     assert.equal(s.query, '');
@@ -185,7 +195,7 @@ describe('deep links', () => {
 
   test('an unknown card ref degrades to the deck instead of a blank page', () => {
     const s = fromHash(mk(), '#/card/ac-999');
-    assert.equal(visibleIndices(s).length, 21);
+    assert.equal(visibleIndices(s).length, DECK_SIZE);
     assert.equal(s.pos, 0);
   });
 
@@ -193,7 +203,7 @@ describe('deep links', () => {
     const s = fromHash(mk(), '#/?cat=no-such-category&tag=no-such-tag');
     assert.equal(s.filter, -1);
     assert.equal(s.tag, null);
-    assert.equal(visibleIndices(s).length, 21);
+    assert.equal(visibleIndices(s).length, DECK_SIZE);
   });
 
   test('a link naming a card the filters would hide still shows the card', () => {
@@ -221,7 +231,7 @@ describe('deep links', () => {
   test('an empty hash is harmless', () => {
     for (const h of ['', '#', '#/']) {
       const s = fromHash(mk(), h);
-      assert.equal(visibleIndices(s).length, 21);
+      assert.equal(visibleIndices(s).length, DECK_SIZE);
     }
   });
 
@@ -276,9 +286,9 @@ describe('deck state — construction', () => {
     assert.equal(visibleIndices(s).length, s.cards.length);
   });
 
-  test('the real deck has 21 cards and every one carries a category in range', () => {
+  test('the deck only grows, and every card carries a category in range', () => {
     const deck = realDeck();
-    assert.equal(deck.length, 21);
+    assert.ok(deck.length >= 21, `the deck must never shrink below the 21 migrated cards, got ${deck.length}`);
     const catCount = loadCategories().length;
     for (const d of deck) {
       assert.ok(d.c >= 0 && d.c < catCount, `${d.id} category index ${d.c} out of range`);
@@ -290,9 +300,9 @@ describe('deck state — navigation', () => {
   test('next advances, prev retreats', () => {
     const s = createDeck(realDeck(), { seed: 1 });
     move(s, 1);
-    assert.equal(progress(s).label, '2 / 21');
+    assert.equal(progress(s).label, `2 / ${DECK_SIZE}`);
     move(s, -1);
-    assert.equal(progress(s).label, '1 / 21');
+    assert.equal(progress(s).label, `1 / ${DECK_SIZE}`);
   });
 
   test('clamps at both ends instead of wrapping', () => {
@@ -300,7 +310,7 @@ describe('deck state — navigation', () => {
     move(s, -5);
     assert.equal(s.pos, 0, 'must not wrap past the start');
     move(s, 999);
-    assert.equal(s.pos, 20, 'must not wrap past the end');
+    assert.equal(s.pos, DECK_SIZE - 1, 'must not wrap past the end');
     assert.equal(progress(s).atEnd, true);
   });
 
@@ -348,14 +358,14 @@ describe('deck state — filtering', () => {
     const s = createDeck(realDeck(), { seed: 1 });
     setFilter(s, 2);
     setFilter(s, -1);
-    assert.equal(visibleIndices(s).length, 21);
+    assert.equal(visibleIndices(s).length, DECK_SIZE);
   });
 
   test('progress is relative to the filter, not the whole deck', () => {
     const s = setFilter(createDeck(realDeck(), { seed: 1 }), 1);
     const p = progress(s);
     assert.equal(p.position, 1);
-    assert.ok(p.total < 21 && p.total > 0);
+    assert.ok(p.total < DECK_SIZE && p.total > 0);
     assert.equal(p.label, `1 / ${p.total}`);
   });
 
@@ -376,9 +386,9 @@ describe('deck state — shuffle', () => {
   test('permutes without losing or duplicating a card', () => {
     const s = createDeck(realDeck(), { seed: 42 });
     shuffle(s);
-    assert.equal(s.order.length, 21);
-    assert.equal(new Set(s.order).size, 21, 'no duplicates');
-    assert.deepEqual([...s.order].sort((a, b) => a - b), [...Array(21).keys()], 'no losses');
+    assert.equal(s.order.length, DECK_SIZE);
+    assert.equal(new Set(s.order).size, DECK_SIZE, 'no duplicates');
+    assert.deepEqual([...s.order].sort((a, b) => a - b), [...Array(DECK_SIZE).keys()], 'no losses');
   });
 
   test('actually reorders', () => {

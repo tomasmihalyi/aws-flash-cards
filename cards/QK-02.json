@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "card_id": "QK-02",
+  "kind": "mental-model",
+  "lifecycle": "ga",
+  "service": "quick",
+  "category": "quick-boundary",
+  "tags": [
+    "kiro",
+    "positioning",
+    "quick",
+    "quick-boundary"
+  ],
+  "badge_variant": "core",
+  "badge_text": "POSITIONING",
+  "art": "map",
+  "title": "Where Quick stops and engineering starts",
+  "hook": "Not a capability contest. The question is who owns the result and what has to be true about it.",
+  "back": {
+    "lead": "Both surfaces can produce something that works, so capability is the wrong axis. The useful question is what the result has to survive. Quick suits work a business user owns end to end, expressed through chat, changed by whoever needs it changed. Engineering starts when the result needs version control, tests, review, deterministic behaviour, or an on-call owner who is not its author.",
+    "kv": [
+      {
+        "k": "Signals it belongs in Quick",
+        "v": "One team owns both the question and the answer; the data already lives in connected sources; being approximately right and quickly changed beats being provably right; nobody will be paged if it breaks."
+      },
+      {
+        "k": "Signals it needs engineering",
+        "v": "The output feeds another system; correctness must be demonstrable to an auditor or a regulator; behaviour must be identical every run; multiple teams depend on it; someone other than the author must operate it."
+      },
+      {
+        "k": "The failure worth naming",
+        "v": "A business-built automation quietly becoming load-bearing. It works, so it spreads, and nobody notices it has no tests, no owner and no rollback until it breaks in a month when its author has moved teams."
+      },
+      {
+        "k": "How to say it",
+        "v": "Frame it as ownership and consequence, never as capability. \"Can Quick do this?\" is almost always yes and almost never the point."
+      }
+    ],
+    "hookline": "Ask \"who gets paged when this is wrong?\" — the answer places the work faster than any feature comparison."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "low",
+  "depends_on": [
+    "CA-02",
+    "QK-01"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "Positioning judgement, Tier C by definition. No documentation page can settle which tool a use case belongs in, so this card carries no source and needs human sign-off before it is presented to a customer.",
+      "raised_at": "2026-08-08T13:26:31.267Z",
+      "raised_by": "tools/add-cards-p6-batch1.ts"
+    }
+  ],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-08T13:26:31.267Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-p6-batch1.ts",
+        "reason": "New positioning card authored from judgement, no deterministic source applies. Every new card enters through Tier C."
+      },
+      {
+        "at": "2026-08-08T13:26:31.267Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "tools/add-cards-p6-batch1.ts",
+        "reason": "Positioning judgement, Tier C by definition. No documentation page can settle which tool a use case belongs in, so this card carries no source and needs human sign-off before it is presented to a customer."
+      }
+    ]
+  },
+  "created_at": "2026-08-08T13:26:31.267Z",
+  "updated_at": "2026-08-08T13:26:31.267Z"
+}

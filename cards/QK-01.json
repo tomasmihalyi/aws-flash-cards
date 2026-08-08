@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "card_id": "QK-01",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "quick",
+  "category": "quick-boundary",
+  "tags": [
+    "automation",
+    "business-users",
+    "quick",
+    "quick-boundary"
+  ],
+  "badge_variant": "core",
+  "badge_text": "BUSINESS SURFACE",
+  "art": "platform",
+  "title": "What Amazon Quick is",
+  "hook": "Natural-language chat over your data and applications, with agents that take action.",
+  "back": {
+    "lead": "Amazon Quick is an AI-powered service for automating tasks, analysing data, building web applications and conducting research. You interact with it through natural-language chat, and Quick uses AI agents to process your requests against connected data sources and applications.",
+    "kv": [
+      {
+        "k": "The parts",
+        "v": "Quick Sight for data visualisation and business intelligence; Quick Flows for automating repetitive tasks; Quick Automate for business process automation with agents that make contextual decisions; Quick Index for grounding answers in your own documents; Quick Research for cited reports; and Apps in Amazon Quick for building web applications by describing them."
+      },
+      {
+        "k": "How work gets expressed",
+        "v": "Through chat against connected sources and applications — not through a repository, a build, or code someone reviews."
+      },
+      {
+        "k": "Why an SA cares",
+        "v": "This is the surface a business user reaches for. Knowing precisely what it does is the prerequisite for saying where it stops."
+      }
+    ],
+    "hookline": "Quick is the chat-and-agents surface over your data; that framing is what makes the boundary question answerable."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://docs.aws.amazon.com/quicksuite/latest/userguide/what-is.html",
+      "title": "What is Amazon Quick?",
+      "kind": "aws-docs",
+      "fetched_at": "2026-08-08T13:24:03.053Z",
+      "content_hash": "sha256:9be90e83bad94357e25e95169e39456b24a353718b730086ecc630cad216bd1e"
+    }
+  ],
+  "verified_at": "2026-08-08T13:24:03.053Z",
+  "confidence": "medium",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-08T13:26:31.267Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-p6-batch1.ts",
+        "reason": "New card authored from https://docs.aws.amazon.com/quicksuite/latest/userguide/what-is.html. Every new card enters through Tier C."
+      }
+    ]
+  },
+  "created_at": "2026-08-08T13:26:31.267Z",
+  "updated_at": "2026-08-08T13:26:31.267Z"
+}

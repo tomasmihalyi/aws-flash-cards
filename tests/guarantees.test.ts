@@ -278,19 +278,23 @@ describe('guarantee: authored content survived the migration unchanged', () => {
   test('reverting slots and inverting recorded field corrections reproduces the original deck', () => {
     const legacy = loadLegacy(paths.legacyHtml);
     const cats = loadCategories();
-    const cards = loadCards().sort((a, b) => a.card_id.localeCompare(b.card_id));
-    assert.equal(cards.length, legacy.DECK.length);
+    // Match by id, not position: the deck grows, and a card added later is not
+    // something the migration could have lost.
+    const byId = new Map(loadCards().map((c) => [c.card_id, c]));
+    for (const legacyCard of legacy.DECK) {
+      assert.ok(byId.has(legacyCard.id), `${legacyCard.id} disappeared — cards are tombstoned, never removed`);
+    }
 
-    for (let i = 0; i < cards.length; i++) {
+    for (let i = 0; i < legacy.DECK.length; i++) {
       // The shared helper the parity gate uses, so the two cannot drift apart.
-      const seeded = originalProjection(cards[i]);
+      const seeded = originalProjection(byId.get(legacy.DECK[i].id)!);
       // authoredText, not toLegacyShape: the provenance footer is something the
       // pipeline derives, not something the original author wrote, so it is not
       // part of the content the migration had to preserve.
       assert.equal(
         canonical(authoredText(seeded, cats)),
         canonical(legacy.DECK[i]),
-        `${cards[i].card_id}: authored text differs from the original in a way no slot explains`,
+        `${legacy.DECK[i].id}: authored text differs from the original in a way no slot explains`,
       );
     }
   });

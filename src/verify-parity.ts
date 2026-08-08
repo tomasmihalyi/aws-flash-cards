@@ -55,19 +55,38 @@ function main(): void {
   const cards = loadCards().sort((a, b) => a.card_id.localeCompare(b.card_id));
   const categories = loadCategories();
 
-  check('card count matches the original deck', cards.length === legacy.DECK.length,
-    `now ${cards.length}, original ${legacy.DECK.length}`);
+  /**
+   * Match the original 21 cards BY ID, not by position, and say nothing about
+   * cards added since.
+   *
+   * The gate used to assert `cards.length === legacy.DECK.length`, which made
+   * growing the deck impossible — the third time this gate has had to stop
+   * forbidding a legitimate change. The guarantee it actually owes is "the
+   * migration lost nothing", not "the deck never grows": every card the original
+   * deck had must still be present and still say what it said, and a new card is
+   * simply out of its jurisdiction.
+   */
+  const byId = new Map(cards.map((c) => [c.card_id, c]));
+  const missing = legacy.DECK.filter((d) => !byId.has(d.id)).map((d) => d.id);
+  check(
+    `all ${legacy.DECK.length} original cards are still present`,
+    missing.length === 0,
+    missing.length ? `missing: ${missing.join(', ')} — cards are tombstoned, never removed (FR-9)` : '',
+  );
+  const added = cards.filter((c) => !legacy.DECK.some((d) => d.id === c.card_id)).map((c) => c.card_id);
 
-  // ---- authored content parity ----
+  // ---- authored content parity, over the original cards only ----
   let unexplained = 0;
-  for (let i = 0; i < Math.min(cards.length, legacy.DECK.length); i++) {
-    const seeded = authoredText(originalProjection(cards[i]), categories);
-    if (canonical(seeded) !== canonical(legacy.DECK[i])) {
+  for (const legacyCard of legacy.DECK) {
+    const card = byId.get(legacyCard.id);
+    if (!card) continue;
+    const seeded = authoredText(originalProjection(card), categories);
+    if (canonical(seeded) !== canonical(legacyCard)) {
       unexplained++;
-      failures.push(`FAIL  ${legacy.DECK[i].id}: authored text differs with no fact-governed slot and no recorded field correction to explain it\n${firstDiff(seeded, legacy.DECK[i])}`);
+      failures.push(`FAIL  ${legacyCard.id}: authored text differs with no fact-governed slot and no recorded field correction to explain it\n${firstDiff(seeded, legacyCard)}`);
     }
   }
-  check(`authored text of all ${legacy.DECK.length} cards accounted for (slots reverted to seed, recorded field corrections inverted)`, unexplained === 0);
+  check(`authored text of all ${legacy.DECK.length} original cards accounted for (slots reverted to seed, recorded field corrections inverted)`, unexplained === 0);
 
   // ---- every card still resolves and renders ----
   let renderable = 0;
@@ -110,6 +129,9 @@ function main(): void {
     failures.push(`FAIL  --verbatim: ${corrected.length} slot(s) corrected away from the original text`);
   }
 
+  if (added.length) {
+    console.log(`\nCards added since the original deck (${added.length}), outside this gate's jurisdiction: ${added.join(', ')}`);
+  }
   report(legacy.DECK.length, corrected);
 }
 

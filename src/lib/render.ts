@@ -163,6 +163,25 @@ export function provenanceLine(card: Card): string {
     parts.push(`<b>Source</b> ${links.join(' · ')}`);
   }
 
+  /**
+   * A card with no source and no verification would otherwise render an EMPTY
+   * footer — indistinguishable from a card nobody has looked at. A positioning
+   * card is legitimately unsourced, because no documentation page can settle a
+   * judgement, but the learner has to be told that: the deck's silence would
+   * otherwise read as endorsement.
+   */
+  if (!card.sources.length && !card.verified_at) {
+    const why =
+      card.kind === 'mental-model' || card.kind === 'practice'
+        ? 'positioning and practice judgement \u2014 no deterministic source applies'
+        : 'no source recorded for this card yet';
+    parts.push(`<b>Unsourced</b> ${why}`);
+  }
+
+  if (card.needs_review) {
+    parts.push('<b>Needs review</b> awaiting human sign-off');
+  }
+
   if (!parts.length) return '';
   return parts.map((p) => `<span>${p}</span>`).join('');
 }

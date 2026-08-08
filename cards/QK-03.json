@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "card_id": "QK-03",
+  "kind": "practice",
+  "lifecycle": "ga",
+  "service": "quick",
+  "category": "quick-boundary",
+  "tags": [
+    "ai-dlc",
+    "handoff",
+    "practice",
+    "quick-boundary"
+  ],
+  "badge_variant": "core",
+  "badge_text": "PRACTICE",
+  "art": "migrate",
+  "title": "Handing a Quick automation to engineering",
+  "hook": "The handoff is a rewrite. Plan for that and it is cheap; pretend otherwise and it is a rescue.",
+  "back": {
+    "lead": "When a Quick-built automation becomes load-bearing, the goal is not to port it. It is to treat it as the specification it accidentally became: a working statement of what the business actually wanted, validated by use. That is a far better starting point than a requirements document, and it is worth saying so rather than treating the handoff as remedial work.",
+    "kv": [
+      {
+        "k": "Harvest the intent first",
+        "v": "Capture what the automation does, which sources it touches, and which decisions it makes. That is the requirement, already proven against real use."
+      },
+      {
+        "k": "Expect to rebuild the mechanism",
+        "v": "Chat-expressed logic and agent decisions do not port to code. The behaviour transfers; the implementation does not."
+      },
+      {
+        "k": "Decide what stays",
+        "v": "Often the right answer is a split: the business keeps the chat surface for exploration, engineering owns the path that other systems depend on."
+      },
+      {
+        "k": "Name an owner at handoff",
+        "v": "The most common failure is a rebuilt system with no clearer ownership than the automation it replaced."
+      }
+    ],
+    "hookline": "The automation was the spec. Treat the handoff as promotion, not cleanup."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "low",
+  "depends_on": [
+    "QK-01",
+    "QK-02"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "Practice card authored from judgement, Tier C. No deterministic source attests a handoff pattern; it needs human sign-off and ideally a named engagement to cite.",
+      "raised_at": "2026-08-08T13:26:31.267Z",
+      "raised_by": "tools/add-cards-p6-batch1.ts"
+    }
+  ],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-08T13:26:31.267Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-p6-batch1.ts",
+        "reason": "New positioning card authored from judgement, no deterministic source applies. Every new card enters through Tier C."
+      },
+      {
+        "at": "2026-08-08T13:26:31.267Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "tools/add-cards-p6-batch1.ts",
+        "reason": "Practice card authored from judgement, Tier C. No deterministic source attests a handoff pattern; it needs human sign-off and ideally a named engagement to cite."
+      }
+    ]
+  },
+  "created_at": "2026-08-08T13:26:31.267Z",
+  "updated_at": "2026-08-08T13:26:31.267Z"
+}

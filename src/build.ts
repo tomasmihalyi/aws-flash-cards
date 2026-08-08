@@ -23,6 +23,7 @@ import type { Card } from './lib/types.ts';
 const DECK_MARKER = '/*__DECK__*/';
 const TEMPLATE_MARKER = '/*__TEMPLATE_FN__*/';
 const SRS_MARKER = '/*__SRS__*/';
+const CAT_MARKER = '/*__CAT__*/';
 const COUNT_MARKER = '@@COUNT@@';
 const META_MARKER = '@@META@@';
 const FRESHNESS_MARKER = '@@FRESHNESS@@';
@@ -175,7 +176,7 @@ function main(): void {
   // pictograms, state machine, keyboard handling and reduced-motion behaviour:
   // there is no second implementation that could drift.
   const shellHtml = readFileSync(join(paths.content, 'shell.html'), 'utf8');
-  for (const m of [DECK_MARKER, TEMPLATE_MARKER, SRS_MARKER, META_MARKER, FRESHNESS_MARKER]) {
+  for (const m of [DECK_MARKER, TEMPLATE_MARKER, SRS_MARKER, CAT_MARKER, META_MARKER, FRESHNESS_MARKER]) {
     if (!shellHtml.includes(m)) throw new Error(`shell.html is missing ${m}`);
   }
   const { meta, freshness } = headerMeta(cards, store);
@@ -187,6 +188,10 @@ function main(): void {
     .replace(DECK_MARKER, serialiseDeckLiteral(legacyShaped))
     .replace(TEMPLATE_MARKER, templateFn)
     .replace(SRS_MARKER, srs)
+    // The category list is injected, not baked in. It was a literal in the shell
+    // until a card landed in an appended category and CAT[index] came back
+    // undefined, throwing inside the template and rendering nothing at all.
+    .replace(CAT_MARKER, `const CAT = ${JSON.stringify(categories.map((c) => c.label))};`)
     .split(COUNT_MARKER).join(String(cards.length))
     .replace(META_MARKER, meta)
     .replace(FRESHNESS_MARKER, freshness);

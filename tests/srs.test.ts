@@ -19,6 +19,8 @@ import { loadCards, loadCategories } from '../src/lib/store.ts';
 import { toLegacyShape, contentHash, authoredText } from '../src/lib/render.ts';
 
 const TODAY = '2026-08-07';
+/** Derived, because the deck grows and these tests are not about its size. */
+const DECK_SIZE = (() => deck().length)();
 function deck() {
   const cats = loadCategories();
   return loadCards().sort((a, b) => a.card_id.localeCompare(b.card_id)).map((c) => toLegacyShape(c, cats));
@@ -293,7 +295,7 @@ describe('study queue', () => {
 
   test('a fresh learner sees the whole deck as new', () => {
     const q = studyQueue(cards, emptyProgress(), TODAY);
-    assert.equal(q.length, 21);
+    assert.equal(q.length, DECK_SIZE);
     assert.ok(q.every((x) => x.reason === REASON.new));
   });
 });
@@ -311,8 +313,8 @@ describe('study counts', () => {
     assert.equal(c.changed, 1);
     assert.equal(c.due, 1);
     assert.equal(c.scheduled, 1);
-    assert.equal(c.new, 18);
-    assert.equal(c.changed + c.new + c.due + c.scheduled, 21, 'every card must be in exactly one bucket');
+    assert.equal(c.new, DECK_SIZE - 3, 'the rest of the deck is unseen');
+    assert.equal(c.changed + c.new + c.due + c.scheduled, DECK_SIZE, 'every card must be in exactly one bucket');
     assert.equal(c.total, c.changed + c.new + c.due);
   });
 });

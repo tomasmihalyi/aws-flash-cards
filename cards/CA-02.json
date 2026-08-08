@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "card_id": "CA-02",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "kiro",
+  "category": "coding-agents",
+  "tags": [
+    "coding-agents",
+    "ide",
+    "kiro",
+    "spec-driven"
+  ],
+  "badge_variant": "core",
+  "badge_text": "CODING AGENT",
+  "art": "code",
+  "title": "Kiro",
+  "hook": "An AI development environment from prototype to production — one agent harness across every surface.",
+  "back": {
+    "lead": "Kiro is an AI-powered development environment for building software from prototype to production. One unified agent harness powers every surface — IDE, CLI, Web and Mobile — so configuration, specs and steering work everywhere, shared through a project’s .kiro directory.",
+    "kv": [
+      {
+        "k": "Surfaces",
+        "v": "A desktop editor with chat, specs and hooks; a terminal-native agent with headless mode and CI integration; a browser agent for multi-repo tasks that opens pull requests; and mobile for monitoring and review."
+      },
+      {
+        "k": "The mechanisms",
+        "v": "Specs turn a feature into requirements, design and tasks. Steering enforces project standards. Hooks fire on file save, tool use or task completion. MCP connects external tools. Permissions bound what the agent may touch."
+      },
+      {
+        "k": "Why the harness matters",
+        "v": "Start a spec in the IDE, continue from the CLI, hand implementation to the web agent — the same steering, permissions and hooks apply, because every surface is a front end to one agent."
+      }
+    ],
+    "hookline": "Spec, steering, hooks, permissions — the configuration is the product, and it follows you between surfaces."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://kiro.dev/docs/",
+      "title": "Kiro Documentation",
+      "kind": "vendor-docs",
+      "fetched_at": "2026-08-08T13:24:03.113Z",
+      "content_hash": "sha256:379f9fb25163dcba58f7afac404cf729d36b71474084280eadd2c6544ddbf5bb"
+    }
+  ],
+  "verified_at": "2026-08-08T13:24:03.113Z",
+  "confidence": "medium",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-08T13:26:31.267Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-p6-batch1.ts",
+        "reason": "New card authored from https://kiro.dev/docs/. Every new card enters through Tier C."
+      }
+    ]
+  },
+  "created_at": "2026-08-08T13:26:31.267Z",
+  "updated_at": "2026-08-08T13:26:31.267Z"
+}

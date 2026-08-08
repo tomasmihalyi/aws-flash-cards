@@ -169,7 +169,7 @@
           "url": { "type": "string", "minLength": 1 },
           "title": { "type": "string" },
           "kind": {
-            "enum": ["ssm-public-parameter", "price-list-api", "botocore-model", "aws-docs-release-notes", "aws-docs", "aws-whats-new", "blog", "talk", "paper", "changelog", "other"]
+            "enum": ["ssm-public-parameter", "price-list-api", "botocore-model", "aws-docs-release-notes", "aws-docs", "vendor-docs", "aws-whats-new", "blog", "talk", "paper", "changelog", "other"]
           },
           "fetched_at": { "type": "string", "format": "date-time" },
           "content_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
