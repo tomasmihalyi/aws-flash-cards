@@ -252,10 +252,34 @@ describe('provenance is visible to the learner (FR-11)', () => {
     assert.match(line, /Source/);
   });
 
-  test('a card with an unverifiable claim says so rather than looking verified', () => {
-    const withSeed = loadCards().find((c) => Object.values(c.slots).some((s) => s.rendered_from === 'seed'));
-    assert.ok(withSeed, 'expected AC-12 to still carry its unresolvable seed slot');
-    const line = provenanceLine(withSeed);
+  test('an unsourced card says so rather than looking verified', () => {
+    /**
+     * Previously this test looked for a slot still on its seed value, and AC-12
+     * was the one that qualified. AC-12 has since been resolved from a real
+     * feature-level source, so no card carries a seed slot any more — a good
+     * outcome that would have quietly deleted this test's coverage if it kept
+     * asserting on whichever card happened to be broken.
+     *
+     * The property being protected is about the RENDERER, not about any card: a
+     * card with nothing behind it must never render like a verified one. The
+     * boundary cards QK-02 and QK-03 are unsourced permanently and by design,
+     * because no document can settle a positioning judgement.
+     */
+    const unsourced = loadCards().filter((c) => !c.sources.length);
+    assert.ok(unsourced.length, 'expected at least one deliberately unsourced card');
+    for (const c of unsourced) {
+      const line = provenanceLine(c);
+      assert.ok(!/Verified/.test(line), `${c.card_id} renders as verified with no source: ${line}`);
+      assert.match(line, /Unsourced|Unverified/, `${c.card_id} says nothing about lacking a source: ${line}`);
+    }
+  });
+
+  test('a card still on a seed value admits it, whenever one exists', () => {
+    // No card is in this state today. The renderer must still handle it, because
+    // the next ingest that cannot resolve a slot puts a card straight back here.
+    const seeded = loadCards().find((c) => Object.values(c.slots).some((s) => s.rendered_from === 'seed'));
+    if (!seeded) return;
+    const line = provenanceLine(seeded);
     assert.match(line, /Unverified/);
     assert.match(line, /no deterministic source exists/);
   });

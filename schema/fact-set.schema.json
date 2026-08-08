@@ -47,7 +47,7 @@
         "content_hash"
       ],
       "properties": {
-        "kind": { "enum": ["ssm-public-parameter", "price-list-api", "botocore-model", "aws-docs-release-notes", "aws-docs", "vendor-docs"] },
+        "kind": { "enum": ["ssm-public-parameter", "price-list-api", "botocore-model", "aws-docs-release-notes", "aws-docs-doc-history", "aws-docs", "vendor-docs"] },
         "url": {
           "type": "string",
           "minLength": 1

@@ -72,7 +72,7 @@ stripping. There is no install step.
 
 ```bash
 node src/validate.ts          # schema + lint + citation gate
-node --test tests/*.test.ts   # 144 behavioural, guarantee + verifier tests
+node --test tests/*.test.ts   # 187 behavioural, guarantee, verifier + ingest tests
 node src/verify-claims.ts     # decompose every card into claims and verify each
 node src/build.ts             # → dist/deck.json + dist/agentcore-flashcards.html
 node src/verify-parity.ts     # authored-content parity against the original deck
@@ -80,7 +80,10 @@ node src/verify-parity.ts     # authored-content parity against the original dec
 node src/ingest/ssm-regions.ts    # region availability  (read-only AWS)
 node src/ingest/pricelist.ts      # pricing              (read-only AWS)
 node src/ingest/botocore-diff.ts  # API surface          (local, no AWS)
-node src/ingest/docs-release-notes.ts   # dated feature history (public docs GET)
+node src/ingest/docs-release-notes.ts   # dated feature history, MONTH precision (public docs GET)
+node src/ingest/docs-doc-history.ts     # dated change history, DAY precision  (public docs GET)
+node src/ingest/docs-feature-regions.ts # per-FEATURE region availability      (public docs GET)
+node src/ingest/docs-pages.ts           # service overview pages               (public docs GET)
 node src/ingest/apply.ts          # resolve slots: verify, correct, or fail
 
 node src/ingest/apply.ts --dry-run   # show the corrections without writing
@@ -111,6 +114,7 @@ build. npm is only a task runner here; there are no packages to install.
 | The hidden card face is unreachable, not just unread | `aria-hidden` **and** `inert`, so a keyboard user cannot Tab onto the side they have not seen |
 | A content hash means something | `validate` re-hashes each fact set's retained evidence; a tampered or mismatched provenance record fails the build |
 | A number is verified, never judged | `verify-claims` string-matches every numeric, date and region claim against retained source text. Any failing claim demotes the whole card to Tier C |
+| A match is about the claim, not merely near it | a fact may only answer a claim its own id does not contradict (Evaluations' count, never Runtime Instances'); a money claim needs a currency marker; a numeric claim needs a numeric fact; a date needs a topically related entry, ranked so the citation is the one a human would pick |
 
 ## Using the deck
 
@@ -150,21 +154,48 @@ corrections** are reported rather than failed.
 Release notes are organised by **month**. They can attest "AgentCore went GA in
 October 2025"; they cannot attest "on October 13". A day-precision claim is
 therefore reported `partial` — month and subject confirmed, day not — rather than
-rounded up. The usual fix is to write the month the source can actually support.
+rounded up. The usual fix is to write the month the source can actually support,
+and five cards have since been rewritten to do exactly that.
+
+A **document history** page can see days, and one is now ingested. But a matching
+date is not a citation: the Bedrock history has three entries dated July 16 2025
+— Data Automation region expansion, Nova model import, custom model deployment —
+and card AC-01 claims AgentCore previewed on Jul 16 2025. Verifying on the date
+alone would have printed a data-automation note as the source for AgentCore's
+preview. Relatedness is required as well, so that claim is still refused.
 
 A contradiction is an accusation that the card is wrong, so it demands far
 stronger evidence than a confirmation does. When the topical matcher simply fails
 to find a related entry, the verdict is "cannot attest", never "the card is
 lying" — the weak link there is the matcher, not the card.
 
-`bedrock-agentcore` region data from SSM is *service*-level. Card AC-12 claims
-Evaluations is "GA in 9 regions" — a *feature*-level claim. Mapping the service
-list onto it would be an overreach, so that slot stays on its seed literal, the
-card is flagged `needs_review`, and the reason is recorded on the card.
+### A recorded limit is a to-do, not a monument
 
-Recording the limit is part of the design. Quietly widening a source's authority
-to cover a claim it cannot support is the exact failure this system exists to
-prevent.
+`bedrock-agentcore` region data from SSM is *service*-level, so it could not
+substantiate AC-12's *feature*-level claim that Evaluations is "GA in 9 regions".
+That slot therefore stayed on its seed literal with the reason written onto the
+card: *"Needs a Tier C source (What's New post or docs page) before this claim can
+be verified."*
+
+That source turned out to exist — `agentcore-regions.html` is a feature × region
+matrix — and the slot is now Tier A. Evaluations is in **16** regions. The card
+was not merely uncited, it was stale, and writing the limit down precisely rather
+than filing it under "not verifiable" is what made it findable and closeable
+later.
+
+The matrix also disagrees with SSM about the total: 20 columns against 19
+parameters. The difference is the AWS GovCloud (US-West) partition, which the
+global-infrastructure path does not enumerate. Both numbers are correct about
+different questions, so the ingest records the split instead of picking a winner.
+
+### The limit that is permanent
+
+No document settles a positioning judgement. The Quick-versus-Kiro boundary cards
+carry no source, are Tier C by definition, and render as *Unsourced … needs
+review* rather than borrowing credibility from a citation that cannot exist.
+
+Quietly widening a source's authority to cover a claim it cannot support is the
+exact failure this system exists to prevent.
 
 ## Next
 

@@ -170,6 +170,59 @@ Tier A — without it, a verifier that failed everything would satisfy all six.
 10 of 21 cards demote to Tier C. That is the honest state of a deck that looked
 finished.
 
+- [x] T4.8 **Close the claim gaps by fixing cards, not the verifier.** 21/28 →
+      26/28 verified by adding two day-capable sources, then 28/28 by correcting
+      five cards. Every gap had a different cause and needed a different fix:
+
+      | Card | Gap | Cause | Fix |
+      |---|---|---|---|
+      | AC-12 | "GA in 9 regions" | card was **stale** — Evaluations is in 16 | slot promoted to Tier A off a feature × region docs matrix |
+      | AC-17 | "$0.10–$3.00 per call" | card was **wrong** — the payments docs say "often under $1 or fractions of a cent" | replaced with the documented characterisation |
+      | AC-01, AC-11, AC-13 | day-precision dates | **no source sees days** for these | reduced to the month the release notes attest |
+      | AC-20 | "Nov 2023", "July 30 2026" | needed a source that **states** a date, not one merely dated | Bedrock document-history ingest (day precision, 264 entries) |
+
+      New ingests: `docs-doc-history.ts` (day precision),
+      `docs-feature-regions.ts` (per-feature availability), plus the AgentCore
+      payments page added to `docs-pages.ts`.
+
+      **Six verifier defects were found by distrusting its own good news.** The
+      first run after the new sources reported 82%, which was wrong:
+
+      1. a *region* claim (`eu-south-9`) verified against a region **count**,
+         because the id was reduced to the number 9 — caught by the existing
+         adversarial test
+      2. AC-12's "9 regions" verified against **Runtime Instances**' 9, because a
+         value match consulted every fact id regardless of subject
+      3. a claim's own **year** counted as evidence of its own topic, so a July
+         claim looked related to every July entry
+      4. shared **boilerplate** ("available" 12.6% of the corpus, "support"
+         34.4%) counted as relatedness
+      5. a `$1` money claim matched a bare digit in a **region list**
+      6. the extractor had **no month-precision date pattern**, so reducing a
+         claim to "October 2025" silently downgraded it to the year "2025" —
+         making the correction *weaken* the check
+
+      Then two quality defects that produced right verdicts with wrong citations:
+      AC-11's Policy GA cited "Chrome Policies" (same month, more shared words)
+      while "AgentCore Policy is now Generally Available" sat beside it; and
+      AC-16's CLI GA cited "Code Interpreter: Node.js Support" because `stemsOf`
+      drops tokens under four characters and **CLI** was invisible — the identical
+      bug `lifecycle.ts` had already fixed, on the identical card. The tokenizer is
+      now shared between them rather than duplicated.
+
+      Guards added: facts must not name a subject the claim does not; numeric
+      claims need numeric facts; money needs a currency marker; ambiguous sources
+      (13 region counts on one page) need a row-identifying term; relatedness needs
+      a *distinctive* term, and a distinctive term in a **heading** outweighs two
+      generic ones in a body; windows are clipped to entry boundaries so a
+      neighbouring release note cannot vouch for a match.
+
+      **Still refused, correctly:** AC-01's "Preview July 2025". The only July 2025
+      release-notes entry is "Initial release (preview)", and the three July 16
+      2025 document-history entries are Data Automation, Nova imports and custom
+      model deployment. It verifies on the month via the preview entry; the *day*
+      does not, and is not claimed any more.
+
 ## P5 — Rename, retirement, fan-out (not in this run)
 
 - [x] T5.1a **Dated feature history ingest** (`src/ingest/docs-release-notes.ts`).

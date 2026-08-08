@@ -33,15 +33,33 @@
       },
       {
         "k": "Timeline",
-        "v": "Preview at re:Invent (Dec 2 2025) → GA March 2026."
+        "v": "{{slot:policy_timeline}}"
       }
     ],
     "hookline": "The auditor-friendly distinction: 'we hope the agent behaves' vs 'we can prove it can't misbehave'."
   },
-  "slots": {},
+  "slots": {
+    "policy_timeline": {
+      "tier": "C",
+      "template": "Preview at re:Invent (December 2025) → GA March 2026.",
+      "facts": [],
+      "rendered": "Preview at re:Invent (December 2025) → GA March 2026.",
+      "rendered_from": "tier-c",
+      "seed_text": "Preview at re:Invent (Dec 2 2025) → GA March 2026.",
+      "unresolvable_reason": "A feature timeline sentence. Both months are attested by the release notes; the sentence around them is authored, so Tier C."
+    }
+  },
   "facts_used": [],
-  "sources": [],
-  "verified_at": null,
+  "sources": [
+    {
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html",
+      "title": "agentcore.release-notes (aws-docs-release-notes)",
+      "kind": "aws-docs-release-notes",
+      "fetched_at": "2026-08-08T10:14:52.252Z",
+      "content_hash": "sha256:2ba16e0fde32abf1a06b35cec6b9c90cb6d3eee37ef32d81133d03a428b17036"
+    }
+  ],
+  "verified_at": "2026-08-08T10:14:52.252Z",
   "confidence": "medium",
   "depends_on": [
     "AC-06"
@@ -49,8 +67,14 @@
   "aka": [],
   "superseded_by": null,
   "supersedes": [],
-  "needs_review": false,
-  "review_reasons": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "Tier C prose correction applied by an agent (policy_timeline). Needs human sign-off: the design gates judgement rewrites behind a human, and there is no remote to raise a PR against.",
+      "raised_at": "2026-08-08T14:02:23.374Z",
+      "raised_by": "tools/close-claim-gaps.ts"
+    }
+  ],
   "provenance": {
     "tier": "seed",
     "authored_by": "legacy-import",
@@ -61,9 +85,26 @@
         "action": "import",
         "generator": "tools/extract-legacy.ts",
         "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      },
+      {
+        "at": "2026-08-08T14:02:23.374Z",
+        "tier": "C",
+        "action": "correct",
+        "generator": "tools/close-claim-gaps.ts",
+        "slot": "policy_timeline",
+        "before": "Preview at re:Invent (Dec 2 2025) → GA March 2026.",
+        "after": "Preview at re:Invent (December 2025) → GA March 2026.",
+        "reason": "Card claimed day precision (\"Dec 2 2025\"). Release notes confirm December 2025 (\"Policy in Amazon Bedrock AgentCore\") at month precision only, and no day-precision source carries the re:Invent announcement. Reduced to the month."
+      },
+      {
+        "at": "2026-08-08T14:02:23.374Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "tools/close-claim-gaps.ts",
+        "reason": "Tier C prose correction applied by an agent (policy_timeline). Needs human sign-off: the design gates judgement rewrites behind a human, and there is no remote to raise a PR against."
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-06T12:57:02.398Z"
+  "updated_at": "2026-08-08T14:02:23.374Z"
 }

@@ -47,6 +47,16 @@ const PATTERNS: { kind: ClaimKind; re: RegExp }[] = [
   { kind: 'region', re: /\b(?:af|ap|ca|cn|eu|il|me|mx|sa|us)(?:-gov)?(?:-iso[a-z]?)?-(?:north|south|east|west|central|northeast|southeast|northwest|southwest)(?:east|west)?-\d\b/g },
   // Oct 13 2025 · Jul 16 2025 · Dec 2 2025 · July 30, 2026
   { kind: 'date', re: /\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2},?\s+(?:19|20)\d{2}\b/g },
+  /**
+   * October 2025 · March 2026 · Nov 2023 — a date at MONTH precision.
+   *
+   * This has to exist, and has to sit ahead of the bare-year pattern, or
+   * reducing a claim to the month the source supports makes it WEAKER instead of
+   * checkable: "generally available October 2025" was being extracted as the
+   * year "2025", which then verified against any topically-related 2025 entry in
+   * any month. A month-precision claim must be checked against that month.
+   */
+  { kind: 'date', re: /\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?,?\s+(?:19|20)\d{2}\b/g },
   // 8 hours · 30 seconds · sub-second
   { kind: 'duration', re: /\b\d+(?:[.,]\d+)?\s?(?:hours?|hrs?|minutes?|mins?|seconds?|secs?|days?|weeks?|months?|years?)\b/g },
   // bare years

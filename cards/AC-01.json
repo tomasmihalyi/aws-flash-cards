@@ -24,7 +24,7 @@
       },
       {
         "k": "GA",
-        "v": "Preview Jul 16 2025 → generally available Oct 13 2025, with VPC, PrivateLink, CloudFormation, and tagging support."
+        "v": "{{slot:ga_timeline}}"
       },
       {
         "k": "Positioning",
@@ -33,17 +33,41 @@
     ],
     "hookline": "It is not a framework and not a model — it's the production substrate underneath whichever framework and model you choose."
   },
-  "slots": {},
+  "slots": {
+    "ga_timeline": {
+      "tier": "C",
+      "template": "Preview July 2025 → generally available October 2025, with VPC, PrivateLink, CloudFormation, and tagging support.",
+      "facts": [],
+      "rendered": "Preview July 2025 → generally available October 2025, with VPC, PrivateLink, CloudFormation, and tagging support.",
+      "rendered_from": "tier-c",
+      "seed_text": "Preview Jul 16 2025 → generally available Oct 13 2025, with VPC, PrivateLink, CloudFormation, and tagging support.",
+      "unresolvable_reason": "A feature timeline sentence. The release notes attest the months but composing them into prose is authorship, so this slot is Tier C rather than deterministically resolved."
+    }
+  },
   "facts_used": [],
-  "sources": [],
-  "verified_at": null,
+  "sources": [
+    {
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html",
+      "title": "agentcore.release-notes (aws-docs-release-notes)",
+      "kind": "aws-docs-release-notes",
+      "fetched_at": "2026-08-08T10:14:52.252Z",
+      "content_hash": "sha256:2ba16e0fde32abf1a06b35cec6b9c90cb6d3eee37ef32d81133d03a428b17036"
+    }
+  ],
+  "verified_at": "2026-08-08T10:14:52.252Z",
   "confidence": "medium",
   "depends_on": [],
   "aka": [],
   "superseded_by": null,
   "supersedes": [],
-  "needs_review": false,
-  "review_reasons": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "Tier C prose correction applied by an agent (ga_timeline). Needs human sign-off: the design gates judgement rewrites behind a human, and there is no remote to raise a PR against.",
+      "raised_at": "2026-08-08T14:02:23.374Z",
+      "raised_by": "tools/close-claim-gaps.ts"
+    }
+  ],
   "provenance": {
     "tier": "seed",
     "authored_by": "legacy-import",
@@ -54,9 +78,26 @@
         "action": "import",
         "generator": "tools/extract-legacy.ts",
         "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      },
+      {
+        "at": "2026-08-08T14:02:23.374Z",
+        "tier": "C",
+        "action": "correct",
+        "generator": "tools/close-claim-gaps.ts",
+        "slot": "ga_timeline",
+        "before": "Preview Jul 16 2025 → generally available Oct 13 2025, with VPC, PrivateLink, CloudFormation, and tagging support.",
+        "after": "Preview July 2025 → generally available October 2025, with VPC, PrivateLink, CloudFormation, and tagging support.",
+        "reason": "Card claimed day precision (\"Oct 13 2025\") that no source attests. The release notes confirm October 2025 (\"General Availability\") at month precision, and the day-precision Bedrock document history has no AgentCore GA entry. Reduced to the month the source supports. The July preview date remains unattested and is reported as such."
+      },
+      {
+        "at": "2026-08-08T14:02:23.374Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "tools/close-claim-gaps.ts",
+        "reason": "Tier C prose correction applied by an agent (ga_timeline). Needs human sign-off: the design gates judgement rewrites behind a human, and there is no remote to raise a PR against."
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-06T12:57:02.398Z"
+  "updated_at": "2026-08-08T14:02:23.374Z"
 }

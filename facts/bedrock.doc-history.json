@@ -1,0 +1,2151 @@
+{
+  "schema_version": 1,
+  "fact_set_id": "bedrock.doc-history",
+  "tier": "A",
+  "generator": "src/ingest/docs-doc-history.ts",
+  "verified_at": "2026-08-08T13:51:32.764Z",
+  "source": {
+    "kind": "aws-docs-doc-history",
+    "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/doc-history.html",
+    "fetched_at": "2026-08-08T13:51:32.764Z",
+    "content_hash": "sha256:2d7625b703cf293787583bbcd43768cdb30c87cad6e9f5b19faa2e4fc25379f4",
+    "retrieved_by": "GET https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-ug-doc-history.md"
+  },
+  "evidence": {
+    "canonical": [
+      {
+        "iso_date": "2026-07-30",
+        "iso_month": "2026-07",
+        "month_label": "July 2026",
+        "date_label": "July 30, 2026",
+        "heading": "Amazon Bedrock Agents Classic is no longer open to new customers.",
+        "summary": "Amazon Bedrock Agents (now Amazon Bedrock Agents Classic) is no longer open to new customers. For capabilities similar to Bedrock Agents Classic, explore Amazon Bedrock AgentCore. Existing customers can continue to use the service as normal. For more information, see Amazon Bedrock Agents Classic availability change."
+      },
+      {
+        "iso_date": "2026-06-30",
+        "iso_month": "2026-06",
+        "month_label": "June 2026",
+        "date_label": "June 30, 2026",
+        "heading": "Amazon Bedrock Agents Classic availability change",
+        "summary": "Amazon Bedrock Agents (launched November 2023) is now Amazon Bedrock Agents Classic and will no longer be open to new customers starting on July 30, 2026. If you would like to use Bedrock Agents Classic, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see Amazon Bedrock Agents Classic maintenance mode."
+      },
+      {
+        "iso_date": "2026-05-27",
+        "iso_month": "2026-05",
+        "month_label": "May 2026",
+        "date_label": "May 27, 2026",
+        "heading": "Updated requests-per-minute (RPM) quota guidance",
+        "summary": "Clarified RPM quota behavior across Amazon Bedrock endpoints. The bedrock-mantle endpoint does not expose per-model RPM quotas; throttling is governed by token-based quotas. On the bedrock-runtime endpoint, RPM quotas are model-specific — some models, including Anthropic Claude Opus 4.7 and Claude Opus 4.8, are not subject to an RPM quota. For models that do have an RPM quota, see the Service Quotas console."
+      },
+      {
+        "iso_date": "2026-05-27",
+        "iso_month": "2026-05",
+        "month_label": "May 2026",
+        "date_label": "May 27, 2026",
+        "heading": "Quotas for the bedrock-runtime endpoint",
+        "summary": "Added a dedicated page that describes the per-model token quotas that govern inference traffic to the bedrock-runtime endpoint and points to related quotas for custom inference profiles, batch inference, and Provisioned Throughput."
+      },
+      {
+        "iso_date": "2026-05-27",
+        "iso_month": "2026-05",
+        "month_label": "May 2026",
+        "date_label": "May 27, 2026",
+        "heading": "Quotas for the bedrock-mantle endpoint",
+        "summary": "Documented the per-model input and output token quotas that govern inference traffic to the bedrock-mantle endpoint, including the default values for Anthropic Claude Opus 4.7, the request evaluation order, the differences from bedrock-runtime quotas, and how to request quota increases through AWS Support."
+      },
+      {
+        "iso_date": "2026-05-26",
+        "iso_month": "2026-05",
+        "month_label": "May 2026",
+        "date_label": "May 26, 2026",
+        "heading": "Token counting on the bedrock-mantle endpoint",
+        "summary": "Documented how to count input tokens through the Anthropic counttokens path on the bedrock-mantle endpoint, including for Claude models that are not supported by CountTokens on bedrock-runtime."
+      },
+      {
+        "iso_date": "2026-03-02",
+        "iso_month": "2026-03",
+        "month_label": "March 2026",
+        "date_label": "March 2, 2026",
+        "heading": "Fully managed knowledge bases with agentic retrieval",
+        "summary": "Amazon Bedrock Knowledge Bases now offers fully managed knowledge bases, where Amazon Bedrock manages the storage, indexing, and retrieval infrastructure for you. Fully managed knowledge bases also support agentic retrieval with the AgenticRetrieveStream API, which uses a foundation model to decompose complex queries into sub-queries and iteratively retrieve relevant information."
+      },
+      {
+        "iso_date": "2026-02-27",
+        "iso_month": "2026-02",
+        "month_label": "February 2026",
+        "date_label": "February 27, 2026",
+        "heading": "Converse API support for batch inference",
+        "summary": "You can now use the Converse API format for batch inference input data. When creating a batch inference job, set the model invocation type to Converse to use a consistent request format across models."
+      },
+      {
+        "iso_date": "2026-02-17",
+        "iso_month": "2026-02",
+        "month_label": "February 2026",
+        "date_label": "February 17, 2026",
+        "heading": "New feature",
+        "summary": "Added support for fine-tuning open-weight models using OpenAI-compatible APIs. You can now create, monitor, and manage reinforcement fine-tuning jobs for open-weight models through familiar OpenAI SDK endpoints, including Files API, fine-tuning jobs APIs, and inference APIs."
+      },
+      {
+        "iso_date": "2025-12-31",
+        "iso_month": "2025-12",
+        "month_label": "December 2025",
+        "date_label": "December 31, 2025",
+        "heading": "Updated list of models supported for service tiers",
+        "summary": "Updated list of models supported for priority and flex service tiers"
+      },
+      {
+        "iso_date": "2025-12-18",
+        "iso_month": "2025-12",
+        "month_label": "December 2025",
+        "date_label": "December 18, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock Data Automation now supports blueprint instruction optimization for documents. Improve Data Automation custom output accuracy by providing example content assets with ground truth labels, enabling you to achieve production-ready accuracy for documents in minutes without model training."
+      },
+      {
+        "iso_date": "2025-12-03",
+        "iso_month": "2025-12",
+        "month_label": "December 2025",
+        "date_label": "December 3, 2025",
+        "heading": "New managed policies",
+        "summary": "Amazon Bedrock added the following managed IAM policies for Amazon Bedrock Mantle: AmazonBedrockMantleFullAccess, AmazonBedrockMantleReadOnly, AmazonBedrockMantleInferenceAccess. Amazon Bedrock Mantle provides OpenAI-compatible API endpoints for model inference."
+      },
+      {
+        "iso_date": "2025-12-03",
+        "iso_month": "2025-12",
+        "month_label": "December 2025",
+        "date_label": "December 3, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock now supports OpenAI compatible API endpoints, including Responses API and Chat Completions API. These endpoints enable asynchronous inference for long-running workloads, stateful conversation management without manual history passing, and simplified tool use integration for agentic workflows. Migrate existing applications with minimal code changes by updating your base URL and API key."
+      },
+      {
+        "iso_date": "2025-12-03",
+        "iso_month": "2025-12",
+        "month_label": "December 2025",
+        "date_label": "December 3, 2025",
+        "heading": "New feature",
+        "summary": "Added new reinforcement fine-tuning to improve foundation model performance through feedback signals."
+      },
+      {
+        "iso_date": "2025-11-26",
+        "iso_month": "2025-11",
+        "month_label": "November 2025",
+        "date_label": "November 26, 2025",
+        "heading": "New feature",
+        "summary": "Added new \"Reserved\" service tier for Bedrock inference."
+      },
+      {
+        "iso_date": "2025-11-24",
+        "iso_month": "2025-11",
+        "month_label": "November 2025",
+        "date_label": "November 24, 2025",
+        "heading": "New model",
+        "summary": "Amazon Bedrock now supports Anthropic Claude Opus 4.5."
+      },
+      {
+        "iso_date": "2025-11-21",
+        "iso_month": "2025-11",
+        "month_label": "November 2025",
+        "date_label": "November 21, 2025",
+        "heading": "New feature",
+        "summary": "You can now share guardrails across accounts within an AWS organization."
+      },
+      {
+        "iso_date": "2025-11-20",
+        "iso_month": "2025-11",
+        "month_label": "November 2025",
+        "date_label": "November 20, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock Data Automation now supports synchronous invocation."
+      },
+      {
+        "iso_date": "2025-11-19",
+        "iso_month": "2025-11",
+        "month_label": "November 2025",
+        "date_label": "November 19, 2025",
+        "heading": "Updated model support for custom model import",
+        "summary": "Custom model import now supports OpenAI GPT-OSS models."
+      },
+      {
+        "iso_date": "2025-11-19",
+        "iso_month": "2025-11",
+        "month_label": "November 2025",
+        "date_label": "November 19, 2025",
+        "heading": "Enhanced coding use case support for Standard tier",
+        "summary": "Amazon Bedrock Guardrails Standard tier now provides enhanced support for coding use cases. Content filters, prompt attacks, and denied topics have been upgraded to better handle code-related prompts and responses without requiring changes to existing configurations. Added comprehensive code domain support documentation and prompt leakage detection for Standard tier."
+      },
+      {
+        "iso_date": "2025-11-18",
+        "iso_month": "2025-11",
+        "month_label": "November 2025",
+        "date_label": "November 18, 2025",
+        "heading": "Updated feature",
+        "summary": "Added new service tiers priority and flex for on demand inference"
+      },
+      {
+        "iso_date": "2025-11-18",
+        "iso_month": "2025-11",
+        "month_label": "November 2025",
+        "date_label": "November 18, 2025",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now supported in Africa (Cape Town), Asia Pacific (New Zealand), Canada West (Calgary), Mexico (Central), and Middle East (Bahrain)."
+      },
+      {
+        "iso_date": "2025-10-31",
+        "iso_month": "2025-10",
+        "month_label": "October 2025",
+        "date_label": "October 31, 2025",
+        "heading": "Updated feature",
+        "summary": "Added note about using 'english' dictionary instead of 'simple' dictionary for PostgreSQL text search in Aurora Knowledge Base integration."
+      },
+      {
+        "iso_date": "2025-10-30",
+        "iso_month": "2025-10",
+        "month_label": "October 2025",
+        "date_label": "October 30, 2025",
+        "heading": "Model in legacy status",
+        "summary": "Anthropic Claude 3.7 Sonnet is now in legacy status. Migrate to Claude Sonnet 4.5 before April 28, 2026."
+      },
+      {
+        "iso_date": "2025-10-28",
+        "iso_month": "2025-10",
+        "month_label": "October 2025",
+        "date_label": "October 28, 2025",
+        "heading": "New feature",
+        "summary": "Four new Stability AI Image Services (outpaint and upscale) are now available with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-10-16",
+        "iso_month": "2025-10",
+        "month_label": "October 2025",
+        "date_label": "October 16, 2025",
+        "heading": "Updated feature",
+        "summary": "You can now use a previously customized model (fine-tuned or distilled) as the base model for further customization."
+      },
+      {
+        "iso_date": "2025-10-15",
+        "iso_month": "2025-10",
+        "month_label": "October 2025",
+        "date_label": "October 15, 2025",
+        "heading": "New model",
+        "summary": "You can now use Anthropic Claude Haiku 4.5 with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-10-15",
+        "iso_month": "2025-10",
+        "month_label": "October 2025",
+        "date_label": "October 15, 2025",
+        "heading": "New feature",
+        "summary": "Access to all Amazon Bedrock foundation models is now enabled by default with the correct IAM permissions."
+      },
+      {
+        "iso_date": "2025-10-09",
+        "iso_month": "2025-10",
+        "month_label": "October 2025",
+        "date_label": "October 9, 2025",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock Guardrails is now generally available with cross-region inference in 5 additional regions: Asia Pacific (Bangkok), Asia Pacific (Kuala Lumpur), Asia Pacific (Taipei), Israel (Tel Aviv), and Middle East (Dubai)."
+      },
+      {
+        "iso_date": "2025-10-07",
+        "iso_month": "2025-10",
+        "month_label": "October 2025",
+        "date_label": "October 7, 2025",
+        "heading": "Updated managed policy",
+        "summary": "Amazon Bedrock updated the AmazonBedrockFullAccess managed policy to enable access to all serverless foundation models by default."
+      },
+      {
+        "iso_date": "2025-10-03",
+        "iso_month": "2025-10",
+        "month_label": "October 2025",
+        "date_label": "October 3, 2025",
+        "heading": "Updated model support for batch inference",
+        "summary": "Batch inference now supports DeepSeek V3.1, Qwen3 32B (dense), Qwen3 235B A22B 2507, Qwen3-Coder-30B-A3B-Instruct, and Qwen3 Coder 480B A35B Instruct."
+      },
+      {
+        "iso_date": "2025-10-02",
+        "iso_month": "2025-10",
+        "month_label": "October 2025",
+        "date_label": "October 2, 2025",
+        "heading": "New model",
+        "summary": "You can now use Cohere Cohere Embed v4 with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-09-30",
+        "iso_month": "2025-09",
+        "month_label": "September 2025",
+        "date_label": "September 30, 2025",
+        "heading": "Updated model support",
+        "summary": "You can now import Qwen3 models with model import."
+      },
+      {
+        "iso_date": "2025-09-30",
+        "iso_month": "2025-09",
+        "month_label": "September 2025",
+        "date_label": "September 30, 2025",
+        "heading": "Region expansion",
+        "summary": "Cohere Cohere Rerank 3.5 model is now available in US East (N. Virginia)."
+      },
+      {
+        "iso_date": "2025-09-29",
+        "iso_month": "2025-09",
+        "month_label": "September 2025",
+        "date_label": "September 29, 2025",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock Guardrails is now available generally in Asia Pacific (Melbourne) and with cross-Region inference."
+      },
+      {
+        "iso_date": "2025-09-29",
+        "iso_month": "2025-09",
+        "month_label": "September 2025",
+        "date_label": "September 29, 2025",
+        "heading": "New model",
+        "summary": "You can now use Anthropic Claude Sonnet 4.5 with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-09-26",
+        "iso_month": "2025-09",
+        "month_label": "September 2025",
+        "date_label": "September 26, 2025",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now available in Asia Pacific (Thailand), Asia Pacific (Taipei), Asia Pacific (Malaysia), Middle East (UAE), and Israel (Tel Aviv)."
+      },
+      {
+        "iso_date": "2025-09-26",
+        "iso_month": "2025-09",
+        "month_label": "September 2025",
+        "date_label": "September 26, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock Flows now supports Flows trace enhancements and DoWhile loop node functionality."
+      },
+      {
+        "iso_date": "2025-09-25",
+        "iso_month": "2025-09",
+        "month_label": "September 2025",
+        "date_label": "September 25, 2025",
+        "heading": "New model",
+        "summary": "You can now use Anthropic Claude Sonnet 4.5 with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-09-18",
+        "iso_month": "2025-09",
+        "month_label": "September 2025",
+        "date_label": "September 18, 2025",
+        "heading": "New model",
+        "summary": "Stability AI Image Services are now available with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-09-15",
+        "iso_month": "2025-09",
+        "month_label": "September 2025",
+        "date_label": "September 15, 2025",
+        "heading": "New model",
+        "summary": "Meta Llama 3.3 70B Instruct is now available for fine-tuning and continued pretraining is now available with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-09-11",
+        "iso_month": "2025-09",
+        "month_label": "September 2025",
+        "date_label": "September 11, 2025",
+        "heading": "New Region support for Guardrails",
+        "summary": "Amazon Bedrock Guardrails is now supported in Asia Pacific (Jakarta)."
+      },
+      {
+        "iso_date": "2025-09-09",
+        "iso_month": "2025-09",
+        "month_label": "September 2025",
+        "date_label": "September 9, 2025",
+        "heading": "New tutorial",
+        "summary": "TwelveLabs Marengo Embed 2.7 now supports the InvokeModel API."
+      },
+      {
+        "iso_date": "2025-09-04",
+        "iso_month": "2025-09",
+        "month_label": "September 2025",
+        "date_label": "September 4, 2025",
+        "heading": "New tutorial",
+        "summary": "You can now use the bedrock:bearerTokenType condition key with the bedrock:CallWithBearerToken action."
+      },
+      {
+        "iso_date": "2025-09-02",
+        "iso_month": "2025-09",
+        "month_label": "September 2025",
+        "date_label": "September 2, 2025",
+        "heading": "New tutorial",
+        "summary": "You can familiarize yourself with Amazon Bedrock resource creation by trying out a tutorial to easily set up a mortgage Amazon Bedrock flow with CloudFormation templates."
+      },
+      {
+        "iso_date": "2025-08-27",
+        "iso_month": "2025-08",
+        "month_label": "August 2025",
+        "date_label": "August 27, 2025",
+        "heading": "New feature",
+        "summary": "The OpenAI batch API is now supported."
+      },
+      {
+        "iso_date": "2025-08-25",
+        "iso_month": "2025-08",
+        "month_label": "August 2025",
+        "date_label": "August 25, 2025",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock data automation is now available in AWS GovCloud (US-West)."
+      },
+      {
+        "iso_date": "2025-08-25",
+        "iso_month": "2025-08",
+        "month_label": "August 2025",
+        "date_label": "August 25, 2025",
+        "heading": "New languages",
+        "summary": "Amazon Bedrock data automation now supports data extraction from documents in Portuguese, French, Italian, Spanish, and German."
+      },
+      {
+        "iso_date": "2025-08-21",
+        "iso_month": "2025-08",
+        "month_label": "August 2025",
+        "date_label": "August 21, 2025",
+        "heading": "New feature",
+        "summary": "You can now estimate token count for some models."
+      },
+      {
+        "iso_date": "2025-08-14",
+        "iso_month": "2025-08",
+        "month_label": "August 2025",
+        "date_label": "August 14, 2025",
+        "heading": "Region expansion for model",
+        "summary": "TwelveLabs TwelveLabs Pegasus 1.2 is now supported in US East (N. Virginia) and Asia Pacific (Seoul)."
+      },
+      {
+        "iso_date": "2025-08-11",
+        "iso_month": "2025-08",
+        "month_label": "August 2025",
+        "date_label": "August 11, 2025",
+        "heading": "Added model support for Amazon Bedrock Guardrails",
+        "summary": "Amazon Bedrock Guardrails is now supported in US West (N. California)."
+      },
+      {
+        "iso_date": "2025-08-05",
+        "iso_month": "2025-08",
+        "month_label": "August 2025",
+        "date_label": "August 5, 2025",
+        "heading": "New models",
+        "summary": "You can now use OpenAI gpt-oss-20b and gpt-oss-120b with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-08-05",
+        "iso_month": "2025-08",
+        "month_label": "August 2025",
+        "date_label": "August 5, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock Guardrails now supports Automated Reasoning checks to validate the accuracy of foundation model responses."
+      },
+      {
+        "iso_date": "2025-07-31",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 31, 2025",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now supported in Asia Pacific (Melbourne)."
+      },
+      {
+        "iso_date": "2025-07-31",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 31, 2025",
+        "heading": "New model",
+        "summary": "You can now use Anthropic Claude Opus 4.1 with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-07-29",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 29, 2025",
+        "heading": "Added model support for batch inference",
+        "summary": "Batch inference now supports the US Amazon Nova Premier inference profile."
+      },
+      {
+        "iso_date": "2025-07-28",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 28, 2025",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now supported in US West (N. California)."
+      },
+      {
+        "iso_date": "2025-07-28",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 28, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock data automation now supports DOC/DOCX and H.265 file types"
+      },
+      {
+        "iso_date": "2025-07-16",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 16, 2025",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock data automation is now available in Europe (Frankfurt), Europe (London), Europe (Ireland), Asia Pacific (Mumbai), and Asia Pacific (Sydney)."
+      },
+      {
+        "iso_date": "2025-07-16",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 16, 2025",
+        "heading": "New feature",
+        "summary": "You can now import SageMaker AI-trained Amazon Nova models into Amazon Bedrock as custom models."
+      },
+      {
+        "iso_date": "2025-07-16",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 16, 2025",
+        "heading": "New feature",
+        "summary": "You can now deploy custom models for on-demand inference in Amazon Bedrock. This feature allows you to deploy custom models for pay-per-token inference without provisioned throughput."
+      },
+      {
+        "iso_date": "2025-07-15",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 15, 2025",
+        "heading": "New models",
+        "summary": "You can now use TwelveLabs TwelveLabs Pegasus 1.2 and TwelveLabs Marengo Embed 2.7 with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-07-07",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 7, 2025",
+        "heading": "Region expansion",
+        "summary": "You can now use Anthropic Claude 3.7 Sonnet in AWS GovCloud (US-West)."
+      },
+      {
+        "iso_date": "2025-07-07",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 7, 2025",
+        "heading": "New managed policies",
+        "summary": "Amazon Bedrock added the following managed IAM policies: AmazonBedrockLimitedAccess, AmazonBedrockMarketplaceAccess."
+      },
+      {
+        "iso_date": "2025-07-07",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 7, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock now supports the creation of API keys for easy authentication to make calls to the Amazon Bedrock API."
+      },
+      {
+        "iso_date": "2025-07-03",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 3, 2025",
+        "heading": "Region expansion for intelligent prompt routing",
+        "summary": "Intelligent prompt routing is now supported in AWS GovCloud (US-West) and AWS GovCloud (US-East)."
+      },
+      {
+        "iso_date": "2025-07-03",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 3, 2025",
+        "heading": "Added model support for batch inference",
+        "summary": "Batch inference is now supported by the Meta Llama 4 Scout 17B Instruct and Llama 4 Maverick 17B Instruct models."
+      },
+      {
+        "iso_date": "2025-07-01",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 1, 2025",
+        "heading": "Region expansion",
+        "summary": "Prompt management is now supported in Europe (Milan), Europe (Spain), Asia Pacific (Hyderabad), and Asia Pacific (Osaka)."
+      },
+      {
+        "iso_date": "2025-07-01",
+        "iso_month": "2025-07",
+        "month_label": "July 2025",
+        "date_label": "July 1, 2025",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock Flows is now supported in Europe (Milan), Europe (Spain), Asia Pacific (Hyderabad), and Asia Pacific (Osaka)."
+      },
+      {
+        "iso_date": "2025-06-26",
+        "iso_month": "2025-06",
+        "month_label": "June 2025",
+        "date_label": "June 26, 2025",
+        "heading": "Region expansion for Amazon Bedrock Knowledge Bases",
+        "summary": "Amazon Bedrock Knowledge Bases is now supported in the AWS Regions Asia Pacific (Hyderabad), Asia Pacific (Osaka), Europe (Milan), and Europe (Spain)."
+      },
+      {
+        "iso_date": "2025-06-23",
+        "iso_month": "2025-06",
+        "month_label": "June 2025",
+        "date_label": "June 23, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock Guardrails supports safeguard tiers, which give you performance and language options for content filters (text), prompt attacks, and denied topic policies."
+      },
+      {
+        "iso_date": "2025-06-19",
+        "iso_month": "2025-06",
+        "month_label": "June 2025",
+        "date_label": "June 19, 2025",
+        "heading": "New feature",
+        "summary": "(Preview) Run code directly in your Amazon Bedrock flow with inline code nodes."
+      },
+      {
+        "iso_date": "2025-06-19",
+        "iso_month": "2025-06",
+        "month_label": "June 2025",
+        "date_label": "June 19, 2025",
+        "heading": "New feature",
+        "summary": "(Preview) Run Amazon Bedrock flows for longer durations with flow executions."
+      },
+      {
+        "iso_date": "2025-05-28",
+        "iso_month": "2025-05",
+        "month_label": "May 2025",
+        "date_label": "May 28, 2025",
+        "heading": "New tutorial",
+        "summary": "Added a tutorial for creating a simple Amazon Bedrock agent."
+      },
+      {
+        "iso_date": "2025-05-22",
+        "iso_month": "2025-05",
+        "month_label": "May 2025",
+        "date_label": "May 22, 2025",
+        "heading": "New models available",
+        "summary": "You can know use Claude Sonnet 4 and Claude Opus 4 with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-05-19",
+        "iso_month": "2025-05",
+        "month_label": "May 2025",
+        "date_label": "May 19, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock data automation now supports custom output for videos."
+      },
+      {
+        "iso_date": "2025-05-16",
+        "iso_month": "2025-05",
+        "month_label": "May 2025",
+        "date_label": "May 16, 2025",
+        "heading": "Added video blueprint support",
+        "summary": "BDA now supports blueprints for videos."
+      },
+      {
+        "iso_date": "2025-05-13",
+        "iso_month": "2025-05",
+        "month_label": "May 2025",
+        "date_label": "May 13, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock Guardrails now supports cross-Region inference."
+      },
+      {
+        "iso_date": "2025-05-12",
+        "iso_month": "2025-05",
+        "month_label": "May 2025",
+        "date_label": "May 12, 2025",
+        "heading": "Added model support for custom model import",
+        "summary": "Custom model import now supports Qwen2, Qwen2.5, Qwen2-VL, Qwen2.5-VL."
+      },
+      {
+        "iso_date": "2025-05-05",
+        "iso_month": "2025-05",
+        "month_label": "May 2025",
+        "date_label": "May 5, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock data automation now supports custom blueprints for audio files."
+      },
+      {
+        "iso_date": "2025-04-28",
+        "iso_month": "2025-04",
+        "month_label": "April 2025",
+        "date_label": "April 28, 2025",
+        "heading": "New model",
+        "summary": "You can now use Meta Llama 4 Scout 17B Instruct and Llama 4 Maverick 17B Instruct with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-04-28",
+        "iso_month": "2025-04",
+        "month_label": "April 2025",
+        "date_label": "April 28, 2025",
+        "heading": "New model",
+        "summary": "You can now use Writer Palmyra X4 and Writer Palmyra X5 with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-04-25",
+        "iso_month": "2025-04",
+        "month_label": "April 2025",
+        "date_label": "April 25, 2025",
+        "heading": "New feature",
+        "summary": "You can now reference images and documents stored in Amazon S3 when using the InvokeModel and Converse APIs with Amazon Nova Lite and Amazon Nova Pro. Inclusion of images, documents, and videos stored in S3 with these APIs is also now supported with inference profiles."
+      },
+      {
+        "iso_date": "2025-04-25",
+        "iso_month": "2025-04",
+        "month_label": "April 2025",
+        "date_label": "April 25, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock data automation now supports modality routing and hyperlink support"
+      },
+      {
+        "iso_date": "2025-04-22",
+        "iso_month": "2025-04",
+        "month_label": "April 2025",
+        "date_label": "April 22, 2025",
+        "heading": "General release",
+        "summary": "Intelligent prompt routing is now generally available with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-04-10",
+        "iso_month": "2025-04",
+        "month_label": "April 2025",
+        "date_label": "April 10, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock Knowledge Bases now supports additional user-provided metadata field for Amazon Aurora and enhanced hybrid search capabilities for MongoDB vector stores."
+      },
+      {
+        "iso_date": "2025-04-09",
+        "iso_month": "2025-04",
+        "month_label": "April 2025",
+        "date_label": "April 9, 2025",
+        "heading": "Region expansion for custom model import",
+        "summary": "Custom model import is now supported in Europe (Frankfurt)."
+      },
+      {
+        "iso_date": "2025-04-08",
+        "iso_month": "2025-04",
+        "month_label": "April 2025",
+        "date_label": "April 8, 2025",
+        "heading": "New model",
+        "summary": "You can now use Pixtral Large (25.02) with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-04-07",
+        "iso_month": "2025-04",
+        "month_label": "April 2025",
+        "date_label": "April 7, 2025",
+        "heading": "New feature",
+        "summary": "New options for handling harmful content detected by Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-04-04",
+        "iso_month": "2025-04",
+        "month_label": "April 2025",
+        "date_label": "April 4, 2025",
+        "heading": "Region expansion for batch inference",
+        "summary": "Batch inference now supports Amazon Nova Lite, Amazon Nova Pro, and Amazon Nova Micro in AWS GovCloud (US-West)."
+      },
+      {
+        "iso_date": "2025-04-02",
+        "iso_month": "2025-04",
+        "month_label": "April 2025",
+        "date_label": "April 2, 2025",
+        "heading": "Region expansion for batch inference",
+        "summary": "Batch inference now supports Anthropic Claude Claude 3.5 Sonnet V2 in Asia Pacific (Mumbai), Asia Pacific (Hyderabad), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Seoul), Asia Pacific (Osaka) and Amazon Titan Text Embeddings V2 in Europe (Stockholm), Europe (Milan), and Europe (Spain)."
+      },
+      {
+        "iso_date": "2025-04-02",
+        "iso_month": "2025-04",
+        "month_label": "April 2025",
+        "date_label": "April 2, 2025",
+        "heading": "Added model support for Provisioned Throughput",
+        "summary": "Provisioned Throughput now supports Amazon Nova Canvas, in addition to 24k context windows for Amazon Nova Lite, Amazon Nova Micro, and Amazon Nova Pro."
+      },
+      {
+        "iso_date": "2025-03-27",
+        "iso_month": "2025-03",
+        "month_label": "March 2025",
+        "date_label": "March 27, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock Knowledge Bases now supports OpenSearch Managed Clusters as a vector store when creating a knowledge base."
+      },
+      {
+        "iso_date": "2025-03-27",
+        "iso_month": "2025-03",
+        "month_label": "March 2025",
+        "date_label": "March 27, 2025",
+        "heading": "New feature",
+        "summary": "You can now use flow templates to get started with Amazon Bedrock Flows."
+      },
+      {
+        "iso_date": "2025-03-25",
+        "iso_month": "2025-03",
+        "month_label": "March 2025",
+        "date_label": "March 25, 2025",
+        "heading": "Feature moved",
+        "summary": "Amazon Bedrock Studio, renamed to Amazon Bedrock in Sagemaker Unified Studio, is now available in Amazon SageMaker Unified Studio."
+      },
+      {
+        "iso_date": "2025-03-18",
+        "iso_month": "2025-03",
+        "month_label": "March 2025",
+        "date_label": "March 18, 2025",
+        "heading": "New feature",
+        "summary": "You can now enforce Amazon Bedrock model inference requests to use specific guardrails through a new IAM condition key."
+      },
+      {
+        "iso_date": "2025-03-14",
+        "iso_month": "2025-03",
+        "month_label": "March 2025",
+        "date_label": "March 14, 2025",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now supported in Europe (Milan) and Europe (Spain)."
+      },
+      {
+        "iso_date": "2025-03-13",
+        "iso_month": "2025-03",
+        "month_label": "March 2025",
+        "date_label": "March 13, 2025",
+        "heading": "Support expanded for feature",
+        "summary": "Amazon Bedrock Knowledge Bases now supports cross-region inference with structured data retrieval."
+      },
+      {
+        "iso_date": "2025-03-13",
+        "iso_month": "2025-03",
+        "month_label": "March 2025",
+        "date_label": "March 13, 2025",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock now supports configured prompt routers in preview with intelligent prompt routing."
+      },
+      {
+        "iso_date": "2025-03-13",
+        "iso_month": "2025-03",
+        "month_label": "March 2025",
+        "date_label": "March 13, 2025",
+        "heading": "Model support expanded for feature",
+        "summary": "Provisioned Throughput now supports Llama 3.2 1B Instruct, Llama 3.2 3B Instruct, Llama 3.2 11B Instruct, and Llama 3.2 90B Instruct in US West (Oregon)."
+      },
+      {
+        "iso_date": "2025-03-12",
+        "iso_month": "2025-03",
+        "month_label": "March 2025",
+        "date_label": "March 12, 2025",
+        "heading": "Added model support for Knowledge Bases",
+        "summary": "Amazon Bedrock Knowledge Bases now supports reasoning models Deepseek-R1 and Anthropic Claude 3.7 Sonnet."
+      },
+      {
+        "iso_date": "2025-03-10",
+        "iso_month": "2025-03",
+        "month_label": "March 2025",
+        "date_label": "March 10, 2025",
+        "heading": "New model",
+        "summary": "You can now use DeepSeek-R1 with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-03-10",
+        "iso_month": "2025-03",
+        "month_label": "March 2025",
+        "date_label": "March 10, 2025",
+        "heading": "New feature",
+        "summary": "You can now configure an Amazon Bedrock Agent to complete tasks with computer use tools."
+      },
+      {
+        "iso_date": "2025-03-07",
+        "iso_month": "2025-03",
+        "month_label": "March 2025",
+        "date_label": "March 7, 2025",
+        "heading": "General release",
+        "summary": "GraphRAG for Amazon Bedrock Knowledge Bases is now generally available with additional capabilities."
+      },
+      {
+        "iso_date": "2025-03-03",
+        "iso_month": "2025-03",
+        "month_label": "March 2025",
+        "date_label": "March 3, 2025",
+        "heading": "General release",
+        "summary": "Amazon Bedrock data automation is now available with increased accuracy and CRIS"
+      },
+      {
+        "iso_date": "2025-02-27",
+        "iso_month": "2025-02",
+        "month_label": "February 2025",
+        "date_label": "February 27, 2025",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now supported in Europe (Stockholm)."
+      },
+      {
+        "iso_date": "2025-02-27",
+        "iso_month": "2025-02",
+        "month_label": "February 2025",
+        "date_label": "February 27, 2025",
+        "heading": "New feature",
+        "summary": "You can now use Amazon Bedrock session management APIs to manage state for generative AI applications built with open-source frameworks."
+      },
+      {
+        "iso_date": "2025-02-24",
+        "iso_month": "2025-02",
+        "month_label": "February 2025",
+        "date_label": "February 24, 2025",
+        "heading": "New model",
+        "summary": "You can now use Claude 3.7 Sonnet with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-02-21",
+        "iso_month": "2025-02",
+        "month_label": "February 2025",
+        "date_label": "February 21, 2025",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now supported in Asia Pacific (Hyderabad) and Asia Pacific (Osaka)."
+      },
+      {
+        "iso_date": "2025-01-24",
+        "iso_month": "2025-01",
+        "month_label": "January 2025",
+        "date_label": "January 24, 2025",
+        "heading": "New model",
+        "summary": "You can now use Cohere Embed English and Cohere Embed Multilingual with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-01-23",
+        "iso_month": "2025-01",
+        "month_label": "January 2025",
+        "date_label": "January 23, 2025",
+        "heading": "New model",
+        "summary": "You can now use Luma Ray v2 with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2025-01-22",
+        "iso_month": "2025-01",
+        "month_label": "January 2025",
+        "date_label": "January 22, 2025",
+        "heading": "New feature",
+        "summary": "You can now converse with an agent node in an Amazon Bedrock flow."
+      },
+      {
+        "iso_date": "2024-12-23",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 23, 2024",
+        "heading": "Updated model support",
+        "summary": "You can now use Llama 3.3 70B Instruct for batch inference in US East (N. Virginia) and US West (Oregon)."
+      },
+      {
+        "iso_date": "2024-12-23",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 23, 2024",
+        "heading": "Region expansion",
+        "summary": "You can now use Llama 3.3 70B Instruct for batch inference in US East (N. Virginia) and US West (Oregon)."
+      },
+      {
+        "iso_date": "2024-12-19",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 19, 2024",
+        "heading": "New models",
+        "summary": "You can now use Llama 3.3 70B Instruct and Stable Diffusion 3.5 with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-12-09",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 9, 2024",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock Guardrails can now be applied to French and Spanish inputs."
+      },
+      {
+        "iso_date": "2024-12-06",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 6, 2024",
+        "heading": "New feature",
+        "summary": "You can now run batch inference with an inference profile."
+      },
+      {
+        "iso_date": "2024-12-04",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 4, 2024",
+        "heading": "Updated managed policies",
+        "summary": "Amazon Bedrock Marketplace permissions were added to the AmazonBedrockFullAccess and AmazonBedrockReadOnly AWS managed policies."
+      },
+      {
+        "iso_date": "2024-12-04",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 4, 2024",
+        "heading": "New feature",
+        "summary": "You can now deploy an Amazon Bedrock marketplace model and then run inference with the model."
+      },
+      {
+        "iso_date": "2024-12-04",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 4, 2024",
+        "heading": "New feature",
+        "summary": "You can now connect knowledge bases to structured data stores and generate SQL queries in Amazon Bedrock Knowledge Bases."
+      },
+      {
+        "iso_date": "2024-12-04",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 4, 2024",
+        "heading": "New feature",
+        "summary": "You can now parse multimodal data containing images with the Amazon Bedrock Data Automation parser or a foundation model in Amazon Bedrock Knowledge Bases."
+      },
+      {
+        "iso_date": "2024-12-04",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 4, 2024",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock Guardrails can now help filter harmful images by using image content filters."
+      },
+      {
+        "iso_date": "2024-12-03",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 3, 2024",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock Agents now supports multi-agent collaboration that enables multiple Amazon Bedrock Agents to collaboratively plan and solve complex tasks."
+      },
+      {
+        "iso_date": "2024-12-03",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 3, 2024",
+        "heading": "New feature",
+        "summary": "You can now transfer knowledge from a larger more intelligent model (known as teacher) to a smaller, faster, cost-efficient model (known as student) and use the distilled student model for your specific use case."
+      },
+      {
+        "iso_date": "2024-12-02",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 2, 2024",
+        "heading": "New feature",
+        "summary": "You can now use latency optimized models from Meta and Anthropic in Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-12-01",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 1, 2024",
+        "heading": "New feature",
+        "summary": "You can now apply guardrails when you retrieve results from a data source in Amazon Bedrock Knowledge Bases."
+      },
+      {
+        "iso_date": "2024-12-01",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 1, 2024",
+        "heading": "New feature",
+        "summary": "You can now use RetrieveAndGenerateStream, a streaming version of RetrieveAndGenerate, in Amazon Bedrock Knowledge Bases."
+      },
+      {
+        "iso_date": "2024-12-01",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 1, 2024",
+        "heading": "New feature",
+        "summary": "You can now apply a retrieval filter based on a user query and a metadata schema in Amazon Bedrock Knowledge Bases."
+      },
+      {
+        "iso_date": "2024-12-01",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 1, 2024",
+        "heading": "New feature",
+        "summary": "You can now use a reranker model to rerank the relevance of source documents based on a user query."
+      },
+      {
+        "iso_date": "2024-12-01",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 1, 2024",
+        "heading": "New feature",
+        "summary": "You can now ingest document changes directly into a knowledge base in one step."
+      },
+      {
+        "iso_date": "2024-12-01",
+        "iso_month": "2024-12",
+        "month_label": "December 2024",
+        "date_label": "December 1, 2024",
+        "heading": "New feature",
+        "summary": "You can now connect your knowledge base to a custom data source."
+      },
+      {
+        "iso_date": "2024-11-22",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 22, 2024",
+        "heading": "Region expansion",
+        "summary": "Europe (Zurich) now supports Amazon Bedrock Agents, Amazon Bedrock Knowledge Bases, Prompt management, and Amazon Bedrock Flows."
+      },
+      {
+        "iso_date": "2024-11-22",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 22, 2024",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock Flows is now supported in US East (Ohio), Asia Pacific (Seoul), Canada (Central), Europe (London), and South America (São Paulo)."
+      },
+      {
+        "iso_date": "2024-11-22",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 22, 2024",
+        "heading": "Region expansion",
+        "summary": "Prompt management is now supported in US East (Ohio), Asia Pacific (Seoul), Canada (Central), Europe (London), and South America (São Paulo)."
+      },
+      {
+        "iso_date": "2024-11-22",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 22, 2024",
+        "heading": "General release",
+        "summary": "Amazon Bedrock Flows is now generally available in Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-11-21",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 21, 2024",
+        "heading": "Feature update",
+        "summary": "Amazon Bedrock knowledge bases now support binary embeddings."
+      },
+      {
+        "iso_date": "2024-11-20",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 20, 2024",
+        "heading": "Feature update",
+        "summary": "Amazon Bedrock Prompt management now supports optimizing prompts."
+      },
+      {
+        "iso_date": "2024-11-11",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 11, 2024",
+        "heading": "Region expansion",
+        "summary": "You can now use Amazon Bedrock in AWS GovCloud (US-East) and Europe (Zurich)."
+      },
+      {
+        "iso_date": "2024-11-08",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 8, 2024",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock now supports knowledge bases in US East (Ohio)."
+      },
+      {
+        "iso_date": "2024-11-07",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 7, 2024",
+        "heading": "New feature",
+        "summary": "You can now view the trace for a flow to track the inputs and outputs of each node."
+      },
+      {
+        "iso_date": "2024-11-07",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 7, 2024",
+        "heading": "New feature",
+        "summary": "You can now include guardrails for a knowledge base or prompt node in a flow."
+      },
+      {
+        "iso_date": "2024-11-07",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 7, 2024",
+        "heading": "General release",
+        "summary": "Prompt management is now generally available in Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-11-06",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 6, 2024",
+        "heading": "Region expansion",
+        "summary": "You can now create application inference profiles in Asia Pacific (Singapore) and Asia Pacific (Seoul)."
+      },
+      {
+        "iso_date": "2024-11-06",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 6, 2024",
+        "heading": "Region expansion",
+        "summary": "Cross-Region inference profiles have been added for Anthropic Claude and Meta Llama models."
+      },
+      {
+        "iso_date": "2024-11-04",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 4, 2024",
+        "heading": "New model",
+        "summary": "You can now use Anthropic Claude 3.5 Haiku with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-11-01",
+        "iso_month": "2024-11",
+        "month_label": "November 2024",
+        "date_label": "November 1, 2024",
+        "heading": "Feature update",
+        "summary": "You can now create application inference profiles to run model inference and use them to track costs and metrics."
+      },
+      {
+        "iso_date": "2024-10-31",
+        "iso_month": "2024-10",
+        "month_label": "October 2024",
+        "date_label": "October 31, 2024",
+        "heading": "Feature update",
+        "summary": "You can now include model-specific inference parameters when defining a prompt in Prompt management or in a prompt node in a flow."
+      },
+      {
+        "iso_date": "2024-10-22",
+        "iso_month": "2024-10",
+        "month_label": "October 2024",
+        "date_label": "October 22, 2024",
+        "heading": "New model",
+        "summary": "You can now use Anthropic Claude 3.5 Sonnet v2 with Amazon Bedrock. You can also use computer use tools with Anthropic Claude 3.5 Sonnet v2."
+      },
+      {
+        "iso_date": "2024-10-21",
+        "iso_month": "2024-10",
+        "month_label": "October 2024",
+        "date_label": "October 21, 2024",
+        "heading": "Updated managed policy",
+        "summary": "Read-only permissions for Custom Model Import were added to the AmazonBedrockReadOnly AWS-managed policy."
+      },
+      {
+        "iso_date": "2024-10-21",
+        "iso_month": "2024-10",
+        "month_label": "October 2024",
+        "date_label": "October 21, 2024",
+        "heading": "Feature update",
+        "summary": "The topK field is no longer supported in the inferenceConfiguration object when creating a prompt in Prompt management."
+      },
+      {
+        "iso_date": "2024-10-21",
+        "iso_month": "2024-10",
+        "month_label": "October 2024",
+        "date_label": "October 21, 2024",
+        "heading": "Feature update",
+        "summary": "The text and chat playgrounds are now merged into a Chat/text playground in the Amazon Bedrock console."
+      },
+      {
+        "iso_date": "2024-10-21",
+        "iso_month": "2024-10",
+        "month_label": "October 2024",
+        "date_label": "October 21, 2024",
+        "heading": "Feature update",
+        "summary": "The text and chat playgrounds are now merged into a Chat/text playground in the Amazon Bedrock console."
+      },
+      {
+        "iso_date": "2024-10-07",
+        "iso_month": "2024-10",
+        "month_label": "October 2024",
+        "date_label": "October 7, 2024",
+        "heading": "Region expansion",
+        "summary": "Batch inference is now supported in Asia Pacific (Seoul)."
+      },
+      {
+        "iso_date": "2024-10-01",
+        "iso_month": "2024-10",
+        "month_label": "October 2024",
+        "date_label": "October 1, 2024",
+        "heading": "New Regions supported",
+        "summary": "You can now use Amazon Bedrock in AWS Region US East (Ohio) and Asia Pacific (Seoul)."
+      },
+      {
+        "iso_date": "2024-10-01",
+        "iso_month": "2024-10",
+        "month_label": "October 2024",
+        "date_label": "October 1, 2024",
+        "heading": "Model in legacy status",
+        "summary": "Anthropic Claude Opus 4 is now in legacy status. Migrate to Claude Opus 4.1 before May 31, 2026."
+      },
+      {
+        "iso_date": "2024-09-25",
+        "iso_month": "2024-09",
+        "month_label": "September 2024",
+        "date_label": "September 25, 2024",
+        "heading": "New models",
+        "summary": "You can now use Meta Llama 3.2 1B Instruct, Llama 3.2 3B Instruct, Llama 3.2 11B Instruct, and Llama 3.2 90B Instruct models with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-09-25",
+        "iso_month": "2024-09",
+        "month_label": "September 2024",
+        "date_label": "September 25, 2024",
+        "heading": "New feature",
+        "summary": "You can now use binary embeddings with Titan Text Embeddings V2 model in Amazon Bedrock"
+      },
+      {
+        "iso_date": "2024-09-24",
+        "iso_month": "2024-09",
+        "month_label": "September 2024",
+        "date_label": "September 24, 2024",
+        "heading": "New feature",
+        "summary": "You can now monitor Guardrails with CloudWatch Metrics in Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-09-24",
+        "iso_month": "2024-09",
+        "month_label": "September 2024",
+        "date_label": "September 24, 2024",
+        "heading": "New feature",
+        "summary": "You can now assess an inference profile using model evaluation."
+      },
+      {
+        "iso_date": "2024-09-23",
+        "iso_month": "2024-09",
+        "month_label": "September 2024",
+        "date_label": "September 23, 2024",
+        "heading": "New models",
+        "summary": "You can now use AI21 Labs Jamba 1.5 Large and AI21 Labs Jamba 1.5 Mini with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-09-23",
+        "iso_month": "2024-09",
+        "month_label": "September 2024",
+        "date_label": "September 23, 2024",
+        "heading": "New feature",
+        "summary": "You can now use an inference profile when using a prompt in Prompt management or including a prompt in a flow."
+      },
+      {
+        "iso_date": "2024-09-23",
+        "iso_month": "2024-09",
+        "month_label": "September 2024",
+        "date_label": "September 23, 2024",
+        "heading": "More model support for Provisioned Throughput",
+        "summary": "You can now purchase Provisioned Throughput for Anthropic Claude 3.5 Sonnet models in US West (Oregon)."
+      },
+      {
+        "iso_date": "2024-09-18",
+        "iso_month": "2024-09",
+        "month_label": "September 2024",
+        "date_label": "September 18, 2024",
+        "heading": "New feature",
+        "summary": "You can now monitor status changes in batch inference jobs using Amazon EventBridge."
+      },
+      {
+        "iso_date": "2024-09-16",
+        "iso_month": "2024-09",
+        "month_label": "September 2024",
+        "date_label": "September 16, 2024",
+        "heading": "New feature",
+        "summary": "You can now submit files from an S3 bucket owned by another account to a batch inference job."
+      },
+      {
+        "iso_date": "2024-09-16",
+        "iso_month": "2024-09",
+        "month_label": "September 2024",
+        "date_label": "September 16, 2024",
+        "heading": "New feature",
+        "summary": "You can now use a VPC when submitting a batch inference job."
+      },
+      {
+        "iso_date": "2024-09-11",
+        "iso_month": "2024-09",
+        "month_label": "September 2024",
+        "date_label": "September 11, 2024",
+        "heading": "New feature",
+        "summary": "You can now use an inference profile when generating responses based on results queried from a knowledge base and when parsing a data source."
+      },
+      {
+        "iso_date": "2024-09-04",
+        "iso_month": "2024-09",
+        "month_label": "September 2024",
+        "date_label": "September 4, 2024",
+        "heading": "Updated content",
+        "summary": "Updated topic titles and reorganized content to improve readability. If you'd like to provide feedback on these changes, use this Provide feedback link."
+      },
+      {
+        "iso_date": "2024-09-04",
+        "iso_month": "2024-09",
+        "month_label": "September 2024",
+        "date_label": "September 4, 2024",
+        "heading": "New model",
+        "summary": "You can now use Stable Image Ultra, Stable Diffusion 3 Large, and Stable Image Core models with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-08-27",
+        "iso_month": "2024-08",
+        "month_label": "August 2024",
+        "date_label": "August 27, 2024",
+        "heading": "Updated managed policy",
+        "summary": "Inference profile read-only permissions were added to the AmazonBedrockReadOnly AWS-managed policy."
+      },
+      {
+        "iso_date": "2024-08-27",
+        "iso_month": "2024-08",
+        "month_label": "August 2024",
+        "date_label": "August 27, 2024",
+        "heading": "New feature",
+        "summary": "You can now use cross-Region inference using inference profiles to increase throughput."
+      },
+      {
+        "iso_date": "2024-08-26",
+        "iso_month": "2024-08",
+        "month_label": "August 2024",
+        "date_label": "August 26, 2024",
+        "heading": "New feature",
+        "summary": "You can now request confirmation from your application users before invoking the Amazon Bedrock Agent action group function."
+      },
+      {
+        "iso_date": "2024-08-21",
+        "iso_month": "2024-08",
+        "month_label": "August 2024",
+        "date_label": "August 21, 2024",
+        "heading": "Updated managed policy",
+        "summary": "Read-only permissions for Batch inference (model invocation job), Amazon Bedrock Guardrails, and Amazon Bedrock Model evaluation were added to the AmazonBedrockReadOnly AWS-managed policy."
+      },
+      {
+        "iso_date": "2024-08-21",
+        "iso_month": "2024-08",
+        "month_label": "August 2024",
+        "date_label": "August 21, 2024",
+        "heading": "New feature",
+        "summary": "Asynchronous model invocation with multiple prompts with batch inference is now generally available."
+      },
+      {
+        "iso_date": "2024-08-16",
+        "iso_month": "2024-08",
+        "month_label": "August 2024",
+        "date_label": "August 16, 2024",
+        "heading": "New feature",
+        "summary": "You can now run model inference on multiple prompts asynchronously using batch inference."
+      },
+      {
+        "iso_date": "2024-08-06",
+        "iso_month": "2024-08",
+        "month_label": "August 2024",
+        "date_label": "August 6, 2024",
+        "heading": "New model",
+        "summary": "You can now use Amazon Titan Image Generator G1 V2 with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-08-01",
+        "iso_month": "2024-08",
+        "month_label": "August 2024",
+        "date_label": "August 1, 2024",
+        "heading": "Region expansion",
+        "summary": "You can now use Meta Llama 3 Instruct models 8B and 70B in AWS Region AWS GovCloud (US-West)."
+      },
+      {
+        "iso_date": "2024-08-01",
+        "iso_month": "2024-08",
+        "month_label": "August 2024",
+        "date_label": "August 1, 2024",
+        "heading": "New feature",
+        "summary": "You can now copy custom models into other Regions in Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-08-01",
+        "iso_month": "2024-08",
+        "month_label": "August 2024",
+        "date_label": "August 1, 2024",
+        "heading": "New feature",
+        "summary": "You can now share custom models with other accounts in Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-07-24",
+        "iso_month": "2024-07",
+        "month_label": "July 2024",
+        "date_label": "July 24, 2024",
+        "heading": "New model",
+        "summary": "You can now use Mistral AI Mistral Large 2 (24.07) model with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-07-23",
+        "iso_month": "2024-07",
+        "month_label": "July 2024",
+        "date_label": "July 23, 2024",
+        "heading": "New model",
+        "summary": "You can now use Meta Llama 3.1 Instruct models with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-07-22",
+        "iso_month": "2024-07",
+        "month_label": "July 2024",
+        "date_label": "July 22, 2024",
+        "heading": "New feature",
+        "summary": "You can now use Prompt management and Amazon Bedrock Flows with Amazon Bedrock Studio."
+      },
+      {
+        "iso_date": "2024-07-10",
+        "iso_month": "2024-07",
+        "month_label": "July 2024",
+        "date_label": "July 10, 2024",
+        "heading": "New feature",
+        "summary": "You can now string together different Amazon Bedrock resources into a workflow for end-to-end solutions."
+      },
+      {
+        "iso_date": "2024-07-10",
+        "iso_month": "2024-07",
+        "month_label": "July 2024",
+        "date_label": "July 10, 2024",
+        "heading": "New feature",
+        "summary": "You can now create and save prompts to reuse in different workflows."
+      },
+      {
+        "iso_date": "2024-07-10",
+        "iso_month": "2024-07",
+        "month_label": "July 2024",
+        "date_label": "July 10, 2024",
+        "heading": "New feature",
+        "summary": "You can now modify query configurations during runtime for knowledge bases that are attached to an agent."
+      },
+      {
+        "iso_date": "2024-07-10",
+        "iso_month": "2024-07",
+        "month_label": "July 2024",
+        "date_label": "July 10, 2024",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock now offers semantic and hierarchical chunking, and advanced parsing of more than standard text. You can also use Lambda function for custom data transformations."
+      },
+      {
+        "iso_date": "2024-07-10",
+        "iso_month": "2024-07",
+        "month_label": "July 2024",
+        "date_label": "July 10, 2024",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock now offers query decomposition to break down complex queries into smaller, more manageable sub-queries."
+      },
+      {
+        "iso_date": "2024-07-10",
+        "iso_month": "2024-07",
+        "month_label": "July 2024",
+        "date_label": "July 10, 2024",
+        "heading": "New feature",
+        "summary": "You can now connect to and crawl your data stored in Confluence, Salesforce, and SharePoint for your knowledge base. You can also connect to and crawl web URLs."
+      },
+      {
+        "iso_date": "2024-07-10",
+        "iso_month": "2024-07",
+        "month_label": "July 2024",
+        "date_label": "July 10, 2024",
+        "heading": "New feature",
+        "summary": "You can now use code interpretation in Amazon Bedrock to generate, run, and troubleshoot code in a secure test environment."
+      },
+      {
+        "iso_date": "2024-07-10",
+        "iso_month": "2024-07",
+        "month_label": "July 2024",
+        "date_label": "July 10, 2024",
+        "heading": "New feature",
+        "summary": "You can now use memory for your agents to retain conversational context across multiple sessions."
+      },
+      {
+        "iso_date": "2024-07-10",
+        "iso_month": "2024-07",
+        "month_label": "July 2024",
+        "date_label": "July 10, 2024",
+        "heading": "New feature",
+        "summary": "You can now use an independent API to call your guardrails in Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-07-10",
+        "iso_month": "2024-07",
+        "month_label": "July 2024",
+        "date_label": "July 10, 2024",
+        "heading": "New feature",
+        "summary": "You can now use contextual grounding checks with guardrails."
+      },
+      {
+        "iso_date": "2024-06-28",
+        "iso_month": "2024-06",
+        "month_label": "June 2024",
+        "date_label": "June 28, 2024",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock Agents is now supported in Canada (Central) (ca-central-1), Europe (London) (eu-west-2), and South America (São Paulo) (sa-east-1)."
+      },
+      {
+        "iso_date": "2024-06-25",
+        "iso_month": "2024-06",
+        "month_label": "June 2024",
+        "date_label": "June 25, 2024",
+        "heading": "New model",
+        "summary": "You can now use AI21 Jamba-Instruct with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-06-21",
+        "iso_month": "2024-06",
+        "month_label": "June 2024",
+        "date_label": "June 21, 2024",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock Guardrails is now supported in Canada (Central) (ca-central-1), Europe (London) (eu-west-2), and South America (São Paulo) (sa-east-1)."
+      },
+      {
+        "iso_date": "2024-06-21",
+        "iso_month": "2024-06",
+        "month_label": "June 2024",
+        "date_label": "June 21, 2024",
+        "heading": "New feature",
+        "summary": "You can now include documents in the chat playground or while using the Conversation API."
+      },
+      {
+        "iso_date": "2024-06-20",
+        "iso_month": "2024-06",
+        "month_label": "June 2024",
+        "date_label": "June 20, 2024",
+        "heading": "New model",
+        "summary": "You can now use Claude 3.5 Sonnet with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-06-20",
+        "iso_month": "2024-06",
+        "month_label": "June 2024",
+        "date_label": "June 20, 2024",
+        "heading": "New feature",
+        "summary": "Cohere Embed V3 models now support int8 and binary embedding types in the response."
+      },
+      {
+        "iso_date": "2024-06-18",
+        "iso_month": "2024-06",
+        "month_label": "June 2024",
+        "date_label": "June 18, 2024",
+        "heading": "New feature",
+        "summary": "You can now use guardrails with the Converse API."
+      },
+      {
+        "iso_date": "2024-06-13",
+        "iso_month": "2024-06",
+        "month_label": "June 2024",
+        "date_label": "June 13, 2024",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now available in Canada (Central) (ca-central-1), Europe (London) (eu-west-2), and South America (São Paulo) (sa-east-1). For information on endpoints, see Amazon Bedrock endpoints and quotas."
+      },
+      {
+        "iso_date": "2024-06-13",
+        "iso_month": "2024-06",
+        "month_label": "June 2024",
+        "date_label": "June 13, 2024",
+        "heading": "New feature",
+        "summary": "You can now view information in the trace about whether agent action group results were sent to be handled by a Lambda function or whether control was returned to the agent developer."
+      },
+      {
+        "iso_date": "2024-06-07",
+        "iso_month": "2024-06",
+        "month_label": "June 2024",
+        "date_label": "June 7, 2024",
+        "heading": "New model",
+        "summary": "You can now use Claude 3 Opus with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-05-30",
+        "iso_month": "2024-05",
+        "month_label": "May 2024",
+        "date_label": "May 30, 2024",
+        "heading": "New feature",
+        "summary": "You can now use the Converse API to create conversational applications."
+      },
+      {
+        "iso_date": "2024-05-30",
+        "iso_month": "2024-05",
+        "month_label": "May 2024",
+        "date_label": "May 30, 2024",
+        "heading": "New feature",
+        "summary": "You can now use tools with Amazon Bedrock models."
+      },
+      {
+        "iso_date": "2024-05-30",
+        "iso_month": "2024-05",
+        "month_label": "May 2024",
+        "date_label": "May 30, 2024",
+        "heading": "More model support for embedding data sources in Amazon Bedrock Knowledge Bases.",
+        "summary": "You can now use Amazon Titan Text Embeddings V2 model to embed your data sources in Amazon Bedrock Knowledge Bases."
+      },
+      {
+        "iso_date": "2024-05-24",
+        "iso_month": "2024-05",
+        "month_label": "May 2024",
+        "date_label": "May 24, 2024",
+        "heading": "New model",
+        "summary": "You can now use Mistral Small with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-05-20",
+        "iso_month": "2024-05",
+        "month_label": "May 2024",
+        "date_label": "May 20, 2024",
+        "heading": "New feature",
+        "summary": "You can now use guardrails with your Agent in Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-05-09",
+        "iso_month": "2024-05",
+        "month_label": "May 2024",
+        "date_label": "May 9, 2024",
+        "heading": "New feature",
+        "summary": "You can now modify inference parameters when generating responses from knowledge base retrieval."
+      },
+      {
+        "iso_date": "2024-05-07",
+        "iso_month": "2024-05",
+        "month_label": "May 2024",
+        "date_label": "May 7, 2024",
+        "heading": "New model",
+        "summary": "You can now use Amazon Titan Text Premier model with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-05-07",
+        "iso_month": "2024-05",
+        "month_label": "May 2024",
+        "date_label": "May 7, 2024",
+        "heading": "New feature",
+        "summary": "Preview release of Amazon Bedrock Studio."
+      },
+      {
+        "iso_date": "2024-05-02",
+        "iso_month": "2024-05",
+        "month_label": "May 2024",
+        "date_label": "May 2, 2024",
+        "heading": "New feature",
+        "summary": "You can now associate a Provisioned Throughput with an alias of your agent in Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-05-01",
+        "iso_month": "2024-05",
+        "month_label": "May 2024",
+        "date_label": "May 1, 2024",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now available in Europe (Ireland) (eu-west-1) and Asia Pacific (Mumbai) (ap-south-1). For information on endpoints, see Amazon Bedrock endpoints and quotas."
+      },
+      {
+        "iso_date": "2024-05-01",
+        "iso_month": "2024-05",
+        "month_label": "May 2024",
+        "date_label": "May 1, 2024",
+        "heading": "New feature",
+        "summary": "You can now select MongoDB Atlas as a vector index source in Amazon Bedrock Knowledge Bases."
+      },
+      {
+        "iso_date": "2024-04-30",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 30, 2024",
+        "heading": "New model",
+        "summary": "You can now use Titan Embeddings Text V2 model with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-04-30",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 30, 2024",
+        "heading": "More model support for Provisioned Throughput",
+        "summary": "You can now purchase Provisioned Throughput for AI21 Labs Jurassic-2 Ultra."
+      },
+      {
+        "iso_date": "2024-04-29",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 29, 2024",
+        "heading": "New models",
+        "summary": "You can now use Cohere Command R and Cohere Command R\\+ models with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-04-23",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 23, 2024",
+        "heading": "New feature",
+        "summary": "You can now import a custom model into Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-04-23",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 23, 2024",
+        "heading": "New feature",
+        "summary": "In Amazon Bedrock Agents, you can now return the information that an agent elicits from a user in the InvokeAgent response, rather than sending it to a Lambda function."
+      },
+      {
+        "iso_date": "2024-04-23",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 23, 2024",
+        "heading": "New feature",
+        "summary": "In Amazon Bedrock Agents, you can now define an action group by the parameters that it requires from the user."
+      },
+      {
+        "iso_date": "2024-04-23",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 23, 2024",
+        "heading": "New feature",
+        "summary": "You can now chat with your document with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-04-23",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 23, 2024",
+        "heading": "New feature",
+        "summary": "You can now select from multiple data sources in Amazon Bedrock Knowledge Bases."
+      },
+      {
+        "iso_date": "2024-04-23",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 23, 2024",
+        "heading": "New feature",
+        "summary": "You can now use Amazon Bedrock Guardrails to implement safeguards to block harmful content in model inputs and responses based on your use cases."
+      },
+      {
+        "iso_date": "2024-04-16",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 16, 2024",
+        "heading": "New model",
+        "summary": "You can now use Anthropic Claude 3 Opus with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-04-09",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 9, 2024",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now available in Asia Pacific (Sydney) (ap-southeast-2). For information on endpoints, see Amazon Bedrock endpoints and quotas."
+      },
+      {
+        "iso_date": "2024-04-05",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 5, 2024",
+        "heading": "CloudFormation support for Amazon Bedrock Agents and Amazon Bedrock Knowledge Bases",
+        "summary": "You can now set up and manage your Amazon Bedrock Agents and Amazon Bedrock Knowledge Bases resources with CloudFormation."
+      },
+      {
+        "iso_date": "2024-04-04",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 4, 2024",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now available in Europe (Paris) (eu-west-3). For information on endpoints, see Amazon Bedrock endpoints and quotas."
+      },
+      {
+        "iso_date": "2024-04-04",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 4, 2024",
+        "heading": "More model support for querying knowledge bases in Amazon Bedrock",
+        "summary": "You can now use Anthropic Claude 3 Haiku for knowledge base response generation."
+      },
+      {
+        "iso_date": "2024-04-03",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 3, 2024",
+        "heading": "New model",
+        "summary": "You can now use Mistral Large with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-04-03",
+        "iso_month": "2024-04",
+        "month_label": "April 2024",
+        "date_label": "April 3, 2024",
+        "heading": "More model support for querying knowledge bases in Amazon Bedrock",
+        "summary": "You can now use Anthropic Claude 3 Haiku for knowledge base response generation."
+      },
+      {
+        "iso_date": "2024-03-29",
+        "iso_month": "2024-03",
+        "month_label": "March 2024",
+        "date_label": "March 29, 2024",
+        "heading": "New feature",
+        "summary": "You can now purchase Provisioned Throughput for base models with no commitment."
+      },
+      {
+        "iso_date": "2024-03-29",
+        "iso_month": "2024-03",
+        "month_label": "March 2024",
+        "date_label": "March 29, 2024",
+        "heading": "More model support for Provisioned Throughput",
+        "summary": "You can now purchase Provisioned Throughput for Anthropic Claude 3 Sonnet, Anthropic Claude 3 Haiku, Cohere Embed English, and Cohere Embed Multilingual."
+      },
+      {
+        "iso_date": "2024-03-28",
+        "iso_month": "2024-03",
+        "month_label": "March 2024",
+        "date_label": "March 28, 2024",
+        "heading": "New feature",
+        "summary": "You can now create a network access policy in Amazon OpenSearch Serverless to allow your Amazon Bedrock knowledge base to access a private OpenSearch Serverless vector search collection configured with a VPC endpoint."
+      },
+      {
+        "iso_date": "2024-03-27",
+        "iso_month": "2024-03",
+        "month_label": "March 2024",
+        "date_label": "March 27, 2024",
+        "heading": "New feature",
+        "summary": "You can now include metadata for your source documents in Amazon Bedrock Knowledge Bases and filter on the metadata during knowledge base query."
+      },
+      {
+        "iso_date": "2024-03-26",
+        "iso_month": "2024-03",
+        "month_label": "March 2024",
+        "date_label": "March 26, 2024",
+        "heading": "New feature",
+        "summary": "You can now use a prompt template to customize the prompt sent to a model when you query a knowledge base and generate responses."
+      },
+      {
+        "iso_date": "2024-03-25",
+        "iso_month": "2024-03",
+        "month_label": "March 2024",
+        "date_label": "March 25, 2024",
+        "heading": "More model support for querying knowledge bases in Amazon Bedrock",
+        "summary": "You can now use Anthropic Claude 3 Sonnet for knowledge base response generation."
+      },
+      {
+        "iso_date": "2024-03-20",
+        "iso_month": "2024-03",
+        "month_label": "March 2024",
+        "date_label": "March 20, 2024",
+        "heading": "Decreased latency",
+        "summary": "You can now optimize on latency for simpler use cases in which agents have a single knowledge base."
+      },
+      {
+        "iso_date": "2024-03-13",
+        "iso_month": "2024-03",
+        "month_label": "March 2024",
+        "date_label": "March 13, 2024",
+        "heading": "New model",
+        "summary": "You can now use Anthropic Claude 3 Haiku with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-03-04",
+        "iso_month": "2024-03",
+        "month_label": "March 2024",
+        "date_label": "March 4, 2024",
+        "heading": "New model",
+        "summary": "You can now use Anthropic Claude 3 Sonnet with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-03-01",
+        "iso_month": "2024-03",
+        "month_label": "March 2024",
+        "date_label": "March 1, 2024",
+        "heading": "New model",
+        "summary": "You can now use Mistral AI models with Amazon Bedrock."
+      },
+      {
+        "iso_date": "2024-02-28",
+        "iso_month": "2024-02",
+        "month_label": "February 2024",
+        "date_label": "February 28, 2024",
+        "heading": "New feature",
+        "summary": "You can now customize the search strategy in Knowledge Base for Amazon OpenSearch Serverless vector stores that contain a filterable text field."
+      },
+      {
+        "iso_date": "2024-02-14",
+        "iso_month": "2024-02",
+        "month_label": "February 2024",
+        "date_label": "February 14, 2024",
+        "heading": "New feature",
+        "summary": "You can now detect images with a watermark from Amazon Bedrock Titan Image Generator."
+      },
+      {
+        "iso_date": "2024-02-09",
+        "iso_month": "2024-02",
+        "month_label": "February 2024",
+        "date_label": "February 9, 2024",
+        "heading": "Updated AWS PrivateLink support",
+        "summary": "You can now use AWS PrivateLink to create interface VPC endpoints for the Amazon Bedrock Agents Build-time service."
+      },
+      {
+        "iso_date": "2024-02-09",
+        "iso_month": "2024-02",
+        "month_label": "February 2024",
+        "date_label": "February 9, 2024",
+        "heading": "IAM role update",
+        "summary": "You can now use the same service role across knowledge bases and use roles without a predefined prefix."
+      },
+      {
+        "iso_date": "2024-02-02",
+        "iso_month": "2024-02",
+        "month_label": "February 2024",
+        "date_label": "February 2, 2024",
+        "heading": "Model in legacy status",
+        "summary": "Stable Diffusion XL v0.8 is now in legacy status. Migrate to Stable Diffusion XL v1.x before April 30, 2024."
+      },
+      {
+        "iso_date": "2024-01-25",
+        "iso_month": "2024-01",
+        "month_label": "January 2024",
+        "date_label": "January 25, 2024",
+        "heading": "Code examples chapter added",
+        "summary": "The Amazon Bedrock guide now includes code examples across a variety of Amazon Bedrock actions and scenarios."
+      },
+      {
+        "iso_date": "2024-01-24",
+        "iso_month": "2024-01",
+        "month_label": "January 2024",
+        "date_label": "January 24, 2024",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock Knowledge Bases now offers you a choice between a production and non-production account when you choose to quick create an Amazon OpenSearch Serverless vector store in the console."
+      },
+      {
+        "iso_date": "2024-01-18",
+        "iso_month": "2024-01",
+        "month_label": "January 2024",
+        "date_label": "January 18, 2024",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock Agents now lets you view traces in real-time when you use the test window in the console."
+      },
+      {
+        "iso_date": "2024-01-17",
+        "iso_month": "2024-01",
+        "month_label": "January 2024",
+        "date_label": "January 17, 2024",
+        "heading": "More model support for embedding data sources in Amazon Bedrock Knowledge Bases",
+        "summary": "Amazon Bedrock Knowledge Bases now supports using the Cohere Embed English and Cohere Embed Multilingual to embed your data sources."
+      },
+      {
+        "iso_date": "2023-12-27",
+        "iso_month": "2023-12",
+        "month_label": "December 2023",
+        "date_label": "December 27, 2023",
+        "heading": "More model support for Amazon Bedrock Agents and querying knowledge bases in Amazon Bedrock",
+        "summary": "Amazon Bedrock Agents and Amazon Bedrock Knowledge Bases response generation now support Anthropic Claude 2.1."
+      },
+      {
+        "iso_date": "2023-12-21",
+        "iso_month": "2023-12",
+        "month_label": "December 2023",
+        "date_label": "December 21, 2023",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now available in AWS GovCloud (US-West) (us-gov-west-1). For information on endpoints, see Amazon Bedrock endpoints and quotas."
+      },
+      {
+        "iso_date": "2023-12-21",
+        "iso_month": "2023-12",
+        "month_label": "December 2023",
+        "date_label": "December 21, 2023",
+        "heading": "New vector store support",
+        "summary": "You can now create a knowledge base in an Amazon Aurora database cluster. For more information, see Create a vector store in Amazon Aurora."
+      },
+      {
+        "iso_date": "2023-12-12",
+        "iso_month": "2023-12",
+        "month_label": "December 2023",
+        "date_label": "December 12, 2023",
+        "heading": "New managed policies",
+        "summary": "Amazon Bedrock has added AmazonBedrockFullAccess to give users permission to create, read, update, and delete resources, and AmazonBedrockReadOnly to give users read-only permissions for all actions."
+      },
+      {
+        "iso_date": "2023-11-29",
+        "iso_month": "2023-11",
+        "month_label": "November 2023",
+        "date_label": "November 29, 2023",
+        "heading": "New feature",
+        "summary": "Amazon Bedrock now supports creating model evaluation jobs using automatic metrics or human workers."
+      },
+      {
+        "iso_date": "2023-11-29",
+        "iso_month": "2023-11",
+        "month_label": "November 2023",
+        "date_label": "November 29, 2023",
+        "heading": "New feature",
+        "summary": "You can now monitor and customize your model versions."
+      },
+      {
+        "iso_date": "2023-11-29",
+        "iso_month": "2023-11",
+        "month_label": "November 2023",
+        "date_label": "November 29, 2023",
+        "heading": "New Titan models",
+        "summary": "New models from Titan include Amazon Titan Image Generator G1 V1 and Amazon Titan Multimodal Embeddings G1. For more information, see Titan Models."
+      },
+      {
+        "iso_date": "2023-11-28",
+        "iso_month": "2023-11",
+        "month_label": "November 2023",
+        "date_label": "November 28, 2023",
+        "heading": "New feature",
+        "summary": "With Continued Pre-training you can teach a model new domain knowledge. For more information, see Custom Models."
+      },
+      {
+        "iso_date": "2023-11-28",
+        "iso_month": "2023-11",
+        "month_label": "November 2023",
+        "date_label": "November 28, 2023",
+        "heading": "New feature",
+        "summary": "You can now query knowledge bases through the Retrieve and RetrieveAndGenerate APIs. For more information, see Query a knowledge base."
+      },
+      {
+        "iso_date": "2023-11-28",
+        "iso_month": "2023-11",
+        "month_label": "November 2023",
+        "date_label": "November 28, 2023",
+        "heading": "General release",
+        "summary": "General release of the Amazon Bedrock Knowledge Bases service. For more information, see Amazon Bedrock Knowledge Bases."
+      },
+      {
+        "iso_date": "2023-11-28",
+        "iso_month": "2023-11",
+        "month_label": "November 2023",
+        "date_label": "November 28, 2023",
+        "heading": "General release",
+        "summary": "General release of the Amazon Bedrock Agents service. For more information, see Amazon Bedrock Agents."
+      },
+      {
+        "iso_date": "2023-11-28",
+        "iso_month": "2023-11",
+        "month_label": "November 2023",
+        "date_label": "November 28, 2023",
+        "heading": "Customize more models",
+        "summary": "You can now customize models from Cohere and Meta. For more information, see Custom Models."
+      },
+      {
+        "iso_date": "2023-11-13",
+        "iso_month": "2023-11",
+        "month_label": "November 2023",
+        "date_label": "November 13, 2023",
+        "heading": "New model releases",
+        "summary": "Updated documentation to cover new Meta and Cohere models. For more information, see Amazon Bedrock."
+      },
+      {
+        "iso_date": "2023-10-20",
+        "iso_month": "2023-10",
+        "month_label": "October 2023",
+        "date_label": "October 20, 2023",
+        "heading": "Documentation localization",
+        "summary": "Amazon Bedrock documentation is now available in Japanese and German."
+      },
+      {
+        "iso_date": "2023-10-19",
+        "iso_month": "2023-10",
+        "month_label": "October 2023",
+        "date_label": "October 19, 2023",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now available in Europe (Frankfurt) (eu-central-1). For information on endpoints, see Amazon Bedrock endpoints and quotas."
+      },
+      {
+        "iso_date": "2023-10-03",
+        "iso_month": "2023-10",
+        "month_label": "October 2023",
+        "date_label": "October 3, 2023",
+        "heading": "Region expansion",
+        "summary": "Amazon Bedrock is now available in Asia Pacific (Tokyo) (ap-northeast-1). For information on endpoints, see Amazon Bedrock endpoints and quotas."
+      },
+      {
+        "iso_date": "2023-09-28",
+        "iso_month": "2023-09",
+        "month_label": "September 2023",
+        "date_label": "September 28, 2023",
+        "heading": "Gated general release",
+        "summary": "Gated general release of the Amazon Bedrock service. For more information, see Amazon Bedrock."
+      }
+    ],
+    "text": "July 30, 2026 — Amazon Bedrock Agents Classic is no longer open to new customers.: Amazon Bedrock Agents (now Amazon Bedrock Agents Classic) is no longer open to new customers. For capabilities similar to Bedrock Agents Classic, explore Amazon Bedrock AgentCore. Existing customers can continue to use the service as normal. For more information, see Amazon Bedrock Agents Classic availability change.\nJune 30, 2026 — Amazon Bedrock Agents Classic availability change: Amazon Bedrock Agents (launched November 2023) is now Amazon Bedrock Agents Classic and will no longer be open to new customers starting on July 30, 2026. If you would like to use Bedrock Agents Classic, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see Amazon Bedrock Agents Classic maintenance mode.\nMay 27, 2026 — Updated requests-per-minute (RPM) quota guidance: Clarified RPM quota behavior across Amazon Bedrock endpoints. The bedrock-mantle endpoint does not expose per-model RPM quotas; throttling is governed by token-based quotas. On the bedrock-runtime endpoint, RPM quotas are model-specific — some models, including Anthropic Claude Opus 4.7 and Claude Opus 4.8, are not subject to an RPM quota. For models that do have an RPM quota, see the Service Quotas console.\nMay 27, 2026 — Quotas for the bedrock-runtime endpoint: Added a dedicated page that describes the per-model token quotas that govern inference traffic to the bedrock-runtime endpoint and points to related quotas for custom inference profiles, batch inference, and Provisioned Throughput.\nMay 27, 2026 — Quotas for the bedrock-mantle endpoint: Documented the per-model input and output token quotas that govern inference traffic to the bedrock-mantle endpoint, including the default values for Anthropic Claude Opus 4.7, the request evaluation order, the differences from bedrock-runtime quotas, and how to request quota increases through AWS Support.\nMay 26, 2026 — Token counting on the bedrock-mantle endpoint: Documented how to count input tokens through the Anthropic counttokens path on the bedrock-mantle endpoint, including for Claude models that are not supported by CountTokens on bedrock-runtime.\nMarch 2, 2026 — Fully managed knowledge bases with agentic retrieval: Amazon Bedrock Knowledge Bases now offers fully managed knowledge bases, where Amazon Bedrock manages the storage, indexing, and retrieval infrastructure for you. Fully managed knowledge bases also support agentic retrieval with the AgenticRetrieveStream API, which uses a foundation model to decompose complex queries into sub-queries and iteratively retrieve relevant information.\nFebruary 27, 2026 — Converse API support for batch inference: You can now use the Converse API format for batch inference input data. When creating a batch inference job, set the model invocation type to Converse to use a consistent request format across models.\nFebruary 17, 2026 — New feature: Added support for fine-tuning open-weight models using OpenAI-compatible APIs. You can now create, monitor, and manage reinforcement fine-tuning jobs for open-weight models through familiar OpenAI SDK endpoints, including Files API, fine-tuning jobs APIs, and inference APIs.\nDecember 31, 2025 — Updated list of models supported for service tiers: Updated list of models supported for priority and flex service tiers\nDecember 18, 2025 — New feature: Amazon Bedrock Data Automation now supports blueprint instruction optimization for documents. Improve Data Automation custom output accuracy by providing example content assets with ground truth labels, enabling you to achieve production-ready accuracy for documents in minutes without model training.\nDecember 3, 2025 — New managed policies: Amazon Bedrock added the following managed IAM policies for Amazon Bedrock Mantle: AmazonBedrockMantleFullAccess, AmazonBedrockMantleReadOnly, AmazonBedrockMantleInferenceAccess. Amazon Bedrock Mantle provides OpenAI-compatible API endpoints for model inference.\nDecember 3, 2025 — New feature: Amazon Bedrock now supports OpenAI compatible API endpoints, including Responses API and Chat Completions API. These endpoints enable asynchronous inference for long-running workloads, stateful conversation management without manual history passing, and simplified tool use integration for agentic workflows. Migrate existing applications with minimal code changes by updating your base URL and API key.\nDecember 3, 2025 — New feature: Added new reinforcement fine-tuning to improve foundation model performance through feedback signals.\nNovember 26, 2025 — New feature: Added new \"Reserved\" service tier for Bedrock inference.\nNovember 24, 2025 — New model: Amazon Bedrock now supports Anthropic Claude Opus 4.5.\nNovember 21, 2025 — New feature: You can now share guardrails across accounts within an AWS organization.\nNovember 20, 2025 — New feature: Amazon Bedrock Data Automation now supports synchronous invocation.\nNovember 19, 2025 — Updated model support for custom model import: Custom model import now supports OpenAI GPT-OSS models.\nNovember 19, 2025 — Enhanced coding use case support for Standard tier: Amazon Bedrock Guardrails Standard tier now provides enhanced support for coding use cases. Content filters, prompt attacks, and denied topics have been upgraded to better handle code-related prompts and responses without requiring changes to existing configurations. Added comprehensive code domain support documentation and prompt leakage detection for Standard tier.\nNovember 18, 2025 — Updated feature: Added new service tiers priority and flex for on demand inference\nNovember 18, 2025 — Region expansion: Amazon Bedrock is now supported in Africa (Cape Town), Asia Pacific (New Zealand), Canada West (Calgary), Mexico (Central), and Middle East (Bahrain).\nOctober 31, 2025 — Updated feature: Added note about using 'english' dictionary instead of 'simple' dictionary for PostgreSQL text search in Aurora Knowledge Base integration.\nOctober 30, 2025 — Model in legacy status: Anthropic Claude 3.7 Sonnet is now in legacy status. Migrate to Claude Sonnet 4.5 before April 28, 2026.\nOctober 28, 2025 — New feature: Four new Stability AI Image Services (outpaint and upscale) are now available with Amazon Bedrock.\nOctober 16, 2025 — Updated feature: You can now use a previously customized model (fine-tuned or distilled) as the base model for further customization.\nOctober 15, 2025 — New model: You can now use Anthropic Claude Haiku 4.5 with Amazon Bedrock.\nOctober 15, 2025 — New feature: Access to all Amazon Bedrock foundation models is now enabled by default with the correct IAM permissions.\nOctober 9, 2025 — Region expansion: Amazon Bedrock Guardrails is now generally available with cross-region inference in 5 additional regions: Asia Pacific (Bangkok), Asia Pacific (Kuala Lumpur), Asia Pacific (Taipei), Israel (Tel Aviv), and Middle East (Dubai).\nOctober 7, 2025 — Updated managed policy: Amazon Bedrock updated the AmazonBedrockFullAccess managed policy to enable access to all serverless foundation models by default.\nOctober 3, 2025 — Updated model support for batch inference: Batch inference now supports DeepSeek V3.1, Qwen3 32B (dense), Qwen3 235B A22B 2507, Qwen3-Coder-30B-A3B-Instruct, and Qwen3 Coder 480B A35B Instruct.\nOctober 2, 2025 — New model: You can now use Cohere Cohere Embed v4 with Amazon Bedrock.\nSeptember 30, 2025 — Updated model support: You can now import Qwen3 models with model import.\nSeptember 30, 2025 — Region expansion: Cohere Cohere Rerank 3.5 model is now available in US East (N. Virginia).\nSeptember 29, 2025 — Region expansion: Amazon Bedrock Guardrails is now available generally in Asia Pacific (Melbourne) and with cross-Region inference.\nSeptember 29, 2025 — New model: You can now use Anthropic Claude Sonnet 4.5 with Amazon Bedrock.\nSeptember 26, 2025 — Region expansion: Amazon Bedrock is now available in Asia Pacific (Thailand), Asia Pacific (Taipei), Asia Pacific (Malaysia), Middle East (UAE), and Israel (Tel Aviv).\nSeptember 26, 2025 — New feature: Amazon Bedrock Flows now supports Flows trace enhancements and DoWhile loop node functionality.\nSeptember 25, 2025 — New model: You can now use Anthropic Claude Sonnet 4.5 with Amazon Bedrock.\nSeptember 18, 2025 — New model: Stability AI Image Services are now available with Amazon Bedrock.\nSeptember 15, 2025 — New model: Meta Llama 3.3 70B Instruct is now available for fine-tuning and continued pretraining is now available with Amazon Bedrock.\nSeptember 11, 2025 — New Region support for Guardrails: Amazon Bedrock Guardrails is now supported in Asia Pacific (Jakarta).\nSeptember 9, 2025 — New tutorial: TwelveLabs Marengo Embed 2.7 now supports the InvokeModel API.\nSeptember 4, 2025 — New tutorial: You can now use the bedrock:bearerTokenType condition key with the bedrock:CallWithBearerToken action.\nSeptember 2, 2025 — New tutorial: You can familiarize yourself with Amazon Bedrock resource creation by trying out a tutorial to easily set up a mortgage Amazon Bedrock flow with CloudFormation templates.\nAugust 27, 2025 — New feature: The OpenAI batch API is now supported.\nAugust 25, 2025 — Region expansion: Amazon Bedrock data automation is now available in AWS GovCloud (US-West).\nAugust 25, 2025 — New languages: Amazon Bedrock data automation now supports data extraction from documents in Portuguese, French, Italian, Spanish, and German.\nAugust 21, 2025 — New feature: You can now estimate token count for some models.\nAugust 14, 2025 — Region expansion for model: TwelveLabs TwelveLabs Pegasus 1.2 is now supported in US East (N. Virginia) and Asia Pacific (Seoul).\nAugust 11, 2025 — Added model support for Amazon Bedrock Guardrails: Amazon Bedrock Guardrails is now supported in US West (N. California).\nAugust 5, 2025 — New models: You can now use OpenAI gpt-oss-20b and gpt-oss-120b with Amazon Bedrock.\nAugust 5, 2025 — New feature: Amazon Bedrock Guardrails now supports Automated Reasoning checks to validate the accuracy of foundation model responses.\nJuly 31, 2025 — Region expansion: Amazon Bedrock is now supported in Asia Pacific (Melbourne).\nJuly 31, 2025 — New model: You can now use Anthropic Claude Opus 4.1 with Amazon Bedrock.\nJuly 29, 2025 — Added model support for batch inference: Batch inference now supports the US Amazon Nova Premier inference profile.\nJuly 28, 2025 — Region expansion: Amazon Bedrock is now supported in US West (N. California).\nJuly 28, 2025 — New feature: Amazon Bedrock data automation now supports DOC/DOCX and H.265 file types\nJuly 16, 2025 — Region expansion: Amazon Bedrock data automation is now available in Europe (Frankfurt), Europe (London), Europe (Ireland), Asia Pacific (Mumbai), and Asia Pacific (Sydney).\nJuly 16, 2025 — New feature: You can now import SageMaker AI-trained Amazon Nova models into Amazon Bedrock as custom models.\nJuly 16, 2025 — New feature: You can now deploy custom models for on-demand inference in Amazon Bedrock. This feature allows you to deploy custom models for pay-per-token inference without provisioned throughput.\nJuly 15, 2025 — New models: You can now use TwelveLabs TwelveLabs Pegasus 1.2 and TwelveLabs Marengo Embed 2.7 with Amazon Bedrock.\nJuly 7, 2025 — Region expansion: You can now use Anthropic Claude 3.7 Sonnet in AWS GovCloud (US-West).\nJuly 7, 2025 — New managed policies: Amazon Bedrock added the following managed IAM policies: AmazonBedrockLimitedAccess, AmazonBedrockMarketplaceAccess.\nJuly 7, 2025 — New feature: Amazon Bedrock now supports the creation of API keys for easy authentication to make calls to the Amazon Bedrock API.\nJuly 3, 2025 — Region expansion for intelligent prompt routing: Intelligent prompt routing is now supported in AWS GovCloud (US-West) and AWS GovCloud (US-East).\nJuly 3, 2025 — Added model support for batch inference: Batch inference is now supported by the Meta Llama 4 Scout 17B Instruct and Llama 4 Maverick 17B Instruct models.\nJuly 1, 2025 — Region expansion: Prompt management is now supported in Europe (Milan), Europe (Spain), Asia Pacific (Hyderabad), and Asia Pacific (Osaka).\nJuly 1, 2025 — Region expansion: Amazon Bedrock Flows is now supported in Europe (Milan), Europe (Spain), Asia Pacific (Hyderabad), and Asia Pacific (Osaka).\nJune 26, 2025 — Region expansion for Amazon Bedrock Knowledge Bases: Amazon Bedrock Knowledge Bases is now supported in the AWS Regions Asia Pacific (Hyderabad), Asia Pacific (Osaka), Europe (Milan), and Europe (Spain).\nJune 23, 2025 — New feature: Amazon Bedrock Guardrails supports safeguard tiers, which give you performance and language options for content filters (text), prompt attacks, and denied topic policies.\nJune 19, 2025 — New feature: (Preview) Run code directly in your Amazon Bedrock flow with inline code nodes.\nJune 19, 2025 — New feature: (Preview) Run Amazon Bedrock flows for longer durations with flow executions.\nMay 28, 2025 — New tutorial: Added a tutorial for creating a simple Amazon Bedrock agent.\nMay 22, 2025 — New models available: You can know use Claude Sonnet 4 and Claude Opus 4 with Amazon Bedrock.\nMay 19, 2025 — New feature: Amazon Bedrock data automation now supports custom output for videos.\nMay 16, 2025 — Added video blueprint support: BDA now supports blueprints for videos.\nMay 13, 2025 — New feature: Amazon Bedrock Guardrails now supports cross-Region inference.\nMay 12, 2025 — Added model support for custom model import: Custom model import now supports Qwen2, Qwen2.5, Qwen2-VL, Qwen2.5-VL.\nMay 5, 2025 — New feature: Amazon Bedrock data automation now supports custom blueprints for audio files.\nApril 28, 2025 — New model: You can now use Meta Llama 4 Scout 17B Instruct and Llama 4 Maverick 17B Instruct with Amazon Bedrock.\nApril 28, 2025 — New model: You can now use Writer Palmyra X4 and Writer Palmyra X5 with Amazon Bedrock.\nApril 25, 2025 — New feature: You can now reference images and documents stored in Amazon S3 when using the InvokeModel and Converse APIs with Amazon Nova Lite and Amazon Nova Pro. Inclusion of images, documents, and videos stored in S3 with these APIs is also now supported with inference profiles.\nApril 25, 2025 — New feature: Amazon Bedrock data automation now supports modality routing and hyperlink support\nApril 22, 2025 — General release: Intelligent prompt routing is now generally available with Amazon Bedrock.\nApril 10, 2025 — New feature: Amazon Bedrock Knowledge Bases now supports additional user-provided metadata field for Amazon Aurora and enhanced hybrid search capabilities for MongoDB vector stores.\nApril 9, 2025 — Region expansion for custom model import: Custom model import is now supported in Europe (Frankfurt).\nApril 8, 2025 — New model: You can now use Pixtral Large (25.02) with Amazon Bedrock.\nApril 7, 2025 — New feature: New options for handling harmful content detected by Amazon Bedrock.\nApril 4, 2025 — Region expansion for batch inference: Batch inference now supports Amazon Nova Lite, Amazon Nova Pro, and Amazon Nova Micro in AWS GovCloud (US-West).\nApril 2, 2025 — Region expansion for batch inference: Batch inference now supports Anthropic Claude Claude 3.5 Sonnet V2 in Asia Pacific (Mumbai), Asia Pacific (Hyderabad), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Seoul), Asia Pacific (Osaka) and Amazon Titan Text Embeddings V2 in Europe (Stockholm), Europe (Milan), and Europe (Spain).\nApril 2, 2025 — Added model support for Provisioned Throughput: Provisioned Throughput now supports Amazon Nova Canvas, in addition to 24k context windows for Amazon Nova Lite, Amazon Nova Micro, and Amazon Nova Pro.\nMarch 27, 2025 — New feature: Amazon Bedrock Knowledge Bases now supports OpenSearch Managed Clusters as a vector store when creating a knowledge base.\nMarch 27, 2025 — New feature: You can now use flow templates to get started with Amazon Bedrock Flows.\nMarch 25, 2025 — Feature moved: Amazon Bedrock Studio, renamed to Amazon Bedrock in Sagemaker Unified Studio, is now available in Amazon SageMaker Unified Studio.\nMarch 18, 2025 — New feature: You can now enforce Amazon Bedrock model inference requests to use specific guardrails through a new IAM condition key.\nMarch 14, 2025 — Region expansion: Amazon Bedrock is now supported in Europe (Milan) and Europe (Spain).\nMarch 13, 2025 — Support expanded for feature: Amazon Bedrock Knowledge Bases now supports cross-region inference with structured data retrieval.\nMarch 13, 2025 — New feature: Amazon Bedrock now supports configured prompt routers in preview with intelligent prompt routing.\nMarch 13, 2025 — Model support expanded for feature: Provisioned Throughput now supports Llama 3.2 1B Instruct, Llama 3.2 3B Instruct, Llama 3.2 11B Instruct, and Llama 3.2 90B Instruct in US West (Oregon).\nMarch 12, 2025 — Added model support for Knowledge Bases: Amazon Bedrock Knowledge Bases now supports reasoning models Deepseek-R1 and Anthropic Claude 3.7 Sonnet.\nMarch 10, 2025 — New model: You can now use DeepSeek-R1 with Amazon Bedrock.\nMarch 10, 2025 — New feature: You can now configure an Amazon Bedrock Agent to complete tasks with computer use tools.\nMarch 7, 2025 — General release: GraphRAG for Amazon Bedrock Knowledge Bases is now generally available with additional capabilities.\nMarch 3, 2025 — General release: Amazon Bedrock data automation is now available with increased accuracy and CRIS\nFebruary 27, 2025 — Region expansion: Amazon Bedrock is now supported in Europe (Stockholm).\nFebruary 27, 2025 — New feature: You can now use Amazon Bedrock session management APIs to manage state for generative AI applications built with open-source frameworks.\nFebruary 24, 2025 — New model: You can now use Claude 3.7 Sonnet with Amazon Bedrock.\nFebruary 21, 2025 — Region expansion: Amazon Bedrock is now supported in Asia Pacific (Hyderabad) and Asia Pacific (Osaka).\nJanuary 24, 2025 — New model: You can now use Cohere Embed English and Cohere Embed Multilingual with Amazon Bedrock.\nJanuary 23, 2025 — New model: You can now use Luma Ray v2 with Amazon Bedrock.\nJanuary 22, 2025 — New feature: You can now converse with an agent node in an Amazon Bedrock flow.\nDecember 23, 2024 — Updated model support: You can now use Llama 3.3 70B Instruct for batch inference in US East (N. Virginia) and US West (Oregon).\nDecember 23, 2024 — Region expansion: You can now use Llama 3.3 70B Instruct for batch inference in US East (N. Virginia) and US West (Oregon).\nDecember 19, 2024 — New models: You can now use Llama 3.3 70B Instruct and Stable Diffusion 3.5 with Amazon Bedrock.\nDecember 9, 2024 — New feature: Amazon Bedrock Guardrails can now be applied to French and Spanish inputs.\nDecember 6, 2024 — New feature: You can now run batch inference with an inference profile.\nDecember 4, 2024 — Updated managed policies: Amazon Bedrock Marketplace permissions were added to the AmazonBedrockFullAccess and AmazonBedrockReadOnly AWS managed policies.\nDecember 4, 2024 — New feature: You can now deploy an Amazon Bedrock marketplace model and then run inference with the model.\nDecember 4, 2024 — New feature: You can now connect knowledge bases to structured data stores and generate SQL queries in Amazon Bedrock Knowledge Bases.\nDecember 4, 2024 — New feature: You can now parse multimodal data containing images with the Amazon Bedrock Data Automation parser or a foundation model in Amazon Bedrock Knowledge Bases.\nDecember 4, 2024 — New feature: Amazon Bedrock Guardrails can now help filter harmful images by using image content filters.\nDecember 3, 2024 — New feature: Amazon Bedrock Agents now supports multi-agent collaboration that enables multiple Amazon Bedrock Agents to collaboratively plan and solve complex tasks.\nDecember 3, 2024 — New feature: You can now transfer knowledge from a larger more intelligent model (known as teacher) to a smaller, faster, cost-efficient model (known as student) and use the distilled student model for your specific use case.\nDecember 2, 2024 — New feature: You can now use latency optimized models from Meta and Anthropic in Amazon Bedrock.\nDecember 1, 2024 — New feature: You can now apply guardrails when you retrieve results from a data source in Amazon Bedrock Knowledge Bases.\nDecember 1, 2024 — New feature: You can now use RetrieveAndGenerateStream, a streaming version of RetrieveAndGenerate, in Amazon Bedrock Knowledge Bases.\nDecember 1, 2024 — New feature: You can now apply a retrieval filter based on a user query and a metadata schema in Amazon Bedrock Knowledge Bases.\nDecember 1, 2024 — New feature: You can now use a reranker model to rerank the relevance of source documents based on a user query.\nDecember 1, 2024 — New feature: You can now ingest document changes directly into a knowledge base in one step.\nDecember 1, 2024 — New feature: You can now connect your knowledge base to a custom data source.\nNovember 22, 2024 — Region expansion: Europe (Zurich) now supports Amazon Bedrock Agents, Amazon Bedrock Knowledge Bases, Prompt management, and Amazon Bedrock Flows.\nNovember 22, 2024 — Region expansion: Amazon Bedrock Flows is now supported in US East (Ohio), Asia Pacific (Seoul), Canada (Central), Europe (London), and South America (São Paulo).\nNovember 22, 2024 — Region expansion: Prompt management is now supported in US East (Ohio), Asia Pacific (Seoul), Canada (Central), Europe (London), and South America (São Paulo).\nNovember 22, 2024 — General release: Amazon Bedrock Flows is now generally available in Amazon Bedrock.\nNovember 21, 2024 — Feature update: Amazon Bedrock knowledge bases now support binary embeddings.\nNovember 20, 2024 — Feature update: Amazon Bedrock Prompt management now supports optimizing prompts.\nNovember 11, 2024 — Region expansion: You can now use Amazon Bedrock in AWS GovCloud (US-East) and Europe (Zurich).\nNovember 8, 2024 — Region expansion: Amazon Bedrock now supports knowledge bases in US East (Ohio).\nNovember 7, 2024 — New feature: You can now view the trace for a flow to track the inputs and outputs of each node.\nNovember 7, 2024 — New feature: You can now include guardrails for a knowledge base or prompt node in a flow.\nNovember 7, 2024 — General release: Prompt management is now generally available in Amazon Bedrock.\nNovember 6, 2024 — Region expansion: You can now create application inference profiles in Asia Pacific (Singapore) and Asia Pacific (Seoul).\nNovember 6, 2024 — Region expansion: Cross-Region inference profiles have been added for Anthropic Claude and Meta Llama models.\nNovember 4, 2024 — New model: You can now use Anthropic Claude 3.5 Haiku with Amazon Bedrock.\nNovember 1, 2024 — Feature update: You can now create application inference profiles to run model inference and use them to track costs and metrics.\nOctober 31, 2024 — Feature update: You can now include model-specific inference parameters when defining a prompt in Prompt management or in a prompt node in a flow.\nOctober 22, 2024 — New model: You can now use Anthropic Claude 3.5 Sonnet v2 with Amazon Bedrock. You can also use computer use tools with Anthropic Claude 3.5 Sonnet v2.\nOctober 21, 2024 — Updated managed policy: Read-only permissions for Custom Model Import were added to the AmazonBedrockReadOnly AWS-managed policy.\nOctober 21, 2024 — Feature update: The topK field is no longer supported in the inferenceConfiguration object when creating a prompt in Prompt management.\nOctober 21, 2024 — Feature update: The text and chat playgrounds are now merged into a Chat/text playground in the Amazon Bedrock console.\nOctober 21, 2024 — Feature update: The text and chat playgrounds are now merged into a Chat/text playground in the Amazon Bedrock console.\nOctober 7, 2024 — Region expansion: Batch inference is now supported in Asia Pacific (Seoul).\nOctober 1, 2024 — New Regions supported: You can now use Amazon Bedrock in AWS Region US East (Ohio) and Asia Pacific (Seoul).\nOctober 1, 2024 — Model in legacy status: Anthropic Claude Opus 4 is now in legacy status. Migrate to Claude Opus 4.1 before May 31, 2026.\nSeptember 25, 2024 — New models: You can now use Meta Llama 3.2 1B Instruct, Llama 3.2 3B Instruct, Llama 3.2 11B Instruct, and Llama 3.2 90B Instruct models with Amazon Bedrock.\nSeptember 25, 2024 — New feature: You can now use binary embeddings with Titan Text Embeddings V2 model in Amazon Bedrock\nSeptember 24, 2024 — New feature: You can now monitor Guardrails with CloudWatch Metrics in Amazon Bedrock.\nSeptember 24, 2024 — New feature: You can now assess an inference profile using model evaluation.\nSeptember 23, 2024 — New models: You can now use AI21 Labs Jamba 1.5 Large and AI21 Labs Jamba 1.5 Mini with Amazon Bedrock.\nSeptember 23, 2024 — New feature: You can now use an inference profile when using a prompt in Prompt management or including a prompt in a flow.\nSeptember 23, 2024 — More model support for Provisioned Throughput: You can now purchase Provisioned Throughput for Anthropic Claude 3.5 Sonnet models in US West (Oregon).\nSeptember 18, 2024 — New feature: You can now monitor status changes in batch inference jobs using Amazon EventBridge.\nSeptember 16, 2024 — New feature: You can now submit files from an S3 bucket owned by another account to a batch inference job.\nSeptember 16, 2024 — New feature: You can now use a VPC when submitting a batch inference job.\nSeptember 11, 2024 — New feature: You can now use an inference profile when generating responses based on results queried from a knowledge base and when parsing a data source.\nSeptember 4, 2024 — Updated content: Updated topic titles and reorganized content to improve readability. If you'd like to provide feedback on these changes, use this Provide feedback link.\nSeptember 4, 2024 — New model: You can now use Stable Image Ultra, Stable Diffusion 3 Large, and Stable Image Core models with Amazon Bedrock.\nAugust 27, 2024 — Updated managed policy: Inference profile read-only permissions were added to the AmazonBedrockReadOnly AWS-managed policy.\nAugust 27, 2024 — New feature: You can now use cross-Region inference using inference profiles to increase throughput.\nAugust 26, 2024 — New feature: You can now request confirmation from your application users before invoking the Amazon Bedrock Agent action group function.\nAugust 21, 2024 — Updated managed policy: Read-only permissions for Batch inference (model invocation job), Amazon Bedrock Guardrails, and Amazon Bedrock Model evaluation were added to the AmazonBedrockReadOnly AWS-managed policy.\nAugust 21, 2024 — New feature: Asynchronous model invocation with multiple prompts with batch inference is now generally available.\nAugust 16, 2024 — New feature: You can now run model inference on multiple prompts asynchronously using batch inference.\nAugust 6, 2024 — New model: You can now use Amazon Titan Image Generator G1 V2 with Amazon Bedrock.\nAugust 1, 2024 — Region expansion: You can now use Meta Llama 3 Instruct models 8B and 70B in AWS Region AWS GovCloud (US-West).\nAugust 1, 2024 — New feature: You can now copy custom models into other Regions in Amazon Bedrock.\nAugust 1, 2024 — New feature: You can now share custom models with other accounts in Amazon Bedrock.\nJuly 24, 2024 — New model: You can now use Mistral AI Mistral Large 2 (24.07) model with Amazon Bedrock.\nJuly 23, 2024 — New model: You can now use Meta Llama 3.1 Instruct models with Amazon Bedrock.\nJuly 22, 2024 — New feature: You can now use Prompt management and Amazon Bedrock Flows with Amazon Bedrock Studio.\nJuly 10, 2024 — New feature: You can now string together different Amazon Bedrock resources into a workflow for end-to-end solutions.\nJuly 10, 2024 — New feature: You can now create and save prompts to reuse in different workflows.\nJuly 10, 2024 — New feature: You can now modify query configurations during runtime for knowledge bases that are attached to an agent.\nJuly 10, 2024 — New feature: Amazon Bedrock now offers semantic and hierarchical chunking, and advanced parsing of more than standard text. You can also use Lambda function for custom data transformations.\nJuly 10, 2024 — New feature: Amazon Bedrock now offers query decomposition to break down complex queries into smaller, more manageable sub-queries.\nJuly 10, 2024 — New feature: You can now connect to and crawl your data stored in Confluence, Salesforce, and SharePoint for your knowledge base. You can also connect to and crawl web URLs.\nJuly 10, 2024 — New feature: You can now use code interpretation in Amazon Bedrock to generate, run, and troubleshoot code in a secure test environment.\nJuly 10, 2024 — New feature: You can now use memory for your agents to retain conversational context across multiple sessions.\nJuly 10, 2024 — New feature: You can now use an independent API to call your guardrails in Amazon Bedrock.\nJuly 10, 2024 — New feature: You can now use contextual grounding checks with guardrails.\nJune 28, 2024 — Region expansion: Amazon Bedrock Agents is now supported in Canada (Central) (ca-central-1), Europe (London) (eu-west-2), and South America (São Paulo) (sa-east-1).\nJune 25, 2024 — New model: You can now use AI21 Jamba-Instruct with Amazon Bedrock.\nJune 21, 2024 — Region expansion: Amazon Bedrock Guardrails is now supported in Canada (Central) (ca-central-1), Europe (London) (eu-west-2), and South America (São Paulo) (sa-east-1).\nJune 21, 2024 — New feature: You can now include documents in the chat playground or while using the Conversation API.\nJune 20, 2024 — New model: You can now use Claude 3.5 Sonnet with Amazon Bedrock.\nJune 20, 2024 — New feature: Cohere Embed V3 models now support int8 and binary embedding types in the response.\nJune 18, 2024 — New feature: You can now use guardrails with the Converse API.\nJune 13, 2024 — Region expansion: Amazon Bedrock is now available in Canada (Central) (ca-central-1), Europe (London) (eu-west-2), and South America (São Paulo) (sa-east-1). For information on endpoints, see Amazon Bedrock endpoints and quotas.\nJune 13, 2024 — New feature: You can now view information in the trace about whether agent action group results were sent to be handled by a Lambda function or whether control was returned to the agent developer.\nJune 7, 2024 — New model: You can now use Claude 3 Opus with Amazon Bedrock.\nMay 30, 2024 — New feature: You can now use the Converse API to create conversational applications.\nMay 30, 2024 — New feature: You can now use tools with Amazon Bedrock models.\nMay 30, 2024 — More model support for embedding data sources in Amazon Bedrock Knowledge Bases.: You can now use Amazon Titan Text Embeddings V2 model to embed your data sources in Amazon Bedrock Knowledge Bases.\nMay 24, 2024 — New model: You can now use Mistral Small with Amazon Bedrock.\nMay 20, 2024 — New feature: You can now use guardrails with your Agent in Amazon Bedrock.\nMay 9, 2024 — New feature: You can now modify inference parameters when generating responses from knowledge base retrieval.\nMay 7, 2024 — New model: You can now use Amazon Titan Text Premier model with Amazon Bedrock.\nMay 7, 2024 — New feature: Preview release of Amazon Bedrock Studio.\nMay 2, 2024 — New feature: You can now associate a Provisioned Throughput with an alias of your agent in Amazon Bedrock.\nMay 1, 2024 — Region expansion: Amazon Bedrock is now available in Europe (Ireland) (eu-west-1) and Asia Pacific (Mumbai) (ap-south-1). For information on endpoints, see Amazon Bedrock endpoints and quotas.\nMay 1, 2024 — New feature: You can now select MongoDB Atlas as a vector index source in Amazon Bedrock Knowledge Bases.\nApril 30, 2024 — New model: You can now use Titan Embeddings Text V2 model with Amazon Bedrock.\nApril 30, 2024 — More model support for Provisioned Throughput: You can now purchase Provisioned Throughput for AI21 Labs Jurassic-2 Ultra.\nApril 29, 2024 — New models: You can now use Cohere Command R and Cohere Command R\\+ models with Amazon Bedrock.\nApril 23, 2024 — New feature: You can now import a custom model into Amazon Bedrock.\nApril 23, 2024 — New feature: In Amazon Bedrock Agents, you can now return the information that an agent elicits from a user in the InvokeAgent response, rather than sending it to a Lambda function.\nApril 23, 2024 — New feature: In Amazon Bedrock Agents, you can now define an action group by the parameters that it requires from the user.\nApril 23, 2024 — New feature: You can now chat with your document with Amazon Bedrock.\nApril 23, 2024 — New feature: You can now select from multiple data sources in Amazon Bedrock Knowledge Bases.\nApril 23, 2024 — New feature: You can now use Amazon Bedrock Guardrails to implement safeguards to block harmful content in model inputs and responses based on your use cases.\nApril 16, 2024 — New model: You can now use Anthropic Claude 3 Opus with Amazon Bedrock.\nApril 9, 2024 — Region expansion: Amazon Bedrock is now available in Asia Pacific (Sydney) (ap-southeast-2). For information on endpoints, see Amazon Bedrock endpoints and quotas.\nApril 5, 2024 — CloudFormation support for Amazon Bedrock Agents and Amazon Bedrock Knowledge Bases: You can now set up and manage your Amazon Bedrock Agents and Amazon Bedrock Knowledge Bases resources with CloudFormation.\nApril 4, 2024 — Region expansion: Amazon Bedrock is now available in Europe (Paris) (eu-west-3). For information on endpoints, see Amazon Bedrock endpoints and quotas.\nApril 4, 2024 — More model support for querying knowledge bases in Amazon Bedrock: You can now use Anthropic Claude 3 Haiku for knowledge base response generation.\nApril 3, 2024 — New model: You can now use Mistral Large with Amazon Bedrock.\nApril 3, 2024 — More model support for querying knowledge bases in Amazon Bedrock: You can now use Anthropic Claude 3 Haiku for knowledge base response generation.\nMarch 29, 2024 — New feature: You can now purchase Provisioned Throughput for base models with no commitment.\nMarch 29, 2024 — More model support for Provisioned Throughput: You can now purchase Provisioned Throughput for Anthropic Claude 3 Sonnet, Anthropic Claude 3 Haiku, Cohere Embed English, and Cohere Embed Multilingual.\nMarch 28, 2024 — New feature: You can now create a network access policy in Amazon OpenSearch Serverless to allow your Amazon Bedrock knowledge base to access a private OpenSearch Serverless vector search collection configured with a VPC endpoint.\nMarch 27, 2024 — New feature: You can now include metadata for your source documents in Amazon Bedrock Knowledge Bases and filter on the metadata during knowledge base query.\nMarch 26, 2024 — New feature: You can now use a prompt template to customize the prompt sent to a model when you query a knowledge base and generate responses.\nMarch 25, 2024 — More model support for querying knowledge bases in Amazon Bedrock: You can now use Anthropic Claude 3 Sonnet for knowledge base response generation.\nMarch 20, 2024 — Decreased latency: You can now optimize on latency for simpler use cases in which agents have a single knowledge base.\nMarch 13, 2024 — New model: You can now use Anthropic Claude 3 Haiku with Amazon Bedrock.\nMarch 4, 2024 — New model: You can now use Anthropic Claude 3 Sonnet with Amazon Bedrock.\nMarch 1, 2024 — New model: You can now use Mistral AI models with Amazon Bedrock.\nFebruary 28, 2024 — New feature: You can now customize the search strategy in Knowledge Base for Amazon OpenSearch Serverless vector stores that contain a filterable text field.\nFebruary 14, 2024 — New feature: You can now detect images with a watermark from Amazon Bedrock Titan Image Generator.\nFebruary 9, 2024 — Updated AWS PrivateLink support: You can now use AWS PrivateLink to create interface VPC endpoints for the Amazon Bedrock Agents Build-time service.\nFebruary 9, 2024 — IAM role update: You can now use the same service role across knowledge bases and use roles without a predefined prefix.\nFebruary 2, 2024 — Model in legacy status: Stable Diffusion XL v0.8 is now in legacy status. Migrate to Stable Diffusion XL v1.x before April 30, 2024.\nJanuary 25, 2024 — Code examples chapter added: The Amazon Bedrock guide now includes code examples across a variety of Amazon Bedrock actions and scenarios.\nJanuary 24, 2024 — New feature: Amazon Bedrock Knowledge Bases now offers you a choice between a production and non-production account when you choose to quick create an Amazon OpenSearch Serverless vector store in the console.\nJanuary 18, 2024 — New feature: Amazon Bedrock Agents now lets you view traces in real-time when you use the test window in the console.\nJanuary 17, 2024 — More model support for embedding data sources in Amazon Bedrock Knowledge Bases: Amazon Bedrock Knowledge Bases now supports using the Cohere Embed English and Cohere Embed Multilingual to embed your data sources.\nDecember 27, 2023 — More model support for Amazon Bedrock Agents and querying knowledge bases in Amazon Bedrock: Amazon Bedrock Agents and Amazon Bedrock Knowledge Bases response generation now support Anthropic Claude 2.1.\nDecember 21, 2023 — Region expansion: Amazon Bedrock is now available in AWS GovCloud (US-West) (us-gov-west-1). For information on endpoints, see Amazon Bedrock endpoints and quotas.\nDecember 21, 2023 — New vector store support: You can now create a knowledge base in an Amazon Aurora database cluster. For more information, see Create a vector store in Amazon Aurora.\nDecember 12, 2023 — New managed policies: Amazon Bedrock has added AmazonBedrockFullAccess to give users permission to create, read, update, and delete resources, and AmazonBedrockReadOnly to give users read-only permissions for all actions.\nNovember 29, 2023 — New feature: Amazon Bedrock now supports creating model evaluation jobs using automatic metrics or human workers.\nNovember 29, 2023 — New feature: You can now monitor and customize your model versions.\nNovember 29, 2023 — New Titan models: New models from Titan include Amazon Titan Image Generator G1 V1 and Amazon Titan Multimodal Embeddings G1. For more information, see Titan Models.\nNovember 28, 2023 — New feature: With Continued Pre-training you can teach a model new domain knowledge. For more information, see Custom Models.\nNovember 28, 2023 — New feature: You can now query knowledge bases through the Retrieve and RetrieveAndGenerate APIs. For more information, see Query a knowledge base.\nNovember 28, 2023 — General release: General release of the Amazon Bedrock Knowledge Bases service. For more information, see Amazon Bedrock Knowledge Bases.\nNovember 28, 2023 — General release: General release of the Amazon Bedrock Agents service. For more information, see Amazon Bedrock Agents.\nNovember 28, 2023 — Customize more models: You can now customize models from Cohere and Meta. For more information, see Custom Models.\nNovember 13, 2023 — New model releases: Updated documentation to cover new Meta and Cohere models. For more information, see Amazon Bedrock.\nOctober 20, 2023 — Documentation localization: Amazon Bedrock documentation is now available in Japanese and German.\nOctober 19, 2023 — Region expansion: Amazon Bedrock is now available in Europe (Frankfurt) (eu-central-1). For information on endpoints, see Amazon Bedrock endpoints and quotas.\nOctober 3, 2023 — Region expansion: Amazon Bedrock is now available in Asia Pacific (Tokyo) (ap-northeast-1). For information on endpoints, see Amazon Bedrock endpoints and quotas.\nSeptember 28, 2023 — Gated general release: Gated general release of the Amazon Bedrock service. For more information, see Amazon Bedrock."
+  },
+  "facts": {
+    "bedrock.doc-history.entry-count": {
+      "type": "integer",
+      "value": 264,
+      "note": "Dated change entries parsed from the documentation history table."
+    },
+    "bedrock.doc-history.earliest-date": {
+      "type": "string",
+      "value": "2023-09-28"
+    },
+    "bedrock.doc-history.latest-date": {
+      "type": "string",
+      "value": "2026-07-30"
+    },
+    "bedrock.doc-history.precision": {
+      "type": "string",
+      "value": "day",
+      "note": "This source records an exact calendar day per entry, unlike the month-precision release notes."
+    }
+  }
+}

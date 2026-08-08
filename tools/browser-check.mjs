@@ -147,19 +147,34 @@ try {
   ok('the footer is not clipped by a fixed card height', !clipped);
   await page.screenshot({ path: `${out}/verified-card.png` });
 
-  console.log('\n[the deliberately unverifiable card]');
+  console.log('\n[the card that used to be unverifiable]');
+  // AC-12's Evaluations region count could not be verified from service-level
+  // SSM data. A feature x region docs matrix now settles it, so this card should
+  // show a real citation — and the number should be 16, not the stale 9.
   await page.click('.chip:nth-child(1)');
   await page.waitForTimeout(150);
   ok('AC-12 is reachable', await goTo(page, 'AC-12'));
   await page.keyboard.press('ArrowDown');
   await page.waitForTimeout(650);
+  const back12 = await page.$eval('.back', (e) => e.innerText.replace(/\s+/g, ' ').trim()).catch(() => null);
   const prov12 = await page.$eval('.back .prov', (e) => e.innerText.replace(/\s+/g, ' ').trim()).catch(() => null);
-  ok('it is labelled Unverified rather than looking checked',
-    Boolean(prov12 && /unverified/i.test(prov12)), prov12 ?? 'no footer');
-  ok('it states WHY it cannot be verified',
-    Boolean(prov12 && /no deterministic source/i.test(prov12)), prov12 ?? 'no footer');
+  ok('the stale region count is gone', Boolean(back12 && !/\b9 regions\b/.test(back12)), back12?.slice(0, 90) ?? 'no back face');
+  ok('it shows the corrected count from the docs matrix', Boolean(back12 && /16 regions/.test(back12)), back12?.slice(0, 90) ?? 'no back face');
+  ok('it now carries a verification date and source', Boolean(prov12 && /verified/i.test(prov12) && /source/i.test(prov12)), prov12 ?? 'no footer');
   if (prov12) console.log('  AC-12:', prov12);
-  await page.screenshot({ path: `${out}/unverified-card.png` });
+  await page.screenshot({ path: `${out}/corrected-card.png` });
+
+  console.log('\n[the permanently unsourced card]');
+  // QK-02 is a positioning judgement. No document can settle it, so it must never
+  // look verified — this is the case AC-12 used to cover.
+  ok('QK-02 is reachable', await goTo(page, 'QK-02'));
+  await page.keyboard.press('ArrowDown');
+  await page.waitForTimeout(650);
+  const provQk = await page.$eval('.back .prov', (e) => e.innerText.replace(/\s+/g, ' ').trim()).catch(() => null);
+  ok('it is not labelled Verified', Boolean(provQk && !/verified/i.test(provQk)), provQk ?? 'no footer');
+  ok('it says it is unsourced and why', Boolean(provQk && /unsourced|unverified/i.test(provQk) && /no deterministic source/i.test(provQk)), provQk ?? 'no footer');
+  if (provQk) console.log('  QK-02:', provQk);
+  await page.screenshot({ path: `${out}/unsourced-card.png` });
 
   console.log('\n[behaviour regression]');
   await page.click('.chip:nth-child(3)');

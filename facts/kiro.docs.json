@@ -3,11 +3,11 @@
   "fact_set_id": "kiro.docs",
   "tier": "A",
   "generator": "src/ingest/docs-pages.ts",
-  "verified_at": "2026-08-08T13:24:03.113Z",
+  "verified_at": "2026-08-08T13:59:01.534Z",
   "source": {
     "kind": "vendor-docs",
     "url": "https://kiro.dev/docs/",
-    "fetched_at": "2026-08-08T13:24:03.113Z",
+    "fetched_at": "2026-08-08T13:59:01.534Z",
     "content_hash": "sha256:379f9fb25163dcba58f7afac404cf729d36b71474084280eadd2c6544ddbf5bb",
     "retrieved_by": "GET https://kiro.dev/docs/"
   },
@@ -23,6 +23,6 @@
     }
   },
   "previous": {
-    "content_hash": "sha256:e6500e70871fa745f705f5f37de5c904dbbaaf6a52af03d20ab2242535e5ef6f"
+    "content_hash": "sha256:379f9fb25163dcba58f7afac404cf729d36b71474084280eadd2c6544ddbf5bb"
   }
 }

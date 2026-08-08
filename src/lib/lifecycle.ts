@@ -24,7 +24,7 @@
 
 import type { Card } from './types.ts';
 import type { DatedEntry } from './verifier.ts';
-import { stemsOf } from './verifier.ts';
+import { subjectTokens } from './verifier.ts';
 
 export type LifecycleSignal = {
   /** what the source says the state became */
@@ -67,12 +67,16 @@ const PREVIEW_RE = /\b(?:public preview|now in preview|is now in preview|\(previ
  *    friends are the most distinctive tokens in this corpus, not the least.
  *  - the shared stopword list still applies, so "agentcore" cannot match.
  */
-function lifecycleTokens(text: string): string[] {
-  const acronyms = (text.match(/\b[A-Z][A-Z0-9]{1,4}\b/g) ?? [])
-    .map((a) => a.toLowerCase())
-    .filter((a) => !['aws', 'the', 'and', 'for', 'new', 'now', 'ga'].includes(a));
-  return [...new Set([...stemsOf(text), ...acronyms])];
-}
+/**
+ * Now a thin alias for the shared tokenizer in verifier.ts.
+ *
+ * This function's acronym handling was written here first, to fix a detector that
+ * missed AC-16 because "CLI" stemmed away to nothing. The verifier turned out to
+ * have the identical blind spot on the identical card, so the implementation moved
+ * next to `stemsOf` and both callers share it. Two copies of a subtle tokenizer is
+ * exactly how a gate and the thing it guards drift apart.
+ */
+const lifecycleTokens = subjectTokens;
 
 /**
  * How often each token appears across all headings.

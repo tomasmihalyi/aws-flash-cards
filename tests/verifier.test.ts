@@ -17,7 +17,7 @@ import { loadCards, loadCategories, loadFactStore, paths } from '../src/lib/stor
 import { authoredText } from '../src/lib/render.ts';
 import { decompose, isCheckable, type Claim } from '../src/lib/claims.ts';
 import {
-  verifyCard, verifyClaim, evidenceTextsFrom, datedEntriesFrom, subjectStemsOf,
+  verifyCard, verifyClaim, evidenceTextsFrom, datedEntriesFrom, subjectStemsOf, subjectTokens,
   parseClaimDate, stemsOf, type VerifyContext,
 } from '../src/lib/verifier.ts';
 import type { Card, FactSet } from '../src/lib/types.ts';
@@ -239,34 +239,66 @@ describe('honesty of verdicts', () => {
     }
   });
 
-  test('a day-precision date is partial, never verified, when the source is month-precision', () => {
-    // AC-01 claims "generally available Oct 13 2025". The release notes confirm
-    // October 2025 and the GA itself, but have no notion of days. Reporting that
-    // as verified would round a month up to a day.
-    const v = check(byId('AC-01'));
-    const dayClaims = v.results.filter((r) => r.claim.kind === 'date' && /\d{1,2},?\s+20\d{2}/.test(r.claim.token));
-    assert.ok(dayClaims.length > 0, 'AC-01 carries day-precision dates');
-    // None may be reported as fully verified: no available source sees days.
-    for (const d of dayClaims) {
-      assert.notEqual(d.verdict, 'verified', `${d.claim.token} must not be reported as fully verified`);
-    }
-    // The GA date's month IS attested, so at least one must be `partial` with a
-    // reason naming what was confirmed and what was not.
-    const oct = dayClaims.find((d) => d.claim.token.includes('Oct'));
-    assert.ok(oct, 'expected the Oct 2025 GA date');
-    assert.equal(oct.verdict, 'partial', `got ${oct.verdict}: ${oct.reason}`);
-    assert.match(oct.reason, /month-precision|cannot attest the day/);
-    assert.match(oct.reason, /October 2025/, 'the reason must cite the month it confirmed');
+  test('a day-precision date is partial, never verified, when only month sources reach it', () => {
+    // Constructed rather than read off a card: this is a property of the
+    // VERIFIER, and pinning it to whatever AC-01 currently claims meant the test
+    // broke the moment the card was corrected to month precision. The invariant
+    // outlives the card text.
+    const card = clone(byId('AC-01'));
+    card.back.kv[1].v = 'Preview July 2025 \u2192 generally available Oct 13 2025.';
+    const day = check(card).results.find((r) => r.claim.token === 'Oct 13 2025');
+    assert.ok(day, 'day-precision claim not extracted');
+    assert.equal(day.verdict, 'partial', `got ${day.verdict}: ${day.reason}`);
+    assert.match(day.reason, /month-precision|cannot attest the day/);
+    assert.match(day.reason, /October 2025/, 'the reason must cite the month it confirmed');
+  });
+
+  test('reducing a claim to month precision does not make it vaguer than the source', () => {
+    // Regression, and a nasty one. The claim extractor had no month-precision
+    // date pattern, so "generally available October 2025" was extracted as the
+    // bare YEAR "2025" — which then verified against any related 2025 entry in
+    // any month. Correcting a card to the precision its source supports was
+    // silently WEAKENING the check.
+    const card = clone(byId('AC-01'));
+    card.back.kv[1].v = 'Generally available October 2025.';
+    const results = check(card).results;
+    const asDate = results.find((r) => r.claim.token === 'October 2025');
+    assert.ok(asDate, `month-precision date not extracted as a date claim: ${results.map((r) => `${r.claim.kind}:${r.claim.token}`).join(', ')}`);
+    assert.equal(asDate.claim.kind, 'date');
+    assert.ok(!results.some((r) => r.claim.kind === 'year' && r.claim.token === '2025'),
+      'a month-precision date must not also be extracted as a bare year');
+  });
+
+  test('a month-precision claim must match THAT month, not merely that year', () => {
+    // "GA March 2026" must not be satisfied by a July 2026 entry.
+    const card = clone(byId('AC-11'));
+    card.back.kv[3].v = 'Preview at re:Invent (December 2025) \u2192 GA September 2026.';
+    const sep = check(card).results.find((r) => r.claim.token === 'September 2026');
+    assert.ok(sep, 'claim not extracted');
+    assert.notEqual(sep.verdict, 'verified',
+      `a wrong month must not verify off a right year: ${sep.reason}`);
+  });
+
+  test('a date literal in an unrelated entry is not attestation', () => {
+    // Measured trap. The Bedrock document history has three entries dated
+    // July 16 2025 — Data Automation region expansion, Nova model import, custom
+    // model deployment — and AC-01 claims AgentCore previewed on Jul 16 2025.
+    // Matching the date alone would cite a data-automation note as the source for
+    // AgentCore's preview.
+    const card = clone(byId('AC-01'));
+    card.back.kv[1].v = 'Preview Jul 16 2025.';
+    const jul = check(card).results.find((r) => r.claim.token === 'Jul 16 2025');
+    assert.ok(jul, 'claim not extracted');
+    assert.notEqual(jul.verdict, 'verified',
+      `a same-day but unrelated entry must not attest this: ${jul.reason}`);
   });
 
   test('a contradiction is only asserted on strong evidence, never on a matcher miss', () => {
-    // "Jul 16 2025" cannot be topically matched: the only July 2025 entry is
-    // "Initial release of the Developer Guide". Failing to find a topic is not
-    // evidence that the card is wrong, so this must NOT be a contradiction.
-    const v = check(byId('AC-01'));
-    const jul = v.results.find((r) => r.claim.token.includes('Jul 16'));
+    const card = clone(byId('AC-01'));
+    card.back.kv[1].v = 'Preview Jul 16 2025.';
+    const jul = check(card).results.find((r) => r.claim.token === 'Jul 16 2025');
     assert.ok(jul, 'expected the preview date claim');
-    assert.equal(jul.verdict, 'unverifiable',
+    assert.ok(jul.verdict !== 'contradicted',
       `a matcher miss must be "cannot attest", not an accusation. Got ${jul.verdict}: ${jul.reason}`);
   });
 
@@ -290,16 +322,72 @@ describe('honesty of verdicts', () => {
     assert.notEqual(bad.verdict, 'verified', `"12-18%" must not verify "12 regions": ${bad.reason}`);
   });
 
-  test('AC-12 is unsupported, matching the limit already recorded on the card', () => {
-    // The "9 regions" Evaluations claim: service-level SSM cannot substantiate a
-    // feature-level count. The card says so; the verifier must agree.
-    const v = check(byId('AC-12'));
-    const nine = v.results.find((r) => r.claim.token.includes('9 regions'));
-    assert.ok(nine, 'the Evaluations region claim was not extracted');
-    assert.notEqual(nine.verdict, 'verified');
-    assert.equal(v.tier, 'C');
-    const card = byId('AC-12');
-    assert.equal(card.needs_review, true, 'the card already admits this limit');
+  test('a feature-level count is answered by that feature, never by a neighbour', () => {
+    // AC-12's limit is closed: agentcore-regions.html is a feature x region
+    // matrix, so Evaluations' region count is now deterministically governed.
+    //
+    // But that matrix introduced thirteen region counts at once, and the stale
+    // card said "9 regions" — which is Runtime Instances' count. A plain value
+    // match verified a wrong card against a different feature and cited the docs
+    // under it. This test pins the fix.
+    const live = check(byId('AC-12')).results.find((r) => /regions/.test(r.claim.token));
+    assert.ok(live, 'the Evaluations region claim was not extracted');
+    assert.equal(live.verdict, 'verified', `got ${live.verdict}: ${live.reason}`);
+    assert.match(live.reason, /evaluations/, `must cite the Evaluations fact, not another feature: ${live.reason}`);
+
+    const card = clone(byId('AC-12'));
+    const slot = card.slots.evaluations_regions;
+    // 9 is a real number in the matrix — for Runtime Instances, not Evaluations.
+    slot.rendered = 'GA in 9 regions incl. Sydney and Tokyo.';
+    slot.facts = [];
+    const bad = check(card).results.find((r) => r.claim.token.includes('9 regions'));
+    assert.ok(bad, 'claim not extracted');
+    assert.notEqual(bad.verdict, 'verified',
+      `another feature's region count must not verify this one: ${bad.reason}`);
+  });
+
+  test('a money claim is not satisfied by a number scraped out of a region list', () => {
+    // Measured: AC-17's "$1" verified against agentcore.regions.list, because
+    // reducing the joined region codes to a number found the 1 in
+    // "ap-southeast-1". A price was cited to a region list.
+    const live = check(byId('AC-17')).results.find((r) => r.claim.kind === 'money');
+    assert.ok(live, 'no money claim on AC-17');
+    assert.equal(live.verdict, 'verified', `got ${live.verdict}: ${live.reason}`);
+    assert.ok(!/regions?\.list|global-infrastructure/.test(String(live.evidence ?? '') + live.reason),
+      `a money claim must not cite a region list: ${live.evidence} / ${live.reason}`);
+  });
+
+  test('an invented price is still caught now that a payments source exists', () => {
+    const card = clone(byId('AC-17'));
+    card.slots.transaction_size.rendered = 'typically $7.40 per call';
+    const bad = check(card).results.find((r) => r.claim.token.includes('7.40'));
+    assert.ok(bad, 'claim not extracted');
+    assert.notEqual(bad.verdict, 'verified', `invented price accepted: ${bad.reason}`);
+  });
+
+  test('a citation points at the entry a human would cite', () => {
+    // Getting the verdict right is not enough. AC-11's Policy GA claim verified
+    // against "Browser and Code Interpreter: Chrome Policies and Custom Root CA
+    // Support" — same month, more shared words, wrong subject — while
+    // "AgentCore Policy is now Generally Available" sat right next to it.
+    const march = check(byId('AC-11')).results.find((r) => r.claim.token === 'March 2026');
+    assert.ok(march, 'claim not extracted');
+    assert.equal(march.verdict, 'verified');
+    assert.match(march.reason, /AgentCore Policy is now Generally Available/,
+      `cited the wrong entry in the right month: ${march.reason}`);
+  });
+
+  test('a short acronym can still identify a subject', () => {
+    // stemsOf drops tokens under four characters, so CLI, MCP and SDK vanished.
+    // The lifecycle detector had this exact bug on this exact card; the verifier
+    // had it too, and cited AC-16's CLI GA date to "Code Interpreter: Node.js
+    // Support" because no token in the right entry was matchable at all.
+    assert.ok(subjectTokens('AgentCore CLI is now Generally Available').includes('cli'),
+      'CLI must survive tokenisation');
+    const ga = check(byId('AC-16')).results.find((r) => r.claim.token === 'March 2026');
+    assert.ok(ga, 'claim not extracted');
+    assert.match(ga.reason, /CLI is now Generally Available/,
+      `the CLI GA entry should be the citation: ${ga.reason}`);
   });
 
   test('every result carries a reason a human can act on', () => {

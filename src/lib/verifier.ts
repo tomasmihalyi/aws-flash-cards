@@ -22,10 +22,20 @@ import { FactStore, formatFact } from './facts.ts';
 
 export type Verdict = 'verified' | 'partial' | 'unsupported' | 'contradicted' | 'unverifiable' | 'judgement';
 
-/** A dated entry from a month-precision source (documentation release notes). */
+/**
+ * A dated entry from a documentation source.
+ *
+ * Two precisions exist and the difference is load-bearing: release notes are
+ * organised by month and cannot attest a day, while a document-history table
+ * records an exact calendar day. `precision` is carried per entry so the
+ * verifier never has to assume which kind it is holding.
+ */
 export type DatedEntry = {
   iso_month: string;
   month_label: string;
+  /** "2026-07-30" for day-precision sources, null for month-precision ones. */
+  iso_date: string | null;
+  precision: 'month' | 'day';
   heading: string;
   summary: string;
   url: string;
@@ -49,6 +59,10 @@ const STOPWORDS = new Set([
   'its', 'has', 'have', 'can', 'all', 'any', 'per', 'via', 'now', 'new', 'one', 'two', 'own',
   'what', 'when', 'where', 'which', 'while', 'each', 'over', 'them', 'they', 'their', 'than',
   'amazon', 'aws', 'bedrock', 'agentcore', 'agent', 'agents',
+  // Month names are excluded because a date must never be topical evidence for
+  // ITSELF. Letting "july" count as a shared term made a July claim look related
+  // to every July entry, which is circular reasoning dressed up as a match.
+  ...MONTH_NAMES,
 ]);
 
 /**
@@ -76,11 +90,67 @@ export function stemsOf(text: string): string[] {
       text
         .toLowerCase()
         .split(/[^a-z0-9]+/)
-        .filter((w) => w.length >= 4 && !STOPWORDS.has(w))
+        // A bare number is never a topic. "2025" was letting a claim's own year
+        // vouch for its own relevance.
+        .filter((w) => w.length >= 4 && !/^\d+$/.test(w) && !STOPWORDS.has(w))
         .map(stem)
         .filter(Boolean),
     ),
   ];
+}
+
+/**
+ * Subject tokens: stems, plus short acronyms that stemming would erase.
+ *
+ * `stemsOf` drops anything under four characters, which silently deletes CLI,
+ * MCP, SDK and A2A — often the most identifying word in an AgentCore heading.
+ * src/lib/lifecycle.ts already had to learn this: it "dropped short acronyms
+ * (missed AC-16, the target card)". The verifier had the same blind spot, and it
+ * showed up on the same card — AC-16's March 2026 claim about the CLI reaching GA
+ * was cited to "Code Interpreter: Node.js Support", because "AgentCore CLI is now
+ * Generally Available" had no matchable token in it at all.
+ *
+ * Shared with the lifecycle detector rather than duplicated, so the two cannot
+ * drift apart.
+ */
+export function subjectTokens(text: string): string[] {
+  const acronyms = (text.match(/\b[A-Z][A-Z0-9]{1,4}\b/g) ?? [])
+    .map((a) => a.toLowerCase())
+    .filter((a) => !['aws', 'the', 'and', 'for', 'new', 'now', 'ga'].includes(a));
+  return [...new Set([...stemsOf(text), ...acronyms])];
+}
+
+/**
+ * How many of the dated entries each stem appears in.
+ *
+ * Cached per corpus because it is computed once and consulted for every claim.
+ */
+const dfCache = new WeakMap<DatedEntry[], { df: Map<string, number>; total: number }>();
+
+function documentFrequency(entries: DatedEntry[]): { df: Map<string, number>; total: number } {
+  const cached = dfCache.get(entries);
+  if (cached) return cached;
+  const df = new Map<string, number>();
+  for (const e of entries) {
+    for (const s of new Set(subjectTokens(`${e.heading} ${e.summary}`))) df.set(s, (df.get(s) ?? 0) + 1);
+  }
+  const computed = { df, total: entries.length };
+  dfCache.set(entries, computed);
+  return computed;
+}
+
+/**
+ * Is this stem specific enough to establish that two texts are about the same
+ * thing?
+ *
+ * Same rule the lifecycle detector uses. "available", "support" and "feature"
+ * appear in most documentation entries ever written, so sharing them says
+ * nothing; "classic" appears in two entries out of 264 and says a great deal.
+ */
+function isDistinctive(stem: string, entries: DatedEntry[]): boolean {
+  const { df, total } = documentFrequency(entries);
+  const seen = df.get(stem) ?? 0;
+  return seen > 0 && seen <= Math.max(2, Math.floor(total * 0.12));
 }
 
 export type ParsedDate = { year: number; month: number | null; day: number | null };
@@ -112,22 +182,181 @@ function isoMonthOf(d: ParsedDate): string | null {
 
 /** How many distinctive stems an entry shares with the claim's subject. */
 function topicalScore(entry: DatedEntry, subjectStems: string[]): number {
-  const entryStems = new Set(stemsOf(`${entry.heading} ${entry.summary}`));
+  const entryStems = new Set(subjectTokens(`${entry.heading} ${entry.summary}`));
   return subjectStems.filter((s) => entryStems.has(s)).length;
 }
 
 /** Two shared distinctive stems. One is too easy; three is too strict in practice. */
 const TOPICAL_THRESHOLD = 2;
 
+/** How much text around a date literal counts as "its context". */
+const PROSE_WINDOW = 260;
+
 /**
- * Verify a date or year claim against month-precision dated entries.
+ * The text immediately around `at`, clipped to the entry it sits in.
  *
- * Three honest outcomes:
- *   verified      the claim's precision is month-or-coarser and a topically
- *                 related entry exists in that month
- *   partial       the claim names a DAY. The month and the subject are attested,
- *                 the day is not — this source cannot see days at all
- *   contradicted  related entries exist, but in a different month
+ * Retained evidence joins one entry per line. Without clipping, a ±260 character
+ * window reaches into NEIGHBOURING entries, and terms from an adjacent release
+ * note can vouch for a match they have nothing to do with — AC-01's July 2025
+ * match was picking up "CloudFormation" and "Tagging" from the entry above it.
+ * A row must be identified by its own words.
+ */
+function entryWindow(text: string, at: number, len: number): string {
+  const start = text.lastIndexOf('\n', at) + 1;
+  const endAt = text.indexOf('\n', at + len);
+  const end = endAt === -1 ? text.length : endAt;
+  return text.slice(Math.max(start, at - PROSE_WINDOW), Math.min(end, at + len + PROSE_WINDOW));
+}
+
+const MONTH_ALT = MONTH_NAMES.map((n) => `${n.slice(0, 3)}(?:${n.slice(3)})?`).join('|');
+
+/**
+ * Every written form of a claimed date that AWS documentation actually uses.
+ *
+ * Deliberately does NOT include a bare month-and-year form for a claim that
+ * names a day: "July 2026" must not attest "July 30, 2026". That is the whole
+ * distinction the `partial` verdict exists to preserve.
+ */
+function dateLiteralPattern(d: ParsedDate): RegExp | null {
+  const y = String(d.year);
+  if (d.month !== null && d.day !== null) {
+    const mn = MONTH_NAMES[d.month - 1];
+    const name = `${mn.slice(0, 3)}(?:${mn.slice(3)})?`;
+    const mm = String(d.month).padStart(2, '0');
+    const dd = String(d.day).padStart(2, '0');
+    return new RegExp(
+      `\\b(?:${name}\\.?\\s+${d.day}(?:st|nd|rd|th)?,?\\s+${y}` +
+        `|${d.day}(?:st|nd|rd|th)?\\s+${name}\\.?,?\\s+${y}` +
+        `|${y}-${mm}-${dd})\\b`,
+      'i',
+    );
+  }
+  if (d.month !== null) {
+    const mn = MONTH_NAMES[d.month - 1];
+    const name = `${mn.slice(0, 3)}(?:${mn.slice(3)})?`;
+    const mm = String(d.month).padStart(2, '0');
+    return new RegExp(`\\b(?:${name}\\.?,?\\s+${y}|${y}-${mm})\\b`, 'i');
+  }
+  // Year precision. Require the year to sit in a date-ish context — next to a
+  // month name, or introduced by a word that makes it a point in time. A bare
+  // year loose in prose (a copyright line, a model name, a quota table) is not
+  // an attestation of when something happened.
+  return new RegExp(`\\b(?:(?:${MONTH_ALT})\\.?,?\\s+${y}|(?:launched|released|announced|since|in|from)\\s+${y})\\b`, 'i');
+}
+
+/**
+ * Rank strongly-related entries so the one CITED is the one a human would cite.
+ *
+ * Getting the verdict right is not enough. AC-11 claims Policy went GA in March
+ * 2026 and was verified — against "Browser and Code Interpreter: Chrome Policies
+ * and Custom Root CA Support", because that entry happened to share more words.
+ * "AgentCore Policy is now Generally Available" sat in the same month. A learner
+ * following the citation would have landed on an unrelated note and concluded the
+ * deck was making things up.
+ *
+ * Preference order: a distinctive term in the HEADING beats one buried in a body;
+ * then more shared terms; then the entry whose heading is mostly about this
+ * subject rather than mentioning it in passing.
+ */
+function rankEntries(entries: DatedEntry[], subject: string[], corpus: DatedEntry[]): DatedEntry[] {
+  return entries
+    .map((e) => {
+      const headingStems = subjectTokens(e.heading);
+      const headingSet = new Set(headingStems);
+      const headingHits = subject.filter((s) => headingSet.has(s) && isDistinctive(s, corpus)).length;
+      return {
+        e,
+        headingHits,
+        bodyHits: topicalScore(e, subject),
+        precision: headingHits / Math.max(1, headingStems.length),
+      };
+    })
+    .sort((a, b) => b.headingHits - a.headingHits || b.bodyHits - a.bodyHits || b.precision - a.precision)
+    .map((x) => x.e);
+}
+
+/**
+ * How strongly a dated entry is about the same thing as the claim.
+ *
+ * Three signals, learned from three separate measured failures:
+ *
+ *   'none'    nothing shared, or only boilerplate. "available" (12.6% of the
+ *             corpus) and "support" (34.4%) identify nothing.
+ *   'weak'    shares generic terms only. Not enough to attest a date.
+ *   'strong'  either a distinctive term appears in the entry's HEADING, or two
+ *             terms are shared and at least one is distinctive.
+ *
+ * The heading rule exists because requiring two shared terms produced a false
+ * NEGATIVE on a correct card: AC-11 claims Policy went GA in March 2026, the
+ * release notes have "March 2026 — AgentCore Policy is now Generally Available",
+ * and the only term they share is "policy" — which is the exactly right term. A
+ * distinctive word in a heading is what an entry is ABOUT, so one is enough.
+ * This is the same discipline src/lib/lifecycle.ts already applies by matching
+ * headings only.
+ */
+function relatedness(entry: DatedEntry, subject: string[], entries: DatedEntry[]): 'none' | 'weak' | 'strong' {
+  const headingStems = new Set(subjectTokens(entry.heading));
+  const bodyStems = new Set([...headingStems, ...subjectTokens(entry.summary)]);
+  const shared = subject.filter((s) => bodyStems.has(s));
+  if (!shared.length) return 'none';
+  const distinctive = shared.filter((s) => isDistinctive(s, entries));
+  if (!distinctive.length) return 'weak';
+  if (distinctive.some((s) => headingStems.has(s))) return 'strong';
+  return shared.length >= TOPICAL_THRESHOLD ? 'strong' : 'weak';
+}
+
+/** The distinctive terms that justified a match, for the human-readable reason. */
+function justification(entry: DatedEntry, subject: string[], entries: DatedEntry[]): string {
+  const bodyStems = new Set([...subjectTokens(entry.heading), ...subjectTokens(entry.summary)]);
+  return subject
+    .filter((s) => bodyStems.has(s) && isDistinctive(s, entries))
+    .slice(0, 4)
+    .join(', ');
+}
+
+/**
+ * Does an entry's own prose STATE this date?
+ *
+ * Distinct from the entry's row date. The Bedrock document history row dated
+ * June 30 2026 says in its body "Amazon Bedrock Agents (launched November 2023)
+ * … starting on July 30, 2026" — two dates attested by a source whose own date is
+ * neither of them. That is the strongest evidence available for a historical
+ * claim, and no other mechanism in this repo could see it.
+ *
+ * THE RELATEDNESS REQUIREMENT IS NOT OPTIONAL. Card AC-01 claims AgentCore
+ * previewed on Jul 16 2025; the document history has three rows dated July 16
+ * 2025, for Data Automation, Nova imports and custom model deployment. Matching
+ * the date alone would have cited one of those. It shares only "available" with
+ * the card, so it is correctly refused.
+ */
+function verifyDateInProse(claim: Claim, parsed: ParsedDate, ctx: VerifyContext, subject: string[]): ClaimResult | null {
+  const pattern = dateLiteralPattern(parsed);
+  if (!pattern) return null;
+
+  for (const entry of rankEntries(ctx.datedEntries, subject, ctx.datedEntries)) {
+    if (!pattern.test(`${entry.heading} ${entry.summary}`)) continue;
+    if (relatedness(entry, subject, ctx.datedEntries) !== 'strong') continue;
+    const why = justification(entry, subject, ctx.datedEntries);
+    return {
+      claim,
+      verdict: 'verified',
+      evidence: entry.url,
+      reason: `The ${entry.month_label} entry "${entry.heading}" states this date in its own text (distinctive shared terms: ${why})`,
+    };
+  }
+  return null;
+}
+
+/**
+ * Verify a date or year claim against dated entries.
+ *
+ * Outcomes, in order of strength:
+ *   verified      a source STATES this date near text about the same subject, or
+ *                 a day-precision entry with this exact date is topically related,
+ *                 or the claim is month-precision and a topical entry sits in it
+ *   partial       the claim names a DAY and only month-precision sources reach it
+ *   contradicted  related entries exist, but the claimed month is absent entirely
+ *   unverifiable  no source is topically close enough to say anything
  */
 function verifyDate(claim: Claim, ctx: VerifyContext): ClaimResult | null {
   const parsed = parseClaimDate(claim.token);
@@ -135,12 +364,18 @@ function verifyDate(claim: Claim, ctx: VerifyContext): ClaimResult | null {
 
   // Subject terms come from the claim's own sentence as well as the card, because
   // a lifecycle claim ("generally available Oct 13 2025") carries its own topic.
-  const subject = [...new Set([...ctx.subjectStems, ...stemsOf(claim.context)])];
+  const subject = [...new Set([...ctx.subjectStems, ...subjectTokens(claim.context)])];
 
-  const scored = ctx.datedEntries
-    .map((e) => ({ e, score: topicalScore(e, subject) }))
-    .filter((x) => x.score >= TOPICAL_THRESHOLD)
-    .sort((a, b) => b.score - a.score);
+  // Strongest first: a source that states the date in related prose.
+  const inProse = verifyDateInProse(claim, parsed, ctx, subject);
+  if (inProse) return inProse;
+
+  const related = rankEntries(
+    ctx.datedEntries.filter((e) => relatedness(e, subject, ctx.datedEntries) === 'strong'),
+    subject,
+    ctx.datedEntries,
+  );
+  const scored = related.map((e) => ({ e, score: topicalScore(e, subject) }));
 
   if (!scored.length) {
     return {
@@ -152,17 +387,39 @@ function verifyDate(claim: Claim, ctx: VerifyContext): ClaimResult | null {
   }
 
   const wantMonth = isoMonthOf(parsed);
+
+  // Next strongest: a day-precision entry whose date IS the claimed date, and
+  // which is about the same thing. Only reachable for a claim that names a day.
+  if (parsed.day !== null && wantMonth) {
+    const wantDate = `${wantMonth}-${String(parsed.day).padStart(2, '0')}`;
+    const exact = scored.find((x) => x.e.precision === 'day' && x.e.iso_date === wantDate);
+    if (exact) {
+      return {
+        claim,
+        verdict: 'verified',
+        evidence: exact.e.url,
+        reason: `Day-precision documentation history entry dated ${wantDate}: "${exact.e.heading}"`,
+      };
+    }
+  }
+
   const sameMonth = wantMonth ? scored.filter((x) => x.e.iso_month === wantMonth) : [];
   const sameYear = scored.filter((x) => x.e.iso_month.startsWith(String(parsed.year)));
 
   if (wantMonth && sameMonth.length) {
     const hit = sameMonth[0].e;
     if (parsed.day !== null) {
+      // Say which sources were consulted, so "cannot attest the day" reads as a
+      // property of the evidence rather than a shrug.
+      const dayCapable = ctx.datedEntries.some((e) => e.precision === 'day' && e.iso_month === wantMonth);
+      const extra = dayCapable
+        ? ' A day-precision history covers this month but has no topically related entry on that day.'
+        : ' No day-precision source reaches this month.';
       return {
         claim,
         verdict: 'partial',
         evidence: hit.url,
-        reason: `${hit.month_label} confirmed by release notes ("${hit.heading}"), but this source is month-precision and cannot attest the day "${parsed.day}". Either drop to month precision or cite a dated What\u2019s New post.`,
+        reason: `${hit.month_label} confirmed by release notes ("${hit.heading}"), but this source is month-precision and cannot attest the day "${parsed.day}".${extra} Either drop to month precision or cite a dated What\u2019s New post.`,
       };
     }
     return {
@@ -256,9 +513,9 @@ function unitOf(token: string): string | null {
   return m[1].toLowerCase().replace(/s$/, '');
 }
 
-function textContainsNumber(text: string, token: string): boolean {
+function numberMatchIndices(text: string, token: string, requireCurrency = false): number[] {
   const want = numeric(token);
-  if (!want) return false;
+  if (!want) return [];
   const haystack = text.replace(/,/g, '');
   const esc = want.replace('.', '\\.');
 
@@ -272,7 +529,17 @@ function textContainsNumber(text: string, token: string): boolean {
    *    "us-east-1" must never satisfy a bare numeric claim.
    */
   const body = want.includes('.') ? `${esc}0*` : esc;
-  const re = new RegExp(`(?<![\\w.])${body}(?![\\d])(?!\\.\\d)`, 'g');
+  /**
+   * A money claim must match MONEY.
+   *
+   * "$1" carries no unit word, so without this the claim "under $1" would be
+   * satisfied by the first standalone digit 1 anywhere in the retained corpus,
+   * and the citation printed under the card would be whichever source happened
+   * to be scanned first. Requiring the currency marker makes the match mean
+   * what it says.
+   */
+  const prefix = requireCurrency ? '(?:US)?\\$\\s?' : '';
+  const re = new RegExp(`${prefix}(?<![\\w.])${body}(?![\\d])(?!\\.\\d)`, 'g');
 
   /**
    * A number must be FOLLOWED by the thing it counts, the way the claim writes
@@ -287,14 +554,101 @@ function textContainsNumber(text: string, token: string): boolean {
    * "8 hours" still verifies against "default 1 hour up to 8 hours".
    */
   const unit = unitOf(token);
+  const out: number[] = [];
   for (const m of haystack.matchAll(re)) {
-    if (!unit) return true;
+    if (!unit) {
+      out.push(m.index);
+      continue;
+    }
     const after = haystack.slice(m.index + m[0].length, m.index + m[0].length + 48).toLowerCase();
     // Already counting something else.
     if (/^\s*(?:%|percent)/.test(after) && !unit.startsWith('percent')) continue;
-    if (new RegExp(`^(?:\\s+[\\w().,'-]+){0,3}\\s*${unit}`).test(after)) return true;
+    if (new RegExp(`^(?:\\s+[\\w().,'-]+){0,3}\\s*${unit}`).test(after)) out.push(m.index);
   }
-  return false;
+  return out;
+}
+
+function textContainsNumber(text: string, token: string): boolean {
+  return numberMatchIndices(text, token).length > 0;
+}
+
+/** How many DIFFERENT values this text reports for the same unit. */
+function distinctValuesForUnit(text: string, unit: string): number {
+  const found = new Set<string>();
+  const re = new RegExp(`(?<![\\w.])(\\d+(?:\\.\\d+)?)(?:\\s+[\\w().'-]+){0,3}\\s*${unit}`, 'gi');
+  for (const m of text.replace(/,/g, '').matchAll(re)) found.add(String(Number(m[1])));
+  return found.size;
+}
+
+/**
+ * A test for whether a term actually identifies one row of a multi-row source.
+ *
+ * MEASURED FAILURE. Requiring "a shared term near the match" was not enough for
+ * the feature × region matrix. AC-12's claim lists Sydney, Tokyo, Singapore,
+ * Frankfurt and Ireland — and so does almost every other feature's row, because
+ * features share regions. So the wrong row (Runtime Instances, 9 regions) shared
+ * five terms with a claim about Evaluations and passed.
+ *
+ * A term is only identifying if it appears in FEW rows of the source. "sydney"
+ * is in twelve of thirteen rows and identifies nothing; "evaluations" is in one.
+ */
+function rowDistinctiveIn(text: string): (stem: string) => boolean {
+  const lines = text.split('\n').filter((l) => l.trim());
+  const df = new Map<string, number>();
+  for (const l of lines) for (const s of new Set(stemsOf(l))) df.set(s, (df.get(s) ?? 0) + 1);
+  const limit = Math.max(1, Math.floor(lines.length * 0.34));
+  return (stem: string) => {
+    const seen = df.get(stem) ?? 0;
+    return seen > 0 && seen <= limit;
+  };
+}
+
+/**
+ * Segments of a fact id that describe the MEASUREMENT rather than its subject.
+ *
+ * `agentcore.regions.count` is about regions generally, so it may answer a
+ * generic region-count claim. `agentcore.feature-regions.runtime-instances.count`
+ * names a specific feature, and may only answer a claim about that feature.
+ */
+const FACT_ID_STRUCTURAL = new Set(
+  [
+    'count', 'list', 'total', 'regions', 'region', 'month', 'months', 'date', 'dates',
+    'entry', 'entries', 'precision', 'latest', 'earliest', 'fingerprint', 'schema',
+    'surface', 'operation', 'operations', 'pricing', 'price', 'prices', 'title',
+    'includes', 'feature', 'features', 'matrix', 'commercial', 'release', 'notes',
+    'history', 'value', 'unit', 'units', 'name',
+  ].map(stem),
+);
+
+/** The subject terms a fact id names. Empty means the fact is generic. */
+export function factIdQualifiers(id: string): string[] {
+  return [
+    ...new Set(
+      id
+        .split('.')
+        // A region code locates a measurement; it does not name its subject.
+        .filter((seg) => !/^[a-z]{2}(?:-[a-z]+)+-\d$/.test(seg))
+        .flatMap((seg) => stemsOf(seg.replace(/-/g, ' ')))
+        .filter((s) => !FACT_ID_STRUCTURAL.has(s)),
+    ),
+  ];
+}
+
+/**
+ * May this fact speak for this claim?
+ *
+ * MEASURED FAILURE THAT MADE THIS NECESSARY. The feature × region matrix
+ * introduced thirteen region counts in one fact set. Card AC-12 claims
+ * Evaluations is "GA in 9 regions". Evaluations is in 16 — but Runtime Instances
+ * is in 9, so a plain value match verified a stale card against a different
+ * feature's number and printed a docs link under it for a learner to trust.
+ *
+ * A number matching is not evidence when several facts share the number.
+ */
+function factCanSpeakFor(id: string, subject: Set<string>): boolean {
+  const qualifiers = factIdQualifiers(id);
+  if (!qualifiers.length) return true;
+  return qualifiers.some((q) => subject.has(q));
 }
 
 /**
@@ -326,12 +680,33 @@ export function verifyClaim(claim: Claim, ctx: VerifyContext): ClaimResult {
   }
 
   // 1. A fact set that renders exactly this token.
+  const subject = new Set([...ctx.subjectStems, ...stemsOf(claim.context)]);
+  /**
+   * A region id is not a number, even though it ends in one.
+   *
+   * Caught by the adversarial test for a fabricated region: "eu-south-9" was
+   * reduced to the value 9, which the feature × region matrix happens to contain
+   * ("available in 9 regions"), so an invented region verified against a region
+   * COUNT. Numeric matching is only ever appropriate for numeric claims.
+   */
+  const numericKind = claim.kind === 'number' || claim.kind === 'money' || claim.kind === 'duration';
   for (const id of store.ids()) {
     const hit = store.get(id);
     if (!hit) continue;
     const rendered = safeFormat(id, hit.value);
     if (rendered === null) continue;
-    if (numeric(claim.token) !== null && numeric(rendered) === numeric(claim.token)) {
+    /**
+     * A numeric claim may only be answered by a NUMERIC fact.
+     *
+     * Caught by reading output: AC-17's "$1" verified against
+     * `agentcore.regions.list`, because reducing a joined list of region codes to
+     * a number found the 1 in "ap-southeast-1". A money claim was cited to a
+     * region list. Comparing a claim's number against whatever number can be
+     * scraped out of an arbitrary fact value is not verification.
+     */
+    const numericFact = hit.value.type === 'integer' || hit.value.type === 'money' || hit.value.type === 'number';
+    if (numericKind && numericFact && numeric(claim.token) !== null && numeric(rendered) === numeric(claim.token)) {
+      if (!factCanSpeakFor(id, subject)) continue;
       return {
         claim,
         verdict: 'verified',
@@ -340,9 +715,11 @@ export function verifyClaim(claim: Claim, ctx: VerifyContext): ClaimResult {
       };
     }
     if (claim.kind === 'region' && String(hit.value.value).includes(claim.token)) {
+      if (!factCanSpeakFor(id, subject)) continue;
       return { claim, verdict: 'verified', evidence: id, reason: `Region present in fact ${id}` };
     }
     if (claim.kind === 'region' && Array.isArray(hit.value.value) && (hit.value.value as string[]).includes(claim.token)) {
+      if (!factCanSpeakFor(id, subject)) continue;
       return { claim, verdict: 'verified', evidence: id, reason: `Region present in fact ${id}` };
     }
   }
@@ -355,9 +732,35 @@ export function verifyClaim(claim: Claim, ctx: VerifyContext): ClaimResult {
     if (claim.kind === 'region' && ev.text.includes(claim.token)) {
       return { claim, verdict: 'verified', evidence: ev.url, reason: 'Region appears verbatim in fetched source' };
     }
-    if (textContainsNumber(ev.text, claim.token)) {
-      return { claim, verdict: 'verified', evidence: ev.url, reason: grade };
+    const at = numericKind ? numberMatchIndices(ev.text, claim.token, claim.kind === 'money') : [];
+    if (!at.length) continue;
+
+    /**
+     * If this source reports SEVERAL different values for the same unit, the
+     * value appearing in it does not say the claim came from the right row. The
+     * feature × region matrix is exactly this shape: thirteen region counts on
+     * one page. Require the match to sit near text that identifies the claim's
+     * subject specifically, not merely text the claim happens to share words with.
+     */
+    const unit = unitOf(claim.token);
+    const spread = unit ? distinctValuesForUnit(ev.text, unit) : 1;
+    if (spread > 1) {
+      const identifying = rowDistinctiveIn(ev.text);
+      let hitStems: string[] = [];
+      const near = at.some((i) => {
+        const window = entryWindow(ev.text, i, String(claim.token).length);
+        hitStems = stemsOf(window).filter((s) => subject.has(s) && identifying(s));
+        return hitStems.length > 0;
+      });
+      if (!near) continue;
+      return {
+        claim,
+        verdict: 'verified',
+        evidence: ev.url,
+        reason: `${grade}, in the row identified by ${hitStems.slice(0, 3).join(', ')} (this source reports ${spread} different values for "${unit}", so the matching row had to be pinned down)`,
+      };
     }
+    return { claim, verdict: 'verified', evidence: ev.url, reason: grade };
   }
 
   // 3. Nothing supports it. Distinguish "governed but wrong" from "ungoverned".
@@ -436,17 +839,36 @@ export function verifyCard(card: Card, claims: Claim[], ctx: VerifyContext): Car
 export function datedEntriesFrom(sets: FactSet[]): DatedEntry[] {
   const out: DatedEntry[] = [];
   for (const s of sets) {
-    if (s.source.kind !== 'aws-docs-release-notes') continue;
-    const rows = Array.isArray(s.evidence?.canonical) ? (s.evidence.canonical as Record<string, string>[]) : [];
-    for (const r of rows) {
-      if (!r.iso_month || !r.heading) continue;
-      out.push({
-        iso_month: String(r.iso_month),
-        month_label: String(r.month_label ?? r.iso_month),
-        heading: String(r.heading),
-        summary: String(r.summary ?? ''),
-        url: s.source.url,
-      });
+    if (s.source.kind === 'aws-docs-release-notes') {
+      const rows = Array.isArray(s.evidence?.canonical) ? (s.evidence.canonical as Record<string, string>[]) : [];
+      for (const r of rows) {
+        if (!r.iso_month || !r.heading) continue;
+        out.push({
+          iso_month: String(r.iso_month),
+          month_label: String(r.month_label ?? r.iso_month),
+          iso_date: null,
+          precision: 'month',
+          heading: String(r.heading),
+          summary: String(r.summary ?? ''),
+          url: s.source.url,
+        });
+      }
+      continue;
+    }
+    if (s.source.kind === 'aws-docs-doc-history') {
+      const rows = Array.isArray(s.evidence?.canonical) ? (s.evidence.canonical as Record<string, string>[]) : [];
+      for (const r of rows) {
+        if (!r.iso_date || !r.heading) continue;
+        out.push({
+          iso_month: String(r.iso_month ?? String(r.iso_date).slice(0, 7)),
+          month_label: String(r.month_label ?? r.date_label ?? r.iso_date),
+          iso_date: String(r.iso_date),
+          precision: 'day',
+          heading: String(r.heading),
+          summary: String(r.summary ?? ''),
+          url: s.source.url,
+        });
+      }
     }
   }
   return out;
@@ -454,7 +876,9 @@ export function datedEntriesFrom(sets: FactSet[]): DatedEntry[] {
 
 /** What a card is about, as distinctive stems, for topical date matching. */
 export function subjectStemsOf(card: Card): string[] {
-  return stemsOf([card.title, card.tags.join(' '), card.service.replace(/-/g, ' ')].join(' '));
+  // subjectTokens, not stemsOf: a card titled "AgentCore CLI" must be able to
+  // match a heading that says CLI.
+  return subjectTokens([card.title, card.tags.join(' '), card.service.replace(/-/g, ' ')].join(' '));
 }
 
 /** Pull every retained evidence text out of the fact sets. */

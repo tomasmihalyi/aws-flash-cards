@@ -16,7 +16,7 @@
   "title": "AgentCore payments",
   "hook": "Agents that can pay: secure micropayments to paid APIs and services without per-vendor billing code.",
   "back": {
-    "lead": "AgentCore payments lets agents make secure, instant micropayments (typically $0.10–$3.00 per call) to paid data providers and services, using Coinbase CDP or Stripe Privy Wallet — without integrating each vendor's payment stack.",
+    "lead": "AgentCore payments lets agents make secure, instant micropayments ({{slot:transaction_size}}) to paid data providers and services, using Coinbase CDP or Stripe Privy Wallet — without integrating each vendor's payment stack.",
     "kv": [
       {
         "k": "Use case",
@@ -29,10 +29,28 @@
     ],
     "hookline": "Identity answered 'as whom?'; payments answers 'and who's paying?' — the last blocker for fully autonomous workflows."
   },
-  "slots": {},
+  "slots": {
+    "transaction_size": {
+      "tier": "C",
+      "template": "typically under $1, often fractions of a cent",
+      "facts": [],
+      "rendered": "typically under $1, often fractions of a cent",
+      "rendered_from": "tier-c",
+      "seed_text": "typically $0.10–$3.00 per call",
+      "unresolvable_reason": "The documentation states transaction size in prose, not as a published price, so there is no fact to interpolate. The wording is quoted from the payments page rather than composed."
+    }
+  },
   "facts_used": [],
-  "sources": [],
-  "verified_at": null,
+  "sources": [
+    {
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/payments.html",
+      "title": "agentcore.payments (aws-docs)",
+      "kind": "aws-docs",
+      "fetched_at": "2026-08-08T13:59:01.759Z",
+      "content_hash": "sha256:c46b5e6b3c52e652ca9f6c8b5b3538d19f996f91b58a8dfd387b5a8ed76a6a9b"
+    }
+  ],
+  "verified_at": "2026-08-08T13:59:01.759Z",
   "confidence": "medium",
   "depends_on": [
     "AC-07"
@@ -40,8 +58,14 @@
   "aka": [],
   "superseded_by": null,
   "supersedes": [],
-  "needs_review": false,
-  "review_reasons": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "Tier C prose correction applied by an agent (transaction_size). Needs human sign-off: the design gates judgement rewrites behind a human, and there is no remote to raise a PR against.",
+      "raised_at": "2026-08-08T14:02:23.374Z",
+      "raised_by": "tools/close-claim-gaps.ts"
+    }
+  ],
   "provenance": {
     "tier": "seed",
     "authored_by": "legacy-import",
@@ -52,9 +76,26 @@
         "action": "import",
         "generator": "tools/extract-legacy.ts",
         "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      },
+      {
+        "at": "2026-08-08T14:02:23.374Z",
+        "tier": "C",
+        "action": "correct",
+        "generator": "tools/close-claim-gaps.ts",
+        "slot": "transaction_size",
+        "before": "typically $0.10–$3.00 per call",
+        "after": "typically under $1, often fractions of a cent",
+        "reason": "Card claimed transactions are \"typically $0.10–$3.00 per call\". No AWS source carries that range, and the AgentCore payments documentation contradicts its upper bound: \"Transactions are typically microtransactions (often under $1 or fractions of a cent)\". Replaced with the documented characterisation."
+      },
+      {
+        "at": "2026-08-08T14:02:23.374Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "tools/close-claim-gaps.ts",
+        "reason": "Tier C prose correction applied by an agent (transaction_size). Needs human sign-off: the design gates judgement rewrites behind a human, and there is no remote to raise a PR against."
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-06T12:57:02.398Z"
+  "updated_at": "2026-08-08T14:02:23.374Z"
 }

@@ -80,6 +80,21 @@ const PAGES: PageSpec[] = [
     bodyStartsAt: 'Kiro is an AI-powered development environment',
     title: 'Kiro Documentation',
   },
+  {
+    /**
+     * Added to settle card AC-17, which claimed agents pay "typically
+     * $0.10–$3.00 per call" — a figure no AWS source carries. This page is what
+     * AWS actually says about transaction size, and it does not agree with the
+     * card.
+     */
+    id: 'agentcore.payments',
+    url: 'https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/payments.html',
+    fetch: 'https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/payments.md',
+    kind: 'aws-docs',
+    expect: 'payment',
+    bodyStartsAt: 'AgentCore payments',
+    title: 'AgentCore payments',
+  },
 ];
 
 function arg(name: string): string | null {
