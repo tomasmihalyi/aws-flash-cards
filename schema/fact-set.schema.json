@@ -5,7 +5,7 @@
   "description": "Numbers, prices, dates and region lists. Written ONLY by deterministic ingest jobs. A model may never author a value in this file — that restriction is the architectural form of the rule 'numbers are never model-generated'.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "fact_set_id", "tier", "generator", "verified_at", "source", "facts"],
+  "required": ["schema_version", "fact_set_id", "tier", "generator", "verified_at", "source", "evidence", "facts"],
   "properties": {
     "schema_version": { "type": "integer", "const": 1 },
 
@@ -46,6 +46,22 @@
         },
         "aws_account": { "type": "string" },
         "aws_region": { "type": "string" }
+      }
+    },
+
+    "evidence": {
+      "type": "object",
+      "description": "The fetched payload itself, retained so a claim can be string-matched against its source later. Without this the content_hash is an assertion nobody can check, and the P4 verifier has nothing to verify against — you cannot check a claim against a source you did not keep.",
+      "additionalProperties": false,
+      "required": ["canonical", "text"],
+      "properties": {
+        "canonical": {
+          "description": "The EXACT value that source.content_hash was computed over. validate re-hashes this and fails on a mismatch, which is what turns the hash from a claim into a check."
+        },
+        "text": {
+          "type": "string",
+          "description": "The same payload flattened to searchable text. The verifier string-matches numeric, date and region claims against this — it never judges them."
+        }
       }
     },
 

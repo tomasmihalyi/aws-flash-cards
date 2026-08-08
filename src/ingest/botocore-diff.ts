@@ -234,6 +234,15 @@ function main(): void {
       content_hash: contentHash,
       retrieved_by: `gunzip + parse ${SERVICES.map((s) => `${dataDir}/${s}/<api-version>/service-2.json.gz`).join(', ')}`,
     },
+    evidence: {
+      canonical: sourcePayload,
+      text: Object.entries(sourcePayload)
+        .map(([svc, meta]) => {
+          const m = meta as { uid: string; apiVersion: string; operationCount: number };
+          return `${svc} (${m.uid}, api-version ${m.apiVersion}) exposes ${m.operationCount} operations.`;
+        })
+        .join('\n'),
+    },
     facts,
     ...(previousSet ? { previous: Object.fromEntries(Object.entries(previousSet.facts).map(([k, v]) => [k, v.value])) } : {}),
   };

@@ -82,6 +82,12 @@ function main(): void {
       aws_account: who.Account,
       aws_region: 'us-east-1',
     },
+    // Keep the payload the hash was taken over, so the claim "19 regions,
+    // including ap-southeast-2" can be checked against its source later.
+    evidence: {
+      canonical: regions,
+      text: `${service} is available in ${regions.length} AWS regions: ${regions.join(', ')}.`,
+    },
     facts,
     ...(prevRegions ? { previous: { list: prevRegions, count: prevRegions.length } } : {}),
   };

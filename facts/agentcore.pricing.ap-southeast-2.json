@@ -3,15 +3,44 @@
   "fact_set_id": "agentcore.pricing.ap-southeast-2",
   "tier": "A",
   "generator": "src/ingest/pricelist.ts",
-  "verified_at": "2026-08-06T13:00:04.915Z",
+  "verified_at": "2026-08-08T09:56:28.005Z",
   "source": {
     "kind": "price-list-api",
     "url": "https://api.pricing.us-east-1.amazonaws.com/ · GetProducts ServiceCode=AmazonBedrockAgentCore regionCode=ap-southeast-2",
-    "fetched_at": "2026-08-06T13:00:04.915Z",
+    "fetched_at": "2026-08-08T09:56:28.005Z",
     "content_hash": "sha256:07118f8c9240cfa8e15bd076bb4e1cb20c7a26a4890544559d085d7cd3b2dec7",
     "retrieved_by": "aws pricing get-products --service-code AmazonBedrockAgentCore --filters Type=TERM_MATCH,Field=regionCode,Value=ap-southeast-2 --profile default --region us-east-1",
     "aws_account": "<dev-account>",
     "aws_region": "us-east-1"
+  },
+  "evidence": {
+    "canonical": {
+      "Gateway:Consumption-based:API-Invocations": {
+        "usagetype": "APS2-Gateway:Consumption-based:API-Invocations",
+        "unit": "Invocations",
+        "pricePerUnitUSD": "0.0000050000",
+        "description": "$0.000005 per Invocation for Gateway:Consumption-based:API-Invocations in Asia Pacific (Sydney)"
+      },
+      "Memory:Consumption-based:Short-Term-Memory": {
+        "usagetype": "APS2-Memory:Consumption-based:Short-Term-Memory",
+        "unit": "Events",
+        "pricePerUnitUSD": "0.0002500000",
+        "description": "$0.00025 per Event for Memory:Consumption-based:Short-Term-Memory in Asia Pacific (Sydney)"
+      },
+      "Runtime:Consumption-based:vCPU": {
+        "usagetype": "APS2-Runtime:Consumption-based:vCPU",
+        "unit": "vCPU-Hours",
+        "pricePerUnitUSD": "0.0895000000",
+        "description": "$0.0895 per vCPU-Hour for Runtime:Consumption-based:vCPU in Asia Pacific (Sydney)"
+      },
+      "Runtime:Consumption-based:Memory": {
+        "usagetype": "APS2-Runtime:Consumption-based:Memory",
+        "unit": "GB-Hours",
+        "pricePerUnitUSD": "0.0094500000",
+        "description": "$0.00945 per GB-Hour for Runtime:Consumption-based:Memory in Asia Pacific (Sydney)"
+      }
+    },
+    "text": "Gateway:Consumption-based:API-Invocations: 0.0000050000 USD per Invocations — $0.000005 per Invocation for Gateway:Consumption-based:API-Invocations in Asia Pacific (Sydney)\nMemory:Consumption-based:Short-Term-Memory: 0.0002500000 USD per Events — $0.00025 per Event for Memory:Consumption-based:Short-Term-Memory in Asia Pacific (Sydney)\nRuntime:Consumption-based:vCPU: 0.0895000000 USD per vCPU-Hours — $0.0895 per vCPU-Hour for Runtime:Consumption-based:vCPU in Asia Pacific (Sydney)\nRuntime:Consumption-based:Memory: 0.0094500000 USD per GB-Hours — $0.00945 per GB-Hour for Runtime:Consumption-based:Memory in Asia Pacific (Sydney)"
   },
   "facts": {
     "agentcore.pricing.ap-southeast-2.gateway.api-invocations.usd-per-1k": {
@@ -42,5 +71,11 @@
       "unit": "per GB-hour",
       "note": "Price List usagetype APS2-Runtime:Consumption-based:Memory; API unit GB-Hours at 0.0094500000 USD, quoted per GB-hour."
     }
+  },
+  "previous": {
+    "agentcore.pricing.ap-southeast-2.gateway.api-invocations.usd-per-1k": 0.005,
+    "agentcore.pricing.ap-southeast-2.memory.short-term.usd-per-1k-events": 0.25,
+    "agentcore.pricing.ap-southeast-2.runtime.vcpu.usd-per-vcpu-hour": 0.0895,
+    "agentcore.pricing.ap-southeast-2.runtime.memory.usd-per-gb-hour": 0.00945
   }
 }

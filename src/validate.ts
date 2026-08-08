@@ -18,6 +18,7 @@ import { join } from 'node:path';
 import { validate as validateJson, validateSchemaKeywords } from './lib/schema.ts';
 import { loadCards, loadCategories, loadArt, loadFactStore, loadSchema, loadIdLedger, paths } from './lib/store.ts';
 import { resolveTemplate, slotRefs, FACT_RE } from './lib/facts.ts';
+import { hashPayload } from './lib/hash.ts';
 import type { Card, FactSet } from './lib/types.ts';
 
 const strict = process.argv.includes('--strict');
@@ -50,6 +51,23 @@ function main(): void {
     for (const f of readdirSync(paths.facts).filter((n) => n.endsWith('.json')).sort()) {
       const set = JSON.parse(readFileSync(join(paths.facts, f), 'utf8')) as FactSet;
       validateJson(set, factSchema, `facts/${f}`).forEach(err);
+
+      // L-EVIDENCE: re-hash the retained payload. Until this check existed the
+      // content_hash was an assertion nobody could verify — a fact set could
+      // claim any provenance it liked. Now the hash either matches the evidence
+      // or the build fails.
+      if (set.evidence) {
+        const recomputed = hashPayload(set.evidence.canonical);
+        if (recomputed !== set.source.content_hash) {
+          err(
+            `facts/${f}: content_hash does not match its own evidence (recorded ${set.source.content_hash}, evidence hashes to ${recomputed}) — the provenance record is unverifiable`,
+          );
+        }
+        if (!set.evidence.text.trim()) {
+          err(`facts/${f}: evidence.text is empty — the verifier would have nothing to string-match against`);
+        }
+      }
+
       for (const [id, v] of Object.entries(set.facts)) {
         if (v.type === 'money' && !v.currency) err(`facts/${f}: fact "${id}" is money but has no currency`);
         if ((v.type === 'region_list' || v.type === 'string_list') && !Array.isArray(v.value)) {

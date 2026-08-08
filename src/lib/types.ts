@@ -104,6 +104,12 @@ export type FactSet = {
     aws_account?: string;
     aws_region?: string;
   };
+  /**
+   * The fetched payload, retained so claims can be string-matched against their
+   * source. `canonical` is exactly what `source.content_hash` was computed over,
+   * so validate can re-hash it and prove the hash rather than trust it.
+   */
+  evidence: { canonical: unknown; text: string };
   facts: Record<string, FactValue>;
   previous?: Record<string, unknown>;
 };

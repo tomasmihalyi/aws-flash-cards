@@ -124,20 +124,51 @@ deploy half is parked until a repo and CI exist.
       (**blocked: needs its own repo + remote; deploy account confirmed as
       `demo` / <deploy-account>**)
 
-## P4 — Tier B/C loop (not in this run)
+## P4 — Tier B/C loop
 
-- [ ] T4.1 Claim decomposition
-- [ ] T4.2 Verifier: string-match numeric/date/region claims against fetched
-      source text
-- [ ] T4.3 Golden set of ~30 hand-verified cards as regression fixtures
+The verifier half is built. The drafting half is not, and that ordering is
+deliberate: the verifier is the gate, drafting is merely one producer feeding it.
+Building the producer first would have meant generating cards with nothing to
+check them.
+
+- [x] T4.0 **Retain fetched evidence.** Prerequisite nobody had noticed: ingest
+      stored a `content_hash` but discarded the payload, so the hash was an
+      assertion nobody could check and the verifier had no source text to match
+      against. Fact sets now carry `evidence.canonical` (exactly what was hashed)
+      plus `evidence.text`, and `validate` re-hashes the evidence — the hash is
+      now a check rather than a claim.
+- [x] T4.1 Claim decomposition (`src/lib/claims.ts`). Splits on
+      *checkability*, not sentences: numbers, prices, dates, regions and
+      durations are checkable; positioning and framing are `judgement` and are
+      never scored.
+- [x] T4.2 Verifier (`src/lib/verifier.ts`). String matching only. Four verdicts
+      kept distinct because they need different human responses: `verified`,
+      `contradicted` (slot and prose disagree → correction), `unsupported` (no
+      source → govern or cite), `unverifiable` (historical date no deterministic
+      source can settle).
+- [x] T4.3 Adversarial fixtures (`tests/verifier.test.ts`) — see exit below.
+- [x] T4.5 Tier demotion: any failing checkable claim demotes the **whole card**
+      to Tier C. Partial publication would ship the confidently-wrong artefact
+      the design exists to prevent.
 - [ ] T4.4 Bedrock drafting with a schema-constrained output
-- [ ] T4.5 Tier demotion path (any verifier failure ⇒ whole card to Tier C)
 - [ ] T4.6 PR automation for Tier C
 - [ ] T4.7 Researcher agent on AgentCore Runtime (Gateway + Memory + Evaluations
       + Policy). Scope: ambiguous launch item → card draft with citations. Nothing
       else moves to AgentCore.
 
 **Exit:** the verifier catches an injected hallucination in the fixtures.
+
+**Result:** met. Six adversarial cases pass — a fabricated region count (31), a
+fabricated price ($0.049), a non-existent region id (eu-south-9), an off-by-one
+(18 where 19 is correct and present in the source), a substring collision (9,
+which is a digit inside the correct 19), and whole-card demotion when only one
+claim fails. Plus the counterpart test that the *correct* card still reaches
+Tier A — without it, a verifier that failed everything would satisfy all six.
+
+**What it found on the existing deck:** 27 checkable claims, 14 verified (52%),
+0 contradicted, 3 unsupported, 10 unverifiable dates, 12 judgement claims.
+10 of 21 cards demote to Tier C. That is the honest state of a deck that looked
+finished.
 
 ## P5 — Rename, retirement, fan-out (not in this run)
 

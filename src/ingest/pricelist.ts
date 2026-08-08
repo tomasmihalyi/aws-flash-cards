@@ -175,6 +175,17 @@ function main(): void {
       aws_account: who.Account,
       aws_region: API_REGION,
     },
+    // The matched price records verbatim, so a "$0.005 per 1,000" claim can be
+    // string-matched back to the API response that produced it.
+    evidence: {
+      canonical: matchedSource,
+      text: Object.entries(matchedSource)
+        .map(([usageType, rec]) => {
+          const r = rec as { usagetype: string; unit: string; pricePerUnitUSD: string; description: string };
+          return `${usageType}: ${r.pricePerUnitUSD} USD per ${r.unit} \u2014 ${r.description}`;
+        })
+        .join('\n'),
+    },
     facts,
     ...(prevValues ? { previous: prevValues } : {}),
   };
