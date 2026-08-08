@@ -19,6 +19,8 @@ import { validate as validateJson, validateSchemaKeywords } from './lib/schema.t
 import { loadCards, loadCategories, loadArt, loadFactStore, loadSchema, loadIdLedger, paths } from './lib/store.ts';
 import { resolveTemplate, slotRefs, FACT_RE } from './lib/facts.ts';
 import { hashPayload } from './lib/hash.ts';
+import { datedEntriesFrom } from './lib/verifier.ts';
+import { detectAll } from './lib/lifecycle.ts';
 import type { Card, FactSet } from './lib/types.ts';
 
 const strict = process.argv.includes('--strict');
@@ -193,6 +195,30 @@ function main(): void {
       const res = resolveTemplate(slot.template, store);
       if (!res.ok) {
         warn(`${id}.${name}: facts not yet ingested: ${res.missing.join(', ')} — run the Tier A ingest`);
+      }
+    }
+  }
+
+  // ---- FR-9 / Tier A: has a card's lifecycle drifted from the dated source? ----
+  // `lifecycle` is a schema field, not prose, so the claim verifier never saw it —
+  // and three cards shipped a "preview" badge for features that had gone GA
+  // months earlier. The design doc lists GA/preview transitions as Tier A; this is
+  // the check that was missing. Reported as a warning, not an error: the matcher
+  // is heuristic, and a heuristic should not hard-fail a build.
+  {
+    const dated = datedEntriesFrom(
+      existsSync(paths.facts)
+        ? readdirSync(paths.facts)
+            .filter((f) => f.endsWith('.json'))
+            .map((f) => JSON.parse(readFileSync(join(paths.facts, f), 'utf8')) as FactSet)
+        : [],
+    );
+    if (dated.length) {
+      for (const f of detectAll(cards, dated)) {
+        if (!f.drift) continue;
+        warn(
+          `${f.card_id}: LIFECYCLE DRIFT — ${f.reason}. Run node src/check-lifecycle.ts for the full signal history.`,
+        );
       }
     }
   }
