@@ -72,7 +72,7 @@ stripping. There is no install step.
 
 ```bash
 node src/validate.ts          # schema + lint + citation gate
-node --test tests/*.test.ts   # 141 behavioural, guarantee + verifier tests
+node --test tests/*.test.ts   # 144 behavioural, guarantee + verifier tests
 node src/verify-claims.ts     # decompose every card into claims and verify each
 node src/build.ts             # → dist/deck.json + dist/agentcore-flashcards.html
 node src/verify-parity.ts     # authored-content parity against the original deck
@@ -80,6 +80,7 @@ node src/verify-parity.ts     # authored-content parity against the original dec
 node src/ingest/ssm-regions.ts    # region availability  (read-only AWS)
 node src/ingest/pricelist.ts      # pricing              (read-only AWS)
 node src/ingest/botocore-diff.ts  # API surface          (local, no AWS)
+node src/ingest/docs-release-notes.ts   # dated feature history (public docs GET)
 node src/ingest/apply.ts          # resolve slots: verify, correct, or fail
 
 node src/ingest/apply.ts --dry-run   # show the corrections without writing
@@ -143,6 +144,16 @@ So the guarantee moved rather than weakened: **behaviour** is pinned by tests,
 corrections** are reported rather than failed.
 
 ## What the deterministic sources cannot do
+
+Release notes are organised by **month**. They can attest "AgentCore went GA in
+October 2025"; they cannot attest "on October 13". A day-precision claim is
+therefore reported `partial` — month and subject confirmed, day not — rather than
+rounded up. The usual fix is to write the month the source can actually support.
+
+A contradiction is an accusation that the card is wrong, so it demands far
+stronger evidence than a confirmation does. When the topical matcher simply fails
+to find a related entry, the verdict is "cannot attest", never "the card is
+lying" — the weak link there is the matcher, not the card.
 
 `bedrock-agentcore` region data from SSM is *service*-level. Card AC-12 claims
 Evaluations is "GA in 9 regions" — a *feature*-level claim. Mapping the service

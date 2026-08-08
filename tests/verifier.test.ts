@@ -16,7 +16,10 @@ import { join } from 'node:path';
 import { loadCards, loadCategories, loadFactStore, paths } from '../src/lib/store.ts';
 import { authoredText } from '../src/lib/render.ts';
 import { decompose, isCheckable, type Claim } from '../src/lib/claims.ts';
-import { verifyCard, verifyClaim, evidenceTextsFrom } from '../src/lib/verifier.ts';
+import {
+  verifyCard, verifyClaim, evidenceTextsFrom, datedEntriesFrom, subjectStemsOf,
+  parseClaimDate, stemsOf, type VerifyContext,
+} from '../src/lib/verifier.ts';
 import type { Card, FactSet } from '../src/lib/types.ts';
 
 function factSets(): FactSet[] {
@@ -28,6 +31,11 @@ function factSets(): FactSet[] {
 const CATS = loadCategories();
 const STORE = loadFactStore();
 const EVIDENCE = evidenceTextsFrom(factSets());
+const DATED = datedEntriesFrom(factSets());
+
+function ctxFor(card: Card): VerifyContext {
+  return { store: STORE, evidenceTexts: EVIDENCE, datedEntries: DATED, subjectStems: subjectStemsOf(card) };
+}
 const CARDS = loadCards().sort((a, b) => a.card_id.localeCompare(b.card_id));
 
 function byId(id: string): Card {
@@ -43,7 +51,7 @@ function clone(card: Card): Card {
 
 function check(card: Card) {
   const resolved = authoredText(card, CATS);
-  return verifyCard(card, decompose(card, resolved), STORE, EVIDENCE);
+  return verifyCard(card, decompose(card, resolved), ctxFor(card));
 }
 
 describe('the verifier has something to verify against', () => {
@@ -231,16 +239,55 @@ describe('honesty of verdicts', () => {
     }
   });
 
-  test('a historical date is unverifiable, not unsupported', () => {
-    // The distinction matters: unsupported means "govern it or cite it";
-    // unverifiable means "no deterministic source can ever settle this".
+  test('a day-precision date is partial, never verified, when the source is month-precision', () => {
+    // AC-01 claims "generally available Oct 13 2025". The release notes confirm
+    // October 2025 and the GA itself, but have no notion of days. Reporting that
+    // as verified would round a month up to a day.
     const v = check(byId('AC-01'));
-    const dates = v.results.filter((r) => r.claim.kind === 'date' || r.claim.kind === 'year');
-    assert.ok(dates.length > 0, 'AC-01 carries GA/preview dates');
-    for (const d of dates) {
-      if (d.verdict === 'verified') continue;
-      assert.equal(d.verdict, 'unverifiable', `${d.claim.token} should be unverifiable, got ${d.verdict}`);
+    const dayClaims = v.results.filter((r) => r.claim.kind === 'date' && /\d{1,2},?\s+20\d{2}/.test(r.claim.token));
+    assert.ok(dayClaims.length > 0, 'AC-01 carries day-precision dates');
+    // None may be reported as fully verified: no available source sees days.
+    for (const d of dayClaims) {
+      assert.notEqual(d.verdict, 'verified', `${d.claim.token} must not be reported as fully verified`);
     }
+    // The GA date's month IS attested, so at least one must be `partial` with a
+    // reason naming what was confirmed and what was not.
+    const oct = dayClaims.find((d) => d.claim.token.includes('Oct'));
+    assert.ok(oct, 'expected the Oct 2025 GA date');
+    assert.equal(oct.verdict, 'partial', `got ${oct.verdict}: ${oct.reason}`);
+    assert.match(oct.reason, /month-precision|cannot attest the day/);
+    assert.match(oct.reason, /October 2025/, 'the reason must cite the month it confirmed');
+  });
+
+  test('a contradiction is only asserted on strong evidence, never on a matcher miss', () => {
+    // "Jul 16 2025" cannot be topically matched: the only July 2025 entry is
+    // "Initial release of the Developer Guide". Failing to find a topic is not
+    // evidence that the card is wrong, so this must NOT be a contradiction.
+    const v = check(byId('AC-01'));
+    const jul = v.results.find((r) => r.claim.token.includes('Jul 16'));
+    assert.ok(jul, 'expected the preview date claim');
+    assert.equal(jul.verdict, 'unverifiable',
+      `a matcher miss must be "cannot attest", not an accusation. Got ${jul.verdict}: ${jul.reason}`);
+  });
+
+  test('a number must be followed by the unit it counts, not merely near it', () => {
+    // Regression: "18 AWS regions" verified against "…12-18% improvements"
+    // because the word "regions" sat 40 chars earlier in a latency note.
+    const card = clone(byId('AC-19'));
+    card.slots.region_availability.rendered = 'AgentCore is available in 18 AWS regions.';
+    card.slots.sydney_availability.rendered = 'Sydney is in the list.';
+    const bad = check(card).results.find((r) => r.claim.token === '18 AWS regions');
+    assert.ok(bad, 'claim not extracted');
+    assert.notEqual(bad.verdict, 'verified', `18 leaked through: ${bad.reason}`);
+  });
+
+  test('a percentage does not satisfy a claim counting something else', () => {
+    const card = clone(byId('AC-19'));
+    card.slots.region_availability.rendered = 'AgentCore is available in 12 AWS regions.';
+    card.slots.sydney_availability.rendered = 'Sydney is in the list.';
+    const bad = check(card).results.find((r) => r.claim.token === '12 AWS regions');
+    assert.ok(bad, 'claim not extracted');
+    assert.notEqual(bad.verdict, 'verified', `"12-18%" must not verify "12 regions": ${bad.reason}`);
   });
 
   test('AC-12 is unsupported, matching the limit already recorded on the card', () => {
@@ -277,8 +324,9 @@ describe('verifier determinism', () => {
       claim_id: 'T:x#0', card_id: 'T', field: 'hook', kind: 'number',
       token: '19 regions', context: 'nineteen regions', slot: null, fact_governed: false,
     };
-    const r1 = verifyClaim(claim, STORE, EVIDENCE);
-    const r2 = verifyClaim(claim, STORE, EVIDENCE);
+    const c = ctxFor(byId('AC-19'));
+    const r1 = verifyClaim(claim, c);
+    const r2 = verifyClaim(claim, c);
     assert.deepEqual(r1.verdict, r2.verdict);
     assert.deepEqual(r1.evidence, r2.evidence);
   });

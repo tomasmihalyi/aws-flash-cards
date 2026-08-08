@@ -172,7 +172,20 @@ finished.
 
 ## P5 — Rename, retirement, fan-out (not in this run)
 
-- [ ] T5.1 What's New RSS ingest + title-language signals
+- [x] T5.1a **Dated feature history ingest** (`src/ingest/docs-release-notes.ts`).
+      Built to give the P4 verifier something to cite for date claims.
+      AWS What's New was tried first and **does not work for this deck**: the
+      recent RSS feed carries ~11 days, and the searchable archive's newest entry
+      is 2024-05-17 — neither can reach a 2025 date. The `amazon-bedrock` tag
+      stops at 2024-05 as well. The service's own documentation release-notes page
+      covers 2025-07 → present, is authoritative, and is a plain public GET.
+      102 dated entries across 12 months.
+      **Its limit is the interesting part:** release notes are MONTH precision.
+      They can attest "GA in October 2025", never "on October 13". The verifier is
+      told the precision and reports a day-precision claim as `partial` rather
+      than rounding a month up to a day.
+- [ ] T5.1b What's New title-language signals for rename detection — still needs
+      a source that reaches back further than the stale archive API
 - [ ] T5.2 Doc URL redirect detection (301/302 on previously-200 URLs)
 - [ ] T5.3 Price List product disappearance signal
 - [ ] T5.4 botocore rename-vs-remove discrimination (shape-identity test)

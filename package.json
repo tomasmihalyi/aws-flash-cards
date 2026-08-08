@@ -18,7 +18,7 @@
     "ingest:regions": "node src/ingest/ssm-regions.ts",
     "ingest:pricing": "node src/ingest/pricelist.ts",
     "ingest:api": "node src/ingest/botocore-diff.ts",
-    "ingest": "npm run ingest:regions && npm run ingest:pricing && npm run ingest:api",
+    "ingest": "npm run ingest:regions && npm run ingest:pricing && npm run ingest:api && npm run ingest:docs",
     "apply": "node src/ingest/apply.ts",
     "apply:dry": "node src/ingest/apply.ts --dry-run",
     "refresh": "npm run ingest && npm run apply && npm run build",
@@ -26,6 +26,7 @@
     "migrate": "node tools/extract-legacy.ts",
     "browser-check": "node tools/browser-check.mjs dist/agentcore-flashcards.html",
     "claims": "node src/verify-claims.ts",
-    "claims:failing": "node src/verify-claims.ts --failing"
+    "claims:failing": "node src/verify-claims.ts --failing",
+    "ingest:docs": "node src/ingest/docs-release-notes.ts"
   }
 }

@@ -17,7 +17,7 @@ import { join } from 'node:path';
 import { loadCards, loadCategories, loadFactStore, paths } from './lib/store.ts';
 import { authoredText } from './lib/render.ts';
 import { decompose, isCheckable } from './lib/claims.ts';
-import { verifyCard, evidenceTextsFrom, type CardVerdict } from './lib/verifier.ts';
+import { verifyCard, evidenceTextsFrom, datedEntriesFrom, subjectStemsOf, type CardVerdict } from './lib/verifier.ts';
 import type { FactSet } from './lib/types.ts';
 
 function arg(name: string): string | null {
@@ -40,7 +40,10 @@ function main(): void {
   const cards = loadCards().sort((a, b) => a.card_id.localeCompare(b.card_id));
   const cats = loadCategories();
   const store = loadFactStore();
-  const evidence = evidenceTextsFrom(loadFactSets());
+  const sets = loadFactSets();
+  const evidence = evidenceTextsFrom(sets);
+  const dated = datedEntriesFrom(sets);
+  if (!dated.length) console.log('verify-claims: no month-precision dated source \u2014 date claims cannot be checked. Run docs-release-notes.');
 
   if (!evidence.length) {
     console.error('verify-claims: no retained source evidence in facts/ — run the Tier A ingest first.');
@@ -53,7 +56,9 @@ function main(): void {
     if (onlyCard && card.card_id !== onlyCard) continue;
     const resolved = authoredText(card, cats);
     const claims = decompose(card, resolved);
-    verdicts.push(verifyCard(card, claims, store, evidence));
+    verdicts.push(verifyCard(card, claims, {
+      store, evidenceTexts: evidence, datedEntries: dated, subjectStems: subjectStemsOf(card),
+    }));
   }
 
   if (onlyCard || failingOnly) detail(verdicts);
@@ -62,7 +67,7 @@ function main(): void {
 
 function detail(verdicts: CardVerdict[]): void {
   const mark: Record<string, string> = {
-    verified: 'OK  ', contradicted: 'BAD ', unsupported: 'NONE', unverifiable: 'DATE', judgement: 'JUDG',
+    verified: 'OK  ', partial: 'PART', contradicted: 'BAD ', unsupported: 'NONE', unverifiable: 'DATE', judgement: 'JUDG',
   };
   for (const v of verdicts) {
     const shown = v.results.filter((r) => (failingOnly ? r.verdict !== 'verified' && r.verdict !== 'judgement' : true));
@@ -80,10 +85,10 @@ function detail(verdicts: CardVerdict[]): void {
 }
 
 function summary(verdicts: CardVerdict[], sourceCount: number): void {
-  const total = { verified: 0, unsupported: 0, contradicted: 0, unverifiable: 0, judgement: 0 };
+  const total = { verified: 0, partial: 0, unsupported: 0, contradicted: 0, unverifiable: 0, judgement: 0 };
   for (const v of verdicts) for (const k of Object.keys(total) as (keyof typeof total)[]) total[k] += v.counts[k];
 
-  const checkable = total.verified + total.unsupported + total.contradicted + total.unverifiable;
+  const checkable = total.verified + total.partial + total.unsupported + total.contradicted + total.unverifiable;
   const demoted = verdicts.filter((v) => v.demoted);
   const pct = checkable ? Math.round((total.verified / checkable) * 100) : 0;
 
@@ -91,6 +96,7 @@ function summary(verdicts: CardVerdict[], sourceCount: number): void {
   console.log(`verify-claims: ${verdicts.length} card(s) against ${sourceCount} fetched source(s)\n`);
   console.log(`  checkable claims   ${checkable}`);
   console.log(`    verified         ${total.verified}  (${pct}% of checkable)`);
+  console.log(`    partial          ${total.partial}  \u2190 month confirmed, day not attested by any source`);
   console.log(`    contradicted     ${total.contradicted}  \u2190 slot and prose disagree; needs a correction`);
   console.log(`    unsupported      ${total.unsupported}  \u2190 no source at all; govern with a slot or cite`);
   console.log(`    unverifiable     ${total.unverifiable}  \u2190 historical dates; need a docs/What's New citation`);
