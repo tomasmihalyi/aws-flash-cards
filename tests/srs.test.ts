@@ -14,6 +14,7 @@ import {
   GRADES, MIN_EASE, DEFAULT_EASE, REASON,
   emptyProgress, normaliseProgress, review, cardStatus, studyQueue, studyCounts,
   describeSchedule, dayStamp, addDays, daysBetween,
+  depsFingerprint, indexById, staleDependencies,
 } from '../src/lib/srs.js';
 import { loadCards, loadCategories } from '../src/lib/store.ts';
 import { toLegacyShape, contentHash, authoredText } from '../src/lib/render.ts';
@@ -357,5 +358,145 @@ describe('every card in the deck carries a content hash', () => {
 
   test('the hash is deterministic across builds', () => {
     assert.deepEqual(deck().map((c) => c.chash), deck().map((c) => c.chash));
+  });
+});
+
+describe('a card whose DEPENDENCIES moved is resurfaced too (T5.8)', () => {
+  /**
+   * The gap this closes: `chash` only ever saw the card in front of you. AC-18
+   * quotes Runtime's pricing and depends on AC-04, so a correction to AC-04 left
+   * AC-18 sitting on whatever interval it had — the learner holding a belief
+   * built partly on a card that had since moved, with nothing to tell them.
+   */
+  const cats = loadCategories();
+  const raw = loadCards().sort((a, b) => a.card_id.localeCompare(b.card_id));
+  const cards = raw.map((c) => toLegacyShape(c, cats));
+  const byId = indexById(cards);
+
+  /** A card with real dependencies, and one of the cards it depends on. */
+  const dependent = cards.find((c) => c.deps.length > 0)!;
+  const dependency = byId[dependent.deps[0]];
+
+  test('depends_on reaches the client at all', () => {
+    // It lived in cards/*.json and dist/deck.json but never in the page, so the
+    // scheduler could not see a single edge.
+    assert.ok(dependent, 'no card carries dependencies');
+    assert.ok(Array.isArray(dependent.deps) && dependent.deps.length > 0);
+    assert.ok(dependency, `${dependent.id} depends on a card that is not in the deck`);
+  });
+
+  test('the fingerprint is order-independent and names each dependency', () => {
+    const fp = depsFingerprint(dependent, byId);
+    assert.match(fp, new RegExp(`${dependent.deps[0]}:`));
+    const shuffled = { ...dependent, deps: [...dependent.deps].reverse() };
+    assert.equal(depsFingerprint(shuffled, byId), fp, 'authoring order must not change the fingerprint');
+  });
+
+  test('a card with no dependencies has an empty fingerprint and is never context-stale', () => {
+    const leaf = cards.find((c) => c.deps.length === 0)!;
+    assert.equal(depsFingerprint(leaf, byId), '');
+    const p = emptyProgress();
+    p.reviews[leaf.id] = review(undefined, GRADES.easy, TODAY, leaf.chash, depsFingerprint(leaf, byId));
+    assert.notEqual(cardStatus(leaf, p, TODAY, byId).reason, REASON.context);
+  });
+
+  test('a dependency changing pulls the dependent forward, and names it', () => {
+    const p = emptyProgress();
+    // Studied today with a long interval: nothing about time should resurface it.
+    p.reviews[dependent.id] = review(
+      { reps: 9, lapses: 0, ease: 2.5, interval: 3650, due: TODAY, last: TODAY, chash: dependent.chash, dhash: '' },
+      GRADES.easy, TODAY, dependent.chash, depsFingerprint(dependent, byId),
+    );
+    assert.equal(cardStatus(dependent, p, TODAY, byId).reason, null, 'should be scheduled far out');
+
+    // Now a source corrects the dependency. The dependent's own text is untouched.
+    const moved = { ...byId, [dependency.id]: { ...dependency, chash: 'deadbeefdeadbeef' } };
+    const st = cardStatus(dependent, p, TODAY, moved);
+    assert.equal(st.reason, REASON.context, `expected context-stale, got ${st.reason}`);
+    assert.deepEqual(st.staleDeps, [dependency.id], 'the banner needs to name which card moved');
+  });
+
+  test('a context-stale card ranks after a changed card and before a new one', () => {
+    const p = emptyProgress();
+    p.reviews[dependent.id] = review(undefined, GRADES.easy, TODAY, dependent.chash, depsFingerprint(dependent, byId));
+    p.reviews[dependency.id] = review(undefined, GRADES.easy, TODAY, dependency.chash, depsFingerprint(dependency, byId));
+
+    // The dependency itself changed: it is `changed`, the dependent is `context`,
+    // and everything else is `new`.
+    const moved = { ...byId, [dependency.id]: { ...dependency, chash: 'ffffffffffffffff' } };
+    const movedCards = cards.map((c) => (c.id === dependency.id ? moved[dependency.id] : c));
+    const q = studyQueue(movedCards, p, TODAY, moved);
+
+    const reasons = q.map((x) => x.reason);
+    assert.equal(reasons[0], REASON.changed, `changed must lead: ${reasons.slice(0, 4).join(', ')}`);
+    assert.equal(q[0].card.id, dependency.id);
+    const ctxAt = reasons.indexOf(REASON.context);
+    const newAt = reasons.indexOf(REASON.new);
+    assert.ok(ctxAt > -1, 'the dependent should be queued as context-stale');
+    assert.ok(ctxAt < newAt, `context (${ctxAt}) must outrank new (${newAt})`);
+  });
+
+  test('counts report context separately and total includes it', () => {
+    const p = emptyProgress();
+    p.reviews[dependent.id] = review(undefined, GRADES.easy, TODAY, dependent.chash, depsFingerprint(dependent, byId));
+    const moved = { ...byId, [dependency.id]: { ...dependency, chash: 'aaaaaaaaaaaaaaaa' } };
+    const c = studyCounts(cards, p, TODAY, moved);
+    assert.equal(c.context, 1);
+    assert.equal(c.total, c.changed + c.context + c.new + c.due);
+  });
+
+  test('the schedule hint distinguishes context from a correction', () => {
+    const p = emptyProgress();
+    p.reviews[dependent.id] = review(undefined, GRADES.easy, TODAY, dependent.chash, depsFingerprint(dependent, byId));
+    const moved = { ...byId, [dependency.id]: { ...dependency, chash: 'bbbbbbbbbbbbbbbb' } };
+    const hint = describeSchedule(dependent, p, TODAY, moved);
+    assert.match(hint, /builds on/);
+    assert.ok(!/^This card changed/.test(hint), 'must not claim the card itself changed');
+  });
+
+  test("the card's OWN change still outranks a dependency change", () => {
+    // Both moved. The stronger, more actionable signal must win, or the learner
+    // is told the context shifted when the answer itself is wrong.
+    const p = emptyProgress();
+    p.reviews[dependent.id] = review(undefined, GRADES.easy, TODAY, dependent.chash, depsFingerprint(dependent, byId));
+    const moved = { ...byId, [dependency.id]: { ...dependency, chash: 'cccccccccccccccc' } };
+    const selfMoved = { ...dependent, chash: 'dddddddddddddddd' };
+    assert.equal(cardStatus(selfMoved, p, TODAY, moved).reason, REASON.changed);
+  });
+
+  test('an upgrade does not invent changes: a record with no dhash is never context-stale', () => {
+    /**
+     * The migration hazard. Records written before this feature have no
+     * fingerprint, and reading "absent" as "different" would have dumped every
+     * card with dependencies into the queue announcing a correction that never
+     * happened.
+     */
+    const legacy = normaliseProgress({
+      v: 1,
+      reviews: {
+        [dependent.id]: { reps: 3, lapses: 0, ease: 2.5, interval: 30, due: addDays(TODAY, 30), last: TODAY, chash: dependent.chash },
+      },
+    });
+    assert.equal(legacy.reviews[dependent.id].dhash, '', 'missing dhash must normalise to empty');
+    assert.equal(cardStatus(dependent, legacy, TODAY, byId).reason, null,
+      'a legacy record must stay scheduled, not be re-queued as context-stale');
+  });
+
+  test('a dependency that disappears from the deck still counts as movement', () => {
+    // Retirement is aliasing, not deletion — but a card genuinely absent from the
+    // built deck means what this card rests on is gone, which the learner should see.
+    const p = emptyProgress();
+    p.reviews[dependent.id] = review(undefined, GRADES.easy, TODAY, dependent.chash, depsFingerprint(dependent, byId));
+    const without = { ...byId };
+    delete without[dependency.id];
+    assert.deepEqual(staleDependencies(dependent, p.reviews[dependent.id], without), [dependency.id]);
+  });
+
+  test('cardStatus without a deck index behaves exactly as it did before', () => {
+    // Callers that predate dependencies must degrade, not throw.
+    const p = emptyProgress();
+    p.reviews[dependent.id] = review(undefined, GRADES.easy, TODAY, dependent.chash, depsFingerprint(dependent, byId));
+    assert.doesNotThrow(() => cardStatus(dependent, p, TODAY));
+    assert.equal(cardStatus(dependent, p, TODAY).reason, null);
   });
 });

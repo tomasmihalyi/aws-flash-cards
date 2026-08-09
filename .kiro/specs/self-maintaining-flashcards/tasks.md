@@ -357,7 +357,49 @@ finished.
 - [ ] T5.5 Non-AWS changelogs (Claude Code, Codex)
 - [ ] T5.6 Automatic rename ⇒ `aka[]` + commit
 - [ ] T5.7 Human-gated retirement ⇒ PR + tombstone render state
-- [ ] T5.8 Dependency fan-out ⇒ `needs_review` on dependents
+- [x] T5.8 **Dependency fan-out — resurface the cards that build on a corrected
+      one.** `depends_on` had existed since P0, was carried into `dist/deck.json`,
+      and never reached the page — so the scheduler could not see a single edge.
+      The SRS resurfaced a card whose own `chash` moved and nothing downstream of
+      it: correcting AC-04 left AC-18, which quotes Runtime's pricing, sitting on
+      whatever interval it had. The stated guarantee ("a corrected card is
+      re-studied, not left memorised wrong") held for the card that changed and
+      failed silently for everything built on it. 12 cards carry 41 edges.
+
+      **Two signals, kept distinct.** A review now also records `dhash`, a
+      fingerprint of the card's dependencies. `changed` means this card's answer
+      moved; the new `context` means a card it builds on moved. A context-stale
+      card is NOT wrong — its own claims still verify — so it gets cooler wording,
+      a cooler colour, and a banner that names the dependency instead of implying
+      the card is stale.
+
+      Ranked `changed` > `context` > `new` > `due`. Context above `new` because a
+      context-stale card is one the learner already believes something about on the
+      basis of a card that has since been corrected — an active risk of holding a
+      stale belief, which is worse than not having seen a card yet.
+
+      Design choices worth keeping:
+
+      - the fingerprint is a plain sorted `id:chash` concatenation, not a hash. It
+        is only compared for equality, and a readable value is one a human can
+        debug straight out of localStorage.
+      - `deps` is excluded from `AuthoredText`. Folding it into the content hash
+        would change the hash of every card with dependencies, invalidating real
+        review history to record a fact about the graph rather than the text.
+      - an absent `dhash` reads as "unknown", never "changed". Reading it as
+        changed would have dumped every dependent card into the queue on upgrade,
+        announcing a correction that never happened. SCHEMA_VERSION stays 1
+        because the field degrades safely.
+      - a dependency missing from the deck counts as movement, so removing a card
+        a learner had studied still surfaces.
+      - `byId` is an optional argument, so a caller that predates dependencies
+        degrades to the old behaviour instead of throwing.
+
+      11 new SRS tests and 5 new browser assertions, including the end-to-end
+      case: study AC-02, schedule it a decade out, move AC-04, and the banner reads
+      "This card's own claims still check out, but a card it depends on was
+      corrected since you last studied it: AC-04 — AgentCore Runtime."
+
 - [ ] T5.9 Rename fixtures: Bedrock Agents → Classic (incl. closed-to-new date);
       QuickSight → Quick Suite lineage
 

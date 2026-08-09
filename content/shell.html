@@ -79,6 +79,7 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 .studyStats{font-family:var(--mono);font-size:.64rem;color:var(--slate);display:flex;gap:.75rem;flex-wrap:wrap}
 .studyStats b{color:var(--ink)}
 .studyStats .chg{color:var(--amber);font-weight:600}
+.studyStats .ctx{color:var(--blue);font-weight:600}
 .studyDone{background:var(--mint-soft);border-left:2px solid var(--mint);color:var(--mint);
   font-family:var(--mono);font-size:.7rem;padding:10px 12px;border-radius:0 3px 3px 0;margin:10px 0}
 
@@ -87,6 +88,13 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
   border-radius:0 3px 3px 0;font-family:var(--mono);font-size:.62rem;color:var(--amber);
   margin:0 0 10px;line-height:1.5}
 .changed b{display:block;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+
+/* the "something this card builds on changed" flag — deliberately cooler than
+   .changed, because this card is not wrong; only its context moved */
+.context{background:var(--blue-soft);border-left:2px solid var(--blue);padding:8px 10px;
+  border-radius:0 3px 3px 0;font-family:var(--mono);font-size:.62rem;color:var(--blue);
+  margin:0 0 10px;line-height:1.5}
+.context b{display:block;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
 
 /* grade buttons — only shown on the back face in study mode */
 .grades{display:flex;gap:6px;margin-top:12px;border-top:1px dashed var(--line);padding-top:11px}
@@ -248,6 +256,9 @@ map:S(`<circle cx="60" cy="60" r="8"/><rect x="18" y="18" width="24" height="18"
 
 const SRS_KEY='aws-flashcards.progress.v1';
 let PROGRESS=emptyProgress();
+/* Card lookup by id, for dependency checks. Built once: the deck is a literal in
+   this file and never changes at runtime. */
+const BY_ID=indexById(DECK);
 let studyMode=false;
 
 /* localStorage can throw: private browsing, quota, or a disabled store. A deck
@@ -265,10 +276,11 @@ function saveProgress(){
 function today(){return dayStamp(Date.now());}
 
 function renderStudyStats(){
-  const c=studyCounts(DECK,PROGRESS,today());
+  const c=studyCounts(DECK,PROGRESS,today(),BY_ID);
   const el=document.getElementById('studyStats');
   const bits=[];
   if(c.changed)bits.push('<span class="chg">CHANGED <b>'+c.changed+'</b></span>');
+  if(c.context)bits.push('<span class="ctx">CONTEXT <b>'+c.context+'</b></span>');
   bits.push('<span>NEW <b>'+c.new+'</b></span>');
   bits.push('<span>DUE <b>'+c.due+'</b></span>');
   bits.push('<span>SCHEDULED <b>'+c.scheduled+'</b></span>');
@@ -281,7 +293,7 @@ function renderStudyStats(){
 function decorateForStudy(d){
   const body=document.querySelector('.back .body');
   if(!body)return;
-  const st=cardStatus(d,PROGRESS,today());
+  const st=cardStatus(d,PROGRESS,today(),BY_ID);
 
   if(st.reason===REASON.changed){
     const warn=document.createElement('div');
@@ -289,10 +301,26 @@ function decorateForStudy(d){
     warn.innerHTML='<b>Changed since you studied it</b>A deterministic source corrected this card. What you memorised is out of date \u2014 read it again.';
     body.insertBefore(warn,body.firstChild);
   }
+  else if(st.reason===REASON.context){
+    /* Deliberately weaker wording than the `changed` banner: this card's own
+       claims still verify. What moved is a card it builds on, so name that card
+       rather than implying this one is wrong. */
+    const names=(st.staleDeps||[]).map(function(id){
+      const dep=BY_ID[id];
+      return dep?id+' \u2014 '+dep.t:id;
+    });
+    const warn=document.createElement('div');
+    warn.className='context';
+    warn.innerHTML='<b>Something this card builds on changed</b>'+
+      'This card\u2019s own claims still check out, but '+
+      (names.length===1?'a card it depends on was corrected':'cards it depends on were corrected')+
+      ' since you last studied it: '+names.join('; ')+'.';
+    body.insertBefore(warn,body.firstChild);
+  }
 
   const sched=document.createElement('p');
   sched.className='sched';
-  sched.textContent=describeSchedule(d,PROGRESS,today());
+  sched.textContent=describeSchedule(d,PROGRESS,today(),BY_ID);
   body.appendChild(sched);
 
   if(!studyMode)return;
@@ -317,7 +345,7 @@ function grade(key){
   const d=DECK[v[pos]];
   const g=GRADES[key];
   if(g===undefined)return;
-  PROGRESS.reviews[d.id]=review(PROGRESS.reviews[d.id],g,today(),d.chash);
+  PROGRESS.reviews[d.id]=review(PROGRESS.reviews[d.id],g,today(),d.chash,depsFingerprint(d,BY_ID));
   saveProgress();
   renderStudyStats();
   /* The card just left the queue, so pos now points at whatever moved up.
@@ -335,7 +363,7 @@ function setStudyMode(on){
   b.setAttribute('aria-pressed',on?'true':'false');
   pos=0;flipped=false;
   render();
-  const c=studyCounts(DECK,PROGRESS,today());
+  const c=studyCounts(DECK,PROGRESS,today(),BY_ID);
   announce(on
     ?'Study mode on. '+c.total+' card'+(c.total===1?'':'s')+' to review'+(c.changed?', '+c.changed+' changed since you studied them':'')+'.'
     :'Study mode off, browsing all cards.');
@@ -382,7 +410,7 @@ function visible(){
      corrected cards first, then unseen, then most-overdue. */
   if(studyMode){
     const allowed=new Set(scored.map(x=>x[0]));
-    return studyQueue(DECK.filter((_,i)=>allowed.has(i)),PROGRESS,today()).map(q=>DECK.indexOf(q.card));
+    return studyQueue(DECK.filter((_,i)=>allowed.has(i)),PROGRESS,today(),BY_ID).map(q=>DECK.indexOf(q.card));
   }
   return scored.map(x=>x[0]);
 }

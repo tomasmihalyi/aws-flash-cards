@@ -28,6 +28,19 @@
  * a hash of the card's content, and a card whose content has moved since it was
  * last seen is pulled back into the queue no matter what its interval says.
  *
+ * AND THE CARDS THAT BUILD ON THE ONE THAT CHANGED
+ *
+ * Cards depend on each other: AC-18 quotes Runtime's pricing, AC-21 leans on
+ * eleven primitives. When AC-04 is corrected, AC-18 is not WRONG — its own claims
+ * still verify — but the ground under it moved, and a learner who studied it a
+ * month ago has no way to know. So a review also records a fingerprint of the
+ * card's dependencies, and a card whose dependencies have since moved is pulled
+ * forward too.
+ *
+ * The two signals stay distinct deliberately. "This card's answer changed" is a
+ * correction; "something this card builds on changed" is context. Collapsing them
+ * would either overstate the second or bury it.
+ *
  * That is the interesting part of spaced repetition for a self-maintaining deck,
  * and it is the reason the scheduler lives here rather than being imported.
  *
@@ -35,7 +48,7 @@
  * unless passed in. That is what makes it testable.
  *
  * @typedef {{reps:number,lapses:number,ease:number,interval:number,
- *            due:string,last:string,chash:string}} CardProgress
+ *            due:string,last:string,chash:string,dhash:string}} CardProgress
  * @typedef {{v:1,reviews:Record<string,CardProgress>}} Progress
  */
 
@@ -79,6 +92,14 @@ export function normaliseProgress(raw) {
       due: rec.due,
       last: typeof rec.last === 'string' ? rec.last : rec.due,
       chash: typeof rec.chash === 'string' ? rec.chash : '',
+      /**
+       * Absent on records written before dependency tracking existed. Empty means
+       * "unknown", never "changed" — treating an old record as stale would dump
+       * every card with dependencies into the queue on upgrade, announcing a
+       * change that never happened. SCHEMA_VERSION stays 1 because the field
+       * degrades safely instead of corrupting scheduling.
+       */
+      dhash: typeof rec.dhash === 'string' ? rec.dhash : '',
     };
   }
   return { v: SCHEMA_VERSION, reviews };
@@ -100,6 +121,35 @@ export function daysBetween(a, b) {
 }
 
 /**
+ * A fingerprint of everything this card depends on, as it stands right now.
+ *
+ * Plain concatenation rather than a hash: it is only ever compared for equality,
+ * the strings are short, and a readable value is one a human can debug straight
+ * out of localStorage. Sorted, so the fingerprint does not depend on the order
+ * dependencies were authored in.
+ *
+ * A dependency missing from the deck contributes an empty hash rather than being
+ * skipped, so REMOVING a card that a learner had studied still registers as the
+ * ground moving.
+ *
+ * @param {any} card projected card, carrying `deps`
+ * @param {Record<string, any>} byId every card in the deck, keyed by id
+ * @returns {string}
+ */
+export function depsFingerprint(card, byId) {
+  const ids = card && Array.isArray(card.deps) ? card.deps.slice().sort() : [];
+  if (!ids.length) return '';
+  return ids.map((id) => id + ':' + ((byId && byId[id] && byId[id].chash) || '')).join(',');
+}
+
+/** Index a deck by card id, so dependencies can be looked up. */
+export function indexById(cards) {
+  const byId = {};
+  for (const c of cards) byId[c.id] = c;
+  return byId;
+}
+
+/**
  * One review. Returns the next progress record for the card.
  *
  * SM-2 as published, with the interval sequence 1 → 6 → interval × ease.
@@ -111,9 +161,10 @@ export function daysBetween(a, b) {
  * @param {number} grade one of GRADES
  * @param {string} today day stamp
  * @param {string} chash the card's current content hash
+ * @param {string} [dhash] fingerprint of the card's dependencies at review time
  * @returns {CardProgress}
  */
-export function review(prev, grade, today, chash) {
+export function review(prev, grade, today, chash, dhash) {
   const q = Math.max(0, Math.min(5, grade));
   let { reps, lapses, ease } = prev ?? { reps: 0, lapses: 0, ease: DEFAULT_EASE };
   ease = Number(ease) || DEFAULT_EASE;
@@ -143,35 +194,87 @@ export function review(prev, grade, today, chash) {
     due: addDays(today, interval),
     last: today,
     chash,
+    dhash: typeof dhash === 'string' ? dhash : '',
   };
 }
 
-/** Why a card is in the queue. Order matters: `changed` outranks `due`. */
+/**
+ * Why a card is in the queue, strongest signal first.
+ *
+ * `context` sits between `changed` and `new` on purpose. A context-stale card is
+ * one the learner already believes something about, partly on the basis of a card
+ * that has since been corrected — an active risk of holding a stale belief, which
+ * is worse than simply not having seen a card yet. It ranks below `changed`
+ * because the card itself is not wrong: its own claims still verify.
+ */
 export const REASON = {
   changed: 'changed',
+  context: 'context',
   new: 'new',
   due: 'due',
 };
 
 /**
  * Classify one card against the progress store.
- * @returns {{reason:string|null,record:CardProgress|undefined,overdueBy:number}}
+ *
+ * `byId` is optional. Without it, dependency staleness cannot be computed and the
+ * function behaves exactly as it did before dependencies existed — a caller that
+ * has not been updated degrades to the old behaviour rather than throwing.
+ *
+ * @returns {{reason:string|null,record:CardProgress|undefined,overdueBy:number,
+ *            staleDeps:string[]}}
  */
-export function cardStatus(card, progress, today) {
+export function cardStatus(card, progress, today, byId) {
   const rec = progress.reviews[card.id];
-  if (!rec) return { reason: REASON.new, record: undefined, overdueBy: 0 };
-  // A card whose content moved since it was last studied is teaching a stale
+  if (!rec) return { reason: REASON.new, record: undefined, overdueBy: 0, staleDeps: [] };
+  // A card whose own content moved since it was last studied is teaching a stale
   // fact. That beats any interval.
   if (rec.chash && card.chash && rec.chash !== card.chash) {
-    return { reason: REASON.changed, record: rec, overdueBy: daysBetween(rec.due, today) };
+    return { reason: REASON.changed, record: rec, overdueBy: daysBetween(rec.due, today), staleDeps: [] };
+  }
+  // Next: a card this one builds on has moved. Only when a fingerprint was
+  // actually recorded — an empty one means "not known", not "nothing changed".
+  const staleDeps = staleDependencies(card, rec, byId);
+  if (staleDeps.length) {
+    return { reason: REASON.context, record: rec, overdueBy: daysBetween(rec.due, today), staleDeps };
   }
   const overdueBy = daysBetween(rec.due, today);
-  if (overdueBy >= 0) return { reason: REASON.due, record: rec, overdueBy };
-  return { reason: null, record: rec, overdueBy };
+  if (overdueBy >= 0) return { reason: REASON.due, record: rec, overdueBy, staleDeps: [] };
+  return { reason: null, record: rec, overdueBy, staleDeps: [] };
 }
 
 /**
- * The study queue: corrected cards first, then new, then due by how overdue.
+ * Which of a card's dependencies have moved since this card was last reviewed.
+ *
+ * Named rather than inlined because the UI needs the list: telling a learner
+ * "something changed" without saying WHAT is not much better than saying nothing,
+ * and the honest version of this banner cites the card that moved.
+ *
+ * @returns {string[]} dependency ids whose content hash differs from the recorded one
+ */
+export function staleDependencies(card, rec, byId) {
+  if (!rec || !rec.dhash || !byId) return [];
+  const current = depsFingerprint(card, byId);
+  if (!current || current === rec.dhash) return [];
+  /** @type {Record<string,string>} */
+  const was = {};
+  for (const pair of rec.dhash.split(',')) {
+    const i = pair.indexOf(':');
+    if (i > 0) was[pair.slice(0, i)] = pair.slice(i + 1);
+  }
+  const out = [];
+  for (const id of card.deps || []) {
+    const now = (byId[id] && byId[id].chash) || '';
+    // A dependency absent from the old fingerprint was added since the last
+    // review, which is a change to what this card rests on.
+    if (!(id in was) || was[id] !== now) out.push(id);
+  }
+  return out;
+}
+
+/**
+ * The study queue: corrected cards first, then cards whose context moved, then
+ * new, then due by how overdue.
  *
  * Corrected-first is the whole point — if a price changed this morning, that is
  * the card to see, not the one whose six-month interval happens to elapse today.
@@ -179,15 +282,16 @@ export function cardStatus(card, progress, today) {
  * @param {any[]} cards
  * @param {Progress} progress
  * @param {string} today
- * @returns {{card:any,reason:string,overdueBy:number}[]}
+ * @param {Record<string, any>} [byId] the whole deck by id, for dependency checks
+ * @returns {{card:any,reason:string,overdueBy:number,staleDeps:string[]}[]}
  */
-export function studyQueue(cards, progress, today) {
-  const rank = { [REASON.changed]: 0, [REASON.new]: 1, [REASON.due]: 2 };
+export function studyQueue(cards, progress, today, byId) {
+  const rank = { [REASON.changed]: 0, [REASON.context]: 1, [REASON.new]: 2, [REASON.due]: 3 };
   const out = [];
   for (const card of cards) {
-    const { reason, overdueBy } = cardStatus(card, progress, today);
+    const { reason, overdueBy, staleDeps } = cardStatus(card, progress, today, byId);
     if (!reason) continue;
-    out.push({ card, reason, overdueBy });
+    out.push({ card, reason, overdueBy, staleDeps });
   }
   out.sort((a, b) => rank[a.reason] - rank[b.reason] || b.overdueBy - a.overdueBy);
   return out;
@@ -195,25 +299,27 @@ export function studyQueue(cards, progress, today) {
 
 /**
  * Counts for the study UI.
- * @returns {{changed:number,new:number,due:number,total:number,scheduled:number}}
+ * @returns {{changed:number,context:number,new:number,due:number,total:number,scheduled:number}}
  */
-export function studyCounts(cards, progress, today) {
-  const c = { changed: 0, new: 0, due: 0, total: 0, scheduled: 0 };
+export function studyCounts(cards, progress, today, byId) {
+  const c = { changed: 0, context: 0, new: 0, due: 0, total: 0, scheduled: 0 };
   for (const card of cards) {
-    const { reason } = cardStatus(card, progress, today);
+    const { reason } = cardStatus(card, progress, today, byId);
     if (reason === REASON.changed) c.changed++;
+    else if (reason === REASON.context) c.context++;
     else if (reason === REASON.new) c.new++;
     else if (reason === REASON.due) c.due++;
     else c.scheduled++;
   }
-  c.total = c.changed + c.new + c.due;
+  c.total = c.changed + c.context + c.new + c.due;
   return c;
 }
 
 /** Human-readable next-review hint for a card's back face. */
-export function describeSchedule(card, progress, today) {
-  const { reason, record } = cardStatus(card, progress, today);
+export function describeSchedule(card, progress, today, byId) {
+  const { reason, record } = cardStatus(card, progress, today, byId);
   if (reason === REASON.changed) return 'This card changed since you last studied it';
+  if (reason === REASON.context) return 'A card this one builds on changed since you last studied it';
   if (reason === REASON.new || !record) return 'Not studied yet';
   if (reason === REASON.due) {
     const late = daysBetween(record.due, today);

@@ -75,7 +75,7 @@ stripping. There is no install step.
 
 ```bash
 node src/validate.ts          # schema + lint + citation gate
-node --test tests/*.test.ts   # 214 behavioural, guarantee, verifier, ingest + rename tests
+node --test tests/*.test.ts   # 225 behavioural, guarantee, verifier, ingest + rename tests
 node src/verify-claims.ts     # decompose every card into claims and verify each
 node src/build.ts             # → dist/deck.json + dist/aws-ai-native-development-flashcards.html
 node src/verify-parity.ts     # authored-content parity against the original deck
@@ -123,6 +123,7 @@ build. npm is only a task runner here; there are no packages to install.
 | Every claim shown to a learner carries its source | provenance footer on the back face: verification date, source links, and an explicit "Unverified" marker with the reason when no source exists |
 | A shared link survives a rename | the URL hash names a card *slug*, never an index, and resolves through `aka[]` aliases |
 | A corrected card is re-studied, not left memorised wrong | spaced repetition stores a content hash per review; a card whose facts moved is pulled back into the queue whatever its interval says |
+| A card that *builds on* a corrected card is resurfaced too | a review also records a fingerprint of the card's dependencies. When AC-04 is corrected, AC-18 — which quotes its pricing — is not wrong, but the ground under it moved, so it is queued as `context` with a banner naming the card that changed |
 | The hidden card face is unreachable, not just unread | `aria-hidden` **and** `inert`, so a keyboard user cannot Tab onto the side they have not seen |
 | A content hash means something | `validate` re-hashes each fact set's retained evidence; a tampered or mismatched provenance record fails the build |
 | A number is verified, never judged | `verify-claims` string-matches every numeric, date and region claim against retained source text. Any failing claim demotes the whole card to Tier C |

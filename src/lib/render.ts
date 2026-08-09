@@ -43,10 +43,26 @@ export type LegacyShaped = {
    * resurfaced regardless of its interval.
    */
   chash: string;
+  /**
+   * Card ids this card builds on.
+   *
+   * Needed on the CLIENT, not just in the repo: when a deterministic source
+   * corrects a card, the cards that depend on it are not wrong, but the ground
+   * under them has moved — and the learner has no way to know that unless the
+   * scheduler can see the edges.
+   */
+  deps: string[];
 };
 
-/** The authored-content subset — what the migration must have preserved exactly. */
-export type AuthoredText = Omit<LegacyShaped, 'prov' | 'tags' | 'slug' | 'aliases' | 'search' | 'chash'>;
+/**
+ * The authored-content subset — what the migration must have preserved exactly.
+ *
+ * `deps` is excluded along with the other derived fields. It is structure rather
+ * than something a learner reads, and folding it into the content hash would
+ * change the hash of every card that has dependencies — invalidating existing
+ * review history to record a fact about the graph, not about the card's text.
+ */
+export type AuthoredText = Omit<LegacyShaped, 'prov' | 'tags' | 'slug' | 'aliases' | 'search' | 'chash' | 'deps'>;
 
 export function slugify(s: string): string {
   return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -82,6 +98,7 @@ export function toLegacyShape(card: Card, categories: Category[]): LegacyShaped 
     aliases,
     search,
     chash: contentHash(text),
+    deps: [...card.depends_on].sort(),
   };
 }
 
@@ -267,6 +284,7 @@ export function serialiseDeckLiteral(cards: LegacyShaped[]): string {
       ',aliases:[' + d.aliases.map(js).join(',') + ']' +
       ',search:' + js(d.search) +
       ',chash:' + js(d.chash) +
+      ',deps:[' + d.deps.map(js).join(',') + ']' +
       ',\nback:{lead:' + js(d.back.lead) +
       ',\nkv:[' + d.back.kv.map((r) => '[' + js(r[0]) + ',' + js(r[1]) + ']').join(',\n') +
       '],\nhookline:' + js(d.back.hookline) +

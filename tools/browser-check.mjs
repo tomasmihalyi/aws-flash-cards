@@ -405,6 +405,59 @@ try {
   await page.reload({ waitUntil: 'load' });
   await page.waitForSelector('#card');
 
+  console.log('\n[a card that BUILDS ON a corrected card is resurfaced too (T5.8)]');
+  // Study a card that has dependencies, schedule it far out, then move one of the
+  // cards it depends on. The card itself is untouched: its own claims still hold,
+  // so this must read as context rather than as a correction.
+  const dep = await page.evaluate(() => {
+    const key = 'aws-flashcards.progress.v1';
+    const dependent = DECK.find((c) => (c.deps || []).length > 0);
+    const depId = dependent.deps[0];
+    const fp = dependent.deps
+      .slice()
+      .sort()
+      .map((id) => id + ':' + ((BY_ID[id] && BY_ID[id].chash) || ''))
+      .join(',');
+    // A record written as if the learner studied it while the deps were as they
+    // are now, then scheduled a decade out.
+    const p = {
+      v: 1,
+      reviews: {
+        [dependent.id]: {
+          reps: 9, lapses: 0, ease: 2.5, interval: 3650,
+          due: '2099-01-01', last: '2026-01-01',
+          chash: dependent.chash,
+          // ...except one dependency's hash is recorded as something older.
+          dhash: fp.replace(depId + ':' + ((BY_ID[depId] && BY_ID[depId].chash) || ''), depId + ':older-hash-000'),
+        },
+      },
+    };
+    localStorage.setItem(key, JSON.stringify(p));
+    return { dependent: dependent.id, dependency: depId, title: BY_ID[depId] ? BY_ID[depId].t : '' };
+  });
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForSelector('#card');
+  const s3 = await stats();
+  ok('the dependent is counted as context, not as changed',
+    /CONTEXT 1/.test(s3) && !/CHANGED/.test(s3), s3);
+  await page.click('#studyBtn');
+  await page.waitForTimeout(300);
+  await page.click('#flipBtn');
+  await page.waitForTimeout(650);
+  const ctx = await page.$eval('.back .context', (e) => e.innerText.replace(/\s+/g, ' ').trim()).catch(() => null);
+  ok('the context-stale card is surfaced despite a 10-year interval', Boolean(ctx), 'no .context banner');
+  ok('the banner names the dependency that moved',
+    Boolean(ctx && ctx.includes(dep.dependency)), ctx ?? '');
+  ok('the banner does NOT claim this card is out of date',
+    Boolean(ctx && !/out of date/i.test(ctx) && /still check out/i.test(ctx)), ctx ?? '');
+  ok('no .changed banner is shown as well', !(await page.$('.back .changed')));
+  if (ctx) console.log(`  ${dep.dependent} banner:`, ctx);
+  await page.screenshot({ path: `${out}/context-card.png` });
+
+  await page.evaluate(() => localStorage.clear());
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForSelector('#card');
+
   ok('no console or page errors', errors.length === 0, errors.join(' | '));
   console.log(`\nbrowser-check: ${failures === 0 ? 'PASS' : `FAIL (${failures})`} · screenshots in ${out}`);
 } finally {
