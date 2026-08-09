@@ -13,6 +13,7 @@ import assert from 'node:assert/strict';
 
 import { parseDocHistory, parseHistoryDate } from '../src/ingest/docs-doc-history.ts';
 import { parseFeatureRegions } from '../src/ingest/docs-feature-regions.ts';
+import { collapse } from '../src/ingest/service-quotas.ts';
 
 describe('document history ingest (day precision)', () => {
   const TABLE = [
@@ -120,5 +121,43 @@ describe('feature x region matrix ingest', () => {
     // "coming soon" is neither available nor unavailable. Guessing either way
     // would put an invented availability claim into a fact set.
     assert.throws(() => parseFeatureRegions(odd), /unexpected cell value/);
+  });
+});
+
+describe('service quotas ingest', () => {
+  const QUOTAS = [
+    { QuotaCode: 'L-FDE792EE', QuotaName: 'Asynchronous job maximum duration (in Hours)', Value: 8, Unit: 'None', Adjustable: false },
+    { QuotaCode: 'L-999E4864', QuotaName: 'Asynchronous job maximum duration (in Hours)', Value: 8, Unit: 'None', Adjustable: false },
+    { QuotaCode: 'L-60CD4D60', QuotaName: 'Asynchronous job maximum duration (in Hours)', Value: 8, Unit: 'None', Adjustable: false },
+    { QuotaCode: 'L-AAAAAAAA', QuotaName: 'Streaming maximum duration (in Minutes)', Value: 60, Unit: 'None', Adjustable: true },
+  ];
+
+  test('duplicate rows for one named quota collapse to a single agreed value', () => {
+    // The API returns this quota three times, once per primitive that carries it.
+    const got = collapse(QUOTAS, 'Asynchronous job maximum duration (in Hours)');
+    assert.ok(got);
+    assert.equal(got.value, 8);
+    assert.equal(got.codes.length, 3);
+    assert.equal(got.adjustable, false);
+  });
+
+  test('disagreement between quota codes is refused, not averaged or picked', () => {
+    // If Runtime allows 8 hours and Browser allows 4, there is no single "the
+    // limit" to teach, and silently publishing one would be wrong on the other.
+    const diverged = [
+      ...QUOTAS.slice(0, 2),
+      { QuotaCode: 'L-60CD4D60', QuotaName: 'Asynchronous job maximum duration (in Hours)', Value: 4, Unit: 'None', Adjustable: false },
+    ];
+    assert.throws(() => collapse(diverged, 'Asynchronous job maximum duration (in Hours)'),
+      /different values across codes/);
+  });
+
+  test('adjustability is retained, because it changes the teaching point', () => {
+    // "8 hours and you cannot raise it" is a different fact from "8 by default".
+    assert.equal(collapse(QUOTAS, 'Streaming maximum duration (in Minutes)').adjustable, true);
+  });
+
+  test('a missing quota returns null so the ingest can refuse loudly', () => {
+    assert.equal(collapse(QUOTAS, 'Some Quota AWS Renamed'), null);
   });
 });

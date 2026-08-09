@@ -15,7 +15,7 @@
   "badge_text": "CORE SERVICE",
   "art": "runtime",
   "title": "AgentCore Runtime",
-  "hook": "Serverless agent hosting: one isolated microVM per session, executions up to 8 hours.",
+  "hook": "Serverless agent hosting: one isolated microVM per session, executions {{slot:max_execution}}.",
   "back": {
     "lead": "Runtime hosts your agent (or tool) code. Every session gets a dedicated microVM with full session isolation, so one user's context can never leak into another's. It auto-scales, needs zero infrastructure management, and supports long-running work up to eight hours.",
     "kv": [
@@ -38,11 +38,32 @@
     ],
     "hookline": "Runtime = 'Lambda for agents', but with sessions, statefulness, and hours-long lifetimes."
   },
-  "slots": {},
-  "facts_used": [],
-  "sources": [],
-  "verified_at": null,
-  "confidence": "medium",
+  "slots": {
+    "max_execution": {
+      "tier": "A",
+      "template": "up to {{fact:agentcore.quotas.runtime.max-async-job-hours}} hours",
+      "facts": [
+        "agentcore.quotas.runtime.max-async-job-hours"
+      ],
+      "rendered": "up to 8 hours",
+      "rendered_from": "tier-a",
+      "seed_text": "up to 8 hours"
+    }
+  },
+  "facts_used": [
+    "agentcore.quotas.runtime.max-async-job-hours"
+  ],
+  "sources": [
+    {
+      "url": "https://ap-southeast-2.console.aws.amazon.com/servicequotas/home/services/bedrock-agentcore/quotas",
+      "title": "agentcore.quotas (service-quotas-api)",
+      "kind": "service-quotas-api",
+      "fetched_at": "2026-08-09T05:25:16.699Z",
+      "content_hash": "sha256:fbf1d6de7a08b900f1886214a541b4ddafc25cae1be0c706c37c33c4e98ec300"
+    }
+  ],
+  "verified_at": "2026-08-09T05:25:16.699Z",
+  "confidence": "high",
   "depends_on": [],
   "aka": [],
   "superseded_by": null,
@@ -50,7 +71,7 @@
   "needs_review": false,
   "review_reasons": [],
   "provenance": {
-    "tier": "seed",
+    "tier": "A",
     "authored_by": "legacy-import",
     "history": [
       {
@@ -59,9 +80,31 @@
         "action": "import",
         "generator": "tools/extract-legacy.ts",
         "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      },
+      {
+        "at": "2026-08-09T05:26:03.166Z",
+        "tier": "A",
+        "action": "clear-review",
+        "generator": "tools/govern-literal.ts",
+        "slot": "max_execution",
+        "facts": [
+          "agentcore.quotas.runtime.max-async-job-hours"
+        ],
+        "reason": "The 8-hour execution ceiling was an ungoverned literal, cited only to release-notes prose. Service Quotas publishes it as \"Asynchronous job maximum duration (in Hours)\" = 8, not adjustable, across three quota codes that must agree. A limit is the archetypal drifting number, so it is now re-rendered from the API on every refresh instead of being trusted because someone typed it."
+      },
+      {
+        "at": "2026-08-09T05:26:03.351Z",
+        "tier": "A",
+        "action": "verify",
+        "generator": "src/ingest/apply.ts",
+        "slot": "max_execution",
+        "facts": [
+          "agentcore.quotas.runtime.max-async-job-hours"
+        ],
+        "reason": "Seed literal matched the deterministic source exactly; promoted from seed to tier-a with no text change."
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-06T12:57:02.398Z"
+  "updated_at": "2026-08-09T05:26:03.351Z"
 }

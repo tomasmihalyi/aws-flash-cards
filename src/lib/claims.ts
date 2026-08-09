@@ -69,7 +69,17 @@ const PATTERNS: { kind: ClaimKind; re: RegExp }[] = [
   // whole pipeline exists to keep correct.
   {
     kind: 'number',
-    re: /\b\d+(?:,\d{3})*(?:\.\d+)?(?:\s?[–—-]\s?\d+(?:\.\d+)?)?(?:\s+[A-Za-z][\w-]*){0,2}\s*(?:%|regions?|evaluators?|events?|tokens?|calls?|invocations?|services?|primitives?|languages?|GB|MB|TB|vCPU)\b/gi,
+    /**
+     * The unit alternation ends with `\b` applied ONLY to the word units.
+     *
+     * It used to wrap the whole group, and `%` is not a word character — so
+     * `%\b` required a word character immediately after the percent sign and
+     * "70% of wall-clock time" never matched. Every percentage in the deck was
+     * invisible to the claim extractor, which meant the headline "verified"
+     * figure was computed over a claim set that silently excluded a whole
+     * category. `validate` could see the literal and the verifier could not.
+     */
+    re: /\b\d+(?:,\d{3})*(?:\.\d+)?(?:\s?[–—-]\s?\d+(?:\.\d+)?)?(?:\s+[A-Za-z][\w-]*){0,2}\s*(?:%|(?:regions?|evaluators?|events?|tokens?|calls?|invocations?|services?|primitives?|languages?|GB|MB|TB|vCPU)\b)/gi,
   },
 ];
 

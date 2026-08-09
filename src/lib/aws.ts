@@ -21,6 +21,11 @@ const ALLOWED: ReadonlySet<string> = new Set([
   'pricing:describe-services',
   'pricing:get-products',
   'sts:get-caller-identity',
+  // Service Quotas is the authoritative source for a service LIMIT, which is
+  // exactly the kind of number that drifts and that no docs page reliably
+  // states. list-service-quotas reads the account's applied values; it cannot
+  // request or change one (that is request-service-quota-increase, absent here).
+  'service-quotas:list-service-quotas',
 ]);
 
 export type AwsOptions = {

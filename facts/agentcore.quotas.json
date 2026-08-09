@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "fact_set_id": "agentcore.quotas",
+  "tier": "A",
+  "generator": "src/ingest/service-quotas.ts",
+  "verified_at": "2026-08-09T05:25:16.699Z",
+  "source": {
+    "kind": "service-quotas-api",
+    "url": "https://ap-southeast-2.console.aws.amazon.com/servicequotas/home/services/bedrock-agentcore/quotas",
+    "fetched_at": "2026-08-09T05:25:16.699Z",
+    "content_hash": "sha256:fbf1d6de7a08b900f1886214a541b4ddafc25cae1be0c706c37c33c4e98ec300",
+    "retrieved_by": "aws service-quotas list-service-quotas --service-code bedrock-agentcore --profile default --region ap-southeast-2"
+  },
+  "evidence": {
+    "canonical": [
+      {
+        "quota_name": "Asynchronous job maximum duration (in Hours)",
+        "fact": "agentcore.quotas.runtime.max-async-job-hours",
+        "value": 8,
+        "unit": "None",
+        "adjustable": false,
+        "quota_codes": [
+          "L-60CD4D60",
+          "L-999E4864",
+          "L-FDE792EE"
+        ]
+      },
+      {
+        "quota_name": "Streaming maximum duration (in Minutes)",
+        "fact": "agentcore.quotas.runtime.max-streaming-minutes",
+        "value": 60,
+        "unit": "None",
+        "adjustable": false,
+        "quota_codes": [
+          "L-C91AC63F"
+        ]
+      }
+    ],
+    "text": "Asynchronous job maximum duration (in Hours): 8 None (not adjustable)\nStreaming maximum duration (in Minutes): 60 None (not adjustable)"
+  },
+  "facts": {
+    "agentcore.quotas.runtime.max-async-job-hours": {
+      "type": "integer",
+      "value": 8,
+      "note": "Longest a single asynchronous AgentCore job may run. This is what a card means by \"executions up to N hours\". Applied value for this account in ap-southeast-2; NOT adjustable. Quota code(s): L-60CD4D60, L-999E4864, L-FDE792EE."
+    },
+    "agentcore.quotas.runtime.max-streaming-minutes": {
+      "type": "integer",
+      "value": 60,
+      "note": "Longest a streaming response may remain open. Applied value for this account in ap-southeast-2; NOT adjustable. Quota code(s): L-C91AC63F."
+    }
+  }
+}

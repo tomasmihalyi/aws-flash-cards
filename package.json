@@ -18,7 +18,7 @@
     "ingest:regions": "node src/ingest/ssm-regions.ts",
     "ingest:pricing": "node src/ingest/pricelist.ts",
     "ingest:api": "node src/ingest/botocore-diff.ts",
-    "ingest": "npm run ingest:regions && npm run ingest:pricing && npm run ingest:api && npm run ingest:docs",
+    "ingest": "npm run ingest:regions && npm run ingest:pricing && npm run ingest:quotas && npm run ingest:api && npm run ingest:docs",
     "apply": "node src/ingest/apply.ts",
     "apply:dry": "node src/ingest/apply.ts --dry-run",
     "refresh": "npm run ingest && npm run apply && npm run apply:rename && npm run build",
@@ -32,6 +32,7 @@
     "lifecycle": "node src/check-lifecycle.ts",
     "rename": "node src/check-rename.ts",
     "apply:rename": "node src/ingest/apply-rename.ts",
-    "apply:rename:dry": "node src/ingest/apply-rename.ts --dry-run"
+    "apply:rename:dry": "node src/ingest/apply-rename.ts --dry-run",
+    "ingest:quotas": "node src/ingest/service-quotas.ts"
   }
 }

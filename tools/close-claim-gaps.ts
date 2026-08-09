@@ -57,8 +57,8 @@ type ProseFix = {
   now: string;
   reason: string;
   unresolvable_reason: string;
-  /** fact set whose source should be cited on the card */
-  cite: string;
+  /** fact set whose source should be cited, or null when the fix REMOVES a claim */
+  cite: string | null;
 };
 
 const PROSE_FIXES: ProseFix[] = [
@@ -109,6 +109,33 @@ const PROSE_FIXES: ProseFix[] = [
     unresolvable_reason:
       'The documentation states transaction size in prose, not as a published price, so there is no fact to interpolate. The wording is quoted from the payments page rather than composed.',
     cite: 'agentcore.payments',
+  },
+  {
+    /**
+     * Not stale, not mistaken about a source — INVENTED. No AWS source publishes
+     * an I/O-wait share for agentic workloads, because it is a property of
+     * someone's workload rather than of the service.
+     *
+     * The number was also invisible for a different reason: the claim extractor's
+     * unit alternation put `\b` after a group that can match "%", so no
+     * percentage in the deck was ever extracted as a claim. `validate` could see
+     * the literal and the verifier could not, which is why this sat behind a
+     * "100% verified" headline.
+     *
+     * The architectural point does not need the statistic and is made concretely
+     * by the card's own hookline ("thinks for 60s but computes for 6s"), so the
+     * fix is to drop the number rather than to find a citation for it.
+     */
+    card_id: 'AC-18',
+    slot: 'io_wait_share',
+    where: 'back.lead',
+    was: 'agentic workloads typically spend 30\u201370% of wall-clock time in I/O wait',
+    now: 'agentic workloads spend much of their wall-clock time waiting on I/O rather than on CPU',
+    reason:
+      'Card asserted that agentic workloads "typically spend 30\u201370% of wall-clock time in I/O wait". No AWS source publishes that figure and none could: it describes a customer workload, not the service. The quantity is removed; the qualitative point it supported is retained and is quantified concretely by the card\u2019s hookline instead.',
+    unresolvable_reason:
+      'A general characterisation of agentic workloads. No deterministic source can settle it, so it carries no number and is Tier C by nature rather than pending a source.',
+    cite: null,
   },
 ];
 
@@ -189,9 +216,11 @@ function applyProseFix(card: Card, fix: ProseFix, now: string): boolean {
     reason: fix.reason,
   });
 
-  const src = sourceFrom(fix.cite);
-  addSource(card, src);
-  card.verified_at = card.verified_at ?? src.fetched_at;
+  if (fix.cite) {
+    const src = sourceFrom(fix.cite);
+    addSource(card, src);
+    card.verified_at = card.verified_at ?? src.fetched_at;
+  }
 
   const reviewReason = `Tier C prose correction applied by an agent (${fix.slot}). Needs human sign-off: the design gates judgement rewrites behind a human, and there is no remote to raise a PR against.`;
   card.needs_review = true;

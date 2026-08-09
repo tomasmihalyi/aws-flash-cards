@@ -313,6 +313,67 @@ describe('honesty of verdicts', () => {
     assert.notEqual(bad.verdict, 'verified', `18 leaked through: ${bad.reason}`);
   });
 
+  test('a percentage is extracted at all', () => {
+    /**
+     * Regression for a silent, whole-category blind spot. The number pattern's
+     * unit alternation ended with `\b`, which applies to the character before it
+     * — and "%" is not a word character, so `%\b` demanded a word character
+     * immediately after the percent sign. "70% of wall-clock time" therefore
+     * matched nothing, no percentage in the deck was ever a claim, and the
+     * headline "100% verified" was computed over a claim set that excluded them.
+     * `validate` could see the literal; the verifier could not.
+     */
+    const card = clone(byId('AC-18'));
+    card.slots.io_wait_share.rendered = 'workloads spend 70% of wall-clock time waiting';
+    const pct = check(card).results.find((r) => r.claim.token.includes('70%'));
+    assert.ok(pct, 'a percentage must be extracted as a claim');
+    assert.equal(pct.claim.kind, 'number');
+  });
+
+  test('an invented percentage is not verified', () => {
+    const card = clone(byId('AC-18'));
+    card.slots.io_wait_share.rendered = 'workloads spend 93% of wall-clock time waiting';
+    const bad = check(card).results.find((r) => r.claim.token.includes('93%'));
+    assert.ok(bad, 'claim not extracted');
+    assert.notEqual(bad.verdict, 'verified', `an invented percentage was accepted: ${bad.reason}`);
+  });
+
+  test('a RANGE is not satisfied by one of its endpoints', () => {
+    /**
+     * numeric("30–70%") returns "30", so without a range guard any source
+     * mentioning 30 would "confirm" a claim of 30 to 70 per cent — a citation
+     * under a claim the source never made. The release notes really do contain
+     * "12-18% improvements" and "25-35%", so this is not hypothetical.
+     */
+    const card = clone(byId('AC-18'));
+    card.slots.io_wait_share.rendered = 'latency improved 12\u201399% in testing';
+    const bad = check(card).results.find((r) => r.claim.token.includes('12'));
+    assert.ok(bad, 'range claim not extracted');
+    assert.notEqual(bad.verdict, 'verified',
+      `a range verified without both endpoints being present: ${bad.reason}`);
+  });
+
+  test('a range claim is not answered by a scalar fact', () => {
+    // agentcore.regions.count is 19. A claim of "19–40 regions" must not verify
+    // off it: a range and a scalar are different assertions.
+    const card = clone(byId('AC-19'));
+    card.slots.region_availability.rendered = 'AgentCore is available in 19\u201340 AWS regions.';
+    card.slots.sydney_availability.rendered = 'Sydney is in the list.';
+    const bad = check(card).results.find((r) => r.claim.token.includes('19'));
+    assert.ok(bad, 'claim not extracted');
+    assert.notEqual(bad.verdict, 'verified', `a scalar fact answered a range: ${bad.reason}`);
+  });
+
+  test('a governed limit is cited to the quota API, not to prose', () => {
+    // AC-04's "8 hours" was true but ungoverned, verified only by appearing in
+    // release-notes text. A limit is the archetypal drifting number.
+    const live = check(byId('AC-04')).results.find((r) => r.claim.token === '8 hours');
+    assert.ok(live, 'the execution-ceiling claim was not extracted');
+    assert.equal(live.verdict, 'verified');
+    assert.match(String(live.evidence ?? '') + live.reason, /quotas/,
+      `should cite the quota fact: ${live.evidence} / ${live.reason}`);
+  });
+
   test('a percentage does not satisfy a claim counting something else', () => {
     const card = clone(byId('AC-19'));
     card.slots.region_availability.rendered = 'AgentCore is available in 12 AWS regions.';

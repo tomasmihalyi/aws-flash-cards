@@ -72,7 +72,7 @@ stripping. There is no install step.
 
 ```bash
 node src/validate.ts          # schema + lint + citation gate
-node --test tests/*.test.ts   # 205 behavioural, guarantee, verifier, ingest + rename tests
+node --test tests/*.test.ts   # 214 behavioural, guarantee, verifier, ingest + rename tests
 node src/verify-claims.ts     # decompose every card into claims and verify each
 node src/build.ts             # → dist/deck.json + dist/agentcore-flashcards.html
 node src/verify-parity.ts     # authored-content parity against the original deck
@@ -81,6 +81,7 @@ node src/check-rename.ts      # has the thing a card describes been renamed?
 
 node src/ingest/ssm-regions.ts    # region availability  (read-only AWS)
 node src/ingest/pricelist.ts      # pricing              (read-only AWS)
+node src/ingest/service-quotas.ts # service LIMITS        (read-only AWS)
 node src/ingest/botocore-diff.ts  # API surface          (local, no AWS)
 node src/ingest/docs-release-notes.ts   # dated feature history, MONTH precision (public docs GET)
 node src/ingest/docs-doc-history.ts     # dated change history, DAY precision  (public docs GET)
@@ -101,6 +102,8 @@ build. npm is only a task runner here; there are no packages to install.
 | Guarantee | Enforcement |
 |---|---|
 | Numbers are never model-generated | Prose cannot hold a number a fact could supply; `validate` warns on every ungoverned numeric literal it finds |
+| A number is governed, not merely true | being correct today and re-rendering from a source tomorrow are different properties. A limit lives in a slot fed by the Service Quotas API, so the next refresh either confirms it or reports a correction |
+| A range is not its lower bound | "30–70%" needs both endpoints present with the unit; a scalar fact cannot answer a range |
 | No claim without a citation | `validate` L-CITATION: a slot resolved from a source must carry `sources[]` + `verified_at` |
 | Ingest cannot write to AWS | `src/lib/aws.ts` takes an explicit allow-list of `(service, operation)` pairs, not a `describe/list/get` heuristic |
 | A missing fact never fakes freshness | `apply` leaves the card untouched and exits non-zero rather than stamping `verified_at` on an unverified claim |

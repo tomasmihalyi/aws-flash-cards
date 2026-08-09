@@ -35,90 +35,139 @@
     "updated_at"
   ],
   "properties": {
-    "schema_version": { "type": "integer", "const": 1 },
-
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
     "card_id": {
       "type": "string",
       "pattern": "^[A-Z]{2,4}-[0-9]{2,4}$",
       "description": "Stable for the life of the concept. NEVER reused, even after retirement. A retired card keeps its id as a tombstone."
     },
-
     "kind": {
-      "enum": ["service-fact", "practice", "distillation", "mental-model"],
+      "enum": [
+        "service-fact",
+        "practice",
+        "distillation",
+        "mental-model"
+      ],
       "description": "Determines the verification lane. service-fact has a deterministic source; the other three stay current only via depends_on[] fan-out."
     },
-
     "lifecycle": {
-      "enum": ["preview", "ga", "deprecated", "superseded", "retired"],
+      "enum": [
+        "preview",
+        "ga",
+        "deprecated",
+        "superseded",
+        "retired"
+      ],
       "description": "Semantic stage of the thing the card describes. Separate from badge_* which is presentation."
     },
-
     "service": {
       "type": "string",
       "minLength": 2,
       "description": "Canonical service/product key, e.g. bedrock-agentcore, bedrock, kiro, claude-code, quick-suite. Used to join a card to its deterministic sources."
     },
-
     "category": {
       "type": "string",
       "description": "Category id from content/categories.json. Resolved to a display index at build time."
     },
-
     "tags": {
       "type": "array",
-      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]*$"
+      },
       "uniqueItems": true,
       "description": "Free taxonomy for P3 filtering/search. Empty is legal."
     },
-
     "badge_variant": {
-      "enum": ["ga", "pv", "core"],
-      "description": "Presentation only — maps to a CSS class. Lint: 'pv' iff lifecycle === 'preview'."
+      "enum": [
+        "ga",
+        "pv",
+        "core"
+      ],
+      "description": "Presentation only \u2014 maps to a CSS class. Lint: 'pv' iff lifecycle === 'preview'."
     },
-    "badge_text": { "type": "string", "minLength": 1 },
-
+    "badge_text": {
+      "type": "string",
+      "minLength": 1
+    },
     "art": {
       "type": "string",
       "pattern": "^[a-z][a-zA-Z0-9]*$",
       "description": "Key into content/art.json pictogram library."
     },
-
-    "title": { "type": "string", "minLength": 1 },
-    "hook": { "type": "string", "minLength": 1 },
-
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hook": {
+      "type": "string",
+      "minLength": 1
+    },
     "back": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["lead", "kv", "hookline"],
+      "required": [
+        "lead",
+        "kv",
+        "hookline"
+      ],
       "properties": {
-        "lead": { "type": "string", "minLength": 1 },
+        "lead": {
+          "type": "string",
+          "minLength": 1
+        },
         "kv": {
           "type": "array",
           "minItems": 1,
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["k", "v"],
+            "required": [
+              "k",
+              "v"
+            ],
             "properties": {
-              "k": { "type": "string", "minLength": 1 },
-              "v": { "type": "string", "minLength": 1 }
+              "k": {
+                "type": "string",
+                "minLength": 1
+              },
+              "v": {
+                "type": "string",
+                "minLength": 1
+              }
             }
           }
         },
-        "hookline": { "type": "string", "minLength": 1 }
+        "hookline": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
-
     "slots": {
       "type": "object",
       "description": "Fact-governed text spans. Referenced from prose as {{slot:<name>}}. The ONLY route by which a number, price, date or region list may enter a card.",
       "additionalProperties": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["tier", "template", "facts", "rendered", "rendered_from", "seed_text"],
+        "required": [
+          "tier",
+          "template",
+          "facts",
+          "rendered",
+          "rendered_from",
+          "seed_text"
+        ],
         "properties": {
           "tier": {
-            "enum": ["A", "B", "C"],
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ],
             "description": "A = deterministic auto-commit. B = model-drafted, grounded, verifier-gated. C = human-gated PR. Quick-vs-Kiro boundary slots are C by definition."
           },
           "template": {
@@ -127,8 +176,11 @@
           },
           "facts": {
             "type": "array",
-            "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
-            "description": "Fact ids the template needs. If any is missing at apply time the slot is left untouched and the run fails — a missing fact must never yield a fresh verified_at on a stale claim."
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9._-]*$"
+            },
+            "description": "Fact ids the template needs. If any is missing at apply time the slot is left untouched and the run fails \u2014 a missing fact must never yield a fresh verified_at on a stale claim."
           },
           "rendered": {
             "type": "string",
@@ -136,7 +188,12 @@
             "description": "What the build emits. The renderer reads nothing else, which keeps the build offline and deterministic."
           },
           "rendered_from": {
-            "enum": ["seed", "tier-a", "tier-b", "tier-c"],
+            "enum": [
+              "seed",
+              "tier-a",
+              "tier-b",
+              "tier-c"
+            ],
             "description": "'seed' = original hand-authored literal, never verified against a source."
           },
           "seed_text": {
@@ -150,132 +207,261 @@
         }
       }
     },
-
     "facts_used": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "uniqueItems": true,
-      "description": "Derived at build time — the union of every slot's facts[]. Enables reverse lookup: which cards does this fact touch."
+      "description": "Derived at build time \u2014 the union of every slot's facts[]. Enables reverse lookup: which cards does this fact touch."
     },
-
     "sources": {
       "type": "array",
       "description": "Citation gate: a card with a resolved fact-governed slot MUST carry a source fetched in the run that resolved it.",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["url", "fetched_at", "content_hash"],
+        "required": [
+          "url",
+          "fetched_at",
+          "content_hash"
+        ],
         "properties": {
-          "url": { "type": "string", "minLength": 1 },
-          "title": { "type": "string" },
-          "kind": {
-            "enum": ["ssm-public-parameter", "price-list-api", "botocore-model", "aws-docs-release-notes", "aws-docs", "vendor-docs", "aws-whats-new", "blog", "talk", "paper", "changelog", "other"]
+          "url": {
+            "type": "string",
+            "minLength": 1
           },
-          "fetched_at": { "type": "string", "format": "date-time" },
-          "content_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
-          "author": { "type": "string" },
-          "published_at": { "type": "string" }
+          "title": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "ssm-public-parameter",
+              "price-list-api",
+              "service-quotas-api",
+              "botocore-model",
+              "aws-docs-release-notes",
+              "aws-docs",
+              "vendor-docs",
+              "aws-whats-new",
+              "blog",
+              "talk",
+              "paper",
+              "changelog",
+              "other"
+            ]
+          },
+          "fetched_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "content_hash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "author": {
+            "type": "string"
+          },
+          "published_at": {
+            "type": "string"
+          }
         }
       }
     },
-
     "verified_at": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "Null until a deterministic source has verified every tier-A slot on this card. Shown to the learner (FR-11)."
     },
-
     "confidence": {
-      "enum": ["high", "medium", "low"],
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
       "description": "Derived, not a judgement: 'low' is automatic while any slot still renders from 'seed'."
     },
-
     "depends_on": {
       "type": "array",
-      "items": { "type": "string", "pattern": "^[A-Z]{2,4}-[0-9]{2,4}$" },
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]{2,4}-[0-9]{2,4}$"
+      },
       "uniqueItems": true,
       "description": "service-fact card ids this card's claims rest on. A material change to any of them flags this card needs_review (P5 fan-out). Quick-vs-Kiro boundary cards MUST declare both sides."
     },
-
     "aka": {
       "type": "array",
-      "description": "Rename history. Aliasing, never deletion — old names keep resolving so deep links survive.",
+      "description": "Rename history. Aliasing, never deletion \u2014 old names keep resolving so deep links survive.",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["name", "changed_at"],
+        "required": [
+          "name",
+          "changed_at"
+        ],
         "properties": {
-          "name": { "type": "string", "minLength": 1 },
-          "changed_at": { "type": "string" },
-          "source": { "type": "string" }
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "changed_at": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
         }
       }
     },
-
     "superseded_by": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "pattern": "^[A-Z]{2,4}-[0-9]{2,4}$",
       "description": "Set when the concept is replaced. The card stays reachable."
     },
     "supersedes": {
       "type": "array",
-      "items": { "type": "string", "pattern": "^[A-Z]{2,4}-[0-9]{2,4}$" },
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]{2,4}-[0-9]{2,4}$"
+      },
       "uniqueItems": true
     },
-
-    "needs_review": { "type": "boolean" },
+    "needs_review": {
+      "type": "boolean"
+    },
     "review_reasons": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["reason", "raised_at"],
+        "required": [
+          "reason",
+          "raised_at"
+        ],
         "properties": {
-          "reason": { "type": "string", "minLength": 1 },
-          "raised_at": { "type": "string" },
-          "raised_by": { "type": "string" },
-          "trigger_card": { "type": "string" },
-          "trigger_fact": { "type": "string" }
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "raised_at": {
+            "type": "string"
+          },
+          "raised_by": {
+            "type": "string"
+          },
+          "trigger_card": {
+            "type": "string"
+          },
+          "trigger_fact": {
+            "type": "string"
+          }
         }
       }
     },
-
     "provenance": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["tier", "authored_by", "history"],
+      "required": [
+        "tier",
+        "authored_by",
+        "history"
+      ],
       "properties": {
-        "tier": { "enum": ["A", "B", "C", "seed"] },
-        "authored_by": { "enum": ["human", "model", "pipeline", "legacy-import"] },
+        "tier": {
+          "enum": [
+            "A",
+            "B",
+            "C",
+            "seed"
+          ]
+        },
+        "authored_by": {
+          "enum": [
+            "human",
+            "model",
+            "pipeline",
+            "legacy-import"
+          ]
+        },
         "history": {
           "type": "array",
           "description": "Append-only ledger. Every automated change lands here with its tier, generator and reason.",
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["at", "tier", "action", "generator"],
+            "required": [
+              "at",
+              "tier",
+              "action",
+              "generator"
+            ],
             "properties": {
-              "at": { "type": "string", "format": "date-time" },
-              "tier": { "enum": ["A", "B", "C", "seed"] },
-              "action": { "enum": ["import", "verify", "correct", "rename", "supersede", "retire", "flag-review", "clear-review"] },
-              "generator": { "type": "string" },
-              "slot": { "type": "string" },
+              "at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "tier": {
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  "seed"
+                ]
+              },
+              "action": {
+                "enum": [
+                  "import",
+                  "verify",
+                  "correct",
+                  "rename",
+                  "supersede",
+                  "retire",
+                  "flag-review",
+                  "clear-review"
+                ]
+              },
+              "generator": {
+                "type": "string"
+              },
+              "slot": {
+                "type": "string"
+              },
               "field": {
                 "type": "string",
                 "description": "For a correction to a card field rather than a slot (lifecycle, badge_variant, badge_text). Paired with before/after, this is what lets the parity gate allow a real correction while still proving nothing changed without a recorded reason."
               },
-              "before": { "type": "string" },
-              "after": { "type": "string" },
-              "facts": { "type": "array", "items": { "type": "string" } },
-              "reason": { "type": "string" }
+              "before": {
+                "type": "string"
+              },
+              "after": {
+                "type": "string"
+              },
+              "facts": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "reason": {
+                "type": "string"
+              }
             }
           }
         }
       }
     },
-
-    "created_at": { "type": "string" },
-    "updated_at": { "type": "string" },
-
+    "created_at": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string"
+    },
     "notes": {
       "type": "string",
       "description": "Maintainer-facing only. Never rendered."

@@ -508,9 +508,36 @@ function numeric(token: string): string | null {
  * source is coincidence, not verification.
  */
 function unitOf(token: string): string | null {
+  // A percentage's unit is the sign, which carries no letters.
+  if (/\d\s*%\s*$/.test(token.trim())) return '%';
   const m = /([A-Za-z][A-Za-z-]{2,})\s*$/.exec(token.trim());
   if (!m) return null;
   return m[1].toLowerCase().replace(/s$/, '');
+}
+
+/**
+ * The two endpoints of a RANGE claim, or null for a scalar.
+ *
+ * A range is not a number, and treating it as one is a way to verify something
+ * the source never said: `numeric("30–70%")` returns "30", so a source mentioning
+ * any 30 would have "confirmed" a claim of 30 to 70 per cent. Both endpoints have
+ * to be there, in order, qualified by the unit.
+ */
+function rangeOf(token: string): { lo: string; hi: string } | null {
+  const m = /^\s*(?:US)?\$?\s?(\d+(?:[.,]\d+)*)\s*[–—-]\s*(?:US)?\$?\s?(\d+(?:[.,]\d+)*)/.exec(token);
+  if (!m) return null;
+  return { lo: m[1].replace(/,/g, ''), hi: m[2].replace(/,/g, '') };
+}
+
+/** Does the text state this whole range, with its unit? */
+function textContainsRange(text: string, lo: string, hi: string, unit: string | null): boolean {
+  const esc = (s: string) => s.replace('.', '\\.');
+  const tail = unit === '%' ? '\\s*%' : unit ? `(?:\\s+[\\w().,'-]+){0,3}\\s*${unit}` : '';
+  const re = new RegExp(
+    `(?<![\\w.])${esc(lo)}\\s*%?\\s*[–—-]\\s*\\$?\\s?${esc(hi)}${tail}`,
+    'i',
+  );
+  return re.test(text.replace(/,/g, ''));
 }
 
 function numberMatchIndices(text: string, token: string, requireCurrency = false): number[] {
@@ -690,6 +717,11 @@ export function verifyClaim(claim: Claim, ctx: VerifyContext): ClaimResult {
    * COUNT. Numeric matching is only ever appropriate for numeric claims.
    */
   const numericKind = claim.kind === 'number' || claim.kind === 'money' || claim.kind === 'duration';
+  /**
+   * A RANGE claim is not a scalar. No single fact can answer it, and reducing it
+   * to its lower bound would let an unrelated 30 verify "30–70%".
+   */
+  const range = numericKind ? rangeOf(claim.token) : null;
   for (const id of store.ids()) {
     const hit = store.get(id);
     if (!hit) continue;
@@ -705,7 +737,7 @@ export function verifyClaim(claim: Claim, ctx: VerifyContext): ClaimResult {
      * scraped out of an arbitrary fact value is not verification.
      */
     const numericFact = hit.value.type === 'integer' || hit.value.type === 'money' || hit.value.type === 'number';
-    if (numericKind && numericFact && numeric(claim.token) !== null && numeric(rendered) === numeric(claim.token)) {
+    if (numericKind && !range && numericFact && numeric(claim.token) !== null && numeric(rendered) === numeric(claim.token)) {
       if (!factCanSpeakFor(id, subject)) continue;
       return {
         claim,
@@ -731,6 +763,19 @@ export function verifyClaim(claim: Claim, ctx: VerifyContext): ClaimResult {
       : 'Value appears in fetched source text';
     if (claim.kind === 'region' && ev.text.includes(claim.token)) {
       return { claim, verdict: 'verified', evidence: ev.url, reason: 'Region appears verbatim in fetched source' };
+    }
+    /**
+     * A range must be present AS a range. Verifying "30–70%" by finding a 30 is
+     * how a claim the source never made ends up with a citation under it.
+     */
+    if (range) {
+      if (!textContainsRange(ev.text, range.lo, range.hi, unitOf(claim.token))) continue;
+      return {
+        claim,
+        verdict: 'verified',
+        evidence: ev.url,
+        reason: `${grade}, as a complete range (${range.lo}\u2013${range.hi})`,
+      };
     }
     const at = numericKind ? numberMatchIndices(ev.text, claim.token, claim.kind === 'money') : [];
     if (!at.length) continue;
