@@ -75,7 +75,7 @@ stripping. There is no install step.
 
 ```bash
 node src/validate.ts          # schema + lint + citation gate
-node --test tests/*.test.ts   # 225 behavioural, guarantee, verifier, ingest + rename tests
+node --test tests/*.test.ts   # 243 behavioural, guarantee, verifier, ingest, rename + lint tests
 node src/verify-claims.ts     # decompose every card into claims and verify each
 node src/build.ts             # → dist/deck.json + dist/aws-ai-native-development-flashcards.html
 node src/verify-parity.ts     # authored-content parity against the original deck
@@ -105,6 +105,7 @@ build. npm is only a task runner here; there are no packages to install.
 | Guarantee | Enforcement |
 |---|---|
 | Numbers are never model-generated | Prose cannot hold a number a fact could supply; `validate` warns on every ungoverned numeric literal it finds |
+| A past date needs a citation, not a slot | L-NUMERIC asks one question: will this number drift? A date already in the past cannot, so it is exempt from governance — and still checked by `verify-claims`, which is stricter about dates than this rule ever was. A *future* date, a price or a quantity is never exempt, and a bare current year is not either: "streaming (2026)" is imprecise prose, not settled history |
 | A number is governed, not merely true | being correct today and re-rendering from a source tomorrow are different properties. A limit lives in a slot fed by the Service Quotas API, so the next refresh either confirms it or reports a correction |
 | A rounded figure stays rounded | the Bedrock docs advertise "100+" models. The fact records that it is a FLOOR and the slot renders "over 100" — turning a lower bound into a count would be wrong in the direction that looks precise |
 | A range is not its lower bound | "30–70%" needs both endpoints present with the unit; a scalar fact cannot answer a range |

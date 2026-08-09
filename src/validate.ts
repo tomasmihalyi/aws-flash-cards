@@ -19,7 +19,7 @@ import { validate as validateJson, validateSchemaKeywords } from './lib/schema.t
 import { loadCards, loadCategories, loadArt, loadFactStore, loadSchema, loadIdLedger, paths } from './lib/store.ts';
 import { resolveTemplate, slotRefs, FACT_RE } from './lib/facts.ts';
 import { hashPayload } from './lib/hash.ts';
-import { datedEntriesFrom } from './lib/verifier.ts';
+import { datedEntriesFrom, parseClaimDate } from './lib/verifier.ts';
 import { detectAll } from './lib/lifecycle.ts';
 import type { Card, FactSet } from './lib/types.ts';
 
@@ -31,8 +31,72 @@ const err = (m: string) => errors.push(m);
 const warn = (m: string) => warnings.push(m);
 
 /** A literal that looks like a number, price or date sitting in authored prose. */
-const NUMERIC_LITERAL_RE =
-  /(\$\s?\d|(?<![\w-])\d{1,3}(,\d{3})*(\.\d+)?\s?(%|regions?|GB|MB|hours?|seconds?|minutes?|events?|tokens?)|\b(19|20)\d{2}\b)/i;
+/**
+ * The clock this rule compares against.
+ *
+ * Overridable so a test can pin it: a rule whose behaviour depends on the real
+ * date is a rule that cannot be tested at all, and its warning set would change
+ * from one run to the next with no card having moved.
+ */
+const TODAY = new Date(process.env.FLASHCARDS_TODAY ?? Date.now());
+
+export const NUMERIC_LITERAL_RE =
+  /(\$\s?\d|(?<![\w-])\d{1,3}(,\d{3})*(\.\d+)?\s?(%|regions?|GB|MB|hours?|seconds?|minutes?|events?|tokens?)|\b(19|20)\d{2}\b)/gi;
+
+/**
+ * Date forms that give a year its month, so "Apr 2026" is not read as a bare 2026.
+ *
+ * A matcher only. `parseClaimDate` in verifier.ts remains the single implementation
+ * that turns one of these strings into a date — this repo has been bitten twice by
+ * two copies of one derivation drifting apart.
+ */
+const DATE_FORM_RE =
+  /\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+(?:\d{1,2}(?:st|nd|rd|th)?,?\s+)?(?:19|20)\d{2}\b/gi;
+
+/**
+ * Is this literal a date that has ALREADY PASSED?
+ *
+ * L-NUMERIC exists to catch numbers that will drift — a price, a region count, a
+ * quota — because a literal typed into prose cannot notice when it changes. A date
+ * in the past has nothing left to drift into: when Bedrock Agents launched is a
+ * settled fact about history, and a slot re-rendering it would produce the same
+ * string forever.
+ *
+ * That is a governance question, and it is the only one this rule asks. Whether
+ * the date is TRUE is a different property, enforced separately and more strictly
+ * by `verify-claims`, which requires every date claim to match a topically related
+ * entry in a dated source. Exempting a past date here does not let an uncited one
+ * through; it routes it to the gate that can actually check it.
+ *
+ * "Already passed" means UNAMBIGUOUSLY passed. A bare year that is the current year
+ * is not exempt: the year is not over, so "Memory streaming (2026)" is genuinely
+ * imprecise prose and the warning is the right outcome.
+ */
+export function isPastDate(literal: string, today: Date): boolean {
+  const parsed = parseClaimDate(literal.trim());
+  if (!parsed) return false;
+  const y = today.getUTCFullYear();
+  const m = today.getUTCMonth() + 1;
+  const d = today.getUTCDate();
+  if (parsed.month === null) return parsed.year < y;
+  if (parsed.day === null) return parsed.year < y || (parsed.year === y && parsed.month < m);
+  if (parsed.year !== y) return parsed.year < y;
+  if (parsed.month !== m) return parsed.month < m;
+  return parsed.day < d;
+}
+
+/**
+ * The fullest date literal covering `index`, so a year gets its month.
+ *
+ * Returns the bare match when the year stands alone.
+ */
+export function dateLiteralAt(text: string, index: number, fallback: string): string {
+  for (const m of text.matchAll(DATE_FORM_RE)) {
+    const start = m.index ?? 0;
+    if (index >= start && index < start + m[0].length) return m[0];
+  }
+  return fallback;
+}
 
 function main(): void {
   // ---- layer 0: the schemas themselves must only use keywords we implement ----
@@ -206,13 +270,21 @@ function main(): void {
       err(`${id}: needs_review is set but review_reasons is empty`);
     }
 
-    // L-NUMERIC: a number, price or date in authored prose that no slot governs
-    // is exactly the failure mode this system exists to prevent
+    /**
+     * L-NUMERIC: a number, price or date in authored prose that no slot governs
+     * is exactly the failure mode this system exists to prevent — with one
+     * exemption, for dates that have already passed. See `isPastDate`.
+     *
+     * Scans EVERY match rather than the first. The old single-match form meant a
+     * field whose first literal was exempt hid every live number after it.
+     */
     for (const [field, text] of proseFields(card)) {
       const withoutSlots = text.replace(/\{\{slot:[a-z0-9_-]+\}\}/g, '');
-      const hit = withoutSlots.match(NUMERIC_LITERAL_RE);
-      if (hit) {
-        warn(`${id}.${field}: ungoverned numeric/date literal ${JSON.stringify(hit[0].trim())} in authored prose — should become a fact-governed slot`);
+      for (const m of withoutSlots.matchAll(NUMERIC_LITERAL_RE)) {
+        const literal = dateLiteralAt(withoutSlots, m.index ?? 0, m[0]);
+        if (isPastDate(literal, TODAY)) continue;
+        warn(`${id}.${field}: ungoverned numeric/date literal ${JSON.stringify(m[0].trim())} in authored prose — should become a fact-governed slot`);
+        break;
       }
     }
 
@@ -286,4 +358,6 @@ function report(cardCount: number): void {
   process.exit(failed ? 1 : 0);
 }
 
-main();
+// Guarded: main() calls process.exit, so an unguarded call would kill any test
+// runner that imported this module to unit-test the lint helpers above.
+if (import.meta.filename === process.argv[1]) main();
