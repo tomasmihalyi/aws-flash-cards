@@ -57,24 +57,14 @@ const PREVIEW_RE = /\b(?:public preview|now in preview|is now in preview|\(previ
 /**
  * Tokenise for lifecycle matching.
  *
- * Two differences from the shared `stemsOf`, both learned from this detector's
- * first run:
- *
- *  - SHORT ACRONYMS ARE KEPT. `stemsOf` drops tokens under four characters, so
- *    "CLI" vanished — and the detector silently failed to notice that the
- *    AgentCore CLI card was still badged preview six months after GA. That is the
- *    exact card that prompted writing this module. CLI, MCP, SDK, API, A2A and
- *    friends are the most distinctive tokens in this corpus, not the least.
- *  - the shared stopword list still applies, so "agentcore" cannot match.
- */
-/**
  * Now a thin alias for the shared tokenizer in verifier.ts.
  *
- * This function's acronym handling was written here first, to fix a detector that
- * missed AC-16 because "CLI" stemmed away to nothing. The verifier turned out to
- * have the identical blind spot on the identical card, so the implementation moved
- * next to `stemsOf` and both callers share it. Two copies of a subtle tokenizer is
- * exactly how a gate and the thing it guards drift apart.
+ * The acronym handling was written here first, to fix a detector that missed
+ * AC-16 because "CLI" stemmed away to nothing — and CLI, MCP, SDK and A2A are the
+ * most distinctive tokens in this corpus, not the least. The verifier turned out
+ * to have the identical blind spot on the identical card, so the implementation
+ * moved next to `stemsOf` and both callers share it. Two copies of a subtle
+ * tokenizer is exactly how a gate and the thing it guards drift apart.
  */
 const lifecycleTokens = subjectTokens;
 

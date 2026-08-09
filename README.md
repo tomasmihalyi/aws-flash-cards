@@ -72,10 +72,12 @@ stripping. There is no install step.
 
 ```bash
 node src/validate.ts          # schema + lint + citation gate
-node --test tests/*.test.ts   # 187 behavioural, guarantee, verifier + ingest tests
+node --test tests/*.test.ts   # 205 behavioural, guarantee, verifier, ingest + rename tests
 node src/verify-claims.ts     # decompose every card into claims and verify each
 node src/build.ts             # → dist/deck.json + dist/agentcore-flashcards.html
 node src/verify-parity.ts     # authored-content parity against the original deck
+node src/check-lifecycle.ts   # has a preview/GA badge gone stale?
+node src/check-rename.ts      # has the thing a card describes been renamed?
 
 node src/ingest/ssm-regions.ts    # region availability  (read-only AWS)
 node src/ingest/pricelist.ts      # pricing              (read-only AWS)
@@ -85,6 +87,7 @@ node src/ingest/docs-doc-history.ts     # dated change history, DAY precision  (
 node src/ingest/docs-feature-regions.ts # per-FEATURE region availability      (public docs GET)
 node src/ingest/docs-pages.ts           # service overview pages               (public docs GET)
 node src/ingest/apply.ts          # resolve slots: verify, correct, or fail
+node src/ingest/apply-rename.ts   # alias the old name, adopt the new one
 
 node src/ingest/apply.ts --dry-run   # show the corrections without writing
 ```
@@ -103,6 +106,8 @@ build. npm is only a task runner here; there are no packages to install.
 | A missing fact never fakes freshness | `apply` leaves the card untouched and exits non-zero rather than stamping `verified_at` on an unverified claim |
 | Card ids are never reused | append-only ledger in `content/card-id-ledger.json`; `validate` fails if an id disappears |
 | Retirement never deletes | tombstones, `aka[]`, `superseded_by` — all modelled from P0 |
+| A rename is an alias, never a replacement | `check-rename` matches rename phrasing in dated headings; `apply-rename` writes the old name into `aka[]` with its date and source, so search and shared links keep resolving |
+| A rename needs two sources where a GA transition needs one | "is now generally available" has one meaning; a product NAME does not. A rename is applied only when a second, independent source uses the same name verbatim — otherwise it is reported and left alone |
 | Authored content survived the migration | `verify-parity`: revert every slot to its `seed_text`, invert every recorded field correction, and the result must equal the original deck exactly |
 | Nothing changes without a recorded reason | a correction to a card *field* (a stale `preview` badge) must carry a `before`/`after` provenance entry, or the parity gate fails |
 | A stale lifecycle badge is caught | `check-lifecycle` matches card subjects against dated release-notes headings; `validate` warns on drift |
@@ -187,6 +192,38 @@ The matrix also disagrees with SSM about the total: 20 columns against 19
 parameters. The difference is the AWS GovCloud (US-West) partition, which the
 global-infrastructure path does not enumerate. Both numbers are correct about
 different questions, so the ingest records the split instead of picking a winner.
+
+### A rename is not a correction
+
+AC-14 was titled "Agent Registry" while two AWS documentation surfaces had moved
+to "AWS Agent Registry". Nothing in the repo could see it — `aka[]` had existed
+since the first schema and nothing had ever written to it.
+
+The ledger keeps `rename` and `correct` apart deliberately. A correction says the
+card was **wrong**; a rename says the world changed its mind about what the thing
+is **called**. Both are recorded reasons as far as the parity gate cares, but
+collapsing them would destroy the only signal that tells those two apart when
+reading a card's history later.
+
+What a rename is not allowed to touch:
+
+- **`lifecycle`.** The August entry reads "AWS Agent Registry launches under the
+  new `agent-registry` namespace" — no GA language anywhere in it. Reading
+  "launches" as "generally available" is exactly the overreach this repo exists
+  to prevent, and April's "AgentCore Registry is now in Public Preview"
+  independently confirms the card's `preview` state.
+- **`service`.** That key joins a card to its deterministic sources. The same
+  entry announces an `agent-registry` API namespace, but the pinned botocore
+  snapshot still carries all twelve Registry control-plane operations under
+  `bedrock-agentcore-control`, and does not yet have the
+  `ListDiscoverableRegistryRecords` the entry announces. The namespace is recorded
+  in the provenance reason; repointing the key on a claim the API surface cannot
+  corroborate would orphan the card from every source that describes it.
+- **prose.** Substituting the name in the lead is *nearly* mechanical, and
+  "nearly" is doing real work: the new name contains the old one, so a naive
+  replace is not idempotent and yields "AWS AWS Agent Registry" on a second run.
+  Prose goes through a Tier C slot that retains `seed_text` and flags the card for
+  sign-off.
 
 ### The limit that is permanent
 

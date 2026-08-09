@@ -14,10 +14,10 @@
   "badge_variant": "pv",
   "badge_text": "PREVIEW",
   "art": "registry",
-  "title": "Agent Registry",
+  "title": "AWS Agent Registry",
   "hook": "A governed org-wide catalog of agents, tools, skills, and MCP servers — with owners on record.",
   "back": {
-    "lead": "As deployments scale from a handful of agents to hundreds, nobody knows what exists, who owns it, or whether it was approved. Agent Registry (preview via AgentCore) is a governed catalogue for discovering, sharing, and reusing agents, tools, skills, and MCP servers across an organization.",
+    "lead": "{{slot:product_name_lead}}",
     "kv": [
       {
         "k": "Records",
@@ -30,17 +30,54 @@
     ],
     "hookline": "The 'service catalog' moment for agents: if it's not in the registry, it doesn't officially exist."
   },
-  "slots": {},
+  "slots": {
+    "product_name_lead": {
+      "tier": "C",
+      "template": "As deployments scale from a handful of agents to hundreds, nobody knows what exists, who owns it, or whether it was approved. AWS Agent Registry (preview via AgentCore) is a governed catalogue for discovering, sharing, and reusing agents, tools, skills, and MCP servers across an organization.",
+      "facts": [],
+      "rendered": "As deployments scale from a handful of agents to hundreds, nobody knows what exists, who owns it, or whether it was approved. AWS Agent Registry (preview via AgentCore) is a governed catalogue for discovering, sharing, and reusing agents, tools, skills, and MCP servers across an organization.",
+      "rendered_from": "tier-c",
+      "seed_text": "As deployments scale from a handful of agents to hundreds, nobody knows what exists, who owns it, or whether it was approved. Agent Registry (preview via AgentCore) is a governed catalogue for discovering, sharing, and reusing agents, tools, skills, and MCP servers across an organization.",
+      "unresolvable_reason": "Prose containing the product name. The rename itself is deterministic, but rewriting a sentence is authorship, and the new name contains the old one so substitution is not safely repeatable. Tier C, with the original retained."
+    }
+  },
   "facts_used": [],
-  "sources": [],
-  "verified_at": null,
+  "sources": [
+    {
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html",
+      "title": "agentcore.release-notes (aws-docs-release-notes)",
+      "kind": "aws-docs-release-notes",
+      "fetched_at": "2026-08-08T10:14:52.252Z",
+      "content_hash": "sha256:2ba16e0fde32abf1a06b35cec6b9c90cb6d3eee37ef32d81133d03a428b17036"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-regions.html",
+      "title": "agentcore.feature-regions (aws-docs)",
+      "kind": "aws-docs",
+      "fetched_at": "2026-08-08T13:51:33.253Z",
+      "content_hash": "sha256:42f174b5235365c0341cd4da2144ed55e9735c68a87312e43d348f5ceb37a758"
+    }
+  ],
+  "verified_at": "2026-08-08T10:14:52.252Z",
   "confidence": "medium",
   "depends_on": [],
-  "aka": [],
+  "aka": [
+    {
+      "name": "Agent Registry",
+      "changed_at": "2026-08-09T03:42:53.052Z",
+      "source": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html"
+    }
+  ],
   "superseded_by": null,
   "supersedes": [],
-  "needs_review": false,
-  "review_reasons": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "Tier C prose substitution of a renamed product name (product_name_lead), applied by an agent. Needs human sign-off; the Tier A rename of the title itself is deterministic and does not.",
+      "raised_at": "2026-08-09T03:42:53.052Z",
+      "raised_by": "src/ingest/apply-rename.ts"
+    }
+  ],
   "provenance": {
     "tier": "seed",
     "authored_by": "legacy-import",
@@ -51,9 +88,36 @@
         "action": "import",
         "generator": "tools/extract-legacy.ts",
         "reason": "Mechanical migration from agentcore-flashcards.html; card text lifted verbatim from the legacy DECK literal."
+      },
+      {
+        "at": "2026-08-09T03:42:53.052Z",
+        "tier": "A",
+        "action": "rename",
+        "field": "title",
+        "before": "Agent Registry",
+        "after": "AWS Agent Registry",
+        "generator": "src/ingest/apply-rename.ts",
+        "reason": "August 2026 release notes: \"AWS Agent Registry launches under the new `agent-registry` namespace\" (matched on regis). Corroborated by agentcore.feature-regions, which uses the same name verbatim. Old name retained in aka[] so search and shared links keep resolving. The entry also announces the \"agent-registry\" namespace; the card's service key is deliberately NOT repointed, because the pinned API surface still carries this feature's operations under bedrock-agentcore-control."
+      },
+      {
+        "at": "2026-08-09T03:42:53.052Z",
+        "tier": "C",
+        "action": "correct",
+        "generator": "src/ingest/apply-rename.ts",
+        "slot": "product_name_lead",
+        "before": "As deployments scale from a handful of agents to hundreds, nobody knows what exists, who owns it, or whether it was approved. Agent Registry (preview via AgentCore) is a governed catalogue for discovering, sharing, and reusing agents, tools, skills, and MCP servers across an organization.",
+        "after": "As deployments scale from a handful of agents to hundreds, nobody knows what exists, who owns it, or whether it was approved. AWS Agent Registry (preview via AgentCore) is a governed catalogue for discovering, sharing, and reusing agents, tools, skills, and MCP servers across an organization.",
+        "reason": "Prose still used the retired name \"Agent Registry\" after the Tier A rename to \"AWS Agent Registry\"."
+      },
+      {
+        "at": "2026-08-09T03:42:53.052Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "src/ingest/apply-rename.ts",
+        "reason": "Tier C prose substitution of a renamed product name (product_name_lead), applied by an agent. Needs human sign-off; the Tier A rename of the title itself is deterministic and does not."
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-06T12:57:02.398Z"
+  "updated_at": "2026-08-09T03:42:53.052Z"
 }

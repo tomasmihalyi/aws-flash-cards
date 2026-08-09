@@ -186,13 +186,28 @@ export function provenanceLine(card: Card): string {
   return parts.map((p) => `<span>${p}</span>`).join('');
 }
 
-/** Shorten a source url to something readable in a card footer. */
+/**
+ * Shorten a source url to something readable in a card footer.
+ *
+ * Documentation pages get their page name, not just the host. AC-14 is the first
+ * card to cite two different AWS docs pages — the release notes that recorded its
+ * rename and the region matrix that corroborated it — and labelling both by
+ * hostname rendered "docs.aws.amazon.com · docs.aws.amazon.com", which reads to a
+ * learner like a bug. Deduplicating would have been worse: it hides a source that
+ * the citation gate requires the card to carry.
+ */
 function sourceLabel(url: string): string {
   if (url.startsWith('ssm:')) return 'AWS global-infrastructure (SSM)';
   if (url.includes('api.pricing')) return 'AWS Price List API';
   if (url.startsWith('file://')) return 'botocore service model';
   try {
-    return new URL(url).hostname.replace(/^www\./, '');
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, '');
+    if (/(^|\.)docs\.aws\.amazon\.com$/.test(host)) {
+      const page = u.pathname.split('/').filter(Boolean).pop()?.replace(/\.html?$/, '') ?? '';
+      if (page) return `AWS docs: ${page}`;
+    }
+    return host;
   } catch {
     return url.slice(0, 48);
   }

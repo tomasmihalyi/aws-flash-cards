@@ -237,8 +237,60 @@ finished.
       They can attest "GA in October 2025", never "on October 13". The verifier is
       told the precision and reports a day-precision claim as `partial` rather
       than rounding a month up to a day.
-- [ ] T5.1b What's New title-language signals for rename detection — still needs
-      a source that reaches back further than the stale archive API
+- [x] T5.2 **Rename detection and aliasing** (`src/lib/rename.ts`,
+      `src/check-rename.ts`, `src/ingest/apply-rename.ts`). AC-14 was titled
+      "Agent Registry" while two AWS docs surfaces said "AWS Agent Registry", and
+      `aka[]` had existed since the first schema with nothing ever writing to it.
+
+      **A rename needs two sources where a lifecycle transition needs one.** "Is
+      now generally available" is a fixed phrase with one meaning; a product NAME
+      is not. AgentCore's own notes carry three candidate names across two
+      entries ("AgentCore Registry" in April, "AWS Agent Registry" in August). So
+      a rename is applied only when a second INDEPENDENT source (by URL, not by
+      fact set) uses the same name verbatim — here the feature × region matrix.
+      One source proposing a name is a candidate for review; two agreeing is a
+      fact.
+
+      Corpus check before applying: of 366 dated headings, the patterns fire on
+      exactly 1, and 0 headings containing rename-ish words are missed.
+
+      **Kept out of scope on purpose:** `lifecycle` (the August entry has no GA
+      language; April independently confirms `preview`), `service` (the pinned
+      botocore snapshot still has all 12 Registry ops under
+      `bedrock-agentcore-control` and lacks the `ListDiscoverableRegistryRecords`
+      the same entry announces, so the namespace is recorded but not acted on),
+      and prose (Tier C — the new name contains the old one, so substitution is
+      not idempotent without a guard).
+
+      Two defects found while building it, both caught by existing gates rather
+      than by inspection:
+
+      1. `apply-rename.ts` had an unguarded `main()`, so importing
+         `substituteName` in a test ran the applier and wrote to cards. It
+         produced the right result, which is the dangerous kind of accident. Now
+         behind `import.meta.filename === process.argv[1]`, as the other ingests
+         already were.
+      2. `verified_at ??= now` stamped the card as verified today against sources
+         fetched yesterday. `tests/guarantees.test.ts` — "a card is only as fresh
+         as its stalest source" — failed on it. Now derived from the oldest
+         source fetch.
+
+      `originalProjection` now inverts `rename` field entries as well as
+      `correct` ones: a rename is a recorded reason too. The two actions stay
+      distinct in the ledger because a correction says the card was wrong and a
+      rename says the world renamed it.
+
+      One rendering defect surfaced: AC-14 is the first card citing two different
+      AWS docs pages, and labelling sources by hostname produced
+      "docs.aws.amazon.com · docs.aws.amazon.com". Deduplicating would have
+      hidden a source the citation gate requires, so docs URLs now label by page
+      name instead.
+
+- [ ] T5.1b What's New title-language signals for rename detection — superseded in
+      practice by T5.2, which reads rename language from the docs release notes and
+      document history instead. What's New remains unusable for this deck (RSS ~11
+      days, archive frozen at 2024-05-17), so this stays open only as a
+      second-corroboration source if it ever becomes reachable.
 - [ ] T5.2 Doc URL redirect detection (301/302 on previously-200 URLs)
 - [ ] T5.3 Price List product disappearance signal
 - [ ] T5.4 botocore rename-vs-remove discrimination (shape-identity test)

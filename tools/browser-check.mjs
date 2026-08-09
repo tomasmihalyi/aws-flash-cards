@@ -215,6 +215,26 @@ try {
   await page.waitForTimeout(250);
   ok('the clear button resets the search', (await page.textContent('#count')).trim() === all);
 
+  console.log('\n[a renamed card answers to its old name]');
+  // AC-14 was retitled "Agent Registry" -> "AWS Agent Registry" from two AWS docs
+  // sources. A learner who memorised the old name must still be able to find it,
+  // and a link someone shared under the old name must still land.
+  await page.fill('#q', 'Agent Registry');
+  await page.waitForTimeout(300);
+  const renamedHit = (await page.textContent('.front .partno').catch(() => '')).trim();
+  ok('searching the OLD name finds the card', renamedHit.includes('AC-14'), renamedHit || 'no card shown');
+  const renamedTitle = (await page.textContent('.front h2').catch(() => '')).trim();
+  ok('the card shows its NEW name', /AWS Agent Registry/.test(renamedTitle), renamedTitle);
+  await page.click('#qClear');
+  await page.waitForTimeout(250);
+
+  await page.goto(`file://${file}#/card/agent-registry`);
+  await page.waitForTimeout(400);
+  const aliasLanded = (await page.textContent('.front .partno').catch(() => '')).trim();
+  ok('a deep link naming the old name still resolves', aliasLanded.includes('AC-14'), aliasLanded || 'no card shown');
+  await page.goto(`file://${file}`);
+  await page.waitForTimeout(400);
+
   console.log('\n[keyboard does not fight the search box]');
   await page.click('#q');
   await page.type('#q', 'gate');

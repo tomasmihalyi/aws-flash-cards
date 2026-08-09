@@ -9,24 +9,29 @@
   },
   "comment": "Zero dependencies by design (NFR-1). TypeScript runs directly on Node's native type stripping \u2014 no bundler, no lockfile, no supply chain.",
   "scripts": {
-    "test": "node --test tests/deck-state.test.ts tests/guarantees.test.ts tests/srs.test.ts tests/verifier.test.ts",
+    "test": "node --test tests/*.test.ts",
     "validate": "node src/validate.ts",
     "validate:strict": "node src/validate.ts --strict",
     "build": "node src/build.ts",
     "parity": "node src/verify-parity.ts",
-    "check": "npm run validate && npm test && npm run build && npm run parity",
+    "check": "npm run validate && npm test && npm run build && npm run parity && npm run claims && npm run lifecycle && npm run rename",
     "ingest:regions": "node src/ingest/ssm-regions.ts",
     "ingest:pricing": "node src/ingest/pricelist.ts",
     "ingest:api": "node src/ingest/botocore-diff.ts",
     "ingest": "npm run ingest:regions && npm run ingest:pricing && npm run ingest:api && npm run ingest:docs",
     "apply": "node src/ingest/apply.ts",
     "apply:dry": "node src/ingest/apply.ts --dry-run",
-    "refresh": "npm run ingest && npm run apply && npm run build",
+    "refresh": "npm run ingest && npm run apply && npm run apply:rename && npm run build",
     "ledger": "node tools/sync-id-ledger.ts",
     "migrate": "node tools/extract-legacy.ts",
     "browser-check": "node tools/browser-check.mjs dist/agentcore-flashcards.html",
     "claims": "node src/verify-claims.ts",
     "claims:failing": "node src/verify-claims.ts --failing",
-    "ingest:docs": "node src/ingest/docs-release-notes.ts"
+    "ingest:docs": "node src/ingest/docs-release-notes.ts && node src/ingest/docs-doc-history.ts && node src/ingest/docs-feature-regions.ts && node src/ingest/docs-pages.ts",
+    "claims:strict": "node src/verify-claims.ts --strict",
+    "lifecycle": "node src/check-lifecycle.ts",
+    "rename": "node src/check-rename.ts",
+    "apply:rename": "node src/ingest/apply-rename.ts",
+    "apply:rename:dry": "node src/ingest/apply-rename.ts --dry-run"
   }
 }
