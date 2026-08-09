@@ -2,13 +2,45 @@
   "schema_version": 1,
   "comment": "Order is load-bearing: a card stores a category id, but the renderer resolves it to an INDEX, and the parity gate compares those indices against the original deck. New categories must therefore be APPENDED, never inserted, or every existing card silently changes category.",
   "categories": [
-    { "id": "foundations",        "label": "Foundations" },
-    { "id": "core-services",      "label": "Core services" },
-    { "id": "built-in-tools",     "label": "Built-in tools" },
-    { "id": "governance-quality", "label": "Governance & quality" },
-    { "id": "new-in-2026",        "label": "New in 2026" },
-    { "id": "operate-adopt",      "label": "Operate & adopt" },
-    { "id": "coding-agents",      "label": "Coding agents" },
-    { "id": "quick-boundary",     "label": "Quick vs Kiro" }
+    {
+      "id": "foundations",
+      "label": "Foundations"
+    },
+    {
+      "id": "core-services",
+      "label": "Core services"
+    },
+    {
+      "id": "built-in-tools",
+      "label": "Built-in tools"
+    },
+    {
+      "id": "governance-quality",
+      "label": "Governance & quality"
+    },
+    {
+      "id": "new-in-2026",
+      "label": "New in 2026"
+    },
+    {
+      "id": "operate-adopt",
+      "label": "Operate & adopt"
+    },
+    {
+      "id": "coding-agents",
+      "label": "Coding agents"
+    },
+    {
+      "id": "quick-boundary",
+      "label": "Quick vs Kiro"
+    },
+    {
+      "id": "bedrock",
+      "label": "Bedrock"
+    },
+    {
+      "id": "frameworks",
+      "label": "Frameworks"
+    }
   ]
 }

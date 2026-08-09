@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "card_id": "ST-02",
+  "kind": "mental-model",
+  "lifecycle": "ga",
+  "service": "strands",
+  "category": "frameworks",
+  "tags": [
+    "agentcore",
+    "architecture",
+    "framework",
+    "positioning",
+    "strands"
+  ],
+  "badge_variant": "core",
+  "badge_text": "MENTAL MODEL",
+  "art": "map",
+  "title": "Strands or AgentCore?",
+  "hook": "Not a choice. One is what you write the agent in; the other is what you run it on.",
+  "back": {
+    "lead": "The question is asked as though these compete, and they do not. Strands is a framework: it gives you the agent loop, tool wiring, hooks and provider abstraction inside your process. AgentCore is infrastructure: session isolation, memory, identity, a tool gateway and observability around whatever process you deployed. You can use either alone, and the common production shape is both.",
+    "kv": [
+      {
+        "k": "Strands alone",
+        "v": "Fine for local development, a batch job, or an agent embedded in a service you already operate. You own the runtime, the isolation and the credentials."
+      },
+      {
+        "k": "AgentCore alone",
+        "v": "Fine when the agent is written in something else entirely — LangGraph, CrewAI, or bare SDK calls. AgentCore is framework-agnostic by design."
+      },
+      {
+        "k": "The tell",
+        "v": "If the pain is \"my agent code is a tangle of orchestration\", that is a framework problem. If it is \"I cannot isolate, observe or authorise this in production\", that is an infrastructure problem."
+      }
+    ],
+    "hookline": "Framework problems and infrastructure problems feel identical at 2am and have completely different fixes."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [],
+  "verified_at": null,
+  "confidence": "low",
+  "depends_on": [
+    "AC-01",
+    "AC-04",
+    "ST-01"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "Positioning judgement about which layer a problem belongs in. No deterministic source can settle it, so the card carries no citation and needs human sign-off before it is taught as guidance.",
+      "raised_at": "2026-08-09T06:05:00.864Z",
+      "raised_by": "tools/add-cards-p6-batch2.ts"
+    }
+  ],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-09T06:05:00.864Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-p6-batch2.ts",
+        "reason": "New mental-model card authored from judgement; no deterministic source applies. Every new card enters through Tier C."
+      },
+      {
+        "at": "2026-08-09T06:05:00.864Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "tools/add-cards-p6-batch2.ts",
+        "reason": "Positioning judgement about which layer a problem belongs in. No deterministic source can settle it, so the card carries no citation and needs human sign-off before it is taught as guidance."
+      }
+    ]
+  },
+  "created_at": "2026-08-09T06:05:00.864Z",
+  "updated_at": "2026-08-09T06:05:00.864Z"
+}

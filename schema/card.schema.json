@@ -241,6 +241,7 @@
               "service-quotas-api",
               "botocore-model",
               "aws-docs-release-notes",
+              "aws-docs-doc-history",
               "aws-docs",
               "vendor-docs",
               "aws-whats-new",

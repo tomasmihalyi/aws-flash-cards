@@ -3,11 +3,11 @@
   "fact_set_id": "quick.what-is",
   "tier": "A",
   "generator": "src/ingest/docs-pages.ts",
-  "verified_at": "2026-08-08T13:59:01.007Z",
+  "verified_at": "2026-08-09T06:02:45.201Z",
   "source": {
     "kind": "aws-docs",
     "url": "https://docs.aws.amazon.com/quicksuite/latest/userguide/what-is.html",
-    "fetched_at": "2026-08-08T13:59:01.007Z",
+    "fetched_at": "2026-08-09T06:02:45.201Z",
     "content_hash": "sha256:9be90e83bad94357e25e95169e39456b24a353718b730086ecc630cad216bd1e",
     "retrieved_by": "GET https://docs.aws.amazon.com/quicksuite/latest/userguide/what-is.md"
   },

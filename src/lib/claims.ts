@@ -78,8 +78,15 @@ const PATTERNS: { kind: ClaimKind; re: RegExp }[] = [
      * invisible to the claim extractor, which meant the headline "verified"
      * figure was computed over a claim set that silently excluded a whole
      * category. `validate` could see the literal and the verifier could not.
+     *
+     * KNOWN LIMITATION, stated rather than hidden: the unit list is an ALLOW-LIST,
+     * so a number counting a noun that is not on it is invisible here. That is how
+     * "100 foundation models" slipped through when the Bedrock cards landed —
+     * governed by a slot and a fact, but never string-checked. Adding a card with
+     * a new unit means adding the unit. `validate`'s ungoverned-literal warning is
+     * the backstop that makes the omission visible instead of silent.
      */
-    re: /\b\d+(?:,\d{3})*(?:\.\d+)?(?:\s?[–—-]\s?\d+(?:\.\d+)?)?(?:\s+[A-Za-z][\w-]*){0,2}\s*(?:%|(?:regions?|evaluators?|events?|tokens?|calls?|invocations?|services?|primitives?|languages?|GB|MB|TB|vCPU)\b)/gi,
+    re: /\b\d+(?:,\d{3})*(?:\.\d+)?(?:\s?[–—-]\s?\d+(?:\.\d+)?)?(?:\s+[A-Za-z][\w-]*){0,2}\s*(?:%|(?:regions?|evaluators?|events?|tokens?|calls?|invocations?|services?|primitives?|languages?|models?|providers?|hours?|GB|MB|TB|vCPU)\b)/gi,
   },
 ];
 

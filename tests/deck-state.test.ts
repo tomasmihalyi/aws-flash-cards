@@ -110,8 +110,19 @@ describe('tag filtering', () => {
     for (let i = 1; i < tags.length; i++) {
       assert.ok(tags[i - 1].count >= tags[i].count, 'tags must be ordered by count');
     }
-    assert.equal(tags[0].tag, 'agentcore', 'every card is tagged agentcore, so it should lead');
-    assert.equal(tags[0].count, 21, 'agentcore is on all 21 original cards; new cards carry their own tags');
+    /**
+     * DERIVED, not asserted. This used to pin agentcore at exactly 21 — a proxy
+     * for "the index is computed from the cards" that broke the moment ST-02
+     * legitimately carried the agentcore tag while being a Strands card. Counting
+     * the cards that actually hold the tag tests the same property and survives
+     * content growth, which is the whole point of a derived index.
+     */
+    const deck = realDeck();
+    for (const { tag, count } of tags) {
+      const actual = deck.filter((c) => c.tags.includes(tag)).length;
+      assert.equal(count, actual, `tag "${tag}" reports ${count} but ${actual} cards carry it`);
+    }
+    assert.equal(tags[0].count, Math.max(...tags.map((x) => x.count)), 'the leading tag must be the most frequent');
   });
 
   test('a tag filter admits only cards carrying that tag', () => {

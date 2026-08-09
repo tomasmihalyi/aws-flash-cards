@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "card_id": "ST-01",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "strands",
+  "category": "frameworks",
+  "tags": [
+    "a2a",
+    "framework",
+    "mcp",
+    "strands"
+  ],
+  "badge_variant": "core",
+  "badge_text": "FRAMEWORK",
+  "art": "harness",
+  "title": "Strands Agents",
+  "hook": "A model-driven SDK for building agents in a few lines, with the loop and its controls already built.",
+  "back": {
+    "lead": "Strands Agents is an SDK that takes a model-driven approach to building and running agents, from a conversational assistant to an autonomous workflow. It ships as a monorepo: a Python SDK, a TypeScript SDK, a developer CLI, and the documentation site. {{slot:runtimes}}",
+    "kv": [
+      {
+        "k": "Model agnostic",
+        "v": "First-class Amazon Bedrock, Anthropic, OpenAI and Gemini providers plus many more, and custom ones. Both SDKs default to the Bedrock provider, so an unconfigured agent is already an AWS agent."
+      },
+      {
+        "k": "Built in, not bolted on",
+        "v": "MCP, streaming, multi-agent patterns and structured output ship with it. The agent loop traces every decision by default, and hooks let you intercept a step to log, validate or redirect it."
+      },
+      {
+        "k": "Correcting, not just failing",
+        "v": "Guardrails catch mistakes before they run; steering handlers let an agent correct itself instead of failing silently."
+      }
+    ],
+    "hookline": "Two lines to an agent — and the same two lines after you swap the model backend."
+  },
+  "slots": {
+    "runtimes": {
+      "tier": "A",
+      "template": "The SDKs require Python {{fact:strands.readme.python-min}} or Node.js {{fact:strands.readme.node-min}} as a minimum.",
+      "facts": [
+        "strands.readme.python-min",
+        "strands.readme.node-min"
+      ],
+      "rendered": "The SDKs require Python 3.10 or Node.js 20 as a minimum.",
+      "rendered_from": "tier-a",
+      "seed_text": "The SDKs target current Python and Node.js runtimes."
+    }
+  },
+  "facts_used": [
+    "strands.readme.node-min",
+    "strands.readme.python-min"
+  ],
+  "sources": [
+    {
+      "url": "https://github.com/strands-agents/harness-sdk",
+      "title": "strands.readme (vendor-docs)",
+      "kind": "vendor-docs",
+      "fetched_at": "2026-08-09T06:02:45.605Z",
+      "content_hash": "sha256:794375c5273f33f043bd7a85a9004d2674d44833b37d64c215198c1003e5d6de"
+    }
+  ],
+  "verified_at": "2026-08-09T06:02:45.605Z",
+  "confidence": "high",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "A",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-09T06:05:00.864Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-p6-batch2.ts",
+        "reason": "New card authored from https://github.com/strands-agents/harness-sdk. Every new card enters through Tier C."
+      },
+      {
+        "at": "2026-08-09T06:05:02.253Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply.ts",
+        "slot": "runtimes",
+        "before": "The SDKs target current Python and Node.js runtimes.",
+        "after": "The SDKs require Python 3.10 or Node.js 20 as a minimum.",
+        "facts": [
+          "strands.readme.node-min",
+          "strands.readme.python-min"
+        ],
+        "reason": "Deterministic source disagreed with the rendered claim. Corrected with zero model involvement."
+      }
+    ]
+  },
+  "created_at": "2026-08-09T06:05:00.864Z",
+  "updated_at": "2026-08-09T06:05:02.253Z"
+}

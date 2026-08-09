@@ -6,7 +6,10 @@ learner the difference between a verified fact and an unverified judgement.
 Domain: AI-native development — AgentCore, Bedrock, developer-relevant SageMaker
 AI, coding agents (Kiro, Claude Code and Codex on Bedrock, Q Developer), the
 Quick business-vs-engineer boundary, Strands/MCP/A2A, and agentic development
-practice. Not all AWS AI: the full IN/OUT boundary is in
+practice.
+
+> The built page is still titled "AgentCore Flashcards". That was accurate for 21
+> cards and is not for 30 — see **Next**. Not all AWS AI: the full IN/OUT boundary is in
 `.kiro/specs/self-maintaining-flashcards/requirements.md` §4.
 
 **Status: P0–P2 complete; P3 frontend in progress, P3 deploy parked.** No AWS
@@ -55,7 +58,7 @@ than a policy someone has to remember to enforce.
 
 | Path | What it is |
 |---|---|
-| `cards/` | one JSON per card — **git is the source of truth** |
+| `cards/` | one JSON per card — **git is the source of truth** (30: AgentCore, Bedrock, Strands, coding agents, Quick) |
 | `facts/` | deterministic fact sets — ingest writes these, nothing else does |
 | `content/` | category taxonomy, pictogram library, the HTML shell and card template |
 | `schema/` | published JSON Schema for cards and fact sets |
@@ -103,6 +106,7 @@ build. npm is only a task runner here; there are no packages to install.
 |---|---|
 | Numbers are never model-generated | Prose cannot hold a number a fact could supply; `validate` warns on every ungoverned numeric literal it finds |
 | A number is governed, not merely true | being correct today and re-rendering from a source tomorrow are different properties. A limit lives in a slot fed by the Service Quotas API, so the next refresh either confirms it or reports a correction |
+| A rounded figure stays rounded | the Bedrock docs advertise "100+" models. The fact records that it is a FLOOR and the slot renders "over 100" — turning a lower bound into a count would be wrong in the direction that looks precise |
 | A range is not its lower bound | "30–70%" needs both endpoints present with the unit; a scalar fact cannot answer a range |
 | No claim without a citation | `validate` L-CITATION: a slot resolved from a source must carry `sources[]` + `verified_at` |
 | Ingest cannot write to AWS | `src/lib/aws.ts` takes an explicit allow-list of `(service, operation)` pairs, not a `describe/list/get` heuristic |

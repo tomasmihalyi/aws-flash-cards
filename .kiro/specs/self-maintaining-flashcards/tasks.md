@@ -223,6 +223,40 @@ finished.
       model deployment. It verifies on the month via the preview entry; the *day*
       does not, and is not claimed any more.
 
+- [x] T6.4 **P6 batch 2 — the model layer and the framework.** BR-01 Amazon
+      Bedrock, BR-02 Five ways to call a Bedrock model, ST-01 Strands Agents,
+      ST-02 Strands or AgentCore? (mental-model, unsourced by design). 26 -> 30
+      cards; two appended categories (`bedrock`, `frameworks`).
+
+      `docs-pages.ts` gained declared fact EXTRACTION, because a page's evidence
+      text lets the verifier check a number while only a fact can govern one.
+      Three numbers arrived with these cards and none is typed into prose:
+      Bedrock's model-count floor, and the Python/Node minimums.
+
+      "100+" is a FLOOR. The slot renders "over 100" and the fact's note says why,
+      because rendering it as "100 foundation models" converts a lower bound into
+      a count — wrong in the direction that looks precise.
+
+      Two gaps found by reading the output rather than the code:
+
+      1. checkable claims stayed at 28 across four new cards. The unit list in
+         `claims.ts` is an ALLOW-LIST, so "100 foundation models" was governed by
+         a slot and a fact but never string-checked, because `models` was not on
+         it. Added `models`, `providers`, `hours`; the limitation is now documented
+         next to the pattern instead of being a surprise each time.
+      2. a test pinned the `agentcore` tag at exactly 21 as a proxy for "the index
+         is derived". ST-02 legitimately carries that tag while being a Strands
+         card, so the assertion now counts the cards holding each tag.
+
+      Strands is cited as `strands-agents/harness-sdk`, not `sdk-python`: the
+      latter still resolves but REDIRECTS, and the raw READMEs are byte-identical.
+
+- [ ] T6.5 The built page is titled "AgentCore Flashcards" with the subtitle "The
+      full platform, one primitive per card". True of 21 AgentCore cards, false of
+      30 spanning five services. Renaming the deck is a positioning decision, and
+      the output filename is referenced by the parity gate, the browser check and
+      the npm scripts — so it needs a human call, not an agent tidy-up.
+
 ## P5 — Rename, retirement, fan-out (not in this run)
 
 - [x] T5.1a **Dated feature history ingest** (`src/ingest/docs-release-notes.ts`).

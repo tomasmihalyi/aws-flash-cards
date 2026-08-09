@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "card_id": "BR-02",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock",
+  "category": "bedrock",
+  "tags": [
+    "api",
+    "bedrock",
+    "converse",
+    "interoperability",
+    "mcp"
+  ],
+  "badge_variant": "core",
+  "badge_text": "API SURFACE",
+  "art": "protocol",
+  "title": "Five ways to call a Bedrock model",
+  "hook": "Anthropic's client, OpenAI's client, or AWS's own — Bedrock answers to all of them.",
+  "back": {
+    "lead": "The Bedrock overview sends one identical prompt five ways: the Messages API through Anthropic's client, the Responses and Chat Completions APIs through OpenAI's client, and the Converse and Invoke APIs through boto3. For an application already written against Anthropic or OpenAI, the documented migration path is updating the base URL and API key rather than rewriting call sites.",
+    "kv": [
+      {
+        "k": "Borrowed dialects",
+        "v": "Messages speaks the anthropic SDK; Responses and Chat Completions speak the openai SDK. Both are Bedrock endpoints, not shims you run."
+      },
+      {
+        "k": "AWS-native pair",
+        "v": "Converse gives one request shape across every model. Invoke passes provider-native JSON, for the model-specific field Converse deliberately does not model."
+      },
+      {
+        "k": "Watch for",
+        "v": "A dialect is not a capability. The same model behind two dialects is still one model with one set of quotas and one set of limits."
+      }
+    ],
+    "hookline": "The cheapest migration is the one where you change a base URL."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
+      "title": "Amazon Bedrock — Overview",
+      "kind": "aws-docs",
+      "fetched_at": "2026-08-09T06:02:45.564Z",
+      "content_hash": "sha256:b80f4a5e30e2b813b9ee9527bd0669ee6df140a3e43650bb773ef2a64fe112ac"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/doc-history.html",
+      "title": "bedrock.doc-history",
+      "kind": "aws-docs-doc-history",
+      "fetched_at": "2026-08-08T13:51:32.764Z",
+      "content_hash": "sha256:2d7625b703cf293787583bbcd43768cdb30c87cad6e9f5b19faa2e4fc25379f4"
+    }
+  ],
+  "verified_at": "2026-08-08T13:51:32.764Z",
+  "confidence": "medium",
+  "depends_on": [
+    "BR-01"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-09T06:05:00.864Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-p6-batch2.ts",
+        "reason": "New card authored from https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html, https://docs.aws.amazon.com/bedrock/latest/userguide/doc-history.html. Every new card enters through Tier C."
+      }
+    ]
+  },
+  "created_at": "2026-08-09T06:05:00.864Z",
+  "updated_at": "2026-08-09T06:05:00.864Z"
+}

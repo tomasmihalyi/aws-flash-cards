@@ -50,6 +50,20 @@ type PageSpec = {
   bodyStartsAt?: string;
   /** Human-facing title, taken from the vendor's own heading. */
   title: string;
+  /**
+   * Typed facts pulled out of the page text.
+   *
+   * A page's evidence text lets the verifier CHECK a number, but only a fact can
+   * GOVERN one — a slot re-renders from a fact, so the next refresh either
+   * confirms the value or reports that it moved. Without this, a card quoting
+   * "100+ foundation models" or "Python 3.10+" would have to hard-code it, and
+   * `validate` would rightly warn that the literal cannot notice its own drift.
+   *
+   * A declared extraction that stops matching is a hard failure, not a shrug:
+   * silently dropping a fact would leave every slot that referenced it
+   * unresolvable, which is a louder failure but a much later one.
+   */
+  extract?: { fact: string; re: RegExp; type: 'integer' | 'string'; note: string }[];
 };
 
 const PAGES: PageSpec[] = [
@@ -94,6 +108,55 @@ const PAGES: PageSpec[] = [
     expect: 'payment',
     bodyStartsAt: 'AgentCore payments',
     title: 'AgentCore payments',
+  },
+  {
+    id: 'bedrock.what-is',
+    url: 'https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html',
+    fetch: 'https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.md',
+    kind: 'aws-docs',
+    expect: 'Amazon Bedrock is a fully managed service',
+    bodyStartsAt: 'Overview',
+    title: 'Amazon Bedrock \u2014 Overview',
+    extract: [
+      {
+        fact: 'model-count-floor',
+        // The page writes an escaped plus ("100\\+") because it is markdown.
+        re: /Bedrock supports\s+(\d+)\\?\+\s+foundation models/i,
+        type: 'integer',
+        note: 'Lower bound the docs advertise for the model catalogue. A FLOOR, not a count: the page says "100+", so a card must say "over N" and never "N".',
+      },
+    ],
+  },
+  {
+    /**
+     * Cited as `harness-sdk`, not `sdk-python`, deliberately.
+     *
+     * `github.com/strands-agents/sdk-python` still resolves, but it REDIRECTS:
+     * the SDK was restructured into a monorepo and the raw READMEs at both paths
+     * are byte-identical. Citing the old path would pin the deck to a URL that
+     * works only while GitHub keeps honouring the redirect.
+     */
+    id: 'strands.readme',
+    url: 'https://github.com/strands-agents/harness-sdk',
+    fetch: 'https://raw.githubusercontent.com/strands-agents/harness-sdk/main/README.md',
+    kind: 'vendor-docs',
+    expect: 'Strands Agents',
+    bodyStartsAt: 'Strands Agents is a simple yet powerful SDK',
+    title: 'Strands Agents SDK',
+    extract: [
+      {
+        fact: 'python-min',
+        re: /Requires Python\s+(\d+\.\d+)\+/i,
+        type: 'string',
+        note: 'Minimum Python the SDK supports, as stated in the repository README.',
+      },
+      {
+        fact: 'node-min',
+        re: /Requires Node\.js\s+(\d+)\+/i,
+        type: 'string',
+        note: 'Minimum Node.js the TypeScript SDK supports, as stated in the repository README.',
+      },
+    ],
   },
 ];
 
@@ -174,6 +237,28 @@ async function main(): Promise<void> {
     const facts: Record<string, FactValue> = {
       [`${spec.id}.title`]: { type: 'string', value: title, note: 'Page title as published by the vendor.' },
     };
+
+    let extractionFailed = false;
+    for (const ex of spec.extract ?? []) {
+      const m = ex.re.exec(text);
+      if (!m?.[1]) {
+        console.error(
+          `docs-pages: ${spec.id} declares fact "${ex.fact}" but its pattern no longer matches the page. ` +
+            'The vendor has reworded it. Refusing to write a fact set that silently drops a governed value.',
+        );
+        extractionFailed = true;
+        break;
+      }
+      facts[`${spec.id}.${ex.fact}`] = {
+        type: ex.type,
+        value: ex.type === 'integer' ? Number(m[1]) : m[1],
+        note: ex.note,
+      };
+    }
+    if (extractionFailed) {
+      failures++;
+      continue;
+    }
 
     const set: FactSet = {
       schema_version: 1,
