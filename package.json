@@ -24,7 +24,7 @@
     "refresh": "npm run ingest && npm run apply && npm run apply:rename && npm run build",
     "ledger": "node tools/sync-id-ledger.ts",
     "migrate": "node tools/extract-legacy.ts",
-    "browser-check": "node tools/browser-check.mjs dist/aws-agentic-ai-flashcards.html",
+    "browser-check": "node tools/browser-check.mjs dist/aws-ai-native-development-flashcards.html",
     "claims": "node src/verify-claims.ts",
     "claims:failing": "node src/verify-claims.ts --failing",
     "ingest:docs": "node src/ingest/docs-release-notes.ts && node src/ingest/docs-doc-history.ts && node src/ingest/docs-feature-regions.ts && node src/ingest/docs-pages.ts",

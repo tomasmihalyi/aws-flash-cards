@@ -251,32 +251,37 @@ finished.
       Strands is cited as `strands-agents/harness-sdk`, not `sdk-python`: the
       latter still resolves but REDIRECTS, and the raw READMEs are byte-identical.
 
-- [x] T6.5 **Renamed the deck to "AWS Agentic AI Flashcards".** The page said
-      "AgentCore Flashcards / The full platform, one primitive per card" — true of
-      21 AgentCore cards, false of 30 spanning AgentCore, Bedrock, Strands, the
+- [x] T6.5 **Renamed the deck to "AWS AI-Native Development Flashcards".** The page
+      said "AgentCore Flashcards / The full platform, one primitive per card" — true
+      of 21 AgentCore cards, false of 30 spanning AgentCore, Bedrock, Strands, the
       coding agents and Quick.
 
-      Changed: `<title>`, the eyebrow (was "Amazon Bedrock · Field Deck", too
-      narrow now), the `<h1>`, the subtitle, and the build output filename
-      (`dist/aws-agentic-ai-flashcards.html`).
+      Changed: `<title>`, the eyebrow (was "Amazon Bedrock · Field Deck", too narrow
+      once Kiro, Q Developer and Quick were in), the `<h1>`, the subtitle, and the
+      build output filename (`dist/aws-ai-native-development-flashcards.html`).
 
-      The output filename was a literal in three places — build.ts,
+      Landed as "AWS Agentic AI Flashcards" first and was corrected, for the reason
+      that correction was flagged when the first name went in: "Agentic AI" is a
+      tighter claim than the deck makes. QK-01/02/03 and parts of the coding-agent
+      cards are about the business-versus-engineer boundary rather than agents as
+      such. The title now matches this spec's OWN title — "Requirements —
+      Self-Maintaining AI-Native Development Flashcards" — so the deck's name and
+      the document defining it no longer disagree. (§4 is the service-by-service
+      IN/OUT list; it never names the domain, so it is what the title must be
+      CONSISTENT with rather than what it copies.)
+
+      The output filename had been a literal in three places — build.ts,
       verify-parity.ts and browser-check.mjs — so it is now `DIST_HTML` in
-      store.ts. A gate left pointing at the old name would have failed for a
-      reason unrelated to the deck being wrong.
+      store.ts. That is why the second rename was one line rather than three, and
+      the reason for doing it that way was exactly this: a gate left pointing at a
+      stale name fails for a reason unrelated to the deck being wrong.
 
       **`agentcore-flashcards.html` at the repo root keeps its name.** It is the
       parity gate's reference — the artefact the migration must be shown not to
-      have lost — and twenty-one cards carry a provenance entry reading
-      "Mechanical migration from agentcore-flashcards.html". Renaming it would
-      make a historical record point at a file that does not exist, and would
+      have lost — and 21 cards carry a provenance entry reading "Mechanical
+      migration from agentcore-flashcards.html". Renaming it would make an
+      append-only historical record point at a file that does not exist, and would
       dress the original up as a current build.
-
-      Naming note for later: "Agentic AI" is a slightly tighter claim than the
-      deck's stated scope. QK-01/02/03 (Quick) and parts of the coding-agent cards
-      are about the business-versus-engineer boundary rather than agents as such.
-      The requirements' IN/OUT boundary (§4) still says "AI-native development" and
-      has not been rewritten to match the title.
 
 ## P5 — Rename, retirement, fan-out (not in this run)
 

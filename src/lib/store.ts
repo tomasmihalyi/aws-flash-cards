@@ -16,7 +16,7 @@ export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
  * a gate still pointing at the old name would have failed for a reason that had
  * nothing to do with the deck being wrong.
  */
-export const DIST_HTML = 'aws-agentic-ai-flashcards.html';
+export const DIST_HTML = 'aws-ai-native-development-flashcards.html';
 
 export const paths = {
   cards: join(ROOT, 'cards'),

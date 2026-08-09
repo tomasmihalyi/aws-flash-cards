@@ -1,4 +1,4 @@
-# AWS Agentic AI Flashcards
+# AWS AI-Native Development Flashcards
 
 A flashcard deck that keeps its own factual claims current, and that shows a
 learner the difference between a verified fact and an unverified judgement.
@@ -8,9 +8,9 @@ AI, coding agents (Kiro, Claude Code and Codex on Bedrock, Q Developer), the
 Quick business-vs-engineer boundary, Strands/MCP/A2A, and agentic development
 practice.
 
-> The built page is still titled "AgentCore Flashcards". That was accurate for 21
-> cards and is not for 30 — see **Next**. Not all AWS AI: the full IN/OUT boundary is in
-`.kiro/specs/self-maintaining-flashcards/requirements.md` §4.
+> Renamed from "AgentCore Flashcards" once the deck outgrew AgentCore, and named to
+> match the spec that defines it. Not all AWS AI: the full IN/OUT boundary is in
+> `.kiro/specs/self-maintaining-flashcards/requirements.md` §4.
 
 **Status: P0–P2 complete; P3 frontend in progress, P3 deploy parked.** No AWS
 resource is created, modified or deleted by anything in this repo; ingest is
@@ -77,7 +77,7 @@ stripping. There is no install step.
 node src/validate.ts          # schema + lint + citation gate
 node --test tests/*.test.ts   # 214 behavioural, guarantee, verifier, ingest + rename tests
 node src/verify-claims.ts     # decompose every card into claims and verify each
-node src/build.ts             # → dist/deck.json + dist/aws-agentic-ai-flashcards.html
+node src/build.ts             # → dist/deck.json + dist/aws-ai-native-development-flashcards.html
 node src/verify-parity.ts     # authored-content parity against the original deck
 node src/check-lifecycle.ts   # has a preview/GA badge gone stale?
 node src/check-rename.ts      # has the thing a card describes been renamed?
