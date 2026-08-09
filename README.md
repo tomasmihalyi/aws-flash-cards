@@ -1,4 +1,4 @@
-# AI-Native Development Flashcards
+# AWS Agentic AI Flashcards
 
 A flashcard deck that keeps its own factual claims current, and that shows a
 learner the difference between a verified fact and an unverified judgement.
@@ -66,7 +66,7 @@ than a policy someone has to remember to enforce.
 | `tools/` | one-time legacy migration, card-id ledger |
 | `tests/fixtures/` | P1 parity baseline, committed API-surface snapshots |
 | `dist/` | build output: `deck.json` + the single-file offline HTML |
-| `agentcore-flashcards.html` | the original hand-authored deck, kept as the parity reference |
+| `agentcore-flashcards.html` | the original hand-authored deck, kept under its ORIGINAL name as the parity reference |
 
 ## Commands
 
@@ -77,7 +77,7 @@ stripping. There is no install step.
 node src/validate.ts          # schema + lint + citation gate
 node --test tests/*.test.ts   # 214 behavioural, guarantee, verifier, ingest + rename tests
 node src/verify-claims.ts     # decompose every card into claims and verify each
-node src/build.ts             # → dist/deck.json + dist/agentcore-flashcards.html
+node src/build.ts             # → dist/deck.json + dist/aws-agentic-ai-flashcards.html
 node src/verify-parity.ts     # authored-content parity against the original deck
 node src/check-lifecycle.ts   # has a preview/GA badge gone stale?
 node src/check-rename.ts      # has the thing a card describes been renamed?

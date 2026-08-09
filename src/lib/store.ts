@@ -8,6 +8,16 @@ import { FactStore } from './facts.ts';
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
+/**
+ * The single-file build output.
+ *
+ * Named here rather than repeated as a literal in build.ts, verify-parity.ts and
+ * browser-check.mjs, because renaming the deck meant changing it in all three and
+ * a gate still pointing at the old name would have failed for a reason that had
+ * nothing to do with the deck being wrong.
+ */
+export const DIST_HTML = 'aws-agentic-ai-flashcards.html';
+
 export const paths = {
   cards: join(ROOT, 'cards'),
   facts: join(ROOT, 'facts'),
@@ -15,6 +25,16 @@ export const paths = {
   schema: join(ROOT, 'schema'),
   dist: join(ROOT, 'dist'),
   tests: join(ROOT, 'tests'),
+  distHtml: join(ROOT, 'dist', DIST_HTML),
+  /**
+   * The ORIGINAL hand-authored deck, kept under its original name deliberately.
+   *
+   * It is the parity gate's reference: the thing the migration must be shown not
+   * to have lost. Renaming it to match the deck's new title would make the
+   * historical artefact look like a current build, and every `Mechanical
+   * migration from agentcore-flashcards.html` provenance entry already on a card
+   * would then name a file that does not exist.
+   */
   legacyHtml: join(ROOT, 'agentcore-flashcards.html'),
   /** Append-only record of every card id ever issued (FR-9: ids are never reused). */
   idLedger: join(ROOT, 'content', 'card-id-ledger.json'),

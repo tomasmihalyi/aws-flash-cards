@@ -1,5 +1,5 @@
 /**
- * build — cards + facts + templates → dist/deck.json + dist/agentcore-flashcards.html
+ * build — cards + facts + templates → dist/deck.json + the single-file deck
  *
  * Runs validate first and refuses to build on any error, so a broken card can
  * never reach an artifact.
@@ -15,7 +15,7 @@
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT, paths, loadCards, loadCategories, loadArt, loadFactStore } from './lib/store.ts';
+import { ROOT, paths, DIST_HTML, loadCards, loadCategories, loadArt, loadFactStore } from './lib/store.ts';
 import { toLegacyShape, loadTemplateSource, compileTemplate, splitFaces, serialiseDeckLiteral, formatDate } from './lib/render.ts';
 import { hashPayload, sha256 } from './lib/hash.ts';
 import type { Card } from './lib/types.ts';
@@ -195,13 +195,13 @@ function main(): void {
     .split(COUNT_MARKER).join(String(cards.length))
     .replace(META_MARKER, meta)
     .replace(FRESHNESS_MARKER, freshness);
-  writeFileSync(join(paths.dist, 'agentcore-flashcards.html'), html, 'utf8');
+  writeFileSync(paths.distHtml, html, 'utf8');
 
   const seedSlots = cards.flatMap((c: Card) =>
     Object.entries(c.slots).filter(([, s]) => s.rendered_from === 'seed').map(([n]) => `${c.card_id}.${n}`),
   );
 
-  console.log(`build: ${cards.length} cards → dist/deck.json (${deckJson.length} B), dist/agentcore-flashcards.html (${html.length} B)`);
+  console.log(`build: ${cards.length} cards → dist/deck.json (${deckJson.length} B), dist/${DIST_HTML} (${html.length} B)`);
   console.log(`build: ${factSets.length} fact set(s) referenced · ${seedSlots.length} slot(s) still on seed values`);
   if (seedSlots.length) console.log(`       seed slots: ${seedSlots.join(', ')}`);
 }

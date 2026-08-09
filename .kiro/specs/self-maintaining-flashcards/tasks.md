@@ -251,11 +251,32 @@ finished.
       Strands is cited as `strands-agents/harness-sdk`, not `sdk-python`: the
       latter still resolves but REDIRECTS, and the raw READMEs are byte-identical.
 
-- [ ] T6.5 The built page is titled "AgentCore Flashcards" with the subtitle "The
-      full platform, one primitive per card". True of 21 AgentCore cards, false of
-      30 spanning five services. Renaming the deck is a positioning decision, and
-      the output filename is referenced by the parity gate, the browser check and
-      the npm scripts — so it needs a human call, not an agent tidy-up.
+- [x] T6.5 **Renamed the deck to "AWS Agentic AI Flashcards".** The page said
+      "AgentCore Flashcards / The full platform, one primitive per card" — true of
+      21 AgentCore cards, false of 30 spanning AgentCore, Bedrock, Strands, the
+      coding agents and Quick.
+
+      Changed: `<title>`, the eyebrow (was "Amazon Bedrock · Field Deck", too
+      narrow now), the `<h1>`, the subtitle, and the build output filename
+      (`dist/aws-agentic-ai-flashcards.html`).
+
+      The output filename was a literal in three places — build.ts,
+      verify-parity.ts and browser-check.mjs — so it is now `DIST_HTML` in
+      store.ts. A gate left pointing at the old name would have failed for a
+      reason unrelated to the deck being wrong.
+
+      **`agentcore-flashcards.html` at the repo root keeps its name.** It is the
+      parity gate's reference — the artefact the migration must be shown not to
+      have lost — and twenty-one cards carry a provenance entry reading
+      "Mechanical migration from agentcore-flashcards.html". Renaming it would
+      make a historical record point at a file that does not exist, and would
+      dress the original up as a current build.
+
+      Naming note for later: "Agentic AI" is a slightly tighter claim than the
+      deck's stated scope. QK-01/02/03 (Quick) and parts of the coding-agent cards
+      are about the business-versus-engineer boundary rather than agents as such.
+      The requirements' IN/OUT boundary (§4) still says "AI-native development" and
+      has not been rewritten to match the title.
 
 ## P5 — Rename, retirement, fan-out (not in this run)
 

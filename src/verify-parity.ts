@@ -33,7 +33,7 @@
 
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { paths, loadCards, loadCategories } from './lib/store.ts';
+import { paths, DIST_HTML, loadCards, loadCategories } from './lib/store.ts';
 import { loadLegacy } from './lib/legacy.ts';
 import { authoredText } from './lib/render.ts';
 import { canonical } from './lib/hash.ts';
@@ -101,9 +101,9 @@ function main(): void {
   check(`all ${cards.length} cards resolve their slots and render`, renderable === cards.length);
 
   // ---- the built artifact reflects the current card data ----
-  const generatedPath = join(paths.dist, 'agentcore-flashcards.html');
+  const generatedPath = paths.distHtml;
   if (!existsSync(generatedPath)) {
-    failures.push('FAIL  dist/agentcore-flashcards.html not found — run node src/build.ts first');
+    failures.push(`FAIL  dist/${DIST_HTML} not found — run node src/build.ts first`);
   } else {
     const generated = readFileSync(generatedPath, 'utf8');
     let missing = 0;
