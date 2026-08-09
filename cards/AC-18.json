@@ -85,7 +85,7 @@
     }
   ],
   "verified_at": "2026-08-08T09:56:28.005Z",
-  "confidence": "medium",
+  "confidence": "high",
   "depends_on": [
     "AC-04",
     "AC-05",
@@ -96,14 +96,8 @@
   "aka": [],
   "superseded_by": null,
   "supersedes": [],
-  "needs_review": true,
-  "review_reasons": [
-    {
-      "reason": "Tier C prose correction applied by an agent (io_wait_share). Needs human sign-off: the design gates judgement rewrites behind a human, and there is no remote to raise a PR against.",
-      "raised_at": "2026-08-09T05:22:58.851Z",
-      "raised_by": "tools/close-claim-gaps.ts"
-    }
-  ],
+  "needs_review": false,
+  "review_reasons": [],
   "provenance": {
     "tier": "A",
     "authored_by": "legacy-import",
@@ -158,9 +152,20 @@
         "action": "flag-review",
         "generator": "tools/close-claim-gaps.ts",
         "reason": "Tier C prose correction applied by an agent (io_wait_share). Needs human sign-off: the design gates judgement rewrites behind a human, and there is no remote to raise a PR against."
+      },
+      {
+        "at": "2026-08-09T11:51:25.623Z",
+        "tier": "C",
+        "action": "clear-review",
+        "generator": "tools/sign-off.ts",
+        "reason": "Signed off by Tomas Mihalyi. Approved: Tier C prose correction applied by an agent (io_wait_share). Needs human sign-off: the design gates judgement rewrites behind a human, and there is no remote to raise a PR against. (The flag-review entries recording why this was raised remain in this history.)"
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-09T05:22:58.851Z"
+  "updated_at": "2026-08-09T11:51:25.623Z",
+  "signed_off": {
+    "by": "Tomas Mihalyi",
+    "at": "2026-08-09T11:51:25.623Z"
+  }
 }

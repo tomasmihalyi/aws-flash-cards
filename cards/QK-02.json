@@ -42,7 +42,7 @@
   "facts_used": [],
   "sources": [],
   "verified_at": null,
-  "confidence": "low",
+  "confidence": "medium",
   "depends_on": [
     "CA-02",
     "QK-01"
@@ -50,14 +50,8 @@
   "aka": [],
   "superseded_by": null,
   "supersedes": [],
-  "needs_review": true,
-  "review_reasons": [
-    {
-      "reason": "Positioning judgement, Tier C by definition. No documentation page can settle which tool a use case belongs in, so this card carries no source and needs human sign-off before it is presented to a customer.",
-      "raised_at": "2026-08-08T13:26:31.267Z",
-      "raised_by": "tools/add-cards-p6-batch1.ts"
-    }
-  ],
+  "needs_review": false,
+  "review_reasons": [],
   "provenance": {
     "tier": "C",
     "authored_by": "model",
@@ -75,9 +69,20 @@
         "action": "flag-review",
         "generator": "tools/add-cards-p6-batch1.ts",
         "reason": "Positioning judgement, Tier C by definition. No documentation page can settle which tool a use case belongs in, so this card carries no source and needs human sign-off before it is presented to a customer."
+      },
+      {
+        "at": "2026-08-09T11:51:25.623Z",
+        "tier": "C",
+        "action": "clear-review",
+        "generator": "tools/sign-off.ts",
+        "reason": "Signed off by Tomas Mihalyi. Approved: Positioning judgement, Tier C by definition. No documentation page can settle which tool a use case belongs in, so this card carries no source and needs human sign-off before it is presented to a customer. (The flag-review entries recording why this was raised remain in this history.)"
       }
     ]
   },
   "created_at": "2026-08-08T13:26:31.267Z",
-  "updated_at": "2026-08-08T13:26:31.267Z"
+  "updated_at": "2026-08-09T11:51:25.623Z",
+  "signed_off": {
+    "by": "Tomas Mihalyi",
+    "at": "2026-08-09T11:51:25.623Z"
+  }
 }

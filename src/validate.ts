@@ -125,8 +125,35 @@ function main(): void {
       if (slot.rendered_from === 'seed' && !slot.unresolvable_reason) {
         warn(`${id}.${name}: still rendering the unverified seed literal`);
       }
+      /**
+       * L-UNRESOLVABLE: an unresolvable slot must be ACCOUNTED FOR — but there are
+       * two kinds and they need different answers.
+       *
+       * PENDING (`rendered_from: 'seed'`) — no source has been found YET. The slot
+       * is still showing its original literal and somebody should go looking. This
+       * must stay flagged: AC-12 sat here for weeks claiming "9 regions" until the
+       * feature × region matrix turned up and the real answer was 16. Letting that
+       * be signed off would bless an unverified number permanently.
+       *
+       * AUTHORED (`rendered_from: 'tier-c'`) — the slot holds PROSE that no fact
+       * could ever govern, because it is a sentence rather than a value. There is
+       * no source to go and find, and the reason field says so. Here a human is
+       * the only possible authority, so `needs_review` is a transient state that
+       * sign-off is supposed to clear. The original rule made no distinction, which
+       * made signing off a Tier C rewrite structurally impossible and would have
+       * left "Needs review" on the card forever — a permanent warning is one a
+       * learner stops reading.
+       *
+       * An authored slot may therefore be unflagged, but ONLY with a recorded
+       * sign-off. Without that, an agent could author Tier C prose and simply
+       * never raise the flag.
+       */
       if (slot.unresolvable_reason && !card.needs_review) {
-        err(`${id}: slot "${name}" is unresolvable but the card is not flagged needs_review`);
+        if (slot.rendered_from === 'seed') {
+          err(`${id}: slot "${name}" is unresolvable and still on its seed value, but the card is not flagged needs_review`);
+        } else if (!card.signed_off?.by) {
+          err(`${id}: slot "${name}" is an unresolvable Tier C judgement that is neither flagged needs_review nor signed off by a human`);
+        }
       }
     }
 

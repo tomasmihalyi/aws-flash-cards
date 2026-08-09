@@ -73,6 +73,18 @@ export type Card = {
   supersedes: string[];
   needs_review: boolean;
   review_reasons: ReviewReason[];
+  /**
+   * Human sign-off on a Tier C judgement.
+   *
+   * Recorded explicitly rather than inferred from a `clear-review` log line,
+   * because "a named human accepted this" is a state the validator has to reason
+   * about — and deriving it by string-matching a reason field would be exactly the
+   * kind of stringly-typed inference this repo keeps finding bugs in.
+   *
+   * Endorsement, never verification: it does not feed `deriveConfidence`, so an
+   * unsourced card stays at `medium` no matter who signs it.
+   */
+  signed_off?: { by: string; at: string } | null;
   provenance: {
     tier: Tier | 'seed';
     authored_by: 'human' | 'model' | 'pipeline' | 'legacy-import';

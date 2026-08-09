@@ -18,7 +18,7 @@ import { validate, validateSchemaKeywords } from '../src/lib/schema.ts';
 import { awsRead, AwsWriteRefused } from '../src/lib/aws.ts';
 import { loadCards, loadCategories, loadSchema, loadFactStore, loadIdLedger, paths } from '../src/lib/store.ts';
 import { toLegacyShape, authoredText } from '../src/lib/render.ts';
-import { originalProjection, fieldCorrections } from '../src/lib/provenance.ts';
+import { originalProjection, fieldCorrections, deriveConfidence } from '../src/lib/provenance.ts';
 import { loadLegacy } from '../src/lib/legacy.ts';
 import type { Card } from '../src/lib/types.ts';
 
@@ -220,12 +220,30 @@ describe('guarantee: no claim without a citation (FR-7)', () => {
     }
   });
 
-  test('an unresolvable slot is flagged for review with a stated reason', () => {
+  test('an unresolvable slot is accounted for, and says why it cannot be resolved', () => {
+    /**
+     * Was: "unresolvable ⟹ needs_review". That held while every unresolvable slot
+     * was a PENDING one — a seed literal waiting for a source. It could not survive
+     * agents authoring Tier C prose, where no fact can ever govern the slot and a
+     * human is the only possible authority: the flag would have been permanent and
+     * sign-off impossible. Split, not relaxed — the seed case keeps the hard rule,
+     * and the full pair is pinned in its own suite below.
+     */
     for (const c of loadCards()) {
-      const unresolvable = Object.entries(c.slots).filter(([, s]) => s.unresolvable_reason);
-      if (!unresolvable.length) continue;
-      assert.equal(c.needs_review, true, `${c.card_id}: unresolvable slot must flag needs_review`);
-      assert.ok(c.review_reasons.length > 0, `${c.card_id}: needs_review with no reason recorded`);
+      for (const [name, slot] of Object.entries(c.slots)) {
+        if (!slot.unresolvable_reason) continue;
+        assert.ok(slot.unresolvable_reason.length > 20,
+          `${c.card_id}.${name}: unresolvable with no usable explanation`);
+        if (slot.rendered_from === 'seed') {
+          assert.equal(c.needs_review, true, `${c.card_id}: a pending seed slot must flag needs_review`);
+        } else {
+          assert.ok(c.needs_review || Boolean(c.signed_off?.by),
+            `${c.card_id}.${name}: authored Tier C judgement neither flagged nor signed off`);
+        }
+        if (c.needs_review) {
+          assert.ok(c.review_reasons.length > 0, `${c.card_id}: needs_review with no reason recorded`);
+        }
+      }
     }
   });
 });
@@ -339,6 +357,82 @@ describe('guarantee: authored content survived the migration unchanged', () => {
       const times = c.provenance.history.map((h) => Date.parse(h.at));
       const sorted = [...times].sort((a, b) => a - b);
       assert.deepEqual(times, sorted, `${c.card_id}: provenance history is out of order`);
+    }
+  });
+});
+
+describe('guarantee: a Tier C judgement is accounted for, by a flag or by a human', () => {
+  /**
+   * This pins a guardrail that had to be SPLIT rather than relaxed.
+   *
+   * The original rule was "an unresolvable slot ⟹ the card is flagged
+   * needs_review". Correct when the only unresolvable slots were PENDING ones —
+   * a seed literal waiting for a source nobody had found yet. AC-12 sat in
+   * exactly that state claiming "9 regions" until the feature × region matrix
+   * turned up and the real number was 16.
+   *
+   * It became wrong once agents started authoring Tier C PROSE, where no fact
+   * could ever govern the slot because it holds a sentence rather than a value.
+   * Under the old rule those cards could never be signed off, so "Needs review"
+   * would have been permanent — and a permanent warning is one a learner stops
+   * reading.
+   */
+  const cards = loadCards();
+
+  test('a PENDING unresolvable slot (still on seed) must stay flagged', () => {
+    for (const c of cards) {
+      for (const [name, slot] of Object.entries(c.slots)) {
+        if (!slot.unresolvable_reason || slot.rendered_from !== 'seed') continue;
+        assert.equal(c.needs_review, true,
+          `${c.card_id}.${name}: a seed slot with no source must remain flagged — sign-off must not be able to bless an unverified value`);
+      }
+    }
+  });
+
+  test('an AUTHORED unresolvable slot is either flagged or signed off by a named human', () => {
+    for (const c of cards) {
+      for (const [name, slot] of Object.entries(c.slots)) {
+        if (!slot.unresolvable_reason || slot.rendered_from === 'seed') continue;
+        const accounted = c.needs_review || Boolean(c.signed_off?.by);
+        assert.ok(accounted,
+          `${c.card_id}.${name}: an unresolvable Tier C judgement is neither flagged nor signed off`);
+        if (c.signed_off) {
+          assert.ok(c.signed_off.by.length > 0, `${c.card_id}: signed_off with no approver named`);
+          assert.ok(!Number.isNaN(Date.parse(c.signed_off.at)), `${c.card_id}: signed_off.at is not a date`);
+        }
+      }
+    }
+  });
+
+  test('sign-off is endorsement, never verification', () => {
+    /**
+     * The property that stops a confident human laundering a claim no source
+     * supports: signing off an unsourced card must not make it look verified.
+     * `deriveConfidence` is the single implementation, shared with apply.ts.
+     */
+    for (const c of cards) {
+      if (!c.signed_off) continue;
+      assert.equal(c.confidence, deriveConfidence(c),
+        `${c.card_id}: confidence was set by hand instead of derived`);
+      if (!c.verified_at) {
+        assert.notEqual(c.confidence, 'high',
+          `${c.card_id}: signed off but unsourced — must never reach "high"`);
+      }
+    }
+  });
+
+  test('clearing a review flag never erases why it was raised', () => {
+    // The reasons come off the live card, but the flag-review entry that recorded
+    // them stays in the append-only history. Otherwise sign-off would destroy the
+    // only record of what was approved.
+    for (const c of cards) {
+      if (!c.signed_off) continue;
+      const cleared = c.provenance.history.filter((h) => h.action === 'clear-review');
+      assert.ok(cleared.length > 0, `${c.card_id}: signed off with no clear-review entry`);
+      const flagged = c.provenance.history.some((h) => h.action === 'flag-review');
+      assert.ok(flagged, `${c.card_id}: signed off but the history never records it being flagged`);
+      assert.ok(cleared.some((h) => /Signed off by \S/.test(h.reason)),
+        `${c.card_id}: no clear-review entry names an approver`);
     }
   });
 });

@@ -51,6 +51,32 @@ export function originalProjection(card: Card): Card {
   return clone;
 }
 
+/**
+ * Confidence is DERIVED, never asserted.
+ *
+ * The single implementation, shared by `src/ingest/apply.ts` (which stamps it on
+ * every resolve) and `tools/sign-off.ts` (which recomputes it when a human clears
+ * a review flag). It lived privately inside apply.ts, and a second copy in the
+ * sign-off tool would be the same drift hazard that already bit this repo twice —
+ * once with the tokenizer duplicated between lifecycle.ts and verifier.ts, once
+ * with `originalProjection` nearly duplicated between the parity gate and its test.
+ *
+ * The ladder, strongest constraint first:
+ *
+ *   low     any slot still renders from its seed literal. Unverifiable by
+ *           construction, whatever else is true.
+ *   medium  awaiting human review, OR never verified against a source at all.
+ *           This is where a permanently unsourced positioning card lands even
+ *           after a human endorses it — endorsement is not verification.
+ *   high    every slot resolved, a verification timestamp, and no open review.
+ */
+export function deriveConfidence(card: Card): Card['confidence'] {
+  const anySeed = Object.values(card.slots).some((s) => s.rendered_from === 'seed');
+  if (anySeed) return 'low';
+  if (card.needs_review || !card.verified_at) return 'medium';
+  return 'high';
+}
+
 /** Every field-level correction or rename recorded on a card, oldest first. */
 export function fieldCorrections(card: Card): { field: string; before: string; after: string; at: string; tier: string; action: string }[] {
   return card.provenance.history

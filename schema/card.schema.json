@@ -87,7 +87,7 @@
         "pv",
         "core"
       ],
-      "description": "Presentation only \u2014 maps to a CSS class. Lint: 'pv' iff lifecycle === 'preview'."
+      "description": "Presentation only — maps to a CSS class. Lint: 'pv' iff lifecycle === 'preview'."
     },
     "badge_text": {
       "type": "string",
@@ -180,7 +180,7 @@
               "type": "string",
               "pattern": "^[a-z0-9][a-z0-9._-]*$"
             },
-            "description": "Fact ids the template needs. If any is missing at apply time the slot is left untouched and the run fails \u2014 a missing fact must never yield a fresh verified_at on a stale claim."
+            "description": "Fact ids the template needs. If any is missing at apply time the slot is left untouched and the run fails — a missing fact must never yield a fresh verified_at on a stale claim."
           },
           "rendered": {
             "type": "string",
@@ -213,7 +213,7 @@
         "type": "string"
       },
       "uniqueItems": true,
-      "description": "Derived at build time \u2014 the union of every slot's facts[]. Enables reverse lookup: which cards does this fact touch."
+      "description": "Derived at build time — the union of every slot's facts[]. Enables reverse lookup: which cards does this fact touch."
     },
     "sources": {
       "type": "array",
@@ -295,7 +295,7 @@
     },
     "aka": {
       "type": "array",
-      "description": "Rename history. Aliasing, never deletion \u2014 old names keep resolving so deep links survive.",
+      "description": "Rename history. Aliasing, never deletion — old names keep resolving so deep links survive.",
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -466,6 +466,28 @@
     "notes": {
       "type": "string",
       "description": "Maintainer-facing only. Never rendered."
+    },
+    "signed_off": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "by",
+        "at"
+      ],
+      "description": "Human sign-off on a Tier C judgement. Records that a NAMED person accepted a change or a claim an agent could not verify. Endorsement, not verification: it never contributes to confidence \"high\", which still requires verified_at.",
+      "properties": {
+        "by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
     }
   }
 }

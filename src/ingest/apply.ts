@@ -22,6 +22,7 @@
 import { loadCards, saveCard, loadFactStore } from '../lib/store.ts';
 import { resolveTemplate, type FactStore } from '../lib/facts.ts';
 import type { Card, Source, HistoryEntry } from '../lib/types.ts';
+import { deriveConfidence } from '../lib/provenance.ts';
 
 const GENERATOR = 'src/ingest/apply.ts';
 const dryRun = process.argv.includes('--dry-run');
@@ -150,17 +151,6 @@ function mergeSources(existing: Source[], incoming: Source[]): Source[] {
 
 function oldest(times: string[]): string | undefined {
   return times.length ? times.slice().sort()[0] : undefined;
-}
-
-/**
- * Derived, not judged. Any slot still on its seed literal — including one no
- * deterministic source can settle — caps the card at "low".
- */
-function deriveConfidence(card: Card): Card['confidence'] {
-  const anySeed = Object.values(card.slots).some((s) => s.rendered_from === 'seed');
-  if (anySeed) return 'low';
-  if (card.needs_review || !card.verified_at) return 'medium';
-  return 'high';
 }
 
 function report(outcomes: Outcome[], failures: string[], written: string[]): void {
