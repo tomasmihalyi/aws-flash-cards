@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-22",
+  "kind": "service-fact",
+  "lifecycle": "preview",
+  "service": "bedrock-agentcore",
+  "category": "governance-quality",
+  "tags": [
+    "agentcore",
+    "observability",
+    "operate",
+    "quality"
+  ],
+  "badge_variant": "pv",
+  "badge_text": "PREVIEW",
+  "art": "observe",
+  "title": "Failure Insights",
+  "hook": "The failures that matter most emit no error.",
+  "back": {
+    "lead": "Failure insights read production traces and find recurring failure patterns across hundreds of agent sessions — including silent behavioural failures that produce no error signal at all — explain the root cause of each, and rank them by how widespread they are. Continuous monitoring can run on a daily cadence.",
+    "kv": [
+      {
+        "k": "What a silent failure is",
+        "v": "An agent that answers confidently and wrongly raises no exception and returns a success status. Nothing in a conventional error budget notices, which is why traces have to be read for behaviour rather than for status codes."
+      },
+      {
+        "k": "Ranked, not just listed",
+        "v": "Patterns are ordered by how widespread they are, so the queue is sorted by blast radius rather than by recency. A list of every anomaly is a report; a ranking is a work queue."
+      },
+      {
+        "k": "Where it sits",
+        "v": "Observability produces the traces and this reads them, which is what makes the improvement loop closeable: findings become the input to recommendations and validated changes rather than to a manual investigation."
+      }
+    ],
+    "hookline": "An exception says the agent broke. A pattern says it has been quietly wrong for a fortnight."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html",
+      "title": "AgentCore release notes",
+      "kind": "aws-docs-release-notes",
+      "fetched_at": "2026-08-10T11:59:39.446Z",
+      "content_hash": "sha256:2ba16e0fde32abf1a06b35cec6b9c90cb6d3eee37ef32d81133d03a428b17036"
+    }
+  ],
+  "verified_at": "2026-08-10T11:59:39.446Z",
+  "confidence": "medium",
+  "depends_on": [
+    "AC-10",
+    "AC-13"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-10T12:59:02.668Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-agentcore-gaps.ts",
+        "reason": "New card authored from https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html, closing a gap check-coverage reported and confirmed absent from every existing card. Every new card enters through Tier C."
+      }
+    ]
+  },
+  "created_at": "2026-08-10T12:59:02.668Z",
+  "updated_at": "2026-08-10T12:59:02.668Z"
+}

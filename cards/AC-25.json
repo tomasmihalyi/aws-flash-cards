@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-25",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock-agentcore",
+  "category": "operate-adopt",
+  "tags": [
+    "agentcore",
+    "enterprise",
+    "iac",
+    "operate"
+  ],
+  "badge_variant": "core",
+  "badge_text": "ENTERPRISE",
+  "art": "platform",
+  "title": "AgentCore in CDK",
+  "hook": "A stable construct is an adoption gate, not a convenience.",
+  "back": {
+    "lead": "The aws-bedrockagentcore constructs have graduated from alpha to stable in the main CDK library, so AgentCore resources — runtime, memory, gateway, identity and more — can be defined in CDK with full backward-compatibility guarantees and no separate alpha package. The Policy submodule remains in alpha.",
+    "kv": [
+      {
+        "k": "Why stable is the gate",
+        "v": "An alpha package carries no backward-compatibility guarantee, which is usually enough for a platform team to refuse it in a shared pipeline. Graduation is the difference between a prototype and something allowed on the paved road."
+      },
+      {
+        "k": "The exception that has to be said",
+        "v": "Policy is still alpha. A card claiming AgentCore is simply stable in CDK would be wrong in the direction that looks reassuring — and Policy is exactly the service a governance-minded team would reach for first."
+      },
+      {
+        "k": "What it joins",
+        "v": "CloudFormation support and resource tagging landed earlier, so agents can be provisioned, versioned and cost-allocated with the same tooling as the rest of the account rather than as a special case."
+      }
+    ],
+    "hookline": "Ask whether the construct is stable. “Alpha” is the answer that stops a rollout."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html",
+      "title": "AgentCore release notes",
+      "kind": "aws-docs-release-notes",
+      "fetched_at": "2026-08-10T11:59:39.446Z",
+      "content_hash": "sha256:2ba16e0fde32abf1a06b35cec6b9c90cb6d3eee37ef32d81133d03a428b17036"
+    }
+  ],
+  "verified_at": "2026-08-10T11:59:39.446Z",
+  "confidence": "medium",
+  "depends_on": [
+    "AC-11",
+    "AC-19"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-10T12:59:02.668Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-agentcore-gaps.ts",
+        "reason": "New card authored from https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html, closing a gap check-coverage reported and confirmed absent from every existing card. Every new card enters through Tier C."
+      }
+    ]
+  },
+  "created_at": "2026-08-10T12:59:02.668Z",
+  "updated_at": "2026-08-10T12:59:02.668Z"
+}

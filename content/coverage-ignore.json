@@ -33,6 +33,18 @@
     {
       "heading": "IDE: Session Restore, Performance Optimizations, and Custom Agent Enhancements",
       "reason": "Release roundup, same as above. Performance and restore behaviour are product quality, not concepts a field deck teaches."
+    },
+    {
+      "heading": "Agent Optimization Loop capabilities in Public Preview",
+      "reason": "Already covered by AC-13, whose lead describes exactly this loop: recommendations analyse production traces and eval outputs, then batch evaluations and A/B tests validate the change before rollout. A matcher limitation, not a gap — AC-13 is titled 'Recommendations, batch evals & A/B tests' and shares no distinctive token with this heading, so no match is possible at any threshold."
+    },
+    {
+      "heading": "Tagging and AWS CloudFormation Support",
+      "reason": "Already covered by AC-19, whose lead reads 'GA brought the enterprise checklist: VPC connectivity across all services, PrivateLink, CloudFormation, and resource tagging.' Another matcher limitation: the card is titled 'Regions & compliance' and shares no token with this heading."
+    },
+    {
+      "heading": "AgentCore is generally available in AWS GovCloud (US-West)",
+      "reason": "AC-19 is the home for region and compliance posture and already names FedRAMP in GovCloud. The partition is US-only, so in an ANZ field deck this earns a line on an existing card rather than a card of its own. Worth remembering that the region-count discrepancy the deck already records — 20 columns in the feature matrix against 19 SSM parameters — IS this partition, so it is not unrecorded, merely not card-worthy here."
     }
   ]
 }

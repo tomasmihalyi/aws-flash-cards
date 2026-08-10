@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "card_id": "AC-24",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock-agentcore",
+  "category": "core-services",
+  "tags": [
+    "agentcore",
+    "core-services",
+    "runtime",
+    "streaming"
+  ],
+  "badge_variant": "core",
+  "badge_text": "RUNTIME",
+  "art": "runtime",
+  "title": "Bidirectional streaming",
+  "hook": "Full-duplex, not request-and-reply.",
+  "back": {
+    "lead": "Runtime supports bidirectional streaming: real-time, full-duplex communication between a client and an agent over the WebSocket protocol, for interactive agent experiences rather than one request followed by one response.",
+    "kv": [
+      {
+        "k": "What actually changes",
+        "v": "Both ends can send while the other is still sending. A client can interrupt, correct or add context mid-turn instead of waiting for the agent to finish being wrong."
+      },
+      {
+        "k": "What it enables",
+        "v": "Voice and other conversational surfaces, where waiting for a complete response is the difference between a conversation and submitting a form."
+      },
+      {
+        "k": "The operational cost",
+        "v": "A long-lived duplex connection is a different shape from a request: it holds resources for the length of the interaction, so concurrency is bounded by sessions rather than by requests per second."
+      }
+    ],
+    "hookline": "Request-response is a form. Full-duplex is a conversation — including the interruptions."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html",
+      "title": "AgentCore release notes",
+      "kind": "aws-docs-release-notes",
+      "fetched_at": "2026-08-10T11:59:39.446Z",
+      "content_hash": "sha256:2ba16e0fde32abf1a06b35cec6b9c90cb6d3eee37ef32d81133d03a428b17036"
+    }
+  ],
+  "verified_at": "2026-08-10T11:59:39.446Z",
+  "confidence": "medium",
+  "depends_on": [
+    "AC-04"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-10T12:59:02.668Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-agentcore-gaps.ts",
+        "reason": "New card authored from https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html, closing a gap check-coverage reported and confirmed absent from every existing card. Every new card enters through Tier C."
+      }
+    ]
+  },
+  "created_at": "2026-08-10T12:59:02.668Z",
+  "updated_at": "2026-08-10T12:59:02.668Z"
+}
