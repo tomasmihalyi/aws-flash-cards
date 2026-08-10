@@ -67,6 +67,52 @@ function botocoreVersion(): string {
   }
 }
 
+/**
+ * The botocore version the committed baseline was generated from.
+ *
+ * Read from the snapshot rather than kept in a separate pin file, so the version
+ * and the baseline it describes cannot drift apart. Null on a first run, when no
+ * baseline exists yet.
+ */
+export function pinnedVersion(snapshotDir = SNAPSHOT_DIR): string | null {
+  if (!existsSync(snapshotDir)) return null;
+  for (const f of readdirSync(snapshotDir).filter((f) => f.endsWith('.operations.json'))) {
+    const snap = JSON.parse(readFileSync(join(snapshotDir, f), 'utf8')) as { botocore_version?: string };
+    if (snap.botocore_version) return snap.botocore_version;
+  }
+  return null;
+}
+
+/**
+ * Refuse to diff against a botocore the baseline was not built from.
+ *
+ * WHY THIS IS A CORRECTNESS GATE, NOT A CONVENIENCE CHECK
+ *
+ * This ingest exists to answer "did the API surface change" by diffing the live
+ * model against a committed snapshot. That question is only meaningful if the
+ * ONLY thing that moved is AWS's model. Let the botocore version float and the
+ * diff measures the version gap instead: a scheduled run on GitHub's ubuntu image
+ * found botocore 1.34.46 — a system package predating `bedrock-agentcore`
+ * entirely — against a baseline built from 1.43.3. Nine minor versions of drift
+ * would have reported hundreds of operations added or removed, all of them
+ * artefacts, and a rename detector fed from that output would have been noise.
+ *
+ * Failing loudly is the honest behaviour. The version is a declared input to the
+ * comparison, so bumping it is a deliberate baseline refresh (re-run with
+ * --allow-version-drift, commit the new snapshots), not something a runner image
+ * update should be able to do silently.
+ */
+export function assertVersionMatchesBaseline(actual: string, pinned: string | null, allowDrift: boolean): void {
+  if (pinned === null || allowDrift || actual === pinned) return;
+  throw new Error(
+    `botocore ${actual} does not match the baseline in tests/fixtures/api-surface/ (${pinned}).\n` +
+      'The API-surface diff is only meaningful when the model is the only thing that moved — ' +
+      'a version gap would report its own artefacts as AWS API changes.\n' +
+      `Install the pinned version (pip install "botocore==${pinned}"), or accept a new baseline ` +
+      'with --allow-version-drift and commit the regenerated snapshots.',
+  );
+}
+
 /** Load a model, handling both the gzipped on-disk form and a plain checkout. */
 function loadModel(dataDir: string, service: string): { model: ServiceModel; path: string; apiVersion: string } {
   const svcDir = join(dataDir, service);
@@ -127,6 +173,7 @@ function shapeSkeleton(m: ServiceModel, shapeName: string, depth: number): unkno
 function main(): void {
   const dataDir = findDataDir();
   const version = botocoreVersion();
+  assertVersionMatchesBaseline(version, pinnedVersion(), process.argv.includes('--allow-version-drift'));
   console.log(`botocore-diff: data dir ${dataDir} (botocore ${version})`);
   mkdirSync(SNAPSHOT_DIR, { recursive: true });
   mkdirSync(paths.facts, { recursive: true });

@@ -16,6 +16,7 @@ import { FactStore, resolveTemplate, formatFact, expandSlots, slotRefs } from '.
 import { canonical, hashPayload, sha256 } from '../src/lib/hash.ts';
 import { validate, validateSchemaKeywords } from '../src/lib/schema.ts';
 import { awsRead, AwsWriteRefused, commandLine } from '../src/lib/aws.ts';
+import { pinnedVersion, assertVersionMatchesBaseline } from '../src/ingest/botocore-diff.ts';
 import { loadCards, loadCategories, loadSchema, loadFactStore, loadIdLedger, paths } from '../src/lib/store.ts';
 import { toLegacyShape, authoredText } from '../src/lib/render.ts';
 import { originalProjection, fieldCorrections, deriveConfidence } from '../src/lib/provenance.ts';
@@ -104,6 +105,36 @@ describe('guarantee: a recorded command is reproducible off this machine', () =>
       if (saved === undefined) delete process.env.AWS_PROFILE;
       else process.env.AWS_PROFILE = saved;
     }
+  });
+});
+
+describe('guarantee: the API-surface diff measures AWS, not the environment', () => {
+  // A scheduled run found botocore 1.34.46 on GitHub's ubuntu image — a system
+  // package predating bedrock-agentcore — against a baseline built from 1.43.3.
+  // Nine minor versions of drift would have reported hundreds of operations
+  // added or removed, every one an artefact of the version gap.
+
+  test('the pin comes from the committed baseline, so the two cannot drift apart', () => {
+    assert.equal(pinnedVersion(), '1.43.3');
+  });
+
+  test('a mismatched botocore is refused, with the fix in the message', () => {
+    assert.throws(
+      () => assertVersionMatchesBaseline('1.34.46', '1.43.3', false),
+      (e: Error) => /1\.34\.46.*1\.43\.3/s.test(e.message) && /pip install/.test(e.message),
+    );
+  });
+
+  test('a matching version proceeds', () => {
+    assert.doesNotThrow(() => assertVersionMatchesBaseline('1.43.3', '1.43.3', false));
+  });
+
+  test('--allow-version-drift is the deliberate escape hatch for a baseline refresh', () => {
+    assert.doesNotThrow(() => assertVersionMatchesBaseline('1.34.46', '1.43.3', true));
+  });
+
+  test('no baseline yet means no pin to violate — a first run must not be blocked', () => {
+    assert.doesNotThrow(() => assertVersionMatchesBaseline('9.9.9', null, false));
   });
 });
 

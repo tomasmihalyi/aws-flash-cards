@@ -54,6 +54,28 @@ jobs:
           aws-region: ap-southeast-2
           role-session-name: flashcards-refresh-${{ github.run_id }}
 
+      - name: Install the pinned botocore
+        # The API-surface ingest diffs the live model against a committed baseline,
+        # which is only meaningful if the model is the ONLY thing that moved. The
+        # runner image ships botocore 1.34.46 as a system package — nine minor
+        # versions behind the baseline and predating bedrock-agentcore entirely.
+        #
+        # The version is read FROM the baseline rather than duplicated here, so the
+        # workflow cannot drift from what the snapshot was built against. Regenerate
+        # the baseline to bump it; do not edit a number in this file.
+        run: |
+          set -euo pipefail
+          PIN=$(python3 -c "
+          import json, glob
+          for f in sorted(glob.glob('tests/fixtures/api-surface/*.operations.json')):
+              v = json.load(open(f)).get('botocore_version')
+              if v: print(v); break
+          ")
+          test -n "$PIN" || { echo "::error::no botocore_version in the committed baseline"; exit 1; }
+          echo "pinning botocore==$PIN (from tests/fixtures/api-surface/)"
+          python3 -m pip install --quiet --disable-pip-version-check "botocore==$PIN"
+          python3 -c "import botocore; print('installed', botocore.__version__)"
+
       - name: Ingest and apply
         # `apply` exits non-zero rather than stamping a fresh verified_at on a claim
         # whose fact failed to fetch, so a failure here SHOULD fail the job. That is
