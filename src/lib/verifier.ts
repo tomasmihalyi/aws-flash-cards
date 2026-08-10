@@ -39,6 +39,23 @@ export type DatedEntry = {
   heading: string;
   summary: string;
   url: string;
+  /**
+   * The card `service` this entry is allowed to speak for, or null for a source
+   * whose scope cannot be established.
+   *
+   * WHY AN ENTRY NEEDS A SERVICE
+   *
+   * While every dated source was about AgentCore this field would have been
+   * redundant. Adding Kiro's changelog made it load-bearing immediately: Kiro's
+   * "CLI: Tangent Side-Conversations" matched AC-16 — the AgentCore CLI card — on
+   * the single token `cli`, and "Editor Actions … Code OSS Upgrade" matched AC-08,
+   * Code Interpreter, on `code`. Two different products, one shared noun.
+   *
+   * Token overlap cannot tell those apart, and no amount of threshold tuning
+   * will: `cli` genuinely is the subject of both cards. The product boundary is
+   * the discriminator, and it is exact rather than statistical.
+   */
+  service: string | null;
 };
 
 export type VerifyContext = {
@@ -878,12 +895,50 @@ export function verifyCard(card: Card, claims: Claim[], ctx: VerifyContext): Car
 }
 
 /**
+ * Sources whose entries carry a real calendar DAY.
+ *
+ * AWS release notes are organised by month and can never join this set. A docs
+ * document-history page and a vendor Atom feed both timestamp each entry, so a
+ * day-precision claim can be fully attested from them rather than reported
+ * `partial` — which is the whole reason those sources were added.
+ */
+const DAY_PRECISION_KINDS = new Set(['aws-docs-doc-history', 'vendor-changelog', 'github-releases']);
+
+/**
+ * Fact-set id prefix → the card `service` that source is authoritative for.
+ *
+ * Explicit rather than derived, because the two vocabularies genuinely differ:
+ * the fact sets say `agentcore`, the cards say `bedrock-agentcore`, and guessing
+ * between them by string similarity is the kind of inference that has produced
+ * bugs in this repo before.
+ *
+ * An id with no entry here yields `null`, which means "scope unknown" and is
+ * treated permissively — a new source is not silently prevented from matching
+ * anything before someone remembers to register it.
+ */
+const SOURCE_SERVICE: Record<string, string> = {
+  agentcore: 'bedrock-agentcore',
+  bedrock: 'bedrock',
+  kiro: 'kiro',
+  strands: 'strands',
+  'q-developer': 'q-developer',
+  quick: 'quick',
+};
+
+/** The card service a fact set may speak for, by id prefix. */
+export function serviceOfFactSet(factSetId: string): string | null {
+  const prefix = factSetId.split('.')[0];
+  return SOURCE_SERVICE[prefix] ?? null;
+}
+
+/**
  * Dated entries from month-precision sources. The URL is the page, not a
  * per-entry anchor, because the release notes do not give entries stable ids.
  */
 export function datedEntriesFrom(sets: FactSet[]): DatedEntry[] {
   const out: DatedEntry[] = [];
   for (const s of sets) {
+    const service = serviceOfFactSet(s.fact_set_id);
     if (s.source.kind === 'aws-docs-release-notes') {
       const rows = Array.isArray(s.evidence?.canonical) ? (s.evidence.canonical as Record<string, string>[]) : [];
       for (const r of rows) {
@@ -896,11 +951,12 @@ export function datedEntriesFrom(sets: FactSet[]): DatedEntry[] {
           heading: String(r.heading),
           summary: String(r.summary ?? ''),
           url: s.source.url,
+          service,
         });
       }
       continue;
     }
-    if (s.source.kind === 'aws-docs-doc-history') {
+    if (DAY_PRECISION_KINDS.has(s.source.kind ?? '')) {
       const rows = Array.isArray(s.evidence?.canonical) ? (s.evidence.canonical as Record<string, string>[]) : [];
       for (const r of rows) {
         if (!r.iso_date || !r.heading) continue;
@@ -911,7 +967,11 @@ export function datedEntriesFrom(sets: FactSet[]): DatedEntry[] {
           precision: 'day',
           heading: String(r.heading),
           summary: String(r.summary ?? ''),
-          url: s.source.url,
+          // A feed gives every entry its own permalink, where a docs page does
+          // not — cite the entry when one exists so a reader lands on the item
+          // rather than on a page they then have to search.
+          url: String(r.url ?? s.source.url),
+          service,
         });
       }
     }

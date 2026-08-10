@@ -1,5 +1,38 @@
 {
   "schema_version": 1,
   "comment": "Dated source entries deliberately NOT given a card, each with a reason. Suppression is part of the coverage design: most release-notes entries do not deserve a card, and without a way to say so every run re-reports the same minor items until the report is ignored. Matching is on the EXACT heading, so a reworded entry resurfaces instead of staying silently suppressed under a stale rule. 'We decided not to' must stay distinguishable from 'we never looked'.",
-  "entries": []
+  "entries": [
+    {
+      "heading": "A/B Testing is now Generally Available",
+      "reason": "Already covered by AC-13, which is literally about batch evaluations and A/B tests. This is a matcher limitation, not a gap: the 5-char stemmer maps 'testing' to 'testi' and AC-13's 'tests' to 'tests', so they cannot match. Suppressed rather than fixing the shared stemmer, which is load-bearing for the gates that block a build — destabilising it to correct one word in an advisory report is the wrong trade."
+    },
+    {
+      "heading": "Integrations: AG-UI Partnership with CopilotKit",
+      "reason": "A third-party partnership announcement, not an AWS capability a learner needs to hold. The deck teaches what a service does and where its boundaries are; a named integration partner is news about the ecosystem, and it dates faster than anything else in the corpus."
+    },
+    {
+      "heading": "Integrations: LangChain Deep Agents Partnership",
+      "reason": "Same as the CopilotKit entry — an ecosystem partnership, not a service capability. If integration breadth ever becomes a teachable point it belongs as one card about the integration surface, not one card per partner."
+    },
+    {
+      "heading": "AgentCore is now ISO and CSA STAR Certified",
+      "reason": "Genuinely relevant to a regulated buyer, and deliberately not a card: a certification list is a drift-prone fact, so it belongs in a fact-governed slot on a compliance or enterprise-readiness card rather than as a standalone card whose whole content is a status that changes. Revisit when that card exists — this suppression is the pointer to it."
+    },
+    {
+      "heading": "Models: Claude Opus 5 Now Available",
+      "reason": "Model availability in Kiro changes monthly, so a card naming a model is stale by construction. The teachable idea is that Kiro is model-agnostic and the roster moves — one concept card, not one card per model launch. Suppressed as an instance of a pattern, not as unimportant."
+    },
+    {
+      "heading": "Models: OpenAI GPT-5.6 Sol, Terra, and Luna now available",
+      "reason": "Same pattern as the Claude Opus 5 entry: a model roster addition. Notable that a non-Anthropic model arriving is the more interesting signal, and that belongs on the model-agnostic concept card too."
+    },
+    {
+      "heading": "IDE: Faster Sessions, Compaction Fixes, and PowerShell Trust",
+      "reason": "A release roundup, not an announcement. Kiro's changelog titles bundle three unrelated changes per entry ('X, Y, and Z'), unlike AWS release notes which title one feature each. There is no single subject here for a card to be about."
+    },
+    {
+      "heading": "IDE: Session Restore, Performance Optimizations, and Custom Agent Enhancements",
+      "reason": "Release roundup, same as above. Performance and restore behaviour are product quality, not concepts a field deck teaches."
+    }
+  ]
 }

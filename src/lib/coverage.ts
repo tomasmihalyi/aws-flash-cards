@@ -133,6 +133,22 @@ const LIFECYCLE_LANGUAGE = new Set(
  * So a single token from the card's TITLE is enough here. Tag-only matches still
  * go through the stricter scorer, because tags are loose associations.
  */
+/**
+ * May this source speak about this card at all?
+ *
+ * Checked BEFORE any token scoring, because it is an exact fact where scoring is
+ * a heuristic — and because a wrong "covered" is the expensive error here. A gap
+ * reported that turns out to be covered costs one line of reading; a gap marked
+ * covered by an unrelated product's card is a card nobody ever writes.
+ *
+ * `null` scope is permissive: an unregistered source keeps its old behaviour
+ * rather than silently matching nothing, which would look like total coverage.
+ */
+function inScope(card: Card, entry: DatedEntry): boolean {
+  if (!entry.service) return true;
+  return card.service === entry.service;
+}
+
 function coversHeading(
   card: Card,
   heading: string,
@@ -178,6 +194,7 @@ export function detectCoverage(
   for (const entry of entries) {
     const matches = cards
       .map((c) => {
+        if (!inScope(c, entry)) return null;
         const hit = coversHeading(c, entry.heading, df, total);
         return hit ? { card_id: c.card_id, ...hit } : null;
       })

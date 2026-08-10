@@ -56,8 +56,29 @@ function factSets(): FactSet[] {
  *
  * Release notes are the AgentCore product feed. Add a source here only when it is
  * genuinely "things that were announced", not "things that changed on a page".
+ *
+ * `vendor-changelog` — Kiro. Added because a single-source corpus made this whole
+ * detector blind to four of the five services in scope: AgentCore had release
+ * notes, and a Kiro release could not be noticed at all. Its feed is curated,
+ * day-precision and classified by the vendor, so it passes the test above.
+ *
+ * WHY `github-releases` IS NOT HERE, having been measured rather than assumed
+ *
+ * Strands has no curated changelog — strandsagents.com carries no changelog path
+ * and the repo has no CHANGELOG.md (both 404). The only dated surface is the
+ * GitHub releases feed, and it fails the announcement test twice over: every
+ * entry's title is a version tag ("typescript/v1.12.0"), which contains no
+ * subject a card could ever be matched against, and the body is explicitly
+ * "auto-drafted from commits, grouped by conventional-commit type" — 40-odd
+ * `feat(middleware): …` lines per release.
+ *
+ * Admitting it would reproduce the Bedrock doc-history mistake exactly: a large
+ * number of rows, none of them a thing a human would write a flashcard about.
+ * It is ingested and IS available to the verifier for dating a version claim; it
+ * simply is not news. When a curated Strands changelog appears, add its kind here
+ * rather than reclassifying this one.
  */
-const NEWS_KINDS = new Set(['aws-docs-release-notes']);
+const NEWS_KINDS = new Set(['aws-docs-release-notes', 'vendor-changelog']);
 
 function newsSets(sets: FactSet[]): FactSet[] {
   return sets.filter((s) => NEWS_KINDS.has(s.source.kind));

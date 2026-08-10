@@ -18,7 +18,7 @@
     "ingest:regions": "node src/ingest/ssm-regions.ts",
     "ingest:pricing": "node src/ingest/pricelist.ts",
     "ingest:api": "node src/ingest/botocore-diff.ts",
-    "ingest": "npm run ingest:regions && npm run ingest:pricing && npm run ingest:quotas && npm run ingest:api && npm run ingest:docs",
+    "ingest": "npm run ingest:regions && npm run ingest:pricing && npm run ingest:quotas && npm run ingest:api && npm run ingest:docs && npm run ingest:vendor",
     "apply": "node src/ingest/apply.ts",
     "apply:dry": "node src/ingest/apply.ts --dry-run",
     "refresh": "npm run ingest && npm run apply && npm run apply:rename && npm run build",
@@ -36,6 +36,9 @@
     "ingest:quotas": "node src/ingest/service-quotas.ts",
     "coverage": "node src/check-coverage.ts",
     "coverage:new": "node src/check-coverage.ts --new",
-    "coverage:strict": "node src/check-coverage.ts --strict"
+    "coverage:strict": "node src/check-coverage.ts --strict",
+    "ingest:kiro": "node src/ingest/kiro-changelog.ts",
+    "ingest:releases": "node src/ingest/github-releases.ts",
+    "ingest:vendor": "npm run ingest:kiro && npm run ingest:releases"
   }
 }

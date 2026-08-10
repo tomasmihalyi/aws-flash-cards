@@ -244,6 +244,8 @@
               "aws-docs-doc-history",
               "aws-docs",
               "vendor-docs",
+              "vendor-changelog",
+              "github-releases",
               "aws-whats-new",
               "blog",
               "talk",
