@@ -138,9 +138,32 @@ Resources:
                   - ssm:GetParameter
                   - ssm:GetParameters
                   - ssm:GetParametersByPath
-                # Scoped to the public global-infrastructure tree, so this role
-                # cannot read an application parameter or a SecureString elsewhere.
-                Resource: !Sub 'arn:aws:ssm:*:${AWS::AccountId}:parameter/aws/service/global-infrastructure/*'
+                # PUBLIC AWS PARAMETERS HAVE NO ACCOUNT ID IN THEIR ARN.
+                #
+                # The global-infrastructure tree is owned by AWS, not by the
+                # caller, so the real resource is:
+                #
+                #   arn:aws:ssm:us-east-1::parameter/aws/service/global-infrastructure/...
+                #                        ^^ empty account field
+                #
+                # The first version of this policy scoped to
+                # arn:aws:ssm:*:<account>:parameter/aws/service/... which cannot
+                # match, and every read failed with AccessDeniedException naming
+                # ssm:GetParametersByPath.
+                #
+                # This survived a twelve-case policy simulation because the
+                # simulation was fed the ARN written HERE rather than the ARN the
+                # API actually uses — a tautology that confirms the policy matches
+                # itself. When simulating, take the resource ARN from an error
+                # message or from the service's documentation, never from the
+                # policy under test.
+                #
+                # Both forms are granted: the AWS-owned form is the one in use, and
+                # the account-owned form covers a same-path parameter in this
+                # account. The path scope is what constrains this, not the account.
+                Resource:
+                  - !Sub 'arn:aws:ssm:*::parameter/aws/service/global-infrastructure/*'
+                  - !Sub 'arn:aws:ssm:*:${AWS::AccountId}:parameter/aws/service/global-infrastructure/*'
               - Sid: PriceListIsPublicAndHasNoResourceArns
                 Effect: Allow
                 Action:

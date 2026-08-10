@@ -134,6 +134,25 @@ with `git log --grep` over past commits. A shallow clone finds nothing, reports
 "never stamped", and stamps every single day — quietly restoring the noisy
 behaviour the interval exists to prevent.
 
+## Verifying IAM without fooling yourself
+
+`iam simulate-principal-policy` is the right tool and it will still tell you what
+you want to hear if you feed it the wrong input. The refresh role's SSM grant
+passed a twelve-case simulation and then failed on the first real read, because
+the simulation used the resource ARN **from the policy under test** rather than
+the one the API uses:
+
+```bash
+# WRONG — confirms the policy matches itself
+--resource-arns 'arn:aws:ssm:us-east-1:123099425127:parameter/aws/service/global-infrastructure/...'  # allowed
+
+# RIGHT — public AWS parameters carry NO account id
+--resource-arns 'arn:aws:ssm:us-east-1::parameter/aws/service/global-infrastructure/...'              # implicitDeny
+```
+
+Take the resource ARN from a real error message, from CloudTrail, or from the
+service's documentation. Never from the template you are trying to validate.
+
 ## What is deliberately not here
 
 **No branch protection interaction.** `main` has none today, so the bot can push
