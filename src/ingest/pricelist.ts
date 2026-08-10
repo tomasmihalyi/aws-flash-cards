@@ -172,7 +172,6 @@ function main(): void {
       fetched_at: fetchedAt,
       content_hash: contentHash,
       retrieved_by: commandLine('pricing', 'get-products', { profile, region: API_REGION, args: cliArgs }),
-      aws_account: who.Account,
       aws_region: API_REGION,
     },
     // The matched price records verbatim, so a "$0.005 per 1,000" claim can be

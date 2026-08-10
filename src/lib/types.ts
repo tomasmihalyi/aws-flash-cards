@@ -115,6 +115,20 @@ export type FactSet = {
     fetched_at: string;
     content_hash: string;
     retrieved_by?: string;
+    /**
+     * The account whose credentials produced this observation.
+     *
+     * Recorded ONLY for a source whose answer depends on the caller. SSM
+     * global-infrastructure parameters and the Price List API return the same
+     * answer to everyone, so naming the account there added nothing to the
+     * evidence while putting an account identifier in a public repository.
+     *
+     * Service Quotas IS caller-dependent — an adjusted quota differs per account
+     * — and currently records no account. That is a real provenance gap, narrowed
+     * only by the fact that every quota the deck cites is marked non-adjustable.
+     * The day a card depends on an adjusted quota, the account becomes evidence
+     * and belongs here.
+     */
     aws_account?: string;
     aws_region?: string;
   };

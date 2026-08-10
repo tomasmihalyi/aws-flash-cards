@@ -79,7 +79,6 @@ function main(): void {
       fetched_at: fetchedAt,
       content_hash: contentHash,
       retrieved_by: commandLine('ssm', 'get-parameters-by-path', { profile, region: 'us-east-1', args: ['--path', path] }),
-      aws_account: who.Account,
       aws_region: 'us-east-1',
     },
     // Keep the payload the hash was taken over, so the claim "19 regions,

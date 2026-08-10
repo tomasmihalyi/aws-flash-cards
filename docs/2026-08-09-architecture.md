@@ -178,7 +178,7 @@ Everything above is **manual today**. Nothing schedules it.
 
 ```
   git push ──▶ CI ──▶ S3 (private) ──▶ CloudFront + OAC ──▶ public HTTPS
-                          demo account <deploy-account> · ap-southeast-2
+                          demo the deploy account (set via AWS_PROFILE) · ap-southeast-2
                           CloudFront default domain · no auth
 ```
 

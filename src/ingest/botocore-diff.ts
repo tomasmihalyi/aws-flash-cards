@@ -203,7 +203,10 @@ function main(): void {
           uid,
           api_version: apiVersion,
           botocore_version: version,
-          model_path: path,
+          // Relative to the botocore package root, so the snapshot is meaningful
+          // in someone else's checkout. An absolute home path was both a leak and
+          // a fixture nobody but its author could interpret.
+          model_path: `botocore/data/${service}/${apiVersion}/service-2.json.gz`,
           operations_fingerprint: operationsFp,
           schema_fingerprint: schemaFp,
           operations: ops,
@@ -229,10 +232,20 @@ function main(): void {
     verified_at: fetchedAt,
     source: {
       kind: 'botocore-model',
-      url: `file://${dataDir} · botocore ${version} · ${SERVICES.join(', ')}`,
+      /**
+       * A package coordinate, not a filesystem path.
+       *
+       * This used to record `file:///Users/<me>/Library/.../botocore/data`, which
+       * is a citation nobody else can follow — in a system whose whole claim is
+       * that every fact names a checkable source, a source that resolves only on
+       * one laptop is a defect, not untidiness. `botocore 1.43.3` plus the data
+       * path RELATIVE to the package root is reproducible: anyone can install that
+       * version and read the same file.
+       */
+      url: `pkg:pypi/botocore@${version}#botocore/data · ${SERVICES.join(', ')}`,
       fetched_at: fetchedAt,
       content_hash: contentHash,
-      retrieved_by: `gunzip + parse ${SERVICES.map((s) => `${dataDir}/${s}/<api-version>/service-2.json.gz`).join(', ')}`,
+      retrieved_by: `gunzip + parse botocore/data/{${SERVICES.join(',')}}/<api-version>/service-2.json.gz from botocore ${version}`,
     },
     evidence: {
       canonical: sourcePayload,
