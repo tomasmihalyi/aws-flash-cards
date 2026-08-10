@@ -34,7 +34,12 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: production
+    # No `environment:` here on purpose. Naming one auto-creates it unprotected on
+    # first run, which buys nothing — and if a required reviewer were ever added to
+    # it, the daily publish would sit waiting for approval with the deck silently
+    # out of step with the repo, looking like a passing pipeline. If approval before
+    # publish is wanted, the honest way is PR-always on the refresh side, where the
+    # thing being approved is visible.
     steps:
       - uses: actions/checkout@v4
 
@@ -73,10 +78,15 @@ jobs:
           # rather than assert immediately. Byte-identity is the only check that
           # cannot pass while serving a stale or truncated artifact — a 200 and a
           # header set can both look healthy over the wrong bytes.
-          expected=$(shasum -a 256 dist/aws-ai-native-development-flashcards.html | cut -d' ' -f1)
+          #
+          # sha256sum, not shasum: this runs on Linux. shasum is a perl script that
+          # happens to be present on GitHub's ubuntu images, so depending on it
+          # would make the gate hostage to an image change nobody would connect to
+          # this file.
+          expected=$(sha256sum dist/aws-ai-native-development-flashcards.html | cut -d' ' -f1)
           for attempt in 1 2 3 4 5 6 7; do
             curl -fsS "$DECK_URL/" -o /tmp/live.html || true
-            actual=$(shasum -a 256 /tmp/live.html 2>/dev/null | cut -d' ' -f1 || echo none)
+            actual=$(sha256sum /tmp/live.html 2>/dev/null | cut -d' ' -f1 || echo none)
             if [ "$expected" = "$actual" ]; then
               echo "IDENTICAL after ${attempt} attempt(s) — $expected"
               exit 0
