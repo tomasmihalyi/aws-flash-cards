@@ -108,44 +108,63 @@ export function cardSubject(card: Card): string[] {
   return lifecycleTokens(`${card.title} ${card.tags.join(' ')}`);
 }
 
-/** Detect the lifecycle transitions a source supports for one card. */
-export function detectLifecycle(card: Card, entries: DatedEntry[]): LifecycleFinding {
+/**
+ * How well one card's subject matches one heading, using this corpus's own
+ * distinctiveness.
+ *
+ * Extracted so `check-coverage` can ask the SAME question in the opposite
+ * direction — "which entries does no card match" instead of "which entries match
+ * this card". A second copy of this scoring would drift from this one, which is
+ * the mistake this repo has already made twice with the tokenizer and with
+ * `originalProjection`.
+ *
+ * Returns null when the card does not match at all.
+ */
+export function scoreHeading(
+  card: Card,
+  heading: string,
+  df: Map<string, number>,
+  total: number,
+): { matched: string[]; score: number; precision: number } | null {
   const titleTokens = new Set(lifecycleTokens(card.title));
   const subject = cardSubject(card);
-  const { df, total } = documentFrequency(entries);
   const cap = Math.max(DISTINCTIVE_MIN_DOCS, total * DISTINCTIVE_MAX_SHARE);
   const weightOf = (t: string) => ((df.get(t) ?? 0) <= cap ? 2 : 1);
+
+  const headingTokens = new Set(lifecycleTokens(heading));
+  const matched = subject.filter((s) => headingTokens.has(s));
+  if (!matched.length) return null;
+
+  const score = matched.reduce((sum, t) => sum + weightOf(t), 0);
+  if (score < MATCH_THRESHOLD) return null;
+
+  /**
+   * A single-token match must come from the card's TITLE, not from a tag.
+   *
+   * Tags are loose associations; a title names the thing. Without this rule the
+   * Identity card matched "Web Bot Auth (Preview)" on the lone tag "auth".
+   */
+  if (matched.length === 1 && !titleTokens.has(matched[0])) return null;
+
+  return { matched, score, precision: matched.length / Math.max(headingTokens.size, 1) };
+}
+
+/** Token document-frequency across a corpus of headings. Exported for coverage. */
+export function headingFrequency(entries: DatedEntry[]): { df: Map<string, number>; total: number } {
+  return documentFrequency(entries);
+}
+
+/** Detect the lifecycle transitions a source supports for one card. */
+export function detectLifecycle(card: Card, entries: DatedEntry[]): LifecycleFinding {
+  const { df, total } = documentFrequency(entries);
 
   const scored: { signal: LifecycleSignal; score: number; precision: number }[] = [];
 
   for (const e of entries) {
     // Headings only. A summary mentions half the platform in passing.
-    const headingTokenList = lifecycleTokens(e.heading);
-    const headingTokens = new Set(headingTokenList);
-    const matched = subject.filter((s) => headingTokens.has(s));
-    if (!matched.length) continue;
-
-    const score = matched.reduce((sum, t) => sum + weightOf(t), 0);
-    if (score < MATCH_THRESHOLD) continue;
-
-    /**
-     * A single-token match must come from the card's TITLE, not from a tag.
-     *
-     * Tags are loose associations; a title names the thing. Without this rule the
-     * Identity card matched "Web Bot Auth (Preview)" on the lone tag "auth" and
-     * was declared wrong — Web Bot Auth is a Browser feature and has nothing to
-     * do with AgentCore Identity's lifecycle.
-     */
-    if (matched.length === 1 && !titleTokens.has(matched[0])) continue;
-
-    /**
-     * How specific the heading is to this card: the share of the heading's own
-     * tokens that the card matched. Breaks same-month ties toward the entry that
-     * actually names the feature — "AgentCore Harness is now Generally Available"
-     * over "Amazon Bedrock Managed Knowledge Base is now Generally Available",
-     * which matched only on the word "Managed".
-     */
-    const precision = matched.length / Math.max(headingTokens.size, 1);
+    const hit = scoreHeading(card, e.heading, df, total);
+    if (!hit) continue;
+    const { matched, score, precision } = hit;
 
     const isGa = GA_RE.test(e.heading);
     const isPreview = !isGa && PREVIEW_RE.test(e.heading);

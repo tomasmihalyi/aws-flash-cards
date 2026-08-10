@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "comment": "Dated source entries deliberately NOT given a card, each with a reason. Suppression is part of the coverage design: most release-notes entries do not deserve a card, and without a way to say so every run re-reports the same minor items until the report is ignored. Matching is on the EXACT heading, so a reworded entry resurfaces instead of staying silently suppressed under a stale rule. 'We decided not to' must stay distinguishable from 'we never looked'.",
+  "entries": []
+}

@@ -33,6 +33,9 @@
     "rename": "node src/check-rename.ts",
     "apply:rename": "node src/ingest/apply-rename.ts",
     "apply:rename:dry": "node src/ingest/apply-rename.ts --dry-run",
-    "ingest:quotas": "node src/ingest/service-quotas.ts"
+    "ingest:quotas": "node src/ingest/service-quotas.ts",
+    "coverage": "node src/check-coverage.ts",
+    "coverage:new": "node src/check-coverage.ts --new",
+    "coverage:strict": "node src/check-coverage.ts --strict"
   }
 }

@@ -75,12 +75,13 @@ stripping. There is no install step.
 
 ```bash
 node src/validate.ts          # schema + lint + citation gate
-node --test tests/*.test.ts   # 243 behavioural, guarantee, verifier, ingest, rename + lint tests
+node --test tests/*.test.ts   # 256 behavioural, guarantee, verifier, ingest, rename, lint + coverage tests
 node src/verify-claims.ts     # decompose every card into claims and verify each
 node src/build.ts             # → dist/deck.json + dist/aws-ai-native-development-flashcards.html
 node src/verify-parity.ts     # authored-content parity against the original deck
 node src/check-lifecycle.ts   # has a preview/GA badge gone stale?
 node src/check-rename.ts      # has the thing a card describes been renamed?
+node src/check-coverage.ts    # what has AWS published that no card covers?
 
 node src/ingest/ssm-regions.ts    # region availability  (read-only AWS)
 node src/ingest/pricelist.ts      # pricing              (read-only AWS)
@@ -119,6 +120,7 @@ build. npm is only a task runner here; there are no packages to install.
 | Authored content survived the migration | `verify-parity`: revert every slot to its `seed_text`, invert every recorded field correction, and the result must equal the original deck exactly |
 | Nothing changes without a recorded reason | a correction to a card *field* (a stale `preview` badge) must carry a `before`/`after` provenance entry, or the parity gate fails |
 | A stale lifecycle badge is caught | `check-lifecycle` matches card subjects against dated release-notes headings; `validate` warns on drift |
+| The deck notices what it does NOT cover | every other gate keeps existing cards correct; `check-coverage` is the only one that can see AWS published something nobody wrote about. It ranks candidates by significance, distinguishes a missing card from a card that predates a change, and never fails a build — a gap is a to-do, not a defect |
 | The UX contract still holds | `tests/deck-state.test.ts` — filter, navigate, flip, shuffle, clamping, progress, and the a11y invariant, against a state machine extracted out of the DOM |
 | Exactly one card face is exposed to a screen reader | `aria-hidden` toggling asserted in the state machine, in the tests, and in a real browser |
 | Every claim shown to a learner carries its source | provenance footer on the back face: verification date, source links, and an explicit "Unverified" marker with the reason when no source exists |
