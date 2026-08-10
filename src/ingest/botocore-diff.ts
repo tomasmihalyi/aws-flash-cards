@@ -312,4 +312,16 @@ function main(): void {
   console.log('botocore-diff: snapshots in tests/fixtures/api-surface/ — the baseline the P5 detector will diff against');
 }
 
-main();
+// FOURTH TIME IN THIS REPO. apply.ts, apply-rename.ts and validate.ts all shipped
+// with a bare main() call and all three had to be guarded after an import executed
+// them — apply-rename.ts wrote to cards/ during a test import, which produced the
+// CORRECT result and is the dangerous kind of accident.
+//
+// This one was exposed by adding a test that imports assertVersionMatchesBaseline:
+// the import ran the whole ingest, hit the new version guard, and failed the gate
+// in the publish job while passing in refresh — because refresh had pip-installed
+// the pinned botocore and publish had not. A test that silently depends on which
+// job it runs in is worse than a failing one.
+if (import.meta.filename === process.argv[1]) {
+  main();
+}

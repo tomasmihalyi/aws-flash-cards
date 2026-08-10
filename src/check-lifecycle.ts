@@ -72,4 +72,4 @@ function main(): void {
   }
 }
 
-main();
+if (import.meta.filename === process.argv[1]) main();

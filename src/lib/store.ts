@@ -19,6 +19,8 @@ export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 export const DIST_HTML = 'aws-ai-native-development-flashcards.html';
 
 export const paths = {
+  /** Repository root. Needed by checks that reason about source files themselves. */
+  root: ROOT,
   cards: join(ROOT, 'cards'),
   facts: join(ROOT, 'facts'),
   content: join(ROOT, 'content'),

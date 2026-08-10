@@ -138,6 +138,58 @@ describe('guarantee: the API-surface diff measures AWS, not the environment', ()
   });
 });
 
+describe('guarantee: importing a module never runs it', () => {
+  /**
+   * FOUR modules in this repo have shipped with a bare `main()` call, and each was
+   * found the same way — something imported it and the import did the work.
+   * apply-rename.ts wrote to cards/ during a test import and produced the CORRECT
+   * result, which is the dangerous kind of accident: nothing looked wrong.
+   *
+   * The fourth (botocore-diff.ts) failed CI in one job and passed in another,
+   * because one had pip-installed the pinned botocore and the other had not. A
+   * test that silently depends on which job runs it is worse than a failing one.
+   *
+   * So this asserts the property across every entry-point module rather than
+   * patching instances. A new ingest without a guard fails here.
+   */
+  const entryPoints = [
+    'src/validate.ts',
+    'src/build.ts',
+    'src/verify-claims.ts',
+    'src/check-lifecycle.ts',
+    'src/check-rename.ts',
+    'src/check-coverage.ts',
+    'src/ingest/apply.ts',
+    'src/ingest/apply-lifecycle.ts',
+    'src/ingest/apply-rename.ts',
+    'src/ingest/botocore-diff.ts',
+    'src/ingest/ssm-regions.ts',
+    'src/ingest/pricelist.ts',
+    'src/ingest/service-quotas.ts',
+    'src/ingest/docs-release-notes.ts',
+    'src/ingest/docs-doc-history.ts',
+    'src/ingest/docs-feature-regions.ts',
+    'src/ingest/docs-pages.ts',
+    'src/ingest/kiro-changelog.ts',
+    'src/ingest/github-releases.ts',
+    'tools/refresh-outcome.ts',
+  ];
+
+  for (const rel of entryPoints) {
+    test(`${rel} guards its entry point`, () => {
+      const src = readFileSync(join(paths.root, rel), 'utf8');
+      // A bare `main();` or `await main();` at column 0 runs on import.
+      const bare = /^\s*(?:await\s+)?main\(\);\s*$/m.test(src.replace(/^\s*if \(import\.meta\.filename[\s\S]*?^\}\s*$/gm, ''));
+      const guarded = src.includes('import.meta.filename === process.argv[1]');
+      assert.ok(
+        guarded || !bare,
+        `${rel} calls main() unguarded — importing it would execute it. ` +
+          'Wrap in: if (import.meta.filename === process.argv[1]) { main(); }',
+      );
+    });
+  }
+});
+
 describe('guarantee: a missing fact never fakes freshness', () => {
   test('resolveTemplate reports every missing fact rather than emitting a gap', () => {
     const store = new FactStore(paths.facts);

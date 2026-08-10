@@ -170,4 +170,4 @@ async function main(): Promise<void> {
   console.log('docs-release-notes: precision is MONTH — a day-precision claim can only be partially attested from this source');
 }
 
-await main();
+if (import.meta.filename === process.argv[1]) await main();

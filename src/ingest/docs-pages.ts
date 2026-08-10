@@ -290,4 +290,4 @@ async function main(): Promise<void> {
   }
 }
 
-await main();
+if (import.meta.filename === process.argv[1]) await main();

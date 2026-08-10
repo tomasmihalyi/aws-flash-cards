@@ -112,4 +112,4 @@ function summary(verdicts: CardVerdict[], sourceCount: number): void {
   }
 }
 
-main();
+if (import.meta.filename === process.argv[1]) main();

@@ -206,4 +206,4 @@ function main(): void {
   if (seedSlots.length) console.log(`       seed slots: ${seedSlots.join(', ')}`);
 }
 
-main();
+if (import.meta.filename === process.argv[1]) main();

@@ -181,4 +181,4 @@ function main(): void {
   if (dryRun) console.log('apply-lifecycle: --dry-run, nothing written');
 }
 
-main();
+if (import.meta.filename === process.argv[1]) main();

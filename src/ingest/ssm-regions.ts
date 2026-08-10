@@ -105,4 +105,4 @@ function shortName(service: string): string {
   return service.replace(/^bedrock-/, '');
 }
 
-main();
+if (import.meta.filename === process.argv[1]) main();

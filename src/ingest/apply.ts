@@ -186,4 +186,4 @@ function report(outcomes: Outcome[], failures: string[], written: string[]): voi
   process.exit(failures.length ? 1 : 0);
 }
 
-main();
+if (import.meta.filename === process.argv[1]) main();

@@ -214,4 +214,4 @@ function round(n: number): number {
   return Number(n.toPrecision(12));
 }
 
-main();
+if (import.meta.filename === process.argv[1]) main();
