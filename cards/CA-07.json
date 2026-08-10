@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "card_id": "CA-07",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "kiro",
+  "category": "coding-agents",
+  "tags": [
+    "bedrock-adjacent",
+    "coding-agents",
+    "kiro",
+    "models"
+  ],
+  "badge_variant": "core",
+  "badge_text": "CODING AGENT",
+  "art": "modular",
+  "title": "Kiro is model-agnostic",
+  "hook": "Which model is a setting, not an architecture.",
+  "back": {
+    "lead": "Kiro’s model roster spans frontier models from more than one vendor, and it changes continuously — OpenAI models became available for the first time alongside Anthropic’s, each tuned to a different point on the performance-versus-cost curve. A new model arrives across the IDE, the CLI and the web surfaces together, because they are front ends to one agent harness.",
+    "kv": [
+      {
+        "k": "The roster moves",
+        "v": "Additions land continuously, which is why this card names no current favourite. Any card that did would be stale by design, and this deck would rather teach the shape than the leaderboard."
+      },
+      {
+        "k": "Tiers, not a winner",
+        "v": "Vendors ship families tuned for different points on the performance-cost curve. The interesting question is which tier a task needs, not which model is strongest."
+      },
+      {
+        "k": "Why it matters",
+        "v": "Model choice becomes a per-task decision about cost, latency and difficulty rather than a project-level commitment. That is only true if switching is a setting — and here it is."
+      }
+    ],
+    "hookline": "Ask what the task needs, not which model is best this month."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://kiro.dev/changelog/",
+      "title": "Kiro changelog",
+      "kind": "vendor-changelog",
+      "fetched_at": "2026-08-10T11:59:41.476Z",
+      "content_hash": "sha256:da6ce9f7baf5e24f73b43af48b7b829bb486f79ee557cb4ac0eb2cb42a2730f9"
+    }
+  ],
+  "verified_at": "2026-08-10T11:59:41.476Z",
+  "confidence": "medium",
+  "depends_on": [
+    "CA-02"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-10T12:39:23.495Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-kiro.ts",
+        "reason": "New card authored from https://kiro.dev/changelog/, closing a gap check-coverage reported. Written at concept granularity because the source titles bundle unrelated changes per release. Every new card enters through Tier C."
+      }
+    ]
+  },
+  "created_at": "2026-08-10T12:39:23.495Z",
+  "updated_at": "2026-08-10T12:39:23.495Z"
+}

@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "card_id": "CA-08",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "kiro",
+  "category": "coding-agents",
+  "tags": [
+    "coding-agents",
+    "cost",
+    "enterprise",
+    "governance",
+    "kiro"
+  ],
+  "badge_variant": "core",
+  "badge_text": "CODING AGENT",
+  "art": "pricing",
+  "title": "Capping Kiro overage with Service Quotas",
+  "hook": "The cost control is an AWS quota, not an IDE setting.",
+  "back": {
+    "lead": "Enterprise administrators cap overage through AWS Service Quotas rather than through anything inside the editor. The quota field named “Maximum allowed overage per Kiro profile” bounds the maximum allowed overage for every user in that profile, which keeps spend predictable without throttling the team.",
+    "kv": [
+      {
+        "k": "Where the control lives",
+        "v": "AWS Service Quotas, applied per Kiro profile. Being a quota rather than a product toggle means it is managed with the same tooling and audit trail as the rest of the account."
+      },
+      {
+        "k": "What it bounds",
+        "v": "The maximum allowed overage for every user in the profile — a ceiling on the surprise, not a cap on ordinary usage."
+      },
+      {
+        "k": "Why it matters",
+        "v": "The alternative to a ceiling is discovering the overage on an invoice. For a regulated buyer, predictable spend is often the precondition for the rollout, not a detail after it."
+      }
+    ],
+    "hookline": "The quota name is the control: “Maximum allowed overage per Kiro profile”."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://kiro.dev/changelog/",
+      "title": "Kiro changelog",
+      "kind": "vendor-changelog",
+      "fetched_at": "2026-08-10T11:59:41.476Z",
+      "content_hash": "sha256:da6ce9f7baf5e24f73b43af48b7b829bb486f79ee557cb4ac0eb2cb42a2730f9"
+    }
+  ],
+  "verified_at": "2026-08-10T11:59:41.476Z",
+  "confidence": "medium",
+  "depends_on": [
+    "CA-02"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-10T12:39:23.495Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-kiro.ts",
+        "reason": "New card authored from https://kiro.dev/changelog/, closing a gap check-coverage reported. Written at concept granularity because the source titles bundle unrelated changes per release. Every new card enters through Tier C."
+      }
+    ]
+  },
+  "created_at": "2026-08-10T12:39:23.495Z",
+  "updated_at": "2026-08-10T12:39:23.495Z"
+}

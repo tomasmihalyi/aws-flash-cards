@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "card_id": "CA-06",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "kiro",
+  "category": "coding-agents",
+  "tags": [
+    "coding-agents",
+    "enterprise",
+    "identity",
+    "kiro",
+    "mcp"
+  ],
+  "badge_variant": "core",
+  "badge_text": "CODING AGENT",
+  "art": "identity",
+  "title": "Making MCP work behind an enterprise IdP",
+  "hook": "The blocker is rarely the protocol. It is the OAuth.",
+  "back": {
+    "lead": "Kiro’s MCP OAuth support covers servers with strict requirements: configure a client secret for servers that need one, point the redirect URI at a custom callback path, and skip Dynamic Client Registration entirely when you bring your own client ID. Those three knobs are what turn a governed MCP server from unreachable into usable.",
+    "kv": [
+      {
+        "k": "The three knobs",
+        "v": "A client secret, a custom callback path, and bring-your-own client ID. Each exists because some identity provider refuses the default path."
+      },
+      {
+        "k": "Why DCR is the sticking point",
+        "v": "Dynamic Client Registration lets a client register itself at connect time. That is convenient, and it is also the thing a regulated identity team is most likely to have disabled — pre-registered clients only."
+      },
+      {
+        "k": "Why it matters",
+        "v": "An MCP integration that works on a laptop and not behind the IdP is not an integration. This is the difference between a demo and something a platform team will approve."
+      }
+    ],
+    "hookline": "Dynamic Client Registration is what your identity team will say no to. Bring your own client ID and the objection goes away."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://kiro.dev/changelog/",
+      "title": "Kiro changelog",
+      "kind": "vendor-changelog",
+      "fetched_at": "2026-08-10T11:59:41.476Z",
+      "content_hash": "sha256:da6ce9f7baf5e24f73b43af48b7b829bb486f79ee557cb4ac0eb2cb42a2730f9"
+    }
+  ],
+  "verified_at": "2026-08-10T11:59:41.476Z",
+  "confidence": "medium",
+  "depends_on": [
+    "CA-02"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-10T12:39:23.495Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-kiro.ts",
+        "reason": "New card authored from https://kiro.dev/changelog/, closing a gap check-coverage reported. Written at concept granularity because the source titles bundle unrelated changes per release. Every new card enters through Tier C."
+      }
+    ]
+  },
+  "created_at": "2026-08-10T12:39:23.495Z",
+  "updated_at": "2026-08-10T12:39:23.495Z"
+}

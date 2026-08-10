@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "card_id": "CA-04",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "kiro",
+  "category": "coding-agents",
+  "tags": [
+    "coding-agents",
+    "context-engineering",
+    "kiro",
+    "practice"
+  ],
+  "badge_variant": "core",
+  "badge_text": "CODING AGENT",
+  "art": "memory",
+  "title": "Tangents and the context budget",
+  "hook": "Branch a side-conversation, then come back exactly where you were.",
+  "back": {
+    "lead": "A tangent branches into a side-conversation that inherits the full conversation history, lets you explore freely, then returns you to exactly where you left off. Alongside it, the context command reports a per-tool token breakdown, so what is consuming the context window is visible rather than inferred.",
+    "kv": [
+      {
+        "k": "What a tangent is",
+        "v": "Not a new session and not a fork you have to reconcile. It inherits the history, so the detour has the same context, and abandoning it costs nothing."
+      },
+      {
+        "k": "Seeing the budget",
+        "v": "A per-tool breakdown attributes context consumption to the tool responsible. A single verbose MCP server can dominate a window, and without attribution that looks like the model losing track."
+      },
+      {
+        "k": "Why it matters",
+        "v": "Context is a budget, and the expensive mistake is spending it on an exploratory question that then crowds out the work. A tangent makes the detour cheap; the breakdown makes the spend legible."
+      }
+    ],
+    "hookline": "Context is a budget. A tangent is how you spend some of it without losing your place."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://kiro.dev/changelog/",
+      "title": "Kiro changelog",
+      "kind": "vendor-changelog",
+      "fetched_at": "2026-08-10T11:59:41.476Z",
+      "content_hash": "sha256:da6ce9f7baf5e24f73b43af48b7b829bb486f79ee557cb4ac0eb2cb42a2730f9"
+    }
+  ],
+  "verified_at": "2026-08-10T11:59:41.476Z",
+  "confidence": "medium",
+  "depends_on": [
+    "CA-02"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-10T12:39:23.495Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-kiro.ts",
+        "reason": "New card authored from https://kiro.dev/changelog/, closing a gap check-coverage reported. Written at concept granularity because the source titles bundle unrelated changes per release. Every new card enters through Tier C."
+      }
+    ]
+  },
+  "created_at": "2026-08-10T12:39:23.495Z",
+  "updated_at": "2026-08-10T12:39:23.495Z"
+}

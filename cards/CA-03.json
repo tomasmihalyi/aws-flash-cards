@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "card_id": "CA-03",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "kiro",
+  "category": "coding-agents",
+  "tags": [
+    "automation",
+    "coding-agents",
+    "governance",
+    "hooks",
+    "kiro"
+  ],
+  "badge_variant": "core",
+  "badge_text": "CODING AGENT",
+  "art": "policy",
+  "title": "Kiro hooks",
+  "hook": "Automation that fires on an event, not on a prompt.",
+  "back": {
+    "lead": "A hook runs automatically when something happens rather than when you ask. Hooks can be scoped to a project or made global at the user level so they apply across every workspace, and they can fire on the agent’s own writes rather than only on yours. Kiro also ships a guided form for creating one, so the trigger and the action are chosen rather than hand-written.",
+    "kv": [
+      {
+        "k": "Two scopes",
+        "v": "A project hook lives with the repository and travels with it, so every contributor gets the same behaviour. A global hook is user-level and applies across all workspaces, which is where personal habits belong."
+      },
+      {
+        "k": "On the agent’s writes",
+        "v": "A hook can trigger when the agent writes a file, not just when a human saves one. That is the difference between a check you run afterwards and a check the generated code has to pass through."
+      },
+      {
+        "k": "Why it matters",
+        "v": "A hook is the deterministic part of an agentic workflow. Steering and prompts shape what the model tends to do; a hook happens regardless."
+      }
+    ],
+    "hookline": "A prompt asks the agent to remember. A hook does not depend on it remembering."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://kiro.dev/changelog/",
+      "title": "Kiro changelog",
+      "kind": "vendor-changelog",
+      "fetched_at": "2026-08-10T11:59:41.476Z",
+      "content_hash": "sha256:da6ce9f7baf5e24f73b43af48b7b829bb486f79ee557cb4ac0eb2cb42a2730f9"
+    }
+  ],
+  "verified_at": "2026-08-10T11:59:41.476Z",
+  "confidence": "medium",
+  "depends_on": [
+    "CA-02"
+  ],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-10T12:39:23.495Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-kiro.ts",
+        "reason": "New card authored from https://kiro.dev/changelog/, closing a gap check-coverage reported. Written at concept granularity because the source titles bundle unrelated changes per release. Every new card enters through Tier C."
+      }
+    ]
+  },
+  "created_at": "2026-08-10T12:39:23.495Z",
+  "updated_at": "2026-08-10T12:39:23.495Z"
+}
