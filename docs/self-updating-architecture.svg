@@ -23,8 +23,10 @@
       .card { fill:#fff9e6; stroke:#c9a227; stroke-width:1.8; }
       .gate { fill:#f6f7f9; stroke:#8d97a5; stroke-width:1.4; }
       .todo { fill:#fdf1ee; stroke:#b4472a; stroke-width:1.6; stroke-dasharray:6 4; }
+      .ci   { fill:#eef6f2; stroke:#1f8a4c; stroke-width:1.6; }
       .ln  { stroke:#5b6472; stroke-width:1.5; fill:none; marker-end:url(#a); }
       .lng { stroke:#1f8a4c; stroke-width:2;   fill:none; marker-end:url(#ag); }
+      .lnc { stroke:#1f8a4c; stroke-width:1.8; fill:none; marker-end:url(#ag); stroke-dasharray:7 3; }
       .lnr { stroke:#b4472a; stroke-width:1.6; fill:none; marker-end:url(#ar); stroke-dasharray:6 4; }
       .band{ fill:none; stroke:#dfe4ea; stroke-width:1.2; stroke-dasharray:3 4; }
     </style>
@@ -35,13 +37,14 @@
   <text x="40" y="46" font-size="24" font-weight="700" fill="#111820">AWS AI-Native Development Flashcards — the self-updating mechanism</text>
   <text x="40" y="70" class="sm">Facts and prose are separate stores. Only deterministic code may write a fact, so “numbers are never model-generated” is a property of the write path, not a policy.</text>
 
-  <!-- legend -->
+  <!-- legend. Three entries, not four: once section 7 shipped, "built" and "runs
+       unattended" stopped being different categories, and two near-identical green
+       swatches conveyed nothing. -->
   <g transform="translate(1140,34)">
     <rect x="0" y="0" width="500" height="46" rx="4" fill="#ffffff" stroke="#dfe4ea"/>
-    <rect x="12" y="12" width="14" height="10" class="store"/><text x="32" y="21" class="xs">built &amp; running</text>
-    <rect x="132" y="12" width="14" height="10" class="aws"/><text x="152" y="21" class="xs">AWS API (credentials)</text>
-    <rect x="292" y="12" width="14" height="10" class="todo"/><text x="312" y="21" class="xs">NOT built — no schedule exists</text>
-    <line x1="12" y1="34" x2="40" y2="34" class="lnr"/><text x="46" y="38" class="xs">proposed path</text>
+    <rect x="12" y="12" width="14" height="10" class="store"/><text x="32" y="21" class="xs">built, and running today</text>
+    <rect x="182" y="12" width="14" height="10" class="aws"/><text x="202" y="21" class="xs">AWS API — needs credentials</text>
+    <line x1="12" y1="34" x2="40" y2="34" class="lnc"/><text x="46" y="38" class="xs">the scheduled path — no human in it, daily 05:00 AEST</text>
   </g>
 
   <!-- ============================ 1. SOURCES ============================ -->
@@ -129,13 +132,13 @@
 
   <!-- ============================ CARDS ============================ -->
   <rect x="1300" y="180" width="340" height="240" class="card" rx="5"/>
-  <text x="1316" y="204" class="t" font-weight="700">cards/*.json — 30 cards · git is the source of truth</text>
+  <text x="1316" y="204" class="t" font-weight="700">cards/*.json — 40 cards · git is the source of truth</text>
   <text x="1316" y="228" class="sm">prose</text><text x="1380" y="228" class="xs">authored by a human, or a model under the Tier B/C gate</text>
   <text x="1316" y="248" class="sm mono">{{slot:x}}</text><text x="1400" y="248" class="xs">written ONLY by an applier</text>
   <text x="1316" y="268" class="sm mono">seed_text</text><text x="1400" y="268" class="xs">the original claim, kept permanently</text>
   <text x="1316" y="288" class="sm mono">provenance[]</text><text x="1420" y="288" class="xs">append-only: verify / correct / rename</text>
   <text x="1316" y="308" class="sm mono">aka[]</text><text x="1400" y="308" class="xs">a rename aliases, never replaces</text>
-  <text x="1316" y="328" class="sm mono">depends_on</text><text x="1400" y="328" class="xs">41 edges — powers the study fan-out</text>
+  <text x="1316" y="328" class="sm mono">depends_on</text><text x="1400" y="328" class="xs">54 edges — powers the study fan-out</text>
   <rect x="1316" y="344" width="308" height="62" fill="#ffffff" stroke="#c9a227" rx="4"/>
   <text x="1328" y="364" class="xs" font-weight="700">A card never stores a number a fact could supply.</text>
   <text x="1328" y="381" class="xs">It stores a slot; the fact set fills it. That is why a</text>
@@ -175,7 +178,7 @@
   <text x="974" y="590" class="xs">Every gate above keeps EXISTING cards</text>
   <text x="974" y="608" class="xs">correct. This is the only one that sees</text>
   <text x="974" y="624" class="xs">something shipped that no card covers.</text>
-  <text x="974" y="642" class="xs mono">116 entries · 89 covered · 17 actionable</text>
+  <text x="974" y="642" class="xs mono">116 entries · 100 covered · 3 actionable</text>
   <text x="974" y="660" class="xs">Reports, never fails a build.</text>
 
   <line x1="1220" y1="424" x2="1110" y2="544" class="ln"/>
@@ -184,18 +187,18 @@
   <!-- ============================ 5. GATE ============================ -->
   <text x="40" y="726" class="h">5 · THE GATE — npm run check</text>
   <rect x="34" y="736" width="1242" height="76" class="gate" rx="6"/>
-  <text x="52" y="762" class="sm mono">validate → test (280) → build → parity → claims → lifecycle → rename</text>
+  <text x="52" y="762" class="sm mono">validate → test (329) → build → parity → claims → lifecycle → rename</text>
   <text x="52" y="784" class="xs">L-CITATION a resolved slot must carry sources[] + verified_at · L-EVIDENCE every content_hash must re-hash · L-NUMERIC an ungoverned literal warns</text>
   <text x="52" y="801" class="xs">parity: revert every slot to seed_text, invert every recorded correction, and the result must equal the original deck exactly — authored content is pinned byte-for-byte</text>
 
   <!-- ============================ 6. READ PLANE (LIVE) ============================ -->
-  <text x="40" y="856" class="h">6 · READ PLANE — DEPLOYED, ap-southeast-2</text>
+  <text x="40" y="856" class="h">6 · READ PLANE — SERVING 40 CARDS, ap-southeast-2</text>
   <rect x="34" y="866" width="800" height="150" class="band" rx="6"/>
 
   <rect x="50" y="884" width="150" height="112" class="store" rx="5"/>
   <text x="64" y="906" class="t" font-weight="700">dist/</text>
   <text x="64" y="926" class="xs">single-file HTML</text>
-  <text x="64" y="942" class="xs mono">124 KB → 33.5 KB br</text>
+  <text x="64" y="942" class="xs mono">148 KB → 38.0 KB br</text>
   <text x="64" y="962" class="xs">built from cards +</text>
   <text x="64" y="977" class="xs">facts, never edited</text>
 
@@ -231,53 +234,54 @@
   <text x="662" y="850" class="xs" fill="#1f8a4c">publish only if the gate passed</text>
 
   <!-- ============================ 7. REFRESH PLANE (NOT BUILT) ============================ -->
-  <text x="864" y="856" class="h" fill="#b4472a">7 · REFRESH PLANE — NOT BUILT. THIS IS THE GAP.</text>
-  <rect x="858" y="866" width="782" height="150" class="todo" rx="6"/>
+  <text x="864" y="856" class="h" fill="#1f8a4c">7 · REFRESH PLANE — RUNNING, DAILY 05:00 AEST</text>
+  <rect x="858" y="866" width="782" height="150" class="ci" rx="6"/>
 
-  <rect x="874" y="884" width="164" height="112" fill="#ffffff" stroke="#b4472a" stroke-dasharray="5 3" rx="5"/>
-  <text x="888" y="906" class="t" font-weight="700">EventBridge</text>
-  <text x="888" y="922" class="t" font-weight="700">Scheduler</text>
-  <text x="888" y="944" class="xs">weekly</text>
-  <text x="888" y="962" class="xs">the trigger that</text>
-  <text x="888" y="977" class="xs">does not exist</text>
+  <rect x="874" y="884" width="162" height="112" fill="#ffffff" stroke="#1f8a4c" rx="5"/>
+  <text x="888" y="906" class="t" font-weight="700">GitHub Actions</text>
+  <text x="888" y="925" class="xs mono">cron '0 19 * * *'</text>
+  <text x="888" y="944" class="xs">DAILY, not weekly —</text>
+  <text x="888" y="959" class="xs">a correction lands the</text>
+  <text x="888" y="974" class="xs">day the source moves</text>
+  <text x="888" y="991" class="xs">OIDC · no stored keys</text>
 
-  <rect x="1058" y="884" width="200" height="112" fill="#ffffff" stroke="#b4472a" stroke-dasharray="5 3" rx="5"/>
-  <text x="1072" y="906" class="t" font-weight="700">CodeBuild “refresh”</text>
-  <text x="1072" y="926" class="xs mono">npm run refresh</text>
-  <text x="1072" y="942" class="xs mono">npm run check</text>
-  <text x="1072" y="960" class="xs">RefreshRole: SSM + Price</text>
-  <text x="1072" y="975" class="xs">List + Quotas reads ONLY</text>
-  <text x="1072" y="991" class="xs">no s3, no bedrock, no iam</text>
+  <rect x="1056" y="884" width="182" height="112" class="aws" rx="5"/>
+  <text x="1070" y="906" class="t" font-weight="700">Two IAM roles</text>
+  <text x="1070" y="925" class="xs">RefreshRole reads the 3</text>
+  <text x="1070" y="940" class="xs">sources · Deny s3</text>
+  <text x="1070" y="959" class="xs">PublishRole writes the</text>
+  <text x="1070" y="974" class="xs">bucket · Deny ssm</text>
+  <text x="1070" y="991" class="xs">explicit cross-Deny both</text>
 
-  <rect x="1278" y="884" width="176" height="112" fill="#ffffff" stroke="#b4472a" stroke-dasharray="5 3" rx="5"/>
-  <text x="1292" y="906" class="t" font-weight="700">outcome branch</text>
-  <text x="1292" y="926" class="xs">all Tier A + green</text>
-  <text x="1292" y="940" class="xs">→ commit to main</text>
-  <text x="1292" y="960" class="xs">any needs_review</text>
-  <text x="1292" y="974" class="xs">→ open a PR</text>
-  <text x="1292" y="992" class="xs">gate fails → change nothing</text>
+  <rect x="1258" y="884" width="196" height="112" fill="#ffffff" stroke="#1f8a4c" rx="5"/>
+  <text x="1272" y="906" class="t" font-weight="700">refresh-outcome</text>
+  <text x="1272" y="924" class="xs">TIER_A → commit, publish</text>
+  <text x="1272" y="939" class="xs">NEEDS_REVIEW → open a PR</text>
+  <text x="1272" y="954" class="xs">FRESHNESS_ONLY → stamp</text>
+  <text x="1272" y="968" class="xs">weekly, else discard</text>
+  <text x="1272" y="986" class="xs">review BEATS correction</text>
 
-  <rect x="1474" y="884" width="152" height="112" fill="#ffffff" stroke="#b4472a" stroke-dasharray="5 3" rx="5"/>
+  <rect x="1474" y="884" width="152" height="112" fill="#ffffff" stroke="#1f8a4c" rx="5"/>
   <text x="1488" y="906" class="t" font-weight="700">GitHub</text>
   <text x="1488" y="924" class="xs mono">tomyister/</text>
   <text x="1488" y="938" class="xs mono">aws-flash-cards</text>
-  <text x="1488" y="960" class="xs">push → CodeBuild</text>
-  <text x="1488" y="975" class="xs">“publish” → S3</text>
-  <text x="1488" y="991" class="xs">PublishRole, bucket only</text>
+  <text x="1488" y="957" class="xs">a token push fires no</text>
+  <text x="1488" y="972" class="xs">workflow, so publish is</text>
+  <text x="1488" y="987" class="xs">CALLED, not triggered</text>
 
-  <line x1="1038" y1="940" x2="1054" y2="940" class="lnr"/>
-  <line x1="1258" y1="940" x2="1274" y2="940" class="lnr"/>
-  <line x1="1454" y1="940" x2="1470" y2="940" class="lnr"/>
-  <!-- publish-on-merge: routed BELOW the boxes so it cannot cross section 7's
-       heading, and landing on S3 — the publisher writes the bucket, not the reader. -->
-  <path d="M1550,996 L1550,1030 L316,1030 L316,996" class="lnr"/>
-  <rect x="880" y="1000" width="640" height="16" fill="#fbfcfd"/>
-  <text x="890" y="1012" class="xs" fill="#b4472a">publish-on-merge closes the loop — CodeBuild “publish” writes the bucket, and only the bucket</text>
+  <line x1="1036" y1="940" x2="1052" y2="940" class="lnc"/>
+  <line x1="1238" y1="940" x2="1254" y2="940" class="lnc"/>
+  <line x1="1454" y1="940" x2="1470" y2="940" class="lnc"/>
+  <!-- publish: routed BELOW the boxes so it cannot cross section 7's heading, and
+       landing on S3 — the publisher writes the bucket, not the reader. -->
+  <path d="M1550,996 L1550,1030 L316,1030 L316,996" class="lnc"/>
+  <rect x="880" y="1000" width="660" height="16" fill="#fbfcfd"/>
+  <text x="890" y="1012" class="xs" fill="#1f8a4c">publish writes the bucket and only the bucket — then polls until CloudFront serves the exact bytes the gate validated</text>
 
   <!-- footer -->
   <rect x="34" y="1040" width="1606" height="104" fill="#ffffff" stroke="#dfe4ea" rx="6"/>
   <text x="52" y="1064" class="t" font-weight="700">The one-sentence version</text>
   <text x="52" y="1086" class="sm">Ingest turns published sources into typed facts with retained evidence. Appliers resolve each card’s slots against those facts and either confirm, correct with a recorded reason, or fail loudly.</text>
-  <text x="52" y="1104" class="sm">Four detectors then ask the questions a refresh cannot: is a badge stale, was it renamed, is every claim still true, and — the half that was missing until today — did something ship that no card covers.</text>
-  <text x="52" y="1128" class="sm" fill="#b4472a">Every box above runs on demand today. Nothing schedules it, so the deck is self-maintain<tspan font-weight="700">able</tspan>, not yet self-maintain<tspan font-weight="700">ing</tspan>. Section 7 is the only thing between those two words.</text>
+  <text x="52" y="1104" class="sm">Four detectors then ask the questions a refresh cannot: is a badge stale, was it renamed, is every claim still true, and — the one every other gate is blind to — did something ship that no card covers.</text>
+  <text x="52" y="1128" class="sm" fill="#1f8a4c">The deck is now self-maintain<tspan font-weight="700">ing</tspan>, not merely self-maintain<tspan font-weight="700">able</tspan>. Section 7 was the only thing between those two words, and it runs unattended every morning — which is why the interesting question moved from “does it work” to “what does it do on a day nothing changed”.</text>
 </svg>
