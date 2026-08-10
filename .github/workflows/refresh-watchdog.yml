@@ -1,0 +1,105 @@
+name: refresh-watchdog
+
+# Notifies when a scheduled run fails, and — the part that matters — stops
+# notifying when it recovers.
+#
+# WHY A GITHUB ISSUE AND NOT EMAIL, SLACK OR SNS
+#
+# GitHub already emails on a failed scheduled workflow, so email alone would be
+# redundant. The gap is not "was I told once", it is "is it broken right now".
+#
+#   No secret to manage. Slack or SNS both need a credential stored somewhere, and
+#   a notifier that can be silently broken by a rotated token is worse than none.
+#   GITHUB_TOKEN is scoped to this repo and expires with the job.
+#
+#   No laptop. A local cron cannot fire with the lid shut, which matters most
+#   during the weeks nobody is watching — exactly when a silent failure is
+#   expensive.
+#
+#   Durable and greppable. An issue survives an unread inbox, is readable from a
+#   phone, and carries the run URLs of every consecutive failure in one thread.
+#
+# DEDUPLICATED, AND SELF-CLOSING
+#
+# One issue, not one per failure: six weeks of a broken schedule would otherwise
+# produce forty issues and teach you to ignore the notification. Consecutive
+# failures are comments on the same thread.
+#
+# And it CLOSES on the next success. That is the difference between a signal about
+# current state and a log of the past — an alert that only ever opens becomes a
+# to-do list of things that already fixed themselves, which is how alerting dies.
+#
+# NOTE ON THE TRIGGER: workflow_run only fires for workflows on the DEFAULT branch,
+# and this file must itself be on the default branch to run at all.
+
+on:
+  workflow_run:
+    workflows: [refresh, publish]
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+  actions: read      # to read which step failed
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open or update the failure issue
+        if: github.event.workflow_run.conclusion == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          WF: ${{ github.event.workflow_run.name }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+          EVENT: ${{ github.event.workflow_run.event }}
+        run: |
+          set -euo pipefail
+          TITLE='Scheduled refresh is failing'
+
+          # Which steps failed, so the issue is actionable without opening the run.
+          FAILED=$(gh run view "$RUN_ID" --repo "$REPO" --json jobs \
+            --jq '[.jobs[] | .name as $j | .steps[] | select(.conclusion=="failure") | "\($j) → \(.name)"] | join("; ")' \
+            2>/dev/null || echo 'could not read step detail')
+
+          BODY=$(printf '**%s** failed (%s) on \`%s\`.\n\nFailed: %s\n\nRun: %s\n' \
+            "$WF" "$EVENT" "${SHA:0:7}" "${FAILED:-unknown}" "$RUN_URL")
+
+          EXISTING=$(gh issue list --repo "$REPO" --state open --search "\"$TITLE\" in:title" \
+            --json number --jq '.[0].number // empty')
+
+          if [ -n "$EXISTING" ]; then
+            # Consecutive failures are comments, not new issues.
+            gh issue comment "$EXISTING" --repo "$REPO" --body "$BODY"
+            echo "commented on #$EXISTING"
+          else
+            gh issue create --repo "$REPO" --title "$TITLE" --body "$(printf '%s\n\n%s\n' \
+              "$BODY" \
+              'This issue closes itself when a run of the same workflow next succeeds, so an open issue means it is broken NOW rather than that it broke once.')"
+            echo "opened a new issue"
+          fi
+
+      - name: Close it on recovery
+        if: github.event.workflow_run.conclusion == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          WF: ${{ github.event.workflow_run.name }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          set -euo pipefail
+          TITLE='Scheduled refresh is failing'
+          EXISTING=$(gh issue list --repo "$REPO" --state open --search "\"$TITLE\" in:title" \
+            --json number --jq '.[0].number // empty')
+          # No open issue is the normal case, and doing nothing quietly is correct —
+          # a watchdog that comments on every green run is noise with extra steps.
+          if [ -z "$EXISTING" ]; then
+            echo "nothing open; nothing to do"
+            exit 0
+          fi
+          gh issue close "$EXISTING" --repo "$REPO" \
+            --comment "Recovered: **$WF** succeeded. $RUN_URL"
+          echo "closed #$EXISTING"

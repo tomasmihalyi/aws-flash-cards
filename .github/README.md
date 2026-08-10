@@ -159,8 +159,16 @@ service's documentation. Never from the template you are trying to validate.
 to it. Adding protection later means the `commit` path needs either an exemption
 for the bot or a switch to PR-always.
 
-**No notification.** A failed run is visible in the Actions tab and by email from
-GitHub. Wiring SNS or Slack is worth doing once there is evidence about which
-failures actually recur, not before.
+**Failure notification is a GitHub Issue**, not email, Slack or SNS — see
+`.github/workflows/refresh-watchdog.yml`. GitHub already emails on a failed
+scheduled workflow, so the gap was never "was I told once", it was "is it broken
+right now". One deduplicated issue that **closes itself on the next success** answers
+that; an alert that only ever opens becomes a to-do list of things that already
+fixed themselves.
+
+Both of the watchdog's shell expressions were verified against real failed runs
+before committing, including the nested case: when publish fails *inside* a refresh
+run it reports `publish / publish → <step>`, because publish is a called workflow
+rather than a separate one.
 
 **No auto-merge of the review PR.** That is the entire point of the branch.
