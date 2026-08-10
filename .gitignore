@@ -11,3 +11,8 @@ package-lock.json
 
 .DS_Store
 *.log
+
+# Rendered diagrams. The SVG is the source and it diffs; the PNG is derived from
+# it by `rsvg-convert -w 2100 -o x.png x.svg`. Committing both would create a
+# second artefact able to disagree with the first — the same reason dist/ is here.
+docs/*.png

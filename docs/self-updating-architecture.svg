@@ -1,0 +1,283 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1180" viewBox="0 0 1680 1180" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5b6472"/>
+    </marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f8a4c"/>
+    </marker>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b4472a"/>
+    </marker>
+    <style>
+      .t   { font-size:13px; fill:#1b2430; }
+      .sm  { font-size:11px; fill:#5b6472; }
+      .xs  { font-size:10px; fill:#6b7480; }
+      .mono{ font-family:"IBM Plex Mono", "SF Mono", Menlo, monospace; }
+      .h   { font-size:12px; font-weight:700; fill:#3d4756; letter-spacing:1.6px; }
+      .box { fill:#ffffff; stroke:#c3cad4; stroke-width:1.4; }
+      .aws { fill:#fff6ec; stroke:#e08a3c; stroke-width:1.6; }
+      .pub { fill:#eef4fb; stroke:#5a8ec4; stroke-width:1.6; }
+      .loc { fill:#f4f2fa; stroke:#8b83c4; stroke-width:1.6; }
+      .store{ fill:#eaf6ef; stroke:#1f8a4c; stroke-width:1.8; }
+      .card { fill:#fff9e6; stroke:#c9a227; stroke-width:1.8; }
+      .gate { fill:#f6f7f9; stroke:#8d97a5; stroke-width:1.4; }
+      .todo { fill:#fdf1ee; stroke:#b4472a; stroke-width:1.6; stroke-dasharray:6 4; }
+      .ln  { stroke:#5b6472; stroke-width:1.5; fill:none; marker-end:url(#a); }
+      .lng { stroke:#1f8a4c; stroke-width:2;   fill:none; marker-end:url(#ag); }
+      .lnr { stroke:#b4472a; stroke-width:1.6; fill:none; marker-end:url(#ar); stroke-dasharray:6 4; }
+      .band{ fill:none; stroke:#dfe4ea; stroke-width:1.2; stroke-dasharray:3 4; }
+    </style>
+  </defs>
+
+  <rect width="1680" height="1180" fill="#fbfcfd"/>
+
+  <text x="40" y="46" font-size="24" font-weight="700" fill="#111820">AWS AI-Native Development Flashcards — the self-updating mechanism</text>
+  <text x="40" y="70" class="sm">Facts and prose are separate stores. Only deterministic code may write a fact, so “numbers are never model-generated” is a property of the write path, not a policy.</text>
+
+  <!-- legend -->
+  <g transform="translate(1140,34)">
+    <rect x="0" y="0" width="500" height="46" rx="4" fill="#ffffff" stroke="#dfe4ea"/>
+    <rect x="12" y="12" width="14" height="10" class="store"/><text x="32" y="21" class="xs">built &amp; running</text>
+    <rect x="132" y="12" width="14" height="10" class="aws"/><text x="152" y="21" class="xs">AWS API (credentials)</text>
+    <rect x="292" y="12" width="14" height="10" class="todo"/><text x="312" y="21" class="xs">NOT built — no schedule exists</text>
+    <line x1="12" y1="34" x2="40" y2="34" class="lnr"/><text x="46" y="38" class="xs">proposed path</text>
+  </g>
+
+  <!-- ============================ 1. SOURCES ============================ -->
+  <text x="40" y="112" class="h">1 · SOURCES OF TRUTH</text>
+  <rect x="34" y="122" width="386" height="352" class="band" rx="6"/>
+
+  <rect x="48" y="136" width="358" height="96" class="aws" rx="5"/>
+  <text x="62" y="156" class="t" font-weight="700">AWS APIs — read-only, allow-listed</text>
+  <text x="62" y="176" class="sm mono">SSM  global-infrastructure/services/…/regions</text>
+  <text x="62" y="194" class="sm mono">Price List  GetProducts   (us-east-1 only)</text>
+  <text x="62" y="212" class="sm mono">Service Quotas  List*     ← a LIMIT, drift-prone</text>
+  <text x="62" y="228" class="xs">3 of 13 ingests · the only ones needing credentials</text>
+
+  <rect x="48" y="244" width="358" height="130" class="pub" rx="5"/>
+  <text x="62" y="264" class="t" font-weight="700">Public HTTPS — no credentials</text>
+  <text x="62" y="283" class="sm mono">docs release-notes        month precision</text>
+  <text x="62" y="300" class="sm mono">docs document-history     DAY precision</text>
+  <text x="62" y="317" class="sm mono">agentcore feature × region matrix</text>
+  <text x="62" y="334" class="sm mono">service “what is” pages</text>
+  <text x="62" y="351" class="sm mono">kiro.dev/changelog/feed.atom   DAY, curated</text>
+  <text x="62" y="368" class="sm mono">github releases.atom           dating only</text>
+
+  <rect x="48" y="386" width="358" height="74" class="loc" rx="5"/>
+  <text x="62" y="406" class="t" font-weight="700">Local snapshot</text>
+  <text x="62" y="425" class="sm mono">botocore service models → API surface</text>
+  <text x="62" y="443" class="xs">pinned in tests/fixtures/ so a rename is</text>
+  <text x="62" y="457" class="xs">distinguishable from a removal</text>
+
+  <!-- ============================ 2. INGEST → FACTS ============================ -->
+  <text x="470" y="112" class="h">2 · DETERMINISTIC INGEST</text>
+  <rect x="464" y="122" width="300" height="352" class="band" rx="6"/>
+
+  <rect x="478" y="150" width="272" height="120" class="box" rx="5"/>
+  <text x="492" y="172" class="t" font-weight="700">13 ingest jobs</text>
+  <text x="492" y="192" class="sm">Fetch → parse → hash → write a fact set.</text>
+  <text x="492" y="212" class="sm">A parse that yields zero rows REFUSES</text>
+  <text x="492" y="228" class="sm">to write: a silent empty result looks</text>
+  <text x="492" y="244" class="sm">exactly like a quiet week.</text>
+  <text x="492" y="262" class="xs mono">src/lib/aws.ts — 6-pair allow-list</text>
+
+  <rect x="478" y="300" width="272" height="172" class="store" rx="5"/>
+  <text x="492" y="322" class="t" font-weight="700">facts/*.json   — 15 sets</text>
+  <text x="492" y="342" class="sm">typed values only, never prose</text>
+  <text x="492" y="364" class="sm mono">content_hash</text><text x="600" y="364" class="xs">re-hashed by the gate</text>
+  <text x="492" y="384" class="sm mono">evidence.text</text><text x="600" y="384" class="xs">verbatim excerpt</text>
+  <text x="492" y="404" class="sm mono">fetched_at</text><text x="600" y="404" class="xs">per source</text>
+  <text x="492" y="424" class="sm mono">precision</text><text x="600" y="424" class="xs">month | day</text>
+  <text x="492" y="448" class="xs">retained evidence is load-bearing — a set with</text>
+  <text x="492" y="462" class="xs">no evidence could not be verified at all</text>
+
+  <line x1="406" y1="184" x2="474" y2="200" class="ln"/>
+  <line x1="406" y1="308" x2="474" y2="216" class="ln"/>
+  <line x1="406" y1="422" x2="474" y2="232" class="ln"/>
+  <line x1="614" y1="272" x2="614" y2="296" class="ln"/>
+
+  <!-- ============================ 3. APPLIERS ============================ -->
+  <text x="812" y="112" class="h">3 · APPLIERS — THE ONLY WRITERS OF A SLOT</text>
+  <rect x="806" y="122" width="470" height="352" class="band" rx="6"/>
+
+  <rect x="820" y="136" width="442" height="30" class="box" rx="4"/>
+  <text x="834" y="156" class="sm mono">apply.ts · apply-lifecycle.ts · apply-rename.ts   — zero model involvement</text>
+
+  <text x="834" y="192" class="t" font-weight="700">One slot, three outcomes — the third is the point</text>
+
+  <rect x="820" y="204" width="442" height="52" fill="#eaf6ef" stroke="#1f8a4c" rx="4"/>
+  <text x="834" y="224" class="t"><tspan font-weight="700">VERIFY</tspan>  resolved === rendered</text>
+  <text x="834" y="242" class="xs">text untouched · stamp sources[] and verified_at</text>
+
+  <rect x="820" y="264" width="442" height="66" fill="#fff9e6" stroke="#c9a227" rx="4"/>
+  <text x="834" y="284" class="t"><tspan font-weight="700">CORRECT</tspan>  resolved !== rendered</text>
+  <text x="834" y="302" class="xs">rewrite the slot · append before/after to the provenance ledger</text>
+  <text x="834" y="318" class="xs mono">seed_text is kept forever — what the deck used to claim</text>
+
+  <rect x="820" y="338" width="442" height="66" fill="#fdf1ee" stroke="#b4472a" rx="4"/>
+  <text x="834" y="358" class="t"><tspan font-weight="700">FAIL</tspan>  a fact is missing</text>
+  <text x="834" y="376" class="xs">touch nothing · exit non-zero · card stays visibly stale</text>
+  <text x="834" y="392" class="xs">a fresh verified_at on an unverified claim is worse than being stale</text>
+
+  <rect x="820" y="414" width="442" height="46" class="gate" rx="4"/>
+  <text x="834" y="433" class="sm">verified_at = the <tspan font-weight="700">OLDEST</tspan> fetch behind the card, never the newest —</text>
+  <text x="834" y="450" class="sm">a card is only as fresh as its stalest input</text>
+
+  <line x1="750" y1="380" x2="816" y2="300" class="lng"/>
+  <text x="756" y="352" class="xs" fill="#1f8a4c">facts only</text>
+
+  <!-- ============================ CARDS ============================ -->
+  <rect x="1300" y="180" width="340" height="240" class="card" rx="5"/>
+  <text x="1316" y="204" class="t" font-weight="700">cards/*.json — 30 cards · git is the source of truth</text>
+  <text x="1316" y="228" class="sm">prose</text><text x="1380" y="228" class="xs">authored by a human, or a model under the Tier B/C gate</text>
+  <text x="1316" y="248" class="sm mono">{{slot:x}}</text><text x="1400" y="248" class="xs">written ONLY by an applier</text>
+  <text x="1316" y="268" class="sm mono">seed_text</text><text x="1400" y="268" class="xs">the original claim, kept permanently</text>
+  <text x="1316" y="288" class="sm mono">provenance[]</text><text x="1420" y="288" class="xs">append-only: verify / correct / rename</text>
+  <text x="1316" y="308" class="sm mono">aka[]</text><text x="1400" y="308" class="xs">a rename aliases, never replaces</text>
+  <text x="1316" y="328" class="sm mono">depends_on</text><text x="1400" y="328" class="xs">41 edges — powers the study fan-out</text>
+  <rect x="1316" y="344" width="308" height="62" fill="#ffffff" stroke="#c9a227" rx="4"/>
+  <text x="1328" y="364" class="xs" font-weight="700">A card never stores a number a fact could supply.</text>
+  <text x="1328" y="381" class="xs">It stores a slot; the fact set fills it. That is why a</text>
+  <text x="1328" y="396" class="xs">refresh can correct the deck without a model.</text>
+  <line x1="1262" y1="290" x2="1296" y2="290" class="lng"/>
+
+  <!-- ============================ 4. DETECTORS ============================ -->
+  <text x="40" y="524" class="h">4 · DETECTORS — WHAT THE REFRESH CANNOT SEE BY ITSELF</text>
+  <rect x="34" y="534" width="1242" height="150" class="band" rx="6"/>
+
+  <rect x="48" y="548" width="292" height="122" class="box" rx="5"/>
+  <text x="62" y="570" class="t" font-weight="700">check-lifecycle</text>
+  <text x="62" y="590" class="xs">Has a preview/GA badge gone stale?</text>
+  <text x="62" y="608" class="xs">Matches card subjects against dated</text>
+  <text x="62" y="624" class="xs">release-note headings. Demands two</text>
+  <text x="62" y="640" class="xs">weighted tokens — a false positive here</text>
+  <text x="62" y="656" class="xs">accuses a correct card of being wrong.</text>
+
+  <rect x="352" y="548" width="292" height="122" class="box" rx="5"/>
+  <text x="366" y="570" class="t" font-weight="700">check-rename</text>
+  <text x="366" y="590" class="xs">Was the thing renamed?</text>
+  <text x="366" y="608" class="xs">Applied ONLY when a second, independent</text>
+  <text x="366" y="624" class="xs">source uses the new name verbatim.</text>
+  <text x="366" y="640" class="xs">“Is now GA” has one meaning; a product</text>
+  <text x="366" y="656" class="xs">NAME does not.</text>
+
+  <rect x="656" y="548" width="292" height="122" class="box" rx="5"/>
+  <text x="670" y="570" class="t" font-weight="700">verify-claims</text>
+  <text x="670" y="590" class="xs">Decompose every card into claims and</text>
+  <text x="670" y="608" class="xs">string-match each against retained</text>
+  <text x="670" y="624" class="xs">evidence. Any failure demotes the WHOLE</text>
+  <text x="670" y="640" class="xs">card to Tier C.</text>
+  <text x="670" y="658" class="xs mono">29/29 verified</text>
+
+  <rect x="960" y="548" width="302" height="122" fill="#eef4fb" stroke="#5a8ec4" stroke-width="1.6" rx="5"/>
+  <text x="974" y="570" class="t" font-weight="700">check-coverage — the other half</text>
+  <text x="974" y="590" class="xs">Every gate above keeps EXISTING cards</text>
+  <text x="974" y="608" class="xs">correct. This is the only one that sees</text>
+  <text x="974" y="624" class="xs">something shipped that no card covers.</text>
+  <text x="974" y="642" class="xs mono">116 entries · 89 covered · 17 actionable</text>
+  <text x="974" y="660" class="xs">Reports, never fails a build.</text>
+
+  <line x1="1220" y1="424" x2="1110" y2="544" class="ln"/>
+  <text x="1120" y="470" class="xs">cards + facts in, findings out</text>
+
+  <!-- ============================ 5. GATE ============================ -->
+  <text x="40" y="726" class="h">5 · THE GATE — npm run check</text>
+  <rect x="34" y="736" width="1242" height="76" class="gate" rx="6"/>
+  <text x="52" y="762" class="sm mono">validate → test (280) → build → parity → claims → lifecycle → rename</text>
+  <text x="52" y="784" class="xs">L-CITATION a resolved slot must carry sources[] + verified_at · L-EVIDENCE every content_hash must re-hash · L-NUMERIC an ungoverned literal warns</text>
+  <text x="52" y="801" class="xs">parity: revert every slot to seed_text, invert every recorded correction, and the result must equal the original deck exactly — authored content is pinned byte-for-byte</text>
+
+  <!-- ============================ 6. READ PLANE (LIVE) ============================ -->
+  <text x="40" y="856" class="h">6 · READ PLANE — DEPLOYED, ap-southeast-2</text>
+  <rect x="34" y="866" width="800" height="150" class="band" rx="6"/>
+
+  <rect x="50" y="884" width="150" height="112" class="store" rx="5"/>
+  <text x="64" y="906" class="t" font-weight="700">dist/</text>
+  <text x="64" y="926" class="xs">single-file HTML</text>
+  <text x="64" y="942" class="xs mono">124 KB → 33.5 KB br</text>
+  <text x="64" y="962" class="xs">built from cards +</text>
+  <text x="64" y="977" class="xs">facts, never edited</text>
+
+  <rect x="230" y="884" width="170" height="112" class="aws" rx="5"/>
+  <text x="244" y="906" class="t" font-weight="700">Amazon S3</text>
+  <text x="244" y="926" class="xs">private origin</text>
+  <text x="244" y="942" class="xs">SSE-S3 · versioned</text>
+  <text x="244" y="958" class="xs">all 4 public-access</text>
+  <text x="244" y="974" class="xs">blocks ON</text>
+  <text x="244" y="990" class="xs mono">direct GET → 403</text>
+
+  <rect x="430" y="884" width="150" height="112" class="aws" rx="5"/>
+  <text x="444" y="906" class="t" font-weight="700">CloudFront</text>
+  <text x="444" y="926" class="xs">OAC, SigV4 always</text>
+  <text x="444" y="942" class="xs">TLS 1.2+ · HTTP/2+3</text>
+  <text x="444" y="958" class="xs">PriceClass_200</text>
+  <text x="444" y="974" class="xs">HSTS · CSP · nosniff</text>
+  <text x="444" y="990" class="xs">(100 excludes AU)</text>
+
+  <rect x="610" y="884" width="208" height="112" class="box" rx="5"/>
+  <text x="624" y="906" class="t" font-weight="700">learner — no auth</text>
+  <text x="624" y="926" class="xs">search · filter · deep links</text>
+  <text x="624" y="942" class="xs">SM-2 spaced repetition in</text>
+  <text x="624" y="958" class="xs">localStorage, no account</text>
+  <text x="624" y="976" class="xs">a corrected card is pulled</text>
+  <text x="624" y="991" class="xs">back into the queue</text>
+
+  <line x1="200" y1="940" x2="226" y2="940" class="lng"/>
+  <path d="M400,940 L426,940" class="lng"/>
+  <text x="398" y="874" class="xs" fill="#1f8a4c">OAC — the only reader</text>
+  <line x1="580" y1="940" x2="606" y2="940" class="lng"/>
+  <line x1="655" y1="812" x2="655" y2="880" class="lng"/>
+  <text x="662" y="850" class="xs" fill="#1f8a4c">publish only if the gate passed</text>
+
+  <!-- ============================ 7. REFRESH PLANE (NOT BUILT) ============================ -->
+  <text x="864" y="856" class="h" fill="#b4472a">7 · REFRESH PLANE — NOT BUILT. THIS IS THE GAP.</text>
+  <rect x="858" y="866" width="782" height="150" class="todo" rx="6"/>
+
+  <rect x="874" y="884" width="164" height="112" fill="#ffffff" stroke="#b4472a" stroke-dasharray="5 3" rx="5"/>
+  <text x="888" y="906" class="t" font-weight="700">EventBridge</text>
+  <text x="888" y="922" class="t" font-weight="700">Scheduler</text>
+  <text x="888" y="944" class="xs">weekly</text>
+  <text x="888" y="962" class="xs">the trigger that</text>
+  <text x="888" y="977" class="xs">does not exist</text>
+
+  <rect x="1058" y="884" width="200" height="112" fill="#ffffff" stroke="#b4472a" stroke-dasharray="5 3" rx="5"/>
+  <text x="1072" y="906" class="t" font-weight="700">CodeBuild “refresh”</text>
+  <text x="1072" y="926" class="xs mono">npm run refresh</text>
+  <text x="1072" y="942" class="xs mono">npm run check</text>
+  <text x="1072" y="960" class="xs">RefreshRole: SSM + Price</text>
+  <text x="1072" y="975" class="xs">List + Quotas reads ONLY</text>
+  <text x="1072" y="991" class="xs">no s3, no bedrock, no iam</text>
+
+  <rect x="1278" y="884" width="176" height="112" fill="#ffffff" stroke="#b4472a" stroke-dasharray="5 3" rx="5"/>
+  <text x="1292" y="906" class="t" font-weight="700">outcome branch</text>
+  <text x="1292" y="926" class="xs">all Tier A + green</text>
+  <text x="1292" y="940" class="xs">→ commit to main</text>
+  <text x="1292" y="960" class="xs">any needs_review</text>
+  <text x="1292" y="974" class="xs">→ open a PR</text>
+  <text x="1292" y="992" class="xs">gate fails → change nothing</text>
+
+  <rect x="1474" y="884" width="152" height="112" fill="#ffffff" stroke="#b4472a" stroke-dasharray="5 3" rx="5"/>
+  <text x="1488" y="906" class="t" font-weight="700">GitHub</text>
+  <text x="1488" y="924" class="xs mono">tomyister/</text>
+  <text x="1488" y="938" class="xs mono">aws-flash-cards</text>
+  <text x="1488" y="960" class="xs">push → CodeBuild</text>
+  <text x="1488" y="975" class="xs">“publish” → S3</text>
+  <text x="1488" y="991" class="xs">PublishRole, bucket only</text>
+
+  <line x1="1038" y1="940" x2="1054" y2="940" class="lnr"/>
+  <line x1="1258" y1="940" x2="1274" y2="940" class="lnr"/>
+  <line x1="1454" y1="940" x2="1470" y2="940" class="lnr"/>
+  <!-- publish-on-merge: routed BELOW the boxes so it cannot cross section 7's
+       heading, and landing on S3 — the publisher writes the bucket, not the reader. -->
+  <path d="M1550,996 L1550,1030 L316,1030 L316,996" class="lnr"/>
+  <rect x="880" y="1000" width="640" height="16" fill="#fbfcfd"/>
+  <text x="890" y="1012" class="xs" fill="#b4472a">publish-on-merge closes the loop — CodeBuild “publish” writes the bucket, and only the bucket</text>
+
+  <!-- footer -->
+  <rect x="34" y="1040" width="1606" height="104" fill="#ffffff" stroke="#dfe4ea" rx="6"/>
+  <text x="52" y="1064" class="t" font-weight="700">The one-sentence version</text>
+  <text x="52" y="1086" class="sm">Ingest turns published sources into typed facts with retained evidence. Appliers resolve each card’s slots against those facts and either confirm, correct with a recorded reason, or fail loudly.</text>
+  <text x="52" y="1104" class="sm">Four detectors then ask the questions a refresh cannot: is a badge stale, was it renamed, is every claim still true, and — the half that was missing until today — did something ship that no card covers.</text>
+  <text x="52" y="1128" class="sm" fill="#b4472a">Every box above runs on demand today. Nothing schedules it, so the deck is self-maintain<tspan font-weight="700">able</tspan>, not yet self-maintain<tspan font-weight="700">ing</tspan>. Section 7 is the only thing between those two words.</text>
+</svg>
