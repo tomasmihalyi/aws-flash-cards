@@ -255,8 +255,23 @@ Local, unblocked: tracks (AgentCore deep dive, agentic coding practices,
 Quick-vs-Kiro positioning, ANZ-relevant) and the "what changed this week" deck
 built from git history.
 
-Parked: the P3 read plane (S3 + CloudFront + OAC in `ap-southeast-2`, the deploy account (set via AWS_PROFILE)) needs this project extracted into its own repo with a remote
-before publish-on-merge can exist. P4 adds the model-drafted tiers behind a
-string-matching verifier; P5 rename/retire detection and dependency fan-out; P6
-content scale-up. Full detail and exit criteria in
-`.kiro/specs/self-maintaining-flashcards/`.
+P3 read plane: S3 + CloudFront + OAC in `ap-southeast-2`, published from this
+repo. P4 adds the model-drafted tiers behind a string-matching verifier; P5
+rename/retire detection and dependency fan-out; P6 content scale-up. Full detail
+and exit criteria in `.kiro/specs/self-maintaining-flashcards/`.
+
+## On the contents of `facts/`
+
+Every fact set retains an excerpt of the source it was read from. That is
+deliberate and load-bearing — `verify-claims` string-matches each claim against
+retained text, so a fact set with no evidence could not be checked at all.
+
+Those excerpts are **verbatim third-party material**: AWS documentation, the Kiro
+changelog, GitHub release notes. They are quoted here for verification, and they
+remain the property of their respective owners. The card prose, the slot
+templates and everything under `src/` are this repository's own.
+
+No `LICENSE` file is present, which means default copyright. That is the
+conservative position rather than an oversight: picking a permissive licence for
+the repository as a whole would implicitly purport to license the retained
+excerpts too, which is not this repository's to give.

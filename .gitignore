@@ -1,0 +1,13 @@
+# Build output. Fully regenerable from cards/ + facts/ with `npm run build`,
+# so committing it would only create a second source of truth that can disagree
+# with the first. git is the source of truth for cards/ and facts/.
+dist/
+
+# There are no dependencies to install — TypeScript runs directly on Node's
+# native type stripping — so a lockfile or module tree here means something went
+# wrong, and committing one would be worse.
+node_modules/
+package-lock.json
+
+.DS_Store
+*.log
