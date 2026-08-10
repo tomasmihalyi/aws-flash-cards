@@ -1,0 +1,88 @@
+name: publish
+
+# WHY THIS IS ALSO A REUSABLE WORKFLOW AND NOT ONLY A PUSH TRIGGER
+#
+# A push made with GITHUB_TOKEN deliberately does NOT trigger other workflows —
+# GitHub's recursion guard. So if publishing were only wired to `push`, every
+# commit the daily refresh makes would sit on main and never reach CloudFront,
+# and the deck would silently stop matching the repo.
+#
+# `workflow_call` lets refresh.yml invoke this directly after it commits. The
+# `push` trigger stays for commits a HUMAN makes, which do fire it.
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'cards/**'
+      - 'facts/**'
+      - 'content/**'
+      - 'src/**'
+      - 'schema/**'
+
+concurrency:
+  # Never let two publishes race for the same object.
+  group: publish
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write   # OIDC only; no access key exists anywhere in this repo
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # package.json requires >=22.18 for native TypeScript type stripping.
+          # This repo has NO dependencies, so there is nothing to install and no
+          # cache to configure — `npm ci` would fail for want of a lockfile.
+          node-version: '24'
+
+      - name: Gate — never publish an artifact the gate has not seen
+        run: npm run check
+
+      - name: Assume the publish role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_PUBLISH_ROLE_ARN }}
+          aws-region: ap-southeast-2
+          role-session-name: flashcards-publish-${{ github.run_id }}
+
+      - name: Upload the deck
+        env:
+          BUCKET: ${{ vars.DECK_BUCKET }}
+        run: |
+          set -euo pipefail
+          aws s3 cp dist/aws-ai-native-development-flashcards.html "s3://$BUCKET/index.html" \
+            --content-type 'text/html; charset=utf-8' \
+            --cache-control 'public, max-age=300'
+
+      - name: Verify what CloudFront serves is what the gate validated
+        env:
+          DECK_URL: ${{ vars.DECK_URL }}
+        run: |
+          set -euo pipefail
+          # max-age=300 means the edge may still hold the previous object, so poll
+          # rather than assert immediately. Byte-identity is the only check that
+          # cannot pass while serving a stale or truncated artifact — a 200 and a
+          # header set can both look healthy over the wrong bytes.
+          expected=$(shasum -a 256 dist/aws-ai-native-development-flashcards.html | cut -d' ' -f1)
+          for attempt in 1 2 3 4 5 6 7; do
+            curl -fsS "$DECK_URL/" -o /tmp/live.html || true
+            actual=$(shasum -a 256 /tmp/live.html 2>/dev/null | cut -d' ' -f1 || echo none)
+            if [ "$expected" = "$actual" ]; then
+              echo "IDENTICAL after ${attempt} attempt(s) — $expected"
+              exit 0
+            fi
+            echo "attempt ${attempt}: edge still serving something else, waiting 60s"
+            sleep 60
+          done
+          echo "::error::CloudFront never served the published bytes. Expected $expected"
+          exit 1

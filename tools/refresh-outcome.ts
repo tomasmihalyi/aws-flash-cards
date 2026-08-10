@@ -41,6 +41,7 @@
  * Usage:
  *   node tools/refresh-outcome.ts            # human summary
  *   node tools/refresh-outcome.ts --json     # machine-readable, for CI
+ *   node tools/refresh-outcome.ts --json --freshness-interval-days 7
  */
 
 import { execFileSync } from 'node:child_process';
@@ -50,8 +51,15 @@ import type { Card, FactSet, HistoryEntry } from '../src/lib/types.ts';
 
 const REPO = process.cwd();
 const asJson = process.argv.includes('--json');
+const freshnessIntervalDays = (() => {
+  const i = process.argv.indexOf('--freshness-interval-days');
+  return i >= 0 && process.argv[i + 1] ? Number(process.argv[i + 1]) : 7;
+})();
 
 export type Outcome = 'NO_CHANGE' | 'FRESHNESS_ONLY' | 'TIER_A' | 'NEEDS_REVIEW';
+
+/** What a runner should do about it. `outcome` is a fact; `action` is policy. */
+export type Action = 'nothing' | 'discard' | 'commit' | 'open-pr';
 
 export type CardChange = {
   card_id: string;
@@ -74,6 +82,7 @@ export type FactChange = {
 
 export type Classification = {
   outcome: Outcome;
+  action: Action;
   cards: CardChange[];
   facts: FactChange[];
   /** paths dirty in git but carrying no semantic change */
@@ -81,7 +90,44 @@ export type Classification = {
   summary: string;
   commitSubject: string;
   commitBody: string;
+  /** null when no freshness commit exists yet */
+  daysSinceLastFreshness: number | null;
 };
+
+export const FRESHNESS_SUBJECT = 'chore(refresh): freshness only — sources re-checked, nothing moved';
+
+/**
+ * Should a FRESHNESS_ONLY run be committed, given how long since the last one?
+ *
+ * DAILY CHECKING SHOULD NOT MEAN DAILY COMMITS, and neither extreme is right:
+ *
+ *   commit every time — the deck's footer honestly reads "verified today", at the
+ *     cost of ~365 commits a year whose entire content is a timestamp. `git log`
+ *     over cards/ becomes useless without a grep, and the "what changed this week"
+ *     deck built from history would be almost entirely noise.
+ *   never commit — history stays clean, but the deck displays a verified date
+ *     older than reality while a job is checking it every single day. For a
+ *     project whose whole subject is provenance, under-claiming freshness is its
+ *     own kind of dishonesty.
+ *
+ * So: check daily, STAMP weekly. A real correction still lands the day the source
+ * moves — this interval only governs the no-op case. ~52 commits a year instead of
+ * 365, and the displayed date is never more than the interval stale.
+ *
+ * Returns null when no prior freshness commit exists, which reads as "stamp it".
+ */
+export function daysSinceLastFreshnessCommit(gitLog: string): number | null {
+  const iso = gitLog.trim().split('\n')[0]?.trim();
+  if (!iso) return null;
+  const then = Date.parse(iso);
+  if (Number.isNaN(then)) return null;
+  return (Date.now() - then) / 86_400_000;
+}
+
+export function shouldStampFreshness(daysSince: number | null, intervalDays: number): boolean {
+  if (daysSince === null) return true;
+  return daysSince >= intervalDays;
+}
 
 function git(args: string[]): string {
   return execFileSync('git', args, { cwd: REPO, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
@@ -227,7 +273,6 @@ export function classify(): Classification {
   const cards: CardChange[] = [];
   const facts: FactChange[] = [];
   const freshnessOnlyPaths: string[] = [];
-
   for (const p of paths) {
     if (p.startsWith('cards/') && p.endsWith('.json')) {
       const c = classifyCard(p);
@@ -252,6 +297,23 @@ export function classify(): Classification {
   }
 
   const outcome: Outcome = decideOutcome(cards, facts, paths.length);
+
+  // Only consulted for FRESHNESS_ONLY. `git log --grep` on the fixed subject is
+  // how the last stamp is found — the subject is a stable interface for that
+  // reason, not merely a nicety.
+  const daysSinceLastFreshness =
+    outcome === 'FRESHNESS_ONLY'
+      ? daysSinceLastFreshnessCommit(
+          (() => {
+            try {
+              return git(['log', '-1', '--format=%cI', `--grep=${FRESHNESS_SUBJECT}`, '--fixed-strings']);
+            } catch {
+              return '';
+            }
+          })(),
+        )
+      : null;
+  const stampFreshness = shouldStampFreshness(daysSinceLastFreshness, freshnessIntervalDays);
 
   /**
    * Count corrections from the PROVENANCE LEDGER, not from the slot text diff.
@@ -292,12 +354,33 @@ export function classify(): Classification {
     outcome === 'TIER_A'
       ? `chore(refresh): ${correctionCount} deterministic correction(s)`
       : outcome === 'FRESHNESS_ONLY'
-        ? 'chore(refresh): freshness only — sources re-checked, nothing moved'
+        ? FRESHNESS_SUBJECT
         : outcome === 'NEEDS_REVIEW'
           ? 'chore(refresh): changes needing review'
           : 'chore(refresh): no change';
 
-  return { outcome, cards, facts, freshnessOnlyPaths, summary, commitSubject, commitBody: lines.join('\n') };
+  /**
+   * What a runner should DO. Separated from `outcome` on purpose: the outcome is a
+   * fact about the tree, the action is policy, and a reader should be able to see
+   * which is which.
+   */
+  let action: Action;
+  if (outcome === 'NO_CHANGE') action = 'nothing';
+  else if (outcome === 'NEEDS_REVIEW') action = 'open-pr';
+  else if (outcome === 'TIER_A') action = 'commit';
+  else action = stampFreshness ? 'commit' : 'discard';
+
+  return {
+    outcome,
+    action,
+    cards,
+    facts,
+    freshnessOnlyPaths,
+    summary,
+    commitSubject,
+    commitBody: lines.join('\n'),
+    daysSinceLastFreshness,
+  };
 }
 
 function main(): void {
@@ -306,10 +389,17 @@ function main(): void {
     console.log(JSON.stringify(c, null, 2));
     return;
   }
-  console.log(`\nrefresh-outcome: ${c.outcome}`);
+  console.log(`\nrefresh-outcome: ${c.outcome}  →  action: ${c.action}`);
   console.log(`  ${c.summary}`);
   if (c.freshnessOnlyPaths.length) {
     console.log(`\n  ${c.freshnessOnlyPaths.length} file(s) changed by timestamp only — NOT a content change`);
+  }
+  if (c.outcome === 'FRESHNESS_ONLY') {
+    const d = c.daysSinceLastFreshness;
+    console.log(
+      `  last freshness stamp: ${d === null ? 'never' : `${d.toFixed(1)} day(s) ago`} · interval ${freshnessIntervalDays}d ` +
+        `→ ${c.action === 'commit' ? 'stamp it' : 'discard, check again tomorrow'}`,
+    );
   }
   if (c.commitBody) console.log(`\n${c.commitBody}`);
   console.log(`\n  suggested subject: ${c.commitSubject}`);

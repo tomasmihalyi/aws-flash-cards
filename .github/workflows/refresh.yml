@@ -1,0 +1,150 @@
+name: refresh
+
+# The trigger that did not exist. Everything it invokes was already built and
+# green; this is the thing that turns self-maintainABLE into self-maintainING.
+#
+# DAILY, not weekly, deliberately: a correction lands the day the source moves
+# rather than up to seven days later, and each run's diff stays small enough to
+# read. The cost of daily — a dirty tree on every run from timestamp churn alone —
+# is handled by tools/refresh-outcome.ts rather than by committing noise.
+
+on:
+  schedule:
+    # 19:00 UTC = 05:00 AEST, so a US publishing day is complete and the result is
+    # waiting in the morning. cron here is UTC and does NOT shift with DST.
+    - cron: '0 19 * * *'
+  workflow_dispatch:
+    inputs:
+      freshness_interval_days:
+        description: 'Days between freshness-only stamps (0 = stamp every run)'
+        required: false
+        default: '7'
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+permissions:
+  contents: write        # commit a Tier A correction, or push a review branch
+  pull-requests: write   # open the PR when a judgement is involved
+  id-token: write        # OIDC into AWS; no stored credentials
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    outputs:
+      action: ${{ steps.classify.outputs.action }}
+      outcome: ${{ steps.classify.outputs.outcome }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # FULL history, not a shallow clone: the freshness interval is found with
+          # `git log --grep` over past commits, and a depth-1 clone would report
+          # "never stamped" every single day and so stamp every single day.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Assume the refresh role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_REFRESH_ROLE_ARN }}
+          aws-region: ap-southeast-2
+          role-session-name: flashcards-refresh-${{ github.run_id }}
+
+      - name: Ingest and apply
+        # `apply` exits non-zero rather than stamping a fresh verified_at on a claim
+        # whose fact failed to fetch, so a failure here SHOULD fail the job. That is
+        # the design: a visibly stale card beats a card that looks checked.
+        run: npm run refresh
+
+      - name: Gate
+        run: npm run check
+
+      - name: Classify what actually changed
+        id: classify
+        env:
+          INTERVAL: ${{ github.event.inputs.freshness_interval_days || '7' }}
+        run: |
+          set -euo pipefail
+          node tools/refresh-outcome.ts --freshness-interval-days "$INTERVAL" | tee outcome.txt
+          node tools/refresh-outcome.ts --json --freshness-interval-days "$INTERVAL" > outcome.json
+          echo "action=$(python3 -c 'import json;print(json.load(open("outcome.json"))["action"])')" >> "$GITHUB_OUTPUT"
+          echo "outcome=$(python3 -c 'import json;print(json.load(open("outcome.json"))["outcome"])')" >> "$GITHUB_OUTPUT"
+          {
+            echo "## refresh outcome"
+            echo '```'
+            cat outcome.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: What has been published that no card covers
+        # The original goal was "updates and news", and this is the only check that
+        # can see the deck is INCOMPLETE rather than incorrect. It never fails a
+        # build — a missing card is a to-do, not a defect — so it goes to the run
+        # summary where it can be read without blocking anything.
+        continue-on-error: true
+        run: |
+          {
+            echo "## coverage — published, not yet covered"
+            echo '```'
+            node src/check-coverage.ts --limit 20 || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Discard a no-op
+        if: steps.classify.outputs.action == 'discard' || steps.classify.outputs.action == 'nothing'
+        run: |
+          # Sources were re-checked and said the same thing, and the last freshness
+          # stamp is recent. Throwing the timestamp churn away is what keeps a daily
+          # cadence from producing 365 empty commits a year.
+          git checkout -- cards facts content 2>/dev/null || true
+          echo "no content change; nothing committed"
+
+      - name: Commit a deterministic correction
+        if: steps.classify.outputs.action == 'commit'
+        run: |
+          set -euo pipefail
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          subject=$(python3 -c 'import json;print(json.load(open("outcome.json"))["commitSubject"])')
+          body=$(python3 -c 'import json;print(json.load(open("outcome.json"))["commitBody"])')
+          git add cards facts content
+          git commit -m "$subject" -m "$body" -m "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          git push origin HEAD:main
+
+      - name: Open a PR for anything needing a human
+        if: steps.classify.outputs.action == 'open-pr'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # A pipeline may correct a number by itself. It may not publish a
+          # judgement — a Tier C prose rewrite, a rename, a lifecycle flag. So this
+          # path never touches main.
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          branch="refresh/review-$(date -u +%Y%m%d)-${{ github.run_id }}"
+          body=$(python3 -c 'import json;print(json.load(open("outcome.json"))["commitBody"])')
+          git checkout -b "$branch"
+          git add cards facts content
+          git commit -m 'chore(refresh): changes needing review' -m "$body"
+          git push origin "$branch"
+          gh pr create \
+            --title 'Refresh: changes needing human review' \
+            --body "$(printf 'A scheduled refresh produced changes that are NOT safe to commit unattended.\n\n```\n%s\n```\n\nSign off with `node tools/sign-off.ts --by "<name>" --card <id>` once you have read them.\n\nRun: %s/%s/actions/runs/%s\n' "$body" "${{ github.server_url }}" "${{ github.repository }}" "${{ github.run_id }}")" \
+            --head "$branch" \
+            --base main
+
+  # Called directly rather than relying on the push trigger, which GITHUB_TOKEN
+  # pushes deliberately do not fire.
+  publish:
+    needs: refresh
+    if: needs.refresh.outputs.action == 'commit'
+    uses: ./.github/workflows/publish.yml
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit

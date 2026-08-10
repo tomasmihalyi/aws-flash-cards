@@ -1,0 +1,204 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  GitHub Actions OIDC trust plus the two roles the refresh plane needs.
+  No access keys are created and nothing long-lived is stored in GitHub.
+
+# WHY TWO ROLES AND NOT ONE
+#
+# src/lib/aws.ts already carries a six-pair read-only allow-list, and that is good
+# hygiene — but it is CLIENT-side: it constrains code that chooses to call through
+# it. IAM is the control that actually binds. So the roles mirror the allow-list
+# rather than being broader "because it's only reads".
+#
+# The split is not decoration. The refresher has no reason to touch the bucket and
+# the publisher has no reason to read SSM, so neither is granted the other's
+# rights. "Ingest cannot write to AWS" becomes a property of the role.
+#
+# Both roles also carry an explicit Deny on the other's actions. An Allow attached
+# elsewhere — a future managed policy, a permissions boundary someone loosens —
+# cannot override an explicit Deny.
+
+Parameters:
+  GitHubOwner:
+    Type: String
+    Default: tomyister
+  GitHubRepo:
+    Type: String
+    Default: aws-flash-cards
+  GitHubRef:
+    Type: String
+    Default: refs/heads/main
+    Description: >
+      Only this ref may assume these roles. Scoping to a ref, not just the repo,
+      means a branch pushed by anyone cannot assume a role that writes the
+      published deck.
+  DeckBucketName:
+    Type: String
+    Description: Bucket from the FlashcardsReadPlane stack output.
+  DistributionId:
+    Type: String
+    Description: Distribution from the FlashcardsReadPlane stack output.
+  CreateOIDCProvider:
+    Type: String
+    AllowedValues: ['true', 'false']
+    Default: 'true'
+    Description: >
+      An account may hold only ONE provider per URL. Verified empty at authoring
+      time, so the default creates it — set false if another stack has since taken
+      ownership, otherwise this stack fails on a duplicate.
+
+Conditions:
+  ShouldCreateProvider: !Equals [!Ref CreateOIDCProvider, 'true']
+
+Resources:
+
+  GitHubOIDCProvider:
+    Type: AWS::IAM::OIDCProvider
+    Condition: ShouldCreateProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      # AWS validates GitHub's certificate chain against its own trust store, so
+      # these are required by the resource schema rather than load-bearing. Both
+      # of GitHub's published intermediates are listed so a rotation to either
+      # does not require a stack update.
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+        - 1c58a3a8518e8759bf075b76b750d4f2df264fdd
+
+  # ------------------------------------------------------------- refresher ----
+  RefreshRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: flashcards-refresh
+      Description: Reads the three credentialed sources. Cannot touch the bucket.
+      MaxSessionDuration: 3600
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                'token.actions.githubusercontent.com:aud': sts.amazonaws.com
+                # StringEquals, not StringLike: an exact subject. A wildcard here
+                # is the classic OIDC misconfiguration that lets any branch — and
+                # in the `repo:*` form, any repository — assume the role.
+                'token.actions.githubusercontent.com:sub': !Sub 'repo:${GitHubOwner}/${GitHubRepo}:ref:${GitHubRef}'
+      Policies:
+        - PolicyName: read-the-three-sources
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: SsmGlobalInfrastructureOnly
+                Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                  - ssm:GetParameters
+                  - ssm:GetParametersByPath
+                # Scoped to the public global-infrastructure tree, so this role
+                # cannot read an application parameter or a SecureString elsewhere.
+                Resource: !Sub 'arn:aws:ssm:*:${AWS::AccountId}:parameter/aws/service/global-infrastructure/*'
+              - Sid: PriceListIsPublicAndHasNoResourceArns
+                Effect: Allow
+                Action:
+                  - pricing:GetProducts
+                  - pricing:DescribeServices
+                # The Price List API does not support resource-level permissions.
+                # Recorded rather than silently written as '*': the wildcard is the
+                # API's limitation, not a decision to grant broadly.
+                Resource: '*'
+              - Sid: ServiceQuotasReadOnly
+                Effect: Allow
+                Action:
+                  - servicequotas:ListServiceQuotas
+                  - servicequotas:ListAWSDefaultServiceQuotas
+                  - servicequotas:GetServiceQuota
+                Resource: '*'
+              - Sid: CallerIdentityForTheRunLog
+                Effect: Allow
+                Action: sts:GetCallerIdentity
+                Resource: '*'
+              - Sid: NeverWriteAnythingNorReadTheDeck
+                Effect: Deny
+                Action:
+                  - s3:*
+                  - cloudfront:*
+                  - iam:*
+                  - bedrock:*
+                  - secretsmanager:*
+                  # The increase-request operation is what turns a quota read into
+                  # a quota WRITE. Denied explicitly even though nothing calls it.
+                  - servicequotas:RequestServiceQuotaIncrease
+                  - ssm:PutParameter
+                  - ssm:DeleteParameter
+                Resource: '*'
+
+  # ------------------------------------------------------------- publisher ----
+  PublishRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: flashcards-publish
+      Description: Writes the deck bucket and invalidates one distribution. Reads no sources.
+      MaxSessionDuration: 3600
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                'token.actions.githubusercontent.com:aud': sts.amazonaws.com
+                'token.actions.githubusercontent.com:sub': !Sub 'repo:${GitHubOwner}/${GitHubRepo}:ref:${GitHubRef}'
+      Policies:
+        - PolicyName: publish-the-deck
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: WriteObjectsInTheOneBucket
+                Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource: !Sub 'arn:aws:s3:::${DeckBucketName}/*'
+              - Sid: ListTheOneBucket
+                Effect: Allow
+                Action: s3:ListBucket
+                Resource: !Sub 'arn:aws:s3:::${DeckBucketName}'
+              - Sid: InvalidateTheOneDistribution
+                Effect: Allow
+                Action: cloudfront:CreateInvalidation
+                Resource: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${DistributionId}'
+              - Sid: NeverReadASourceNorChangeTheBucketItself
+                Effect: Deny
+                Action:
+                  - ssm:*
+                  - pricing:*
+                  - servicequotas:*
+                  - iam:*
+                  - secretsmanager:*
+                  # Writing objects is the job. Changing the bucket's policy,
+                  # encryption, versioning or public-access blocks is not, and that
+                  # is the difference between publishing and taking the origin
+                  # public by accident.
+                  - s3:PutBucketPolicy
+                  - s3:DeleteBucketPolicy
+                  - s3:PutBucketPublicAccessBlock
+                  - s3:PutBucketAcl
+                  - s3:PutEncryptionConfiguration
+                  - s3:PutBucketVersioning
+                  - s3:DeleteBucket
+                Resource: '*'
+
+Outputs:
+  RefreshRoleArn:
+    Description: Set as the repository variable AWS_REFRESH_ROLE_ARN.
+    Value: !GetAtt RefreshRole.Arn
+  PublishRoleArn:
+    Description: Set as the repository variable AWS_PUBLISH_ROLE_ARN.
+    Value: !GetAtt PublishRole.Arn

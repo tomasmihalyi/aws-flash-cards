@@ -11,7 +11,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { diffCard, diffFact, decideOutcome, type CardChange } from '../tools/refresh-outcome.ts';
+import { diffCard, diffFact, decideOutcome, daysSinceLastFreshnessCommit, shouldStampFreshness, type CardChange } from '../tools/refresh-outcome.ts';
 import type { Card, FactSet, HistoryEntry } from '../src/lib/types.ts';
 
 function card(over: Partial<Card> = {}): Card {
@@ -181,5 +181,51 @@ describe('a judgement never rides along unattended', () => {
     };
     assert.equal(decideOutcome([safe, unsafe], [], 4), 'NEEDS_REVIEW');
     assert.equal(decideOutcome([safe], [], 4), 'TIER_A');
+  });
+});
+
+describe('check daily, stamp weekly', () => {
+  test('no prior stamp reads as "stamp it", never as "recently stamped"', () => {
+    // A shallow clone finds no prior commit. If absent read as recent, the deck
+    // would never advance its verified date; read as never, it stamps once and
+    // then settles into the interval. The safe direction is to stamp.
+    assert.equal(daysSinceLastFreshnessCommit(''), null);
+    assert.equal(shouldStampFreshness(null, 7), true);
+  });
+
+  test('a stamp inside the interval is skipped', () => {
+    assert.equal(shouldStampFreshness(2.5, 7), false);
+    assert.equal(shouldStampFreshness(6.99, 7), false);
+  });
+
+  test('a stamp at or beyond the interval fires', () => {
+    assert.equal(shouldStampFreshness(7, 7), true);
+    assert.equal(shouldStampFreshness(31, 7), true);
+  });
+
+  test('interval 0 stamps every run — the opt-out for anyone who wants daily commits', () => {
+    assert.equal(shouldStampFreshness(0.1, 0), true);
+  });
+
+  test('an unparseable git date reads as null rather than as 1970', () => {
+    // Date.parse of junk is NaN. Coercing that to 0 would make it ~20,000 days
+    // ago and stamp on every run — a silent revert to the noisy behaviour.
+    assert.equal(daysSinceLastFreshnessCommit('not-a-date'), null);
+  });
+
+  test('a real ISO timestamp yields a plausible age', () => {
+    const twoDaysAgo = new Date(Date.now() - 2 * 86_400_000).toISOString();
+    const d = daysSinceLastFreshnessCommit(twoDaysAgo)!;
+    assert.ok(d > 1.9 && d < 2.1, `expected ~2 days, got ${d}`);
+  });
+
+  test('the freshness interval NEVER delays a real correction', () => {
+    // The interval governs the no-op case only. A correction is TIER_A, and
+    // TIER_A does not consult it at all.
+    const corrected: CardChange = {
+      card_id: 'AC-04', slots: [{ slot: 'price', before: '$0.0895', after: '$0.0912' }],
+      newHistory: [hist({ action: 'correct' })], reviewRaised: false, reviewReasons: [], fields: [],
+    };
+    assert.equal(decideOutcome([corrected], [], 5), 'TIER_A');
   });
 });
