@@ -25,6 +25,17 @@ Parameters:
   GitHubRepo:
     Type: String
     Default: aws-flash-cards
+  GitHubOwnerId:
+    Type: String
+    Default: '34014084'
+    Description: >
+      Numeric owner id. Part of GitHub's IMMUTABLE subject claim — see the note
+      below. Obtain with: gh api repos/OWNER/REPO --jq .owner.id
+  GitHubRepoId:
+    Type: String
+    Default: '1329366635'
+    Description: >
+      Numeric repository id. Obtain with: gh api repos/OWNER/REPO --jq .id
   GitHubRef:
     Type: String
     Default: refs/heads/main
@@ -49,6 +60,34 @@ Parameters:
 
 Conditions:
   ShouldCreateProvider: !Equals [!Ref CreateOIDCProvider, 'true']
+
+# THE SUBJECT CLAIM IS NOT WHAT MOST DOCUMENTATION SAYS
+#
+# Nearly every GitHub-OIDC example writes the subject as:
+#
+#   repo:OWNER/REPO:ref:refs/heads/main
+#
+# This repository is issued an IMMUTABLE subject instead, with numeric ids
+# embedded:
+#
+#   repo:OWNER@<ownerId>/REPO@<repoId>:ref:refs/heads/main
+#
+# The first deploy used the documented form and every assume-role failed with
+# "Not authorized to perform sts:AssumeRoleWithWebIdentity" — a message that says
+# nothing about which claim mismatched, and which is indistinguishable from a
+# wrong audience, a missing provider, or a wrong account. What actually settled it
+# was asking GitHub what it sends:
+#
+#   gh api repos/OWNER/REPO/actions/oidc/customization/sub
+#   -> {"use_default":true,"sub_claim_prefix":"repo:tomyister@34014084/aws-flash-cards@1329366635"}
+#
+# Read that endpoint before debugging a trust policy; it is the only place the
+# real prefix is visible without decoding a token you cannot see.
+#
+# This form is STRICTER, not merely different, and that is why it is embraced here
+# rather than worked around: numeric ids are immutable, so deleting this repo and
+# recreating one with the same name produces a DIFFERENT subject and cannot assume
+# these roles. The name-based form would have kept trusting the impostor.
 
 Resources:
 
@@ -87,7 +126,7 @@ Resources:
                 # StringEquals, not StringLike: an exact subject. A wildcard here
                 # is the classic OIDC misconfiguration that lets any branch — and
                 # in the `repo:*` form, any repository — assume the role.
-                'token.actions.githubusercontent.com:sub': !Sub 'repo:${GitHubOwner}/${GitHubRepo}:ref:${GitHubRef}'
+                'token.actions.githubusercontent.com:sub': !Sub 'repo:${GitHubOwner}@${GitHubOwnerId}/${GitHubRepo}@${GitHubRepoId}:ref:${GitHubRef}'
       Policies:
         - PolicyName: read-the-three-sources
           PolicyDocument:
@@ -154,7 +193,7 @@ Resources:
             Condition:
               StringEquals:
                 'token.actions.githubusercontent.com:aud': sts.amazonaws.com
-                'token.actions.githubusercontent.com:sub': !Sub 'repo:${GitHubOwner}/${GitHubRepo}:ref:${GitHubRef}'
+                'token.actions.githubusercontent.com:sub': !Sub 'repo:${GitHubOwner}@${GitHubOwnerId}/${GitHubRepo}@${GitHubRepoId}:ref:${GitHubRef}'
       Policies:
         - PolicyName: publish-the-deck
           PolicyDocument:

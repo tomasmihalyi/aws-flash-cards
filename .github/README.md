@@ -13,7 +13,12 @@ Three steps. Only the first touches AWS.
 **1. Deploy the roles.** No access keys are created and nothing long-lived is
 stored in GitHub — Actions gets short-lived credentials via OIDC.
 
+The two numeric ids are **required** and are not cosmetic — see "the subject claim
+is not what the documentation says" below.
+
 ```bash
+OWNER_ID=$(gh api repos/tomyister/aws-flash-cards --jq .owner.id)
+REPO_ID=$(gh api repos/tomyister/aws-flash-cards --jq .id)
 BUCKET=$(aws cloudformation describe-stacks --profile demo --region ap-southeast-2 \
   --stack-name FlashcardsReadPlane \
   --query 'Stacks[0].Outputs[?OutputKey==`BucketName`].OutputValue' --output text)
@@ -25,8 +30,40 @@ aws cloudformation deploy --profile demo --region ap-southeast-2 \
   --stack-name FlashcardsGitHubOIDC \
   --template-file infra/github-oidc.yaml \
   --capabilities CAPABILITY_NAMED_IAM \
-  --parameter-overrides "DeckBucketName=$BUCKET" "DistributionId=$DIST"
+  --parameter-overrides "DeckBucketName=$BUCKET" "DistributionId=$DIST" \
+                        "GitHubOwnerId=$OWNER_ID" "GitHubRepoId=$REPO_ID"
 ```
+
+### The subject claim is not what the documentation says
+
+Nearly every GitHub-OIDC example writes the trust subject as
+`repo:OWNER/REPO:ref:refs/heads/main`. This repository is issued an **immutable**
+subject with numeric ids embedded:
+
+```
+repo:tomyister@34014084/aws-flash-cards@1329366635:ref:refs/heads/main
+```
+
+The first deploy used the documented form and every assume-role failed with
+`Not authorized to perform sts:AssumeRoleWithWebIdentity` — a message that names no
+claim, and that looks identical to a wrong audience, a missing provider or the
+wrong account. Guessing between those is how an afternoon disappears.
+
+**Ask GitHub what it actually sends:**
+
+```bash
+gh api repos/OWNER/REPO/actions/oidc/customization/sub
+# {"use_default":true,"sub_claim_prefix":"repo:tomyister@34014084/aws-flash-cards@1329366635"}
+```
+
+That is the only place the real prefix is visible without decoding a token you
+never get to see. Read it *before* debugging the trust policy.
+
+The immutable form is **stricter**, not merely different, which is why it is
+adopted here rather than worked around: numeric ids cannot be reused, so deleting
+this repository and recreating one with the same name yields a different subject
+and cannot assume these roles. The name-based form would have gone on trusting the
+impostor.
 
 **2. Set five repository variables** (Settings → Secrets and variables → Actions →
 Variables). They are variables, not secrets: a role ARN and a bucket name are not
