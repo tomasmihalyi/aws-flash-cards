@@ -3,11 +3,11 @@
   "fact_set_id": "agentcore.release-notes",
   "tier": "A",
   "generator": "src/ingest/docs-release-notes.ts",
-  "verified_at": "2026-08-08T10:14:52.252Z",
+  "verified_at": "2026-08-10T11:59:39.446Z",
   "source": {
     "kind": "aws-docs-release-notes",
     "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html",
-    "fetched_at": "2026-08-08T10:14:52.252Z",
+    "fetched_at": "2026-08-10T11:59:39.446Z",
     "content_hash": "sha256:2ba16e0fde32abf1a06b35cec6b9c90cb6d3eee37ef32d81133d03a428b17036",
     "retrieved_by": "GET https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.md"
   },

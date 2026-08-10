@@ -58,11 +58,11 @@
       "url": "https://ap-southeast-2.console.aws.amazon.com/servicequotas/home/services/bedrock-agentcore/quotas",
       "title": "agentcore.quotas (service-quotas-api)",
       "kind": "service-quotas-api",
-      "fetched_at": "2026-08-09T05:25:16.699Z",
+      "fetched_at": "2026-08-10T11:59:38.752Z",
       "content_hash": "sha256:fbf1d6de7a08b900f1886214a541b4ddafc25cae1be0c706c37c33c4e98ec300"
     }
   ],
-  "verified_at": "2026-08-09T05:25:16.699Z",
+  "verified_at": "2026-08-10T11:59:38.752Z",
   "confidence": "high",
   "depends_on": [],
   "aka": [],
