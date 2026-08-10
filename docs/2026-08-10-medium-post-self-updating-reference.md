@@ -156,14 +156,12 @@ Strip out the flashcards and this is a pattern for any reference that has to sta
 
 The deck is 40 cards now. It refreshes itself every morning at 5am, corrects its own numbers against live AWS APIs, and tells me each day what AWS shipped that I have not written about yet.
 
+One limit is permanent, and it is worth naming. A handful of those cards carry my own positioning judgement — where one service stops and another starts. No document settles that, so no ingest job can ever verify it. Those cards render as *"Unsourced — positioning and practice judgement"* and always will.
+
+> Quietly widening a source's authority to cover a claim it cannot support is the exact failure this whole system exists to prevent.
+
+Everything else — the prices, the region counts, the API surfaces, the lifecycle badges — I no longer maintain. I maintain the machine that maintains them.
+
 I have not manually checked a region count in weeks.
-
-`[SECTION DIVIDER]`
-
-## **What's Next**
-
-The harder problem is the one I deliberately did not automate: the cards that carry my own positioning judgement. No document settles where one service stops and another starts. Those cards render as *"Unsourced — positioning and practice judgement"* and always will.
-
-In the next article I will go deeper on that boundary — how to let an agent draft content behind a verifier that string-matches every claim against retained source text, and where that approach stops working.
 
 *Follow me on* ***Medium*** *and* ***LinkedIn*** *to learn how to build self-maintaining systems with agentic coding tools and principles.*
