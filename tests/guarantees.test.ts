@@ -15,7 +15,7 @@ import { join } from 'node:path';
 import { FactStore, resolveTemplate, formatFact, expandSlots, slotRefs } from '../src/lib/facts.ts';
 import { canonical, hashPayload, sha256 } from '../src/lib/hash.ts';
 import { validate, validateSchemaKeywords } from '../src/lib/schema.ts';
-import { awsRead, AwsWriteRefused } from '../src/lib/aws.ts';
+import { awsRead, AwsWriteRefused, commandLine } from '../src/lib/aws.ts';
 import { loadCards, loadCategories, loadSchema, loadFactStore, loadIdLedger, paths } from '../src/lib/store.ts';
 import { toLegacyShape, authoredText } from '../src/lib/render.ts';
 import { originalProjection, fieldCorrections, deriveConfidence } from '../src/lib/provenance.ts';
@@ -56,6 +56,54 @@ describe('guarantee: ingest cannot write to AWS', () => {
       () => awsRead('ssm', 'get-parameters-by-path', { args: ['--path', '$(whoami)'] }),
       AwsWriteRefused,
     );
+  });
+});
+
+describe('guarantee: a recorded command is reproducible off this machine', () => {
+  // The scheduled refresh died on its first real run with "The config profile
+  // (default) could not be found". A GitHub runner has no named profiles —
+  // configure-aws-credentials exports environment credentials, and passing
+  // --profile makes the CLI ignore them and look for a config file that is not
+  // there. Same underlying mistake as the file:///Users/<me>/… citation that was
+  // in the botocore fact set: tooling encoding the author's environment.
+
+  test('no profile resolved → --profile is omitted entirely', () => {
+    const saved = process.env.AWS_PROFILE;
+    delete process.env.AWS_PROFILE;
+    try {
+      const cmd = commandLine('ssm', 'get-parameters-by-path', { region: 'us-east-1', args: ['--path', '/x'] });
+      assert.ok(!cmd.includes('--profile'), `must not name a profile: ${cmd}`);
+      assert.ok(cmd.includes('--region us-east-1'));
+    } finally {
+      if (saved !== undefined) process.env.AWS_PROFILE = saved;
+    }
+  });
+
+  test('an explicit profile is still honoured', () => {
+    const cmd = commandLine('ssm', 'get-parameter', { profile: 'demo', region: 'us-east-1' });
+    assert.ok(cmd.includes('--profile demo'), cmd);
+  });
+
+  test('AWS_PROFILE is honoured when no explicit profile is given', () => {
+    const saved = process.env.AWS_PROFILE;
+    process.env.AWS_PROFILE = 'someprofile';
+    try {
+      assert.ok(commandLine('ssm', 'get-parameter').includes('--profile someprofile'));
+    } finally {
+      if (saved === undefined) delete process.env.AWS_PROFILE;
+      else process.env.AWS_PROFILE = saved;
+    }
+  });
+
+  test('an empty profile string means "let the chain decide", not a profile named ""', () => {
+    const saved = process.env.AWS_PROFILE;
+    process.env.AWS_PROFILE = '';
+    try {
+      assert.ok(!commandLine('ssm', 'get-parameter').includes('--profile'));
+    } finally {
+      if (saved === undefined) delete process.env.AWS_PROFILE;
+      else process.env.AWS_PROFILE = saved;
+    }
   });
 });
 

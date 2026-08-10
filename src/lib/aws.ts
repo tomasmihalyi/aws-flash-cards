@@ -37,6 +37,34 @@ export type AwsOptions = {
 
 export class AwsWriteRefused extends Error {}
 
+/**
+ * The AWS profile to use, or undefined to let the standard credential chain
+ * resolve it.
+ *
+ * WHY THIS IS OPTIONAL RATHER THAN DEFAULTING TO 'default'
+ *
+ * It used to default to the literal profile name `default`, which worked on one
+ * laptop and failed everywhere else. The scheduled refresh died on its first real
+ * run with "The config profile (default) could not be found": a GitHub runner has
+ * no named profiles at all — `configure-aws-credentials` exports environment
+ * credentials, and passing `--profile` makes the CLI ignore them and go looking
+ * for a config file that does not exist.
+ *
+ * Omitting the flag is correct in both places. Locally the CLI already falls back
+ * to the `default` profile when none is given, so nothing changes; in CI the
+ * environment credentials are found. Set AWS_PROFILE, or pass --profile
+ * explicitly, when a specific identity is wanted.
+ *
+ * This is the third instance of one underlying mistake in this repo: provenance
+ * and tooling encoding the author's local environment. The others were a
+ * `file:///Users/<me>/…` citation in the botocore fact set and an absolute home
+ * path in a committed test fixture.
+ */
+function resolveProfile(explicit?: string): string | undefined {
+  const p = explicit ?? process.env.AWS_PROFILE;
+  return p && p.length ? p : undefined;
+}
+
 export function awsRead<T = unknown>(service: string, operation: string, opts: AwsOptions = {}): T {
   const key = `${service}:${operation}`;
   if (!ALLOWED.has(key)) {
@@ -46,9 +74,18 @@ export function awsRead<T = unknown>(service: string, operation: string, opts: A
     );
   }
 
-  const profile = opts.profile ?? process.env.AWS_PROFILE ?? 'default';
+  const profile = resolveProfile(opts.profile);
   const region = opts.region ?? 'us-east-1';
-  const argv = [service, operation, '--profile', profile, '--region', region, '--output', 'json', ...(opts.args ?? [])];
+  const argv = [
+    service,
+    operation,
+    ...(profile ? ['--profile', profile] : []),
+    '--region',
+    region,
+    '--output',
+    'json',
+    ...(opts.args ?? []),
+  ];
 
   // Guard against an argument smuggling a second command through.
   for (const a of opts.args ?? []) {
@@ -68,7 +105,18 @@ export function callerIdentity(profile?: string): { Account: string; Arn: string
 
 /** The exact command line, recorded in every fact set so a human can reproduce it. */
 export function commandLine(service: string, operation: string, opts: AwsOptions = {}): string {
-  const profile = opts.profile ?? process.env.AWS_PROFILE ?? 'default';
+  const profile = resolveProfile(opts.profile);
   const region = opts.region ?? 'us-east-1';
-  return ['aws', service, operation, ...(opts.args ?? []), '--profile', profile, '--region', region].join(' ');
+  // No --profile when none was resolved: a recorded command that names a profile
+  // only present on the machine that ran it is not reproducible, which is the
+  // whole point of recording it.
+  return [
+    'aws',
+    service,
+    operation,
+    ...(opts.args ?? []),
+    ...(profile ? ['--profile', profile] : []),
+    '--region',
+    region,
+  ].join(' ');
 }

@@ -12,7 +12,7 @@
  *   - Derived rates (per-1,000 from per-unit) are computed here in code, so a
  *     number in prose is still a number from the API times an integer.
  *
- * Usage: node src/ingest/pricelist.ts [--region ap-southeast-2] [--profile default]
+ * Usage: node src/ingest/pricelist.ts [--region ap-southeast-2] [--profile NAME]
  */
 
 import { awsRead, callerIdentity, commandLine } from '../lib/aws.ts';
@@ -78,7 +78,9 @@ type PriceRecord = {
 
 function main(): void {
   const region = arg('region', 'ap-southeast-2');
-  const profile = arg('profile', 'default');
+  // Empty means "let the credential chain decide" — a runner has no named
+  // profiles, and the CLI already falls back to `default` locally.
+  const profile = arg('profile', '') || undefined;
   const factSetId = `agentcore.pricing.${region}`;
   const fileName = `${factSetId}.json`;
 

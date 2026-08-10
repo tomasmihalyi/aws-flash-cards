@@ -6,7 +6,7 @@
  * which is exactly what makes it Tier A: no model is involved, and there is
  * nothing for one to disagree with.
  *
- * Usage: node src/ingest/ssm-regions.ts [--service bedrock-agentcore] [--profile default]
+ * Usage: node src/ingest/ssm-regions.ts [--service bedrock-agentcore] [--profile NAME]
  */
 
 import { awsRead, callerIdentity, commandLine } from '../lib/aws.ts';
@@ -27,7 +27,9 @@ type SsmResponse = { Parameters: { Name: string; Value: string }[]; NextToken?: 
 
 function main(): void {
   const service = arg('service', 'bedrock-agentcore');
-  const profile = arg('profile', 'default');
+  // Empty means "let the credential chain decide" — a runner has no named
+  // profiles, and the CLI already falls back to `default` locally.
+  const profile = arg('profile', '') || undefined;
   const path = `/aws/service/global-infrastructure/services/${service}/regions`;
   const factSetId = `${shortName(service)}.regions`;
   const fileName = `${factSetId}.json`;
