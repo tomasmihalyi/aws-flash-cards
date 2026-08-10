@@ -1,0 +1,224 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  Read plane for the AWS AI-Native Development Flashcards deck.
+  Private S3 origin + Origin Access Control + CloudFront. No public bucket,
+  no website endpoint, no origin reachable except through the distribution.
+
+# WHY PLAIN CLOUDFORMATION AND NOT CDK
+#
+# This repository's defining property is that it has no dependencies and no
+# install step — TypeScript runs directly on Node's native type stripping, and
+# .gitignore deliberately excludes node_modules and package-lock.json. Adding
+# aws-cdk-lib to synthesise six resources would trade that property away for
+# abstraction this stack does not need. The template is the artefact either way;
+# here it is the artefact you can read.
+#
+# WHAT IS DELIBERATELY NOT HERE
+#
+#   * No authentication. The deck is published to be read by anyone with the
+#     URL, which was a deliberate decision — see the note in README about the
+#     Tier C positioning cards it carries. Nothing here restricts access, and
+#     that is the intent rather than an omission.
+#   * No custom domain / ACM certificate. The CloudFront default domain is used,
+#     so no DNS or us-east-1 certificate is required.
+#   * No access logging. It needs a second bucket with an ACL-based grant, and
+#     nothing yet consumes the logs. Add it when a question needs answering,
+#     not before.
+#   * No custom error responses mapping 404 to index.html. The deck routes on
+#     the URL *hash* (#/card/ac-19), so every request is for '/' and a real 404
+#     is a real 404. Rewriting them would mask broken links, not fix routing.
+
+Parameters:
+  SiteName:
+    Type: String
+    Default: aws-ai-native-dev-flashcards
+    Description: Name prefix for the bucket; the account id and region are appended.
+
+Resources:
+
+  # ---------------------------------------------------------------- origin ----
+  DeckBucket:
+    Type: AWS::S3::Bucket
+    # Retain on stack delete: the bucket holds a published artefact and versions
+    # of it. Deleting the stack should not be able to delete content silently.
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub '${SiteName}-${AWS::AccountId}-apse2'
+      # Every public path closed at the bucket level, so a later mistake in a
+      # bucket policy or an object ACL cannot open it. The distribution reaches
+      # the objects through OAC, which is not affected by these blocks.
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+            BucketKeyEnabled: true
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          # A published deck is replaced on every refresh, so noncurrent
+          # versions accumulate forever otherwise. 30 days is enough to see what
+          # a bad publish replaced and roll back to it by hand.
+          - Id: expire-noncurrent-versions
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 30
+          - Id: abort-incomplete-multipart
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+
+  DeckBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref DeckBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # Read is granted to the CloudFront SERVICE, narrowed by SourceArn to
+          # THIS distribution. Without the condition any CloudFront distribution
+          # in any account could use this bucket as an origin.
+          - Sid: AllowCloudFrontReadViaOAC
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub '${DeckBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                'AWS:SourceArn': !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${DeckDistribution}'
+          # Defence in depth: refuse anything not on TLS, including a write from
+          # the publisher. An allow elsewhere cannot override an explicit deny.
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: '*'
+            Action: s3:*
+            Resource:
+              - !GetAtt DeckBucket.Arn
+              - !Sub '${DeckBucket.Arn}/*'
+            Condition:
+              Bool:
+                'aws:SecureTransport': 'false'
+
+  # ------------------------------------------------------------ distribution ----
+  DeckOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub '${SiteName}-oac'
+        Description: SigV4 access from the distribution to the private deck bucket.
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  DeckHeadersPolicy:
+    Type: AWS::CloudFront::ResponseHeadersPolicy
+    Properties:
+      ResponseHeadersPolicyConfig:
+        Name: !Sub '${SiteName}-security-headers'
+        Comment: Security headers for a static, single-file deck.
+        SecurityHeadersConfig:
+          StrictTransportSecurity:
+            # Two years, subdomains included. `preload` is deliberately NOT set:
+            # this is a cloudfront.net subdomain, so preloading is not ours to
+            # request and would be a claim about someone else's domain.
+            AccessControlMaxAgeSec: 63072000
+            IncludeSubdomains: true
+            Preload: false
+            Override: true
+          ContentTypeOptions:
+            Override: true
+          FrameOptions:
+            FrameOption: DENY
+            Override: true
+          ReferrerPolicy:
+            ReferrerPolicy: strict-origin-when-cross-origin
+            Override: true
+          ContentSecurityPolicy:
+            # HONEST ACCOUNTING OF THIS POLICY
+            #
+            # 'unsafe-inline' appears twice and each one is doing real work being
+            # given away, so neither is hidden here:
+            #
+            #   script-src 'unsafe-inline' — the deck is ONE file with its logic
+            #     in an inline <script>. A hash (`sha256-...`) would be strictly
+            #     better and is the obvious next step, but it has to be emitted
+            #     by src/build.ts and injected here, or the first content change
+            #     silently breaks the page. Not claimed as done.
+            #   style-src 'unsafe-inline' — inline <style>, same reasoning, plus
+            #     fonts.googleapis.com serves a stylesheet.
+            #
+            # fonts.googleapis.com / fonts.gstatic.com are allowed because the
+            # deck loads Space Grotesk and IBM Plex Mono from Google. That is a
+            # third-party request on every page view, so every visitor's IP goes
+            # to Google — worth knowing for a deck published publicly, and worth
+            # removing if the fonts are not worth that.
+            #
+            # Everything else is closed: no frames, no objects, no other origins.
+            ContentSecurityPolicy: >-
+              default-src 'none';
+              script-src 'self' 'unsafe-inline';
+              style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+              font-src 'self' https://fonts.gstatic.com;
+              img-src 'self' data:;
+              connect-src 'self';
+              base-uri 'none';
+              form-action 'none';
+              frame-ancestors 'none'
+            Override: true
+
+  DeckDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: AWS AI-Native Development Flashcards — read plane
+        DefaultRootObject: index.html
+        HttpVersion: http2and3
+        IPV6Enabled: true
+        # 200 rather than All: it includes Australia and New Zealand, which is
+        # the audience. PriceClass_100 does NOT include Australia — using it
+        # would have served the intended readers from the far side of the world.
+        PriceClass: PriceClass_200
+        Origins:
+          - Id: deck-bucket
+            DomainName: !GetAtt DeckBucket.RegionalDomainName
+            OriginAccessControlId: !GetAtt DeckOAC.Id
+            # S3OriginConfig with an EMPTY OriginAccessIdentity is what tells
+            # CloudFront this is a REST origin using OAC rather than a legacy
+            # OAI. Omitting the block entirely makes it a custom origin and the
+            # SigV4 signing never happens.
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+        DefaultCacheBehavior:
+          TargetOriginId: deck-bucket
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          # Managed-CachingOptimized. Referenced by id because the managed
+          # policies have no CloudFormation resource type to !Ref.
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          ResponseHeadersPolicyId: !Ref DeckHeadersPolicy
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+          MinimumProtocolVersion: TLSv1.2_2021
+
+Outputs:
+  BucketName:
+    Description: Private origin bucket. Publish with `aws s3 cp --profile demo`.
+    Value: !Ref DeckBucket
+  DistributionId:
+    Description: Use for `aws cloudfront create-invalidation` after a publish.
+    Value: !Ref DeckDistribution
+  DeckUrl:
+    Description: The public URL of the deck. No authentication.
+    Value: !Sub 'https://${DeckDistribution.DomainName}'
