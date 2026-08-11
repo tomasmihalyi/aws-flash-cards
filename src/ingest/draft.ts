@@ -37,14 +37,12 @@
 
 import { writeFileSync, mkdirSync, existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { loadCards, saveCard, loadFactStore, paths, ROOT } from '../lib/store.ts';
+import { loadCards, loadFactStore, paths, ROOT } from '../lib/store.ts';
 import { evidenceTextsFrom, datedEntriesFrom, subjectStemsOf, type VerifyContext } from '../lib/verifier.ts';
 import { checkDraft, type DraftFields } from '../lib/draft-gate.ts';
 import { invokeModel, DEFAULT_MODEL_ID } from '../lib/bedrock.ts';
-import { deriveConfidence } from '../lib/provenance.ts';
-import type { Card, FactSet, HistoryEntry } from '../lib/types.ts';
+import type { Card, FactSet } from '../lib/types.ts';
 
-const GENERATOR = 'src/ingest/draft.ts';
 const DRAFT_DIR = join(ROOT, 'drafts');
 
 /** The shape the model is forced into. Prose only — no tiers, sources or slots. */
@@ -215,40 +213,35 @@ function main(): void {
     process.exit(1);
   }
 
-  if (verdict.outcome === 'review') {
-    // Tier C: a human reads it. Written to drafts/ rather than into the card, so
-    // an unverified rewrite can never be published by a later job that only looks
-    // at cards/.
-    mkdirSync(DRAFT_DIR, { recursive: true });
-    const out = join(DRAFT_DIR, `${card.card_id}.draft.json`);
-    writeFileSync(out, `${JSON.stringify({ card_id: card.card_id, generated_at: new Date().toISOString(), model: DEFAULT_MODEL_ID, verdict, draft }, null, 2)}\n`, 'utf8');
-    console.log(`draft: wrote ${out} for review — the card itself is untouched`);
-    process.exit(0);
-  }
+  // ACCEPT AND REVIEW BOTH WRITE AN ARTIFACT, NEVER A CARD.
+  //
+  // This job used to write the card itself on `accept`. That made two things able
+  // to modify drafted prose — this and tools/apply-draft.ts — and "only one thing
+  // may write X" is the property the rest of this repository is built on (only an
+  // applier writes a slot; only ingest writes a fact).
+  //
+  // It was also wrong on the merits. The gate accepting means no fabricated FACT
+  // survived. It does not mean the prose is better: a rewrite can be entirely true
+  // and still vaguer, less memorable, or subtly off about a positioning boundary.
+  // That is a judgement, judgements have no deterministic source, and this repo
+  // routes judgements to a human. So `accept` lowers the review burden rather than
+  // removing the review.
+  mkdirSync(DRAFT_DIR, { recursive: true });
+  const out = join(DRAFT_DIR, `${card.card_id}.draft.json`);
+  writeFileSync(
+    out,
+    `${JSON.stringify({ card_id: card.card_id, generated_at: new Date().toISOString(), model: DEFAULT_MODEL_ID, verdict, draft }, null, 2)}\n`,
+    'utf8',
+  );
 
-  // accept
-  const now = new Date().toISOString();
-  const history: HistoryEntry = {
-    at: now,
-    tier: 'B',
-    action: 'correct',
-    generator: GENERATOR,
-    reason: `Model-drafted prose refresh, gated: slots reproduced, no numeral introduced, every checkable claim verified against retained evidence. Model ${DEFAULT_MODEL_ID}.`,
-    before: card.back.lead,
-    after: draft.back.lead,
-  } as HistoryEntry;
-
-  card.hook = draft.hook;
-  card.back.lead = draft.back.lead;
-  card.back.hookline = draft.back.hookline;
-  card.back.kv = draft.back.kv;
-  card.provenance.tier = 'B';
-  card.provenance.history.push(history);
-  card.updated_at = now;
-  card.confidence = deriveConfidence(card);
-
-  saveCard(card);
-  console.log(`draft: ${card.card_id} rewritten at Tier B and recorded in the ledger`);
+  console.log(`draft: wrote ${out}`);
+  console.log('       the card itself is untouched — apply it with:');
+  console.log(`         node tools/apply-draft.ts --card ${card.card_id}`);
+  console.log(
+    verdict.outcome === 'accept'
+      ? '       (verdict ACCEPT: facts verified, so the review is about prose quality only)'
+      : '       (verdict REVIEW: read the facts as well as the prose)',
+  );
   process.exit(0);
 }
 

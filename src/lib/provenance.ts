@@ -35,6 +35,34 @@ import type { Card } from './types.ts';
  * The EARLIEST entry per field carries the original value, because history is
  * append-only and chronological.
  */
+/**
+ * Set a possibly-NESTED field path: `hook`, `back.lead`, `back.kv[2].v`.
+ *
+ * Top-level names were enough while the only recorded field corrections were
+ * `lifecycle`, `badge_variant`, `badge_text` and `title`. Tier B prose drafting
+ * broke that assumption: a prose rewrite changes `back.lead` and
+ * `back.hookline`, and a flat assignment silently created a junk top-level
+ * "back.lead" property while leaving the real prose uninverted — so the parity
+ * gate failed with "authored text differs with no recorded field correction to
+ * explain it" even though the correction WAS recorded.
+ *
+ * Returns false when the path cannot be walked, so a malformed entry is visible
+ * rather than silently ignored.
+ */
+function setPath(root: Record<string, unknown>, path: string, value: string): boolean {
+  const parts = path.replace(/\[(\d+)\]/g, '.$1').split('.').filter(Boolean);
+  let cur: unknown = root;
+  for (const p of parts.slice(0, -1)) {
+    if (cur === null || typeof cur !== 'object') return false;
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  const last = parts.at(-1);
+  if (last === undefined || cur === null || typeof cur !== 'object') return false;
+  if (!(last in (cur as Record<string, unknown>))) return false;
+  (cur as Record<string, unknown>)[last] = value;
+  return true;
+}
+
 export function originalProjection(card: Card): Card {
   const clone = JSON.parse(JSON.stringify(card)) as Card;
   for (const slot of Object.values(clone.slots)) slot.rendered = slot.seed_text;
@@ -46,7 +74,7 @@ export function originalProjection(card: Card): Card {
     if (!firstBefore.has(h.field)) firstBefore.set(h.field, h.before);
   }
   for (const [field, before] of firstBefore) {
-    (clone as unknown as Record<string, string>)[field] = before;
+    setPath(clone as unknown as Record<string, unknown>, field, before);
   }
   return clone;
 }

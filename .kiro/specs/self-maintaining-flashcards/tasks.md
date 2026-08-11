@@ -184,7 +184,48 @@ check them.
       AC-19: ACCEPT, 3 checkable claims verified. **Not yet in CI** — the
       `flashcards-draft` role is in the template but undeployed, and no workflow
       calls it. Until it runs unattended it is built, not proven.
-- [ ] T4.6 PR automation for Tier C
+- [x] T4.6 PR automation for Tier C. `tools/apply-draft.ts`,
+      `.github/workflows/draft.yml`, 10 tests.
+
+      A draft artifact is a JSON blob, and asking someone to review prose by
+      reading JSON is asking them not to review it. So the applier writes the
+      prose into the card on a branch and lets `git diff` do the explaining.
+
+      **Three properties worth keeping:**
+
+      - **The gate runs AGAIN at apply time.** The artifact is a file on disk that
+        can be edited between generation and application. Treating its recorded
+        verdict as permission would make the file, not the gate, the thing
+        authorising a card change — so the recorded verdict is read as a claim
+        about the past and `checkDraft` re-runs against the card's current state.
+      - **`draft.ts` no longer writes cards at all.** It used to, on `accept`,
+        which made two things able to modify drafted prose. Now `apply-draft.ts`
+        is the single writer, matching the rule the rest of the repo runs on:
+        only an applier writes a slot, only ingest writes a fact.
+      - **An `accept` still arrives as a PR.** The verifier proves no fabricated
+        *fact*; it cannot prove the prose is *good*. A rewrite can be entirely
+        true and still vaguer or subtly off about a positioning boundary, and
+        that judgement has no deterministic source — Tier C by this repo's own
+        rule. So the card is written `needs_review: true`, `tier: C`,
+        `authored_by: 'model'`, which means a careless merge yields a card that
+        renders as needing review rather than one passing itself off as verified.
+
+      **The defect this surfaced, found by running the gate:** applying a prose
+      rewrite FAILED parity with *"authored text differs with no recorded field
+      correction to explain it"* — while the correction was recorded.
+      `originalProjection` inverted a field with a flat `clone[field] = before`,
+      which is correct for every field corrected until now (`lifecycle`,
+      `badge_variant`, `badge_text`, `title` — all top level) and silently creates
+      a junk `"back.lead"` property for a nested one. The recorded reason existed
+      and the gate could not see it. Fixed with path-aware inversion supporting
+      `back.lead` and `back.kv[2].v`; the applier now records one invertible
+      entry per changed field rather than one blob. Mutation-checked: restoring
+      the flat assignment fails 5 tests and parity.
+
+      **Not yet run.** `AWS_DRAFT_ROLE_ARN` is unset and the workflow has never
+      been dispatched. The local path is proven end to end (draft → artifact →
+      re-gate → branch → card diff → PR body, plus the refuse-on-main guard);
+      the CI path is not.
 - [ ] T4.7 Researcher agent on AgentCore Runtime (Gateway + Memory + Evaluations
       + Policy). Scope: ambiguous launch item → card draft with citations. Nothing
       else moves to AgentCore.

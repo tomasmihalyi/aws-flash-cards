@@ -41,6 +41,8 @@
     "ingest:releases": "node src/ingest/github-releases.ts",
     "ingest:vendor": "npm run ingest:kiro && npm run ingest:releases",
     "draft": "node src/ingest/draft.ts",
-    "draft:write": "node src/ingest/draft.ts --write"
+    "draft:write": "node src/ingest/draft.ts --write",
+    "draft:apply": "node tools/apply-draft.ts",
+    "draft:apply:dry": "node tools/apply-draft.ts --dry-run"
   }
 }

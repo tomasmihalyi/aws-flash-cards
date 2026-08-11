@@ -1,0 +1,120 @@
+name: draft
+
+# T4.6 — the Tier C review path, end to end.
+#
+# WHY THIS IS MANUAL AND NOT ON THE SCHEDULE
+#
+# The daily refresh is deterministic: it re-reads published sources and either
+# confirms a number or corrects it, with no model involved. Adding a model to that
+# schedule would mean the unattended job could rewrite prose nobody asked it to,
+# and the refresh role's Deny on bedrock:* exists precisely to make that
+# impossible.
+#
+# So drafting is a deliberate act with a named target. `workflow_dispatch` with a
+# required card id is the whole access control: a prose rewrite happens because
+# someone asked for that card, never because a morning arrived.
+#
+# WHAT THIS JOB CAN AND CANNOT DO
+#
+# It assumes flashcards-draft, which may invoke exactly one inference profile and
+# is explicitly denied SSM, Pricing, S3 and CloudFront. It cannot fetch a source
+# and it cannot publish. The only thing it can produce is a pull request.
+#
+# Three outcomes, and only two of them reach here:
+#   accept   facts verified → PR, short review (is the prose better?)
+#   review   something unverified → PR, longer review (facts AND prose)
+#   discard  contract broken → the drafter exits non-zero, this job FAILS, no PR
+#
+# A discard deliberately produces no pull request. Handing a reviewer confident,
+# well-formed prose that contains a fabricated number and relying on them to spot
+# it is how a fabricated number gets merged.
+
+on:
+  workflow_dispatch:
+    inputs:
+      card:
+        description: 'Card id to redraft, e.g. AC-19'
+        required: true
+        type: string
+
+permissions:
+  contents: write        # push a review branch — never main
+  pull-requests: write   # open the PR
+  id-token: write        # OIDC; no access key exists anywhere in this repo
+
+concurrency:
+  # One draft at a time. Two concurrent runs on the same card would race for the
+  # same branch name and the second would fail confusingly.
+  group: draft-${{ inputs.card }}
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: the branch is pushed and diffed against main.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Assume the draft role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DRAFT_ROLE_ARN }}
+          aws-region: ap-southeast-2
+
+      - name: Confirm which identity is drafting
+        run: aws sts get-caller-identity
+
+      - name: Draft the prose
+        id: draft
+        run: |
+          set -euo pipefail
+          # --write produces drafts/<CARD>.draft.json. It never touches the card:
+          # tools/apply-draft.ts is the single writer of drafted prose.
+          node src/ingest/draft.ts --card "${{ inputs.card }}" --write \
+            --region ap-southeast-2 | tee draft.log
+          echo "artifact=drafts/${{ inputs.card }}.draft.json" >> "$GITHUB_OUTPUT"
+
+      - name: Apply it to a review branch and open the PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          branch="draft/${{ inputs.card }}-${{ github.run_id }}"
+          git checkout -b "$branch"
+
+          # apply-draft RE-GATES against the card's current state before writing.
+          # The artifact is a file on disk; treating its recorded verdict as
+          # permission would make the file, not the gate, the thing authorising a
+          # card change. It also refuses to write on main, which is why the branch
+          # is created first.
+          node tools/apply-draft.ts --card "${{ inputs.card }}"
+
+          git add cards drafts
+          git commit -m "draft(${{ inputs.card }}): model-drafted prose, Tier C pending review" \
+                     -m "$(cat drafts/${{ inputs.card }}.pr.md)"
+          git push origin "$branch"
+
+          gh pr create \
+            --title "Draft: ${{ inputs.card }} prose refresh (Tier C — needs review)" \
+            --body-file "drafts/${{ inputs.card }}.pr.md" \
+            --head "$branch" \
+            --base main
+
+      - name: Summarise
+        if: always()
+        run: |
+          {
+            echo "## draft — ${{ inputs.card }}"
+            echo '```'
+            cat draft.log 2>/dev/null || echo 'no draft produced'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
