@@ -21,16 +21,22 @@ Description: >
 Parameters:
   GitHubOwner:
     Type: String
-    Default: tomyister
+    Default: tomasmihalyi
   GitHubRepo:
     Type: String
     Default: aws-flash-cards
   GitHubOwnerId:
     Type: String
-    Default: '34014084'
+    Default: '20979055'
     Description: >
       Numeric owner id. Part of GitHub's IMMUTABLE subject claim — see the note
       below. Obtain with: gh api repos/OWNER/REPO --jq .owner.id
+
+      Changing the OWNER of the repository changes this id and therefore changes
+      the subject. Migrating from tomyister (34014084) to tomasmihalyi (20979055)
+      required this stack to be updated in the same sitting as the transfer —
+      a repository transfer is silent as far as IAM is concerned, and the only
+      symptom is every assume-role failing afterwards.
   GitHubRepoId:
     Type: String
     Default: '1329366635'
@@ -79,7 +85,7 @@ Conditions:
 # was asking GitHub what it sends:
 #
 #   gh api repos/OWNER/REPO/actions/oidc/customization/sub
-#   -> {"use_default":true,"sub_claim_prefix":"repo:tomyister@34014084/aws-flash-cards@1329366635"}
+#   -> {"use_default":true,"sub_claim_prefix":"repo:tomasmihalyi@20979055/aws-flash-cards@1329366635"}
 #
 # Read that endpoint before debugging a trust policy; it is the only place the
 # real prefix is visible without decoding a token you cannot see.

@@ -187,6 +187,9 @@ remote. It needs extracting into its own repo (`tomyister`, via
 `git subtree split` to preserve history) before publish-on-merge can exist. That
 same step unblocks PR automation for Tier C (T4.6).
 
+> **Resolved 2026-08-10**, and the repository moved to `tomasmihalyi` on
+> 2026-08-11. The owner named above is the one it was created under.
+
 ---
 
 ## Trust boundaries, stated plainly

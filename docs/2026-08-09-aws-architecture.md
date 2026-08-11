@@ -28,7 +28,7 @@ Companion to `docs/2026-08-09-architecture.md`, which covers the repo-side syste
    └────────────────────────────────┬───────────────────────────────────────┘
                                     │ commit (Tier A) or PR (needs_review)
                                     ▼
-                        GitHub  tomyister/<repo>  main
+                        GitHub  tomasmihalyi/<repo>  main
                                     │ push
                                     ▼
    ┌──────────────────────── READ PLANE (publishes) ────────────────────────┐
@@ -185,6 +185,11 @@ trigger a build.
   gh auth switch --user tomyister        # gh currently defaults to Gatherlyco-au
   gh repo create ... && push the split branch
 ```
+
+> **Resolved.** The extraction was done on 2026-08-10 and the repository was
+> created under `tomyister` as written above. It was subsequently transferred to
+> **`tomasmihalyi`** on 2026-08-11, which is where it lives now. The command is
+> left as it was actually run — the owner in it is history, not a current address.
 
 `subtree split` preserves the commit history — 20-odd commits of provenance that
 are, in a project about provenance, worth keeping.

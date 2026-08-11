@@ -263,7 +263,7 @@
 
   <rect x="1474" y="884" width="152" height="112" fill="#ffffff" stroke="#1f8a4c" rx="5"/>
   <text x="1488" y="906" class="t" font-weight="700">GitHub</text>
-  <text x="1488" y="924" class="xs mono">tomyister/</text>
+  <text x="1488" y="924" class="xs mono">tomasmihalyi/</text>
   <text x="1488" y="938" class="xs mono">aws-flash-cards</text>
   <text x="1488" y="957" class="xs">a token push fires no</text>
   <text x="1488" y="972" class="xs">workflow, so publish is</text>

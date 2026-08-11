@@ -421,7 +421,7 @@ finished.
 | Feature-level region facts (e.g. Evaluations "9 regions") | — | No deterministic source exists. Slot stays `seed` + `needs_review` with the reason recorded, and the card now says "Unverified" to the learner. Not a gap: a limit. |
 | AWS Architecture Icons | P3 | Licence terms must be verified before shipping. |
 | IaC for the read plane | P3 | Needs its own repo + remote first. Deploy target confirmed: `demo` / <deploy-account>, `ap-southeast-2`, CloudFront default domain, no auth. |
-| Repo extraction | when Tomas creates it | Local development only for now; the repo will be created manually under the `tomyister` GitHub account. `git subtree split` preserves the commit history when the time comes. |
+| Repo extraction | done 2026-08-10 | Created under `tomyister`, then transferred to `tomasmihalyi` on 2026-08-11 (owner id `34014084` → `20979055`, repo id `1329366635` carried through). `git subtree split` preserved the commit history. The owner id is part of the OIDC subject, so the transfer required a `FlashcardsGitHubOIDC` stack update. |
 | `dist/` not committed | — | The parent vault's `.gitignore` excludes `dist`. Regenerable from `cards/` + `facts/` via `node src/build.ts`, and the P1 baseline copy under `tests/fixtures/` is committed, so no evidence is lost. |
 
 ### Closed since the original list

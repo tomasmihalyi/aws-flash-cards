@@ -17,8 +17,8 @@ The two numeric ids are **required** and are not cosmetic — see "the subject c
 is not what the documentation says" below.
 
 ```bash
-OWNER_ID=$(gh api repos/tomyister/aws-flash-cards --jq .owner.id)
-REPO_ID=$(gh api repos/tomyister/aws-flash-cards --jq .id)
+OWNER_ID=$(gh api repos/tomasmihalyi/aws-flash-cards --jq .owner.id)
+REPO_ID=$(gh api repos/tomasmihalyi/aws-flash-cards --jq .id)
 BUCKET=$(aws cloudformation describe-stacks --profile demo --region ap-southeast-2 \
   --stack-name FlashcardsReadPlane \
   --query 'Stacks[0].Outputs[?OutputKey==`BucketName`].OutputValue' --output text)
@@ -41,7 +41,7 @@ Nearly every GitHub-OIDC example writes the trust subject as
 subject with numeric ids embedded:
 
 ```
-repo:tomyister@34014084/aws-flash-cards@1329366635:ref:refs/heads/main
+repo:tomasmihalyi@20979055/aws-flash-cards@1329366635:ref:refs/heads/main
 ```
 
 The first deploy used the documented form and every assume-role failed with
@@ -53,7 +53,7 @@ wrong account. Guessing between those is how an afternoon disappears.
 
 ```bash
 gh api repos/OWNER/REPO/actions/oidc/customization/sub
-# {"use_default":true,"sub_claim_prefix":"repo:tomyister@34014084/aws-flash-cards@1329366635"}
+# {"use_default":true,"sub_claim_prefix":"repo:tomasmihalyi@20979055/aws-flash-cards@1329366635"}
 ```
 
 That is the only place the real prefix is visible without decoding a token you
@@ -64,6 +64,34 @@ adopted here rather than worked around: numeric ids cannot be reused, so deletin
 this repository and recreating one with the same name yields a different subject
 and cannot assume these roles. The name-based form would have gone on trusting the
 impostor.
+
+### Moving the repository to a different owner
+
+That strictness has a cost, and it is worth stating because the failure is silent
+on the GitHub side. **Transferring the repository changes the subject**, because the
+owner id is part of it. IAM learns nothing from a transfer; the only symptom is
+that every `assume-role` afterwards fails with the same uninformative message.
+
+This repository moved from `tomyister` (owner id `34014084`) to `tomasmihalyi`
+(owner id `20979055`) on 2026-08-11. The repository id `1329366635` was carried
+through the transfer unchanged, so the owner id was the only component that moved:
+
+```
+before  repo:tomyister@34014084/aws-flash-cards@1329366635:ref:refs/heads/main
+after   repo:tomasmihalyi@20979055/aws-flash-cards@1329366635:ref:refs/heads/main
+```
+
+Two consequences worth knowing before doing this again:
+
+- **The stack update is not optional and not deferrable.** Transfer, then update
+  `FlashcardsGitHubOIDC` in the same sitting. Between those two acts the refresh
+  and publish roles are unassumable. Nothing auto-fires on a transfer, so the
+  window is only as long as you leave it — but the daily cron does not care that
+  you were interrupted.
+- **Read the ids back rather than assuming them.** A transfer preserves the
+  repository id; creating a fresh repository and pushing into it does not. Those
+  two routes look identical in `git log` and produce different subjects, so take
+  both numbers from the API afterwards, not from this document.
 
 **2. Set five repository variables** (Settings → Secrets and variables → Actions →
 Variables). They are variables, not secrets: a role ARN and a bucket name are not
