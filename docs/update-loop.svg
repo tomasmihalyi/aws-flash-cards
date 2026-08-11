@@ -1,0 +1,224 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1560 1030" width="1560" height="1030" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <style>
+    .h1   { font-size: 30px; font-weight: 700; fill: #111827; }
+    .sub  { font-size: 15px; fill: #4b5563; }
+    .band { font-size: 13px; font-weight: 700; letter-spacing: 1.6px; fill: #6b7280; }
+    .b    { font-size: 14px; font-weight: 700; fill: #111827; }
+    .xs   { font-size: 11.5px; fill: #4b5563; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .lnG  { stroke: #1f8a4c; stroke-width: 2.4; fill: none; marker-end: url(#aG); }
+    .plain{ stroke: #1f8a4c; stroke-width: 2.4; fill: none; }
+    .lnA  { stroke: #b45309; stroke-width: 2.4; fill: none; marker-end: url(#aA); }
+    .lnK  { stroke: #9ca3af; stroke-width: 1.8; fill: none; stroke-dasharray: 5 4; marker-end: url(#aK); }
+    .ret  { stroke: #1f8a4c; stroke-width: 3; fill: none; marker-end: url(#aG); stroke-dasharray: 9 5; }
+  </style>
+  <defs>
+    <marker id="aG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f8a4c"/></marker>
+    <marker id="aA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b45309"/></marker>
+    <marker id="aK" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9ca3af"/></marker>
+  </defs>
+
+  <rect width="1560" height="1030" fill="#fbfcfd"/>
+
+  <!-- TITLE -->
+  <text x="44" y="52" class="h1">How the deck updates itself</text>
+  <text x="44" y="80" class="sub">One loop runs every morning with no human in it. The only thing that leaves it is a judgement.</text>
+
+  <!-- LEGEND -->
+  <g transform="translate(1092,30)">
+    <rect x="0" y="0" width="430" height="62" fill="#ffffff" stroke="#e5e7eb" rx="6"/>
+    <line x1="16" y1="21" x2="46" y2="21" class="lnG"/>
+    <text x="54" y="25" class="xs">closes without a human</text>
+    <line x1="16" y1="45" x2="46" y2="45" class="lnA"/>
+    <text x="54" y="49" class="xs">needs a human — then re-enters</text>
+    <line x1="248" y1="21" x2="278" y2="21" class="lnK"/>
+    <text x="286" y="25" class="xs">reports, never gates</text>
+  </g>
+
+  <!-- ===================== BAND A ===================== -->
+  <text x="44" y="124" class="band">THE DAILY CIRCUIT — GITHUB ACTIONS, 05:00 AEST, UNATTENDED</text>
+  <rect x="34" y="136" width="1494" height="186" fill="#f3faf5" stroke="#1f8a4c" stroke-opacity="0.35" rx="8"/>
+
+  <rect x="44" y="154" width="188" height="150" fill="#ffffff" stroke="#1f8a4c" rx="6"/>
+  <text x="58" y="178" class="b">1 · the trigger</text>
+  <text x="58" y="200" class="xs mono">cron '0 19 * * *'</text>
+  <text x="58" y="222" class="xs">daily, not weekly — so a</text>
+  <text x="58" y="238" class="xs">correction lands the day</text>
+  <text x="58" y="254" class="xs">the source moves</text>
+  <text x="58" y="280" class="xs mono" fill="#1f8a4c">OIDC · no stored keys</text>
+
+  <rect x="259" y="154" width="188" height="150" fill="#ffffff" stroke="#1f8a4c" rx="6"/>
+  <text x="273" y="178" class="b">2 · read sources</text>
+  <text x="273" y="200" class="xs">10 ingest jobs</text>
+  <text x="273" y="222" class="xs">AWS APIs · docs pages ·</text>
+  <text x="273" y="238" class="xs">Kiro changelog</text>
+  <text x="273" y="262" class="xs">a parse yielding zero rows</text>
+  <text x="273" y="278" class="xs">REFUSES to write</text>
+
+  <rect x="474" y="154" width="188" height="150" fill="#ffffff" stroke="#1f8a4c" rx="6"/>
+  <text x="488" y="178" class="b">3 · typed facts</text>
+  <text x="488" y="200" class="xs mono">facts/*.json — 15</text>
+  <text x="488" y="222" class="xs">numbers, dates, regions.</text>
+  <text x="488" y="238" class="xs">Never prose.</text>
+  <text x="488" y="262" class="xs">each keeps the source</text>
+  <text x="488" y="278" class="xs">excerpt + a content hash</text>
+
+  <rect x="689" y="154" width="188" height="150" fill="#ffffff" stroke="#1f8a4c" rx="6"/>
+  <text x="703" y="178" class="b">4 · resolve slots</text>
+  <text x="703" y="200" class="xs">3 appliers — the ONLY</text>
+  <text x="703" y="216" class="xs">writers of a slot</text>
+  <text x="703" y="240" class="xs" fill="#1f8a4c">VERIFY · stamp only</text>
+  <text x="703" y="258" class="xs" fill="#b45309">CORRECT · + a reason</text>
+  <text x="703" y="276" class="xs" fill="#b91c1c">FAIL · touch nothing</text>
+
+  <rect x="904" y="154" width="188" height="150" fill="#ffffff" stroke="#1f8a4c" rx="6"/>
+  <text x="918" y="178" class="b">5 · the deck</text>
+  <text x="918" y="200" class="xs mono">cards/*.json — 40</text>
+  <text x="918" y="222" class="xs">prose is authored by a</text>
+  <text x="918" y="238" class="xs">human; a number lives</text>
+  <text x="918" y="254" class="xs">in a <tspan class="mono">{{slot}}</tspan></text>
+  <text x="918" y="280" class="xs">git is the only state</text>
+
+  <rect x="1119" y="154" width="188" height="150" fill="#ffffff" stroke="#1f8a4c" rx="6"/>
+  <text x="1133" y="178" class="b">6 · the gate</text>
+  <text x="1133" y="200" class="xs mono">npm run check</text>
+  <text x="1133" y="222" class="xs">validate · 329 tests ·</text>
+  <text x="1133" y="238" class="xs">parity · claims 29/29</text>
+  <text x="1133" y="262" class="xs">authored content pinned</text>
+  <text x="1133" y="278" class="xs">byte-for-byte</text>
+
+  <rect x="1334" y="154" width="188" height="150" fill="#ffffff" stroke="#1f8a4c" stroke-width="2.6" rx="6"/>
+  <text x="1348" y="178" class="b">7 · classify</text>
+  <text x="1348" y="200" class="xs">what ACTUALLY changed?</text>
+  <text x="1348" y="224" class="xs">every ingest stamps a</text>
+  <text x="1348" y="240" class="xs">time, so a run where</text>
+  <text x="1348" y="256" class="xs">nothing moved still</text>
+  <text x="1348" y="272" class="xs">dirties 17 files</text>
+  <text x="1348" y="294" class="xs" fill="#1f8a4c">→ four outcomes</text>
+
+  <line x1="232" y1="229" x2="257" y2="229" class="lnG"/>
+  <line x1="447" y1="229" x2="472" y2="229" class="lnG"/>
+  <line x1="662" y1="229" x2="687" y2="229" class="lnG"/>
+  <line x1="877" y1="229" x2="902" y2="229" class="lnG"/>
+  <line x1="1092" y1="229" x2="1117" y2="229" class="lnG"/>
+  <line x1="1307" y1="229" x2="1332" y2="229" class="lnG"/>
+
+  <!-- ===================== BAND B ===================== -->
+  <text x="44" y="352" class="band">FOUR OUTCOMES — WHAT THE RUN IS ALLOWED TO DO BY ITSELF</text>
+
+  <path d="M1428 304 L1428 372" class="plain"/>
+  <path d="M1428 372 L220 372 L220 394" class="lnG"/>
+  <path d="M1428 372 L588 372 L588 394" class="lnG"/>
+  <path d="M1428 372 L956 372 L956 394" class="lnG"/>
+  <path d="M1428 372 L1335 372 L1335 394" class="lnA"/>
+
+  <rect x="44" y="396" width="352" height="152" fill="#ffffff" stroke="#9ca3af" rx="6"/>
+  <text x="60" y="422" class="b" fill="#6b7280">NO_CHANGE</text>
+  <text x="60" y="448" class="xs">The tree matches HEAD.</text>
+  <text x="60" y="470" class="xs">Nothing moved, so nothing happens.</text>
+  <text x="60" y="524" class="xs mono" fill="#6b7280">action: nothing</text>
+
+  <rect x="412" y="396" width="352" height="152" fill="#ffffff" stroke="#1f8a4c" rx="6"/>
+  <text x="428" y="422" class="b" fill="#1f8a4c">FRESHNESS_ONLY</text>
+  <text x="428" y="446" class="xs">Timestamps moved; no content did.</text>
+  <text x="428" y="466" class="xs">Committing each run is 365 empty</text>
+  <text x="428" y="486" class="xs">commits a year — and the one day a</text>
+  <text x="428" y="506" class="xs">price moved becomes invisible.</text>
+  <text x="428" y="532" class="xs mono" fill="#1f8a4c">check daily · stamp weekly</text>
+
+  <rect x="780" y="396" width="352" height="152" fill="#ffffff" stroke="#1f8a4c" stroke-width="2.6" rx="6"/>
+  <text x="796" y="422" class="b" fill="#1f8a4c">TIER_A — a source disagreed</text>
+  <text x="796" y="446" class="xs">A deterministic source contradicted a</text>
+  <text x="796" y="466" class="xs">number. No judgement is involved,</text>
+  <text x="796" y="486" class="xs">so no human is needed.</text>
+  <text x="796" y="512" class="xs mono" fill="#1f8a4c">commit to main → publish</text>
+  <text x="796" y="534" class="xs">the loop closes here, by itself</text>
+
+  <rect x="1148" y="396" width="374" height="152" fill="#fffbeb" stroke="#b45309" stroke-width="2.6" rx="6"/>
+  <text x="1164" y="422" class="b" fill="#b45309">NEEDS_REVIEW — a judgement</text>
+  <text x="1164" y="446" class="xs">A rename, a Tier C rewrite, a positioning</text>
+  <text x="1164" y="466" class="xs">claim. A pipeline may correct a number by</text>
+  <text x="1164" y="486" class="xs">itself; it may never publish a judgement.</text>
+  <text x="1164" y="512" class="xs mono" fill="#b45309">open a PR · never commit</text>
+  <text x="1164" y="534" class="xs" fill="#b45309">review beats correction when both occur</text>
+
+  <!-- publish feed -->
+  <path d="M956 548 L956 578 L168 578 L168 662" class="lnG"/>
+  <!-- the return: up the left gutter -->
+  <path d="M800 548 L800 606 L24 606 L24 229 L42 229" class="ret"/>
+  <text transform="translate(17,470) rotate(-90)" class="xs mono" fill="#1f8a4c">tomorrow's run reads what today's run wrote</text>
+  <!-- human branch down -->
+  <path d="M1335 548 L1335 644" class="lnA"/>
+
+  <!-- ===================== BAND C ===================== -->
+  <text x="44" y="634" class="band">THE READ PLANE — REACHED ONLY IF THE GATE PASSED</text>
+  <rect x="44" y="646" width="1100" height="150" fill="#f8fafc" stroke="#1d4ed8" stroke-opacity="0.3" rx="8"/>
+
+  <rect x="60" y="664" width="238" height="114" fill="#ffffff" stroke="#1d4ed8" rx="6"/>
+  <text x="74" y="688" class="b">build</text>
+  <text x="74" y="710" class="xs mono">dist/ — 148 KB</text>
+  <text x="74" y="732" class="xs">one self-contained HTML,</text>
+  <text x="74" y="748" class="xs">from cards + facts —</text>
+  <text x="74" y="764" class="xs">never hand-edited</text>
+
+  <rect x="324" y="664" width="238" height="114" fill="#ffffff" stroke="#1d4ed8" rx="6"/>
+  <text x="338" y="688" class="b">Amazon S3</text>
+  <text x="338" y="710" class="xs">private origin</text>
+  <text x="338" y="732" class="xs">all four public-access</text>
+  <text x="338" y="748" class="xs">blocks ON</text>
+  <text x="338" y="768" class="xs mono">direct GET → 403</text>
+
+  <rect x="588" y="664" width="238" height="114" fill="#ffffff" stroke="#1d4ed8" rx="6"/>
+  <text x="602" y="688" class="b">CloudFront</text>
+  <text x="602" y="710" class="xs">OAC — the only reader</text>
+  <text x="602" y="732" class="xs">TLS 1.2+ · HSTS · CSP</text>
+  <text x="602" y="752" class="xs">publish polls until the</text>
+  <text x="602" y="768" class="xs">edge serves those bytes</text>
+
+  <rect x="852" y="664" width="276" height="114" fill="#ffffff" stroke="#1d4ed8" rx="6"/>
+  <text x="866" y="688" class="b">the learner — no auth</text>
+  <text x="866" y="710" class="xs">search · filter · deep links</text>
+  <text x="866" y="730" class="xs">spaced repetition, no account</text>
+  <text x="866" y="750" class="xs">a card whose facts moved is</text>
+  <text x="866" y="768" class="xs">pulled back into the queue</text>
+
+  <line x1="298" y1="721" x2="322" y2="721" class="lnG"/>
+  <line x1="562" y1="721" x2="586" y2="721" class="lnG"/>
+  <line x1="826" y1="721" x2="850" y2="721" class="lnG"/>
+
+  <!-- human box -->
+  <rect x="1180" y="646" width="342" height="150" fill="#fffbeb" stroke="#b45309" rx="8"/>
+  <text x="1196" y="672" class="b" fill="#b45309">the human step</text>
+  <text x="1196" y="696" class="xs">A pull request is where a person</text>
+  <text x="1196" y="716" class="xs">reads the diff and decides. Merging</text>
+  <text x="1196" y="736" class="xs">re-enters the circuit at step 5, so</text>
+  <text x="1196" y="756" class="xs">the next run verifies what was</text>
+  <text x="1196" y="776" class="xs">just approved.</text>
+
+  <!-- the human's merge re-enters the circuit at step 5 — without this edge the
+       claim "amber is the only exit, and it comes back" is only words -->
+  <path d="M1522 700 L1542 700 L1542 340 L998 340 L998 306" class="lnA" stroke-dasharray="9 5"/>
+  <text x="1010" y="334" class="xs mono" fill="#b45309">merge re-enters at step 5</text>
+
+  <!-- ===================== DETECTORS ===================== -->
+  <rect x="44" y="824" width="1100" height="94" fill="#ffffff" stroke="#9ca3af" stroke-dasharray="5 4" rx="8"/>
+  <text x="60" y="850" class="b">alongside, never gating — the four detectors that answer what a refresh cannot</text>
+  <text x="60" y="874" class="xs"><tspan font-weight="700">check-lifecycle</tspan> has a preview/GA badge gone stale? · <tspan font-weight="700">check-rename</tspan> was the thing renamed? · <tspan font-weight="700">verify-claims</tspan> is every claim still true?</text>
+  <text x="60" y="898" class="xs"><tspan font-weight="700">check-coverage</tspan> — the only one that can see AWS shipped something NO card covers. 117 entries · 101 covered · 3 actionable. A gap is a to-do, not a defect.</text>
+  <path d="M594 820 L594 800" class="lnK"/>
+
+  <!-- ===================== THE POINT ===================== -->
+  <rect x="1180" y="824" width="342" height="94" fill="#f3faf5" stroke="#1f8a4c" stroke-width="2" rx="8"/>
+  <text x="1196" y="850" class="b" fill="#1f8a4c">where the self-updating is</text>
+  <text x="1196" y="874" class="xs">The green circuit, and the dashed line</text>
+  <text x="1196" y="892" class="xs">that closes it. Amber is the only exit</text>
+  <text x="1196" y="910" class="xs">from it — and it comes back.</text>
+
+  <!-- FOOTER -->
+  <text x="44" y="958" class="xs" fill="#6b7280">Every number here is one the build can print: 10 ingest jobs · 15 fact sets · 40 cards · 329 tests · 29/29 checkable claims verified · coverage 117/101/3.</text>
+  <text x="44" y="980" class="xs" fill="#6b7280">This is the flow. The detail view — every guarantee and how each is enforced — is <tspan class="mono">docs/self-updating-architecture.svg</tspan>.</text>
+  <text x="44" y="1006" class="xs mono" fill="#9ca3af">tomasmihalyi/aws-flash-cards · ap-southeast-2 · https://d1hl3sanj0zgqn.cloudfront.net</text>
+</svg>

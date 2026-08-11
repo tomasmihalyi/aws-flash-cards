@@ -56,7 +56,7 @@
   <text x="62" y="176" class="sm mono">SSM  global-infrastructure/services/…/regions</text>
   <text x="62" y="194" class="sm mono">Price List  GetProducts   (us-east-1 only)</text>
   <text x="62" y="212" class="sm mono">Service Quotas  List*     ← a LIMIT, drift-prone</text>
-  <text x="62" y="228" class="xs">3 of 13 ingests · the only ones needing credentials</text>
+  <text x="62" y="228" class="xs">3 of 10 ingests · the only ones needing credentials</text>
 
   <rect x="48" y="244" width="358" height="130" class="pub" rx="5"/>
   <text x="62" y="264" class="t" font-weight="700">Public HTTPS — no credentials</text>
@@ -78,7 +78,7 @@
   <rect x="464" y="122" width="300" height="352" class="band" rx="6"/>
 
   <rect x="478" y="150" width="272" height="120" class="box" rx="5"/>
-  <text x="492" y="172" class="t" font-weight="700">13 ingest jobs</text>
+  <text x="492" y="172" class="t" font-weight="700">10 ingest jobs</text>
   <text x="492" y="192" class="sm">Fetch → parse → hash → write a fact set.</text>
   <text x="492" y="212" class="sm">A parse that yields zero rows REFUSES</text>
   <text x="492" y="228" class="sm">to write: a silent empty result looks</text>
@@ -178,7 +178,7 @@
   <text x="974" y="590" class="xs">Every gate above keeps EXISTING cards</text>
   <text x="974" y="608" class="xs">correct. This is the only one that sees</text>
   <text x="974" y="624" class="xs">something shipped that no card covers.</text>
-  <text x="974" y="642" class="xs mono">116 entries · 100 covered · 3 actionable</text>
+  <text x="974" y="642" class="xs mono">117 entries · 101 covered · 3 actionable</text>
   <text x="974" y="660" class="xs">Reports, never fails a build.</text>
 
   <line x1="1220" y1="424" x2="1110" y2="544" class="ln"/>
