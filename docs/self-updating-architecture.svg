@@ -187,7 +187,7 @@
   <!-- ============================ 5. GATE ============================ -->
   <text x="40" y="726" class="h">5 · THE GATE — npm run check</text>
   <rect x="34" y="736" width="1242" height="76" class="gate" rx="6"/>
-  <text x="52" y="762" class="sm mono">validate → test (329) → build → parity → claims → lifecycle → rename</text>
+  <text x="52" y="762" class="sm mono">validate → test (363) → build → parity → claims → lifecycle → rename</text>
   <text x="52" y="784" class="xs">L-CITATION a resolved slot must carry sources[] + verified_at · L-EVIDENCE every content_hash must re-hash · L-NUMERIC an ungoverned literal warns</text>
   <text x="52" y="801" class="xs">parity: revert every slot to seed_text, invert every recorded correction, and the result must equal the original deck exactly — authored content is pinned byte-for-byte</text>
 
