@@ -7,7 +7,7 @@
   "engines": {
     "node": ">=22.18"
   },
-  "comment": "Zero dependencies by design (NFR-1). TypeScript runs directly on Node's native type stripping \u2014 no bundler, no lockfile, no supply chain.",
+  "comment": "Zero dependencies by design (NFR-1). TypeScript runs directly on Node's native type stripping — no bundler, no lockfile, no supply chain.",
   "scripts": {
     "test": "node --test tests/*.test.ts",
     "validate": "node src/validate.ts",
@@ -39,6 +39,8 @@
     "coverage:strict": "node src/check-coverage.ts --strict",
     "ingest:kiro": "node src/ingest/kiro-changelog.ts",
     "ingest:releases": "node src/ingest/github-releases.ts",
-    "ingest:vendor": "npm run ingest:kiro && npm run ingest:releases"
+    "ingest:vendor": "npm run ingest:kiro && npm run ingest:releases",
+    "draft": "node src/ingest/draft.ts",
+    "draft:write": "node src/ingest/draft.ts --write"
   }
 }

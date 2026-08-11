@@ -150,7 +150,40 @@ check them.
 - [x] T4.5 Tier demotion: any failing checkable claim demotes the **whole card**
       to Tier C. Partial publication would ship the confidently-wrong artefact
       the design exists to prevent.
-- [ ] T4.4 Bedrock drafting with a schema-constrained output
+- [x] T4.4 Bedrock drafting with a schema-constrained output. `src/lib/bedrock.ts`
+      (CLI invocation, so NFR-1's zero dependencies survives), `src/lib/draft-gate.ts`
+      (pure, 23 adversarial tests), `src/ingest/draft.ts`, and a separate
+      `flashcards-draft` IAM role scoped to one inference profile.
+
+      **The model sits inside the gate, never in place of it.** It rewrites prose
+      around slots it must reproduce verbatim; every number still comes from a Tier
+      A fact set. Three outcomes, and the third is the point: `accept` writes at
+      Tier B, `review` opens a PR at Tier C, and `discard` writes nothing **and
+      deliberately opens no PR** — handing a reviewer well-formed prose containing a
+      fabricated number and relying on them to spot it is how a fabrication gets
+      merged.
+
+      The gate is stricter than L-NUMERIC by design. L-NUMERIC exempts a past date
+      because it cannot drift; that exemption is sound for prose a human vouched for
+      and unsound for a model, where the question is fabrication rather than drift.
+      The rule is **may preserve, never introduce**: a digit is legal only where the
+      identical span already appears in the original field.
+
+      **Three defects found by running it, not by reading it:**
+
+      | Defect | Why reading missed it |
+      |---|---|
+      | model id `apac.` does not exist in this account | documented examples use it; `list-inference-profiles` reports `au.` and `global.` |
+      | `ACCEPT — every checkable claim verified (0)` | the draft still held `{{slot:…}}`, so the number was absent from the decomposed text and there was nothing to check. The gate accepted a draft it had not examined |
+      | zero checkable claims read as acceptance | "no claim failed" is not "a claim passed" — the same error as stamping a fresh `verified_at` on a fact that never fetched |
+
+      Each is pinned by a test, and each test was mutation-checked by reverting the
+      fix and confirming the test fails.
+
+      **Exercised once end to end** against `au.anthropic.claude-sonnet-4-5` on
+      AC-19: ACCEPT, 3 checkable claims verified. **Not yet in CI** — the
+      `flashcards-draft` role is in the template but undeployed, and no workflow
+      calls it. Until it runs unattended it is built, not proven.
 - [ ] T4.6 PR automation for Tier C
 - [ ] T4.7 Researcher agent on AgentCore Runtime (Gateway + Memory + Evaluations
       + Policy). Scope: ambiguous launch item → card draft with citations. Nothing

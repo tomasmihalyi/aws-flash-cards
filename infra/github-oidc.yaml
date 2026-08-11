@@ -52,6 +52,22 @@ Parameters:
   DeckBucketName:
     Type: String
     Description: Bucket from the FlashcardsReadPlane stack output.
+  DraftModelId:
+    Type: String
+    Default: 'au.anthropic.claude-sonnet-4-5-20250929-v1:0'
+    Description: >
+      The ONE inference profile Tier B may invoke. Scoped in the DraftRole policy
+      so a compromised workflow cannot reach another model in the account — models
+      differ in data-handling terms, and that matters more than the inference bill.
+  DraftFoundationModel:
+    Type: String
+    Default: 'anthropic.claude-sonnet-4-5-*'
+    Description: >
+      The underlying foundation model, which must ALSO be granted. A cross-region
+      inference profile invokes the foundation model in whichever region serves the
+      request, so a policy naming only the profile fails with an AccessDenied that
+      names the foundation-model ARN instead. Granting just the profile looks
+      correct and is not.
   DistributionId:
     Type: String
     Description: Distribution from the FlashcardsReadPlane stack output.
@@ -263,6 +279,78 @@ Resources:
                   - s3:DeleteBucket
                 Resource: '*'
 
+  # ------------------------------------------------------------------ draft ----
+  # TIER B. A SEPARATE ROLE, NOT A WIDENING OF THE REFRESHER.
+  #
+  # The refresh role's guarantee is "ingest cannot write to AWS", and its policy is
+  # six read operations that mirror src/lib/aws.ts. Model inference is not a write,
+  # but it is not a read of a published source either: it costs money per call and
+  # it is the one operation in this system whose output cannot be trusted on
+  # arrival. Adding bedrock:InvokeModel to the refresher would quietly change what
+  # "the refresh role" means, and the daily unattended job would carry a spend
+  # capability it never needs.
+  #
+  # So Tier B gets its own role. The refresher keeps its Deny on bedrock:*, which
+  # means the nightly job CANNOT reach a model even if a future code path tries.
+  DraftRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: flashcards-draft
+      Description: Invokes ONE model for Tier B prose drafting. Cannot read a source or write the bucket.
+      MaxSessionDuration: 3600
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                'token.actions.githubusercontent.com:aud': sts.amazonaws.com
+                'token.actions.githubusercontent.com:sub': !Sub 'repo:${GitHubOwner}@${GitHubOwnerId}/${GitHubRepo}@${GitHubRepoId}:ref:${GitHubRef}'
+      Policies:
+        - PolicyName: invoke-one-model
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: InvokeTheDraftingModelOnly
+                Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                # Scoped to the inference profile and its underlying foundation
+                # models. A wildcard here would let a compromised workflow run any
+                # model in the account, including ones with different data-handling
+                # terms — the cost of that is not the inference bill.
+                Resource:
+                  - !Sub 'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/${DraftModelId}'
+                  - !Sub 'arn:aws:bedrock:*::foundation-model/${DraftFoundationModel}'
+              - Sid: ListModelsToFailFastRatherThanMidRun
+                Effect: Allow
+                Action: bedrock:ListFoundationModels
+                Resource: '*'
+              - Sid: CallerIdentityForTheRunLog
+                Effect: Allow
+                Action: sts:GetCallerIdentity
+                Resource: '*'
+              - Sid: NeverReadASourceNorTouchTheDeck
+                Effect: Deny
+                Action:
+                  # Tier B is handed its evidence by the refresher's output in the
+                  # repository. It has no business fetching a source itself: if it
+                  # could, "the model only saw retained excerpts" would stop being
+                  # a property and become a hope.
+                  - ssm:*
+                  - pricing:*
+                  - servicequotas:*
+                  - s3:*
+                  - cloudfront:*
+                  - iam:*
+                  - secretsmanager:*
+                  - bedrock:CreateModelCustomizationJob
+                  - bedrock:PutModelInvocationLoggingConfiguration
+                Resource: '*'
+
 Outputs:
   RefreshRoleArn:
     Description: Set as the repository variable AWS_REFRESH_ROLE_ARN.
@@ -270,3 +358,6 @@ Outputs:
   PublishRoleArn:
     Description: Set as the repository variable AWS_PUBLISH_ROLE_ARN.
     Value: !GetAtt PublishRole.Arn
+  DraftRoleArn:
+    Description: Set as the repository variable AWS_DRAFT_ROLE_ARN. Tier B only.
+    Value: !GetAtt DraftRole.Arn
