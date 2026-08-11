@@ -1,0 +1,35 @@
+{
+  "card_id": "AC-05",
+  "generated_at": "2026-08-11T05:06:11.742Z",
+  "model": "au.anthropic.claude-sonnet-4-5-20250929-v1:0",
+  "verdict": {
+    "outcome": "accept",
+    "rejections": [],
+    "reason": "well-formed and all 4 checkable claim(s) verified — writable as tier-b"
+  },
+  "draft": {
+    "hook": "Managed short-term and long-term memory so agents remember across turns—and across sessions.",
+    "back": {
+      "lead": "Memory gives agents managed recall. Short-term memory captures raw session events—the conversation as it unfolds. Long-term memory applies extraction strategies to distill durable knowledge that persists across sessions.",
+      "hookline": "Short-term = the transcript. Long-term = what a good assistant would write in their notebook afterward.",
+      "kv": [
+        {
+          "k": "Strategies",
+          "v": "Built-in: semantic facts, summaries, and user preferences. A self-managed strategy (GA) lets you run your own extraction and consolidation pipeline."
+        },
+        {
+          "k": "Episodic",
+          "v": "Added at re:Invent 2025: per-user episodic memory for personal preferences (seat choice, budget caps, style)."
+        },
+        {
+          "k": "Streaming",
+          "v": "Memory streaming (2026) reduces the lag between an event happening and it becoming retrievable."
+        },
+        {
+          "k": "Pricing",
+          "v": "{{slot:memory_price}}"
+        }
+      ]
+    }
+  }
+}
