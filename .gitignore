@@ -16,3 +16,12 @@ package-lock.json
 # it by `rsvg-convert -w 2100 -o x.png x.svg`. Committing both would create a
 # second artefact able to disagree with the first — the same reason dist/ is here.
 docs/*.png
+
+# Tier B scratch. `<CARD>.draft.json` is raw model output and `<CARD>.pr.md` is a
+# pull-request body — an INPUT to a review and a message, neither a deliverable.
+#
+# The draft workflow used to `git add cards drafts`, so merging a draft PR carried
+# both onto main permanently: one pair per redraft, forever, and a repository whose
+# history fills up with the model's working notes. What a reviewer needs is the
+# CARD diff; the artifact is how it got there, not what it is.
+drafts/

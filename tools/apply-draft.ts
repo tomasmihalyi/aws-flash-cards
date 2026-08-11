@@ -134,6 +134,26 @@ export function prBody(art: DraftArtifact, regated: DraftVerdict, card: Card): s
     lines.push('```', '');
   }
 
+  if (regated.styleDrift?.length) {
+    // Named explicitly because this is the class of change a reviewer skims past.
+    // Individually each is trivial; across a few hundred cards it is a slow
+    // Americanisation of the deck's voice that nobody chose.
+    lines.push(
+      '### ⚠ House-style changes in this rewrite',
+      '',
+      'These fields changed **only** by spelling or punctuation variant. The gate has no',
+      'opinion about spelling, so they are not blocking — but they are the changes most',
+      'likely to be waved through, and the deck is Australian English with spaced em dashes.',
+      '',
+      '```',
+      ...regated.styleDrift.map((r) => `${r.field}: ${r.detail}`),
+      '```',
+      '',
+      'If these are the only changes you care about, close this PR rather than merging it.',
+      '',
+    );
+  }
+
   lines.push(
     '### Reviewing it',
     '',

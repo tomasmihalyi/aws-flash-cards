@@ -65,7 +65,8 @@ export type DraftRuleId =
   | 'FIELD_EMPTY'
   | 'FIELD_TOO_LONG'
   | 'KV_SHAPE_CHANGED'
-  | 'CLAIM_UNVERIFIED';
+  | 'CLAIM_UNVERIFIED'
+  | 'STYLE_DRIFT';
 
 export type DraftRejection = { rule: DraftRuleId; field: string; detail: string };
 
@@ -74,6 +75,13 @@ export type DraftOutcome = 'accept' | 'review' | 'discard';
 export type DraftVerdict = {
   outcome: DraftOutcome;
   rejections: DraftRejection[];
+  /**
+   * House-style changes that are NOT blocking, listed so a reviewer sees them
+   * named rather than having to spot them in a diff. Separate from `rejections`
+   * because these do not decide the outcome — except when they are the only
+   * change, which is handled in `checkDraft`.
+   */
+  styleDrift?: DraftRejection[];
   reason: string;
 };
 
@@ -92,6 +100,69 @@ const DIGIT_SPAN_RE = /\d[\d,.]*/g;
 
 /** Prose is capped relative to what the human wrote, not at an absolute length. */
 const LENGTH_TOLERANCE = 1.6;
+
+/**
+ * HOUSE STYLE, ENFORCED RATHER THAN REQUESTED.
+ *
+ * The drafter's system prompt asks for Australian English and deliberate
+ * punctuation. A prompt is advisory: the first two real drafts changed
+ * `afterwards` → `afterward` and stripped the spaces around an em dash, and both
+ * passed every gate — correctly, because neither is a fact and the verifier has no
+ * opinion about spelling.
+ *
+ * That is the exact shape of a problem this repository has hit before: prose in a
+ * prompt does not bind, a deterministic check does. Across a few hundred cards
+ * those substitutions are a slow Americanisation of the deck's voice that nobody
+ * chose, and each individual instance is too small to notice in review.
+ *
+ * So the drift is detected and NAMED. Two consequences, deliberately different:
+ *
+ *   some changes are style, some are real  →  report the style ones in the PR body
+ *                                            so a reviewer sees them called out
+ *                                            instead of hunting them in a diff
+ *
+ *   EVERY change is style               →  discard. A rewrite that alters nothing
+ *                                            but spelling has not earned a review,
+ *                                            and spending a human read on it is
+ *                                            how a review queue stops being read.
+ *
+ * The pair list is deliberately short and observed rather than exhaustive: a full
+ * US/UK dictionary would be a dependency and a maintenance burden, and the goal is
+ * to catch the systematic substitutions a model actually makes.
+ */
+const STYLE_PAIRS: [RegExp, string][] = [
+  [/\b(\w+?)ization\b/gi, '$1isation'],
+  [/\b(\w+?)ize\b/gi, '$1ise'],
+  [/\b(\w+?)izes\b/gi, '$1ises'],
+  [/\b(\w+?)ized\b/gi, '$1ised'],
+  [/\b(\w+?)izing\b/gi, '$1ising'],
+  [/\b(\w+?)or\b/gi, '$1our'],
+  [/\bafterward\b/gi, 'afterwards'],
+  [/\btoward\b/gi, 'towards'],
+  [/\bcenter\b/gi, 'centre'],
+  [/\bmeter\b/gi, 'metre'],
+];
+
+/**
+ * Reduce a string to a form where only SUBSTANTIVE differences survive.
+ *
+ * Spelling variants are normalised to one side, em-dash spacing is regularised and
+ * runs of whitespace collapse. If two strings match after this, whatever changed
+ * between them was style.
+ */
+export function styleNormalise(text: string): string {
+  let s = text.toLowerCase();
+  for (const [re, to] of STYLE_PAIRS) s = s.replace(re, to);
+  s = s.replace(/\s*—\s*/g, ' — ');   // em dash always spaced
+  s = s.replace(/\s*–\s*/g, ' – ');   // en dash likewise
+  s = s.replace(/\s+/g, ' ').trim();
+  return s;
+}
+
+/** True when the only difference between two strings is house style. */
+export function isStyleOnlyChange(before: string, after: string): boolean {
+  return before !== after && styleNormalise(before) === styleNormalise(after);
+}
 
 function slotsIn(text: string): string[] {
   return (text.match(SLOT_RE) ?? []).slice().sort();
@@ -221,10 +292,49 @@ export function checkDraft(original: Card, draft: DraftFields, ctx?: VerifyConte
     };
   }
 
+  // House style. Runs before the claim check because a rewrite that changed nothing
+  // but spelling should not cost an evidence pass, let alone a human read.
+  const fieldPairs: [string, string, string][] = [
+    ['hook', original.hook, draft.hook],
+    ['back.lead', original.back.lead, draft.back.lead],
+    ['back.hookline', original.back.hookline, draft.back.hookline],
+    ...original.back.kv.map(
+      (r, i) => [`back.kv[${i}].v`, r.v, draft.back.kv[i]?.v ?? r.v] as [string, string, string],
+    ),
+  ];
+
+  const changed = fieldPairs.filter(([, b, a]) => b !== a);
+  const styleOnly = changed.filter(([, b, a]) => isStyleOnlyChange(b, a));
+  const substantive = changed.filter(([, b, a]) => !isStyleOnlyChange(b, a));
+
+  const styleDrift: DraftRejection[] = styleOnly.map(([field]) => ({
+    rule: 'STYLE_DRIFT' as const,
+    field,
+    detail: 'this field changed only by spelling or punctuation variant — house style is Australian English with spaced em dashes',
+  }));
+
+  if (changed.length > 0 && substantive.length === 0) {
+    return {
+      outcome: 'discard',
+      rejections: styleDrift,
+      styleDrift,
+      reason: `every changed field differs only by house style (${styleOnly.length} field(s)) — a rewrite that alters nothing but spelling has not earned a review`,
+    };
+  }
+
+  if (changed.length === 0) {
+    return {
+      outcome: 'discard',
+      rejections: [],
+      reason: 'the draft is identical to the card — nothing to review',
+    };
+  }
+
   if (!ctx) {
     return {
       outcome: 'review',
       rejections,
+      styleDrift: styleDrift.length ? styleDrift : undefined,
       reason: 'well-formed, but no verification context was supplied — cannot claim verified, so it routes to review',
     };
   }
@@ -264,6 +374,7 @@ export function checkDraft(original: Card, draft: DraftFields, ctx?: VerifyConte
         field: r.claim.field,
         detail: `${r.verdict}: ${r.reason}`,
       })),
+      styleDrift: styleDrift.length ? styleDrift : undefined,
       reason: `${unverified.length} of ${checkable.length} checkable claim(s) could not be verified — demoted to Tier C and routed to a PR`,
     };
   }
@@ -282,6 +393,7 @@ export function checkDraft(original: Card, draft: DraftFields, ctx?: VerifyConte
     return {
       outcome: 'review',
       rejections: [],
+      styleDrift: styleDrift.length ? styleDrift : undefined,
       reason: 'no checkable claim in the draft, so nothing was verified — a rewrite that cannot be checked goes to review, never straight in',
     };
   }
@@ -289,6 +401,7 @@ export function checkDraft(original: Card, draft: DraftFields, ctx?: VerifyConte
   return {
     outcome: 'accept',
     rejections: [],
+    styleDrift: styleDrift.length ? styleDrift : undefined,
     reason: `well-formed and all ${checkable.length} checkable claim(s) verified — writable as tier-b`,
   };
 }

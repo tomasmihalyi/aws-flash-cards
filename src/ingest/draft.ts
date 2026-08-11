@@ -85,9 +85,21 @@ const SYSTEM = [
   '5. Say only what the supplied source excerpts support. If they do not support a point,',
   '   leave it out rather than reaching for general knowledge.',
   '6. Rewrite for clarity at roughly the original length. This is a refresh, not an essay.',
+  '7. HOUSE STYLE. This deck is written in Australian English and its punctuation is',
+  '   deliberate. Do not "correct" either.',
+  '     · -ise, -isation, not -ize, -ization  (organise, specialise, optimisation)',
+  '     · -our, not -or  (behaviour, colour, favour)',
+  '     · -re, not -er  (centre, metre)  ·  -wards, not -ward  (afterwards, towards)',
+  '     · an em dash keeps its spaces: "a — b", never "a—b"',
+  '     · a single space after a full stop',
+  '   If a word is already spelled a particular way in the original, keep that spelling.',
   '',
-  'A response breaking any of these is discarded whole, so a cautious rewrite that keeps',
+  'A response breaking rules 1-5 is discarded whole, so a cautious rewrite that keeps',
   'the original meaning is always better than an ambitious one.',
+  '',
+  'Rule 7 is checked too, and a rewrite whose ONLY changes are spelling or punctuation',
+  'variants is discarded as having changed nothing worth a review. Change the words or',
+  'leave them alone.',
 ].join('\n');
 
 function factSets(): FactSet[] {

@@ -223,6 +223,83 @@ describe('discard and review are different doors', () => {
   });
 });
 
+describe('house style is enforced, not merely requested', () => {
+  /**
+   * The drift these tests exist for is not hypothetical. The first two real drafts
+   * changed `afterwards` → `afterward` and stripped the spaces around an em dash,
+   * and both passed every gate — correctly, because neither is a fact.
+   *
+   * A prompt rule reduces the chance. Only a check makes it visible.
+   */
+  test('a rewrite whose ONLY change is a US spelling is discarded', () => {
+    const card = baseCard();
+    card.back.hookline = 'One microVM per session, checked afterwards.';
+    const d = cleanDraft();
+    d.hook = card.hook;
+    d.back.lead = card.back.lead;
+    d.back.kv = card.back.kv.map((r) => ({ k: r.k, v: r.v }));
+    d.back.hookline = 'One microVM per session, checked afterward.';
+
+    const v = checkDraft(card, d);
+    assert.equal(v.outcome, 'discard', `expected discard, got ${v.outcome}: ${v.reason}`);
+    assert.match(v.reason, /only by house style/);
+    assert.ok(v.styleDrift?.some((r) => r.rule === 'STYLE_DRIFT'));
+  });
+
+  test('a rewrite whose ONLY change is em-dash spacing is discarded', () => {
+    const card = baseCard();
+    card.back.hookline = 'Short-term — the transcript. Long-term — the notebook.';
+    const d = cleanDraft();
+    d.hook = card.hook;
+    d.back.lead = card.back.lead;
+    d.back.kv = card.back.kv.map((r) => ({ k: r.k, v: r.v }));
+    d.back.hookline = 'Short-term—the transcript. Long-term—the notebook.';
+
+    const v = checkDraft(card, d);
+    assert.equal(v.outcome, 'discard');
+    assert.match(v.reason, /only by house style/);
+  });
+
+  test('style drift ALONGSIDE a real change is reported, not blocked', () => {
+    const card = baseCard();
+    card.back.hookline = 'One microVM per session, checked afterwards.';
+    const d = cleanDraft();
+    d.back.hookline = 'One microVM per session, checked afterward.';   // style only
+    d.back.lead = '{{slot:region_availability}} Runtime reached GA in October 2025, and it takes session isolation off your hands.'; // real
+
+    const v = checkDraft(card, d);
+    assert.notEqual(v.outcome, 'discard', `a real change must survive: ${v.reason}`);
+    assert.ok(v.styleDrift?.some((r) => r.field === 'back.hookline'),
+      'the style-only field must still be named for the reviewer');
+  });
+
+  test('an identical draft is discarded rather than opening an empty PR', () => {
+    const card = baseCard();
+    const d: DraftFields = {
+      hook: card.hook,
+      back: {
+        lead: card.back.lead,
+        hookline: card.back.hookline,
+        kv: card.back.kv.map((r) => ({ k: r.k, v: r.v })),
+      },
+    };
+    const v = checkDraft(card, d);
+    assert.equal(v.outcome, 'discard');
+    assert.match(v.reason, /identical/);
+  });
+
+  test('the normaliser folds the variants it claims to', async () => {
+    const { styleNormalise, isStyleOnlyChange } = await import('../src/lib/draft-gate.ts');
+    assert.equal(styleNormalise('optimize'), styleNormalise('optimise'));
+    assert.equal(styleNormalise('behavior'), styleNormalise('behaviour'));
+    assert.equal(styleNormalise('afterward'), styleNormalise('afterwards'));
+    assert.equal(styleNormalise('a—b'), styleNormalise('a — b'));
+    assert.ok(isStyleOnlyChange('checked afterwards', 'checked afterward'));
+    // and does NOT fold a genuine rewrite
+    assert.ok(!isStyleOnlyChange('the transcript', 'the conversation'));
+  });
+});
+
 describe('the gate itself is importable without running', () => {
   test('draft-gate.ts exports pure functions and no side effects', async () => {
     const mod = await import('../src/lib/draft-gate.ts');
@@ -247,7 +324,7 @@ describe('the gate itself is importable without running', () => {
  * than the deck it guards and Tier B could never accept anything.
  */
 describe('the claims path, against the real deck', () => {
-  test('an identity refresh of an already-verified card is accepted', async () => {
+  test('a claim-preserving rewrite of a verified card is accepted', async () => {
     const { loadCards, loadFactStore, loadCategories, paths } = await import('../src/lib/store.ts');
     const { evidenceTextsFrom, datedEntriesFrom, subjectStemsOf, verifyCard } =
       await import('../src/lib/verifier.ts');
@@ -283,8 +360,14 @@ describe('the claims path, against the real deck', () => {
 
     if (!probe) return; // no fully-verified card with checkable claims; nothing to assert
 
+    // A SUBSTANTIVE but claim-preserving edit, and it has to be substantive now:
+    // an identical draft is discarded rather than opening an empty PR, and a
+    // style-only change is discarded too. So the probe edits the hook — the field
+    // least likely to carry a checkable claim — and leaves every claim-bearing
+    // field byte-identical. That isolates the claims path without tripping the
+    // house-style or no-op rules.
     const identity: DraftFields = {
-      hook: probe.card.hook,
+      hook: `${probe.card.hook} Worth knowing.`,
       back: {
         lead: probe.card.back.lead,
         hookline: probe.card.back.hookline,
@@ -296,7 +379,7 @@ describe('the claims path, against the real deck', () => {
     assert.equal(
       verdict.outcome,
       'accept',
-      `${probe.card.card_id} is fully verified, so an identity refresh must be accepted — got ${verdict.outcome}: ${verdict.reason} ${JSON.stringify(verdict.rejections)}`,
+      `${probe.card.card_id} is fully verified, so a claim-preserving rewrite must be accepted — got ${verdict.outcome}: ${verdict.reason} ${JSON.stringify(verdict.rejections)}`,
     );
   });
 

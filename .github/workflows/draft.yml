@@ -98,7 +98,11 @@ jobs:
           # is created first.
           node tools/apply-draft.ts --card "${{ inputs.card }}"
 
-          git add cards drafts
+          # `cards` only. The artifact and the PR body are gitignored: they are an
+          # input to a review and a message, not deliverables, and committing them
+          # put one pair on main per redraft. gh reads the body from the working
+          # tree, which apply-draft has already written, so nothing is lost.
+          git add cards
           git commit -m "draft(${{ inputs.card }}): model-drafted prose, Tier C pending review" \
                      -m "$(cat drafts/${{ inputs.card }}.pr.md)"
           git push origin "$branch"
