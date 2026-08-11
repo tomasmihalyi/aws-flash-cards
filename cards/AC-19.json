@@ -16,9 +16,9 @@
   "badge_text": "ENTERPRISE",
   "art": "regions",
   "title": "Regions & compliance",
-  "hook": "Sydney was a launch region from day one; enterprise controls came with GA.",
+  "hook": "Sydney was available at launch; enterprise controls arrived at GA.",
   "back": {
-    "lead": "{{slot:region_availability}} GA brought the enterprise checklist: VPC connectivity across all services, PrivateLink, CloudFormation, and resource tagging.",
+    "lead": "{{slot:region_availability}} GA delivered the enterprise checklist: VPC connectivity across all services, PrivateLink, CloudFormation, and resource tagging.",
     "kv": [
       {
         "k": "Sydney",
@@ -33,7 +33,7 @@
         "v": "Newer preview features often start US-only; check the region list per service before architecting."
       }
     ],
-    "hookline": "Data-residency-sensitive builds (health, gov, finance) can keep agent state, memory, and traces in-region."
+    "hookline": "Data-residency-sensitive workloads (health, government, finance) can keep agent state, memory, and traces in-region."
   },
   "slots": {
     "region_availability": {
@@ -73,16 +73,22 @@
     }
   ],
   "verified_at": "2026-08-11T00:37:21.984Z",
-  "confidence": "high",
+  "confidence": "medium",
   "depends_on": [],
   "aka": [],
   "superseded_by": null,
   "supersedes": [],
-  "needs_review": false,
-  "review_reasons": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0.",
+      "raised_at": "2026-08-11T05:00:58.780Z",
+      "raised_by": "tools/apply-draft.ts"
+    }
+  ],
   "provenance": {
-    "tier": "A",
-    "authored_by": "legacy-import",
+    "tier": "C",
+    "authored_by": "model",
     "history": [
       {
         "at": "2026-08-06T12:57:02.398Z",
@@ -118,9 +124,40 @@
           "agentcore.regions.list"
         ],
         "reason": "Deterministic source disagreed with the rendered claim. Corrected with zero model involvement."
+      },
+      {
+        "at": "2026-08-11T05:00:58.780Z",
+        "tier": "C",
+        "action": "correct",
+        "generator": "tools/apply-draft.ts",
+        "field": "hook",
+        "before": "Sydney was a launch region from day one; enterprise controls came with GA.",
+        "after": "Sydney was available at launch; enterprise controls arrived at GA.",
+        "reason": "Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0. Re-gated at apply time: well-formed and all 3 checkable claim(s) verified — writable as tier-b"
+      },
+      {
+        "at": "2026-08-11T05:00:58.780Z",
+        "tier": "C",
+        "action": "correct",
+        "generator": "tools/apply-draft.ts",
+        "field": "back.lead",
+        "before": "{{slot:region_availability}} GA brought the enterprise checklist: VPC connectivity across all services, PrivateLink, CloudFormation, and resource tagging.",
+        "after": "{{slot:region_availability}} GA delivered the enterprise checklist: VPC connectivity across all services, PrivateLink, CloudFormation, and resource tagging.",
+        "reason": "Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0. Re-gated at apply time: well-formed and all 3 checkable claim(s) verified — writable as tier-b"
+      },
+      {
+        "at": "2026-08-11T05:00:58.780Z",
+        "tier": "C",
+        "action": "correct",
+        "generator": "tools/apply-draft.ts",
+        "field": "back.hookline",
+        "before": "Data-residency-sensitive builds (health, gov, finance) can keep agent state, memory, and traces in-region.",
+        "after": "Data-residency-sensitive workloads (health, government, finance) can keep agent state, memory, and traces in-region.",
+        "reason": "Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0. Re-gated at apply time: well-formed and all 3 checkable claim(s) verified — writable as tier-b"
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-06T13:03:30.537Z"
+  "updated_at": "2026-08-11T05:00:58.780Z",
+  "signed_off": null
 }
