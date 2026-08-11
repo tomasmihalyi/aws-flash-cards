@@ -120,9 +120,18 @@ deploy half is parked until a repo and CI exist.
 - [ ] T3.7 "What changed this week" deck from git history
 - [ ] T3.9 Icon strategy at scale — verify AWS Architecture Icons licence terms
       **before** shipping them
-- [ ] T3.10 S3 + CloudFront + OAC in `ap-southeast-2`; publish on merge
-      (**blocked: needs its own repo + remote; deploy account confirmed as
-      `demo` / <deploy-account>**)
+- [x] T3.10 S3 + CloudFront + OAC in `ap-southeast-2`; publish on merge.
+      Stack `FlashcardsReadPlane`, private bucket + OAC, `publish.yml` on push
+      (path-filtered to `cards/ facts/ content/ src/ schema/`) and called
+      directly by `refresh.yml`. Verified repeatedly on 2026-08-11 by
+      byte-identity at the edge. The original blocker — no repo, no remote — was
+      cleared when the repo was extracted and later transferred to
+      `tomasmihalyi`.
+
+      **This box was found lying** during a reconciliation on 2026-08-11: it had
+      been unticked for a day while the thing it describes ran in production. The
+      lesson is not about this task, it is that a checkbox nobody reconciles
+      decays into decoration — the same defect the Gatherly plans have.
 
 ## P4 — Tier B/C loop
 
@@ -429,7 +438,16 @@ finished.
 - [ ] T5.3 Price List product disappearance signal
 - [ ] T5.4 botocore rename-vs-remove discrimination (shape-identity test)
 - [ ] T5.5 Non-AWS changelogs (Claude Code, Codex)
-- [ ] T5.6 Automatic rename ⇒ `aka[]` + commit
+- [x] T5.6 Automatic rename ⇒ `aka[]` + commit. `src/ingest/apply-rename.ts`
+      writes the old name into `aka[]` with its date and source. Evidence in the
+      deck: AC-14 carries `aka[0].name = "Agent Registry"` and one `rename`
+      history entry, from the AWS Agent Registry rename. Also found unticked
+      during the 2026-08-11 reconciliation.
+
+      A rename stays deliberately separate from a correction in the ledger: a
+      correction says the card was **wrong**, a rename says the world changed its
+      mind about what the thing is **called**. Collapsing them would destroy the
+      only signal that tells those apart when reading a card's history later.
 - [ ] T5.7 Human-gated retirement ⇒ PR + tombstone render state
 - [x] T5.8 **Dependency fan-out — resurface the cards that build on a corrected
       one.** `depends_on` had existed since P0, was carried into `dist/deck.json`,
@@ -475,15 +493,34 @@ finished.
       corrected since you last studied it: AC-04 — AgentCore Runtime."
 
 - [ ] T5.9 Rename fixtures: Bedrock Agents → Classic (incl. closed-to-new date);
-      QuickSight → Quick Suite lineage
+      QuickSight → Quick Suite lineage — **PARTIAL.** The Agents → Classic
+      phrasing IS tested in `tests/rename.test.ts`. The closed-to-new date is not
+      tested at all, and neither is the QuickSight → Quick Suite lineage. A grep
+      for "Agents Classic" makes this look done, which is why it is annotated
+      rather than ticked. — **PARTIAL.** The Agents → Classic
+      phrasing IS tested (`tests/rename.test.ts`: `renameCandidateFrom('Bedrock
+      Agents has been renamed to Bedrock Agents Classic')`). The closed-to-new
+      date is not tested at all, and neither is the QuickSight → Quick Suite
+      lineage. A grep for "Agents Classic" makes this look done, which is why it
+      is annotated rather than ticked.
 
 **Exit:** both fixtures handled correctly and a dependent practice card flagged.
 
 ## P6 — Content scale-up (not in this run)
 
-- [ ] T6.1 Bedrock, SageMaker AI (developer-relevant), Strands/MCP/A2A
-- [ ] T6.2 Coding agents: Kiro, Claude Code on Bedrock, Codex on Bedrock, Q Dev
-- [ ] T6.3 Quick boundary set — Tier C by definition
+- [ ] T6.1 Bedrock, SageMaker AI (developer-relevant), Strands/MCP/A2A —
+      **PARTIAL.** `bedrock` 2 cards, `frameworks` 2 (Strands). Zero SageMaker
+      cards. Not ticked: two of three subjects covered is not the task.
+- [ ] T6.2 Coding agents: Kiro, Claude Code on Bedrock, Codex on Bedrock, Q Dev —
+      **PARTIAL, one part blocked.** `coding-agents` 8 cards. Claude Code on
+      Bedrock and Codex on Bedrock have no documentation page (stub redirect at
+      every path tried), so those cards have no citable source and are blocked
+      rather than merely unwritten.
+- [x] T6.3 Quick boundary set — Tier C by definition. QK-01, QK-02, QK-03, all
+      three at `tier: C` as the task requires; QK-02 and QK-03 signed off by name.
+      QK-01 ("What Amazon Quick is") is descriptive rather than positioning, so it
+      carries no sign-off and does not need one. Found unticked during the
+      2026-08-11 reconciliation.
 - [ ] T6.4 Practice cards from the three published Medium articles
 - [ ] T6.5 Distillation cards with attribution
 - [ ] T6.6 Grow to 200–400 cards
