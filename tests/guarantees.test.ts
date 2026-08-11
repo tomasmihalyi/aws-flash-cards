@@ -552,6 +552,28 @@ describe('guarantee: a Tier C judgement is accounted for, by a flag or by a huma
     }
   });
 
+  test('a raised review flag is recorded in the history, not only on the card', () => {
+    /**
+     * The counterpart to the test below, and it catches the same defect EARLIER.
+     *
+     * That one only fires once a card is both flagged AND signed off, so a card
+     * left flagged and unsigned could carry `needs_review: true` indefinitely with
+     * the append-only history holding no record of why. That is exactly the state
+     * tools/apply-draft.ts produced on its first run: the flag was set on the card
+     * and the ledger said nothing, and it went unnoticed until a sign-off tried to
+     * clear a flag the history had never seen raised.
+     *
+     * `review_reasons` is live state that sign-off removes. The history is the
+     * durable record, so the raise has to be written there when it happens.
+     */
+    for (const c of cards) {
+      if (!c.needs_review) continue;
+      const flagged = c.provenance.history.some((h) => h.action === 'flag-review');
+      assert.ok(flagged,
+        `${c.card_id}: needs_review is set but no flag-review entry records why — sign-off would erase the only record`);
+    }
+  });
+
   test('clearing a review flag never erases why it was raised', () => {
     // The reasons come off the live card, but the flag-review entry that recorded
     // them stays in the append-only history. Otherwise sign-off would destroy the

@@ -265,6 +265,28 @@ function main(): void {
   };
   card.review_reasons = [...(card.review_reasons ?? []), reason];
 
+  /**
+   * THE FLAG ITSELF IS A LEDGER EVENT, not just a field.
+   *
+   * `review_reasons` lives on the card's LIVE state and `tools/sign-off.ts`
+   * removes it when a human approves. So if raising the flag only wrote that
+   * field, signing off would destroy the only record of what was approved and
+   * why — and the history would show a `clear-review` for a flag it never saw
+   * raised.
+   *
+   * Found by the existing guarantee `clearing a review flag never erases why it
+   * was raised`, which failed the moment the first drafted card was signed off:
+   * "AC-05: signed off but the history never records it being flagged". The
+   * append-only history has to carry the raise, not merely the resolution.
+   */
+  card.provenance.history.push({
+    at: now,
+    tier: 'C',
+    action: 'flag-review',
+    generator: GENERATOR,
+    reason: reason.reason,
+  } as HistoryEntry);
+
   for (const c of changes) {
     card.provenance.history.push({
       at: now,

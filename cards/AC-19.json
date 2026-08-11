@@ -73,19 +73,13 @@
     }
   ],
   "verified_at": "2026-08-11T00:37:21.984Z",
-  "confidence": "medium",
+  "confidence": "high",
   "depends_on": [],
   "aka": [],
   "superseded_by": null,
   "supersedes": [],
-  "needs_review": true,
-  "review_reasons": [
-    {
-      "reason": "Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0.",
-      "raised_at": "2026-08-11T05:00:58.780Z",
-      "raised_by": "tools/apply-draft.ts"
-    }
-  ],
+  "needs_review": false,
+  "review_reasons": [],
   "provenance": {
     "tier": "C",
     "authored_by": "model",
@@ -154,10 +148,27 @@
         "before": "Data-residency-sensitive builds (health, gov, finance) can keep agent state, memory, and traces in-region.",
         "after": "Data-residency-sensitive workloads (health, government, finance) can keep agent state, memory, and traces in-region.",
         "reason": "Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0. Re-gated at apply time: well-formed and all 3 checkable claim(s) verified — writable as tier-b"
+      },
+      {
+        "at": "2026-08-11T05:00:58.780Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "tools/apply-draft.ts",
+        "reason": "Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0. [Entry reconstructed from the recorded field corrections: the applier omitted the flag-review event, which the guarantee test caught at sign-off. Timestamp is the original apply time.]"
+      },
+      {
+        "at": "2026-08-11T05:11:33.078Z",
+        "tier": "C",
+        "action": "clear-review",
+        "generator": "tools/sign-off.ts",
+        "reason": "Signed off by Tomas Mihalyi. Approved: Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0. (The flag-review entries recording why this was raised remain in this history.)"
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-11T05:00:58.780Z",
-  "signed_off": null
+  "updated_at": "2026-08-11T05:11:33.078Z",
+  "signed_off": {
+    "by": "Tomas Mihalyi",
+    "at": "2026-08-11T05:11:33.078Z"
+  }
 }
