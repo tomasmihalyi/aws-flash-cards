@@ -1,7 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >
-  GitHub Actions OIDC trust plus the two roles the refresh plane needs.
-  No access keys are created and nothing long-lived is stored in GitHub.
+  GitHub Actions OIDC trust plus the three roles the planes need: refresh (read
+  the sources), publish (write the bucket, invalidate the edge) and draft (invoke
+  one model for Tier B). No access keys are created and nothing long-lived is
+  stored in GitHub.
 
 # WHY TWO ROLES AND NOT ONE
 #
@@ -257,6 +259,20 @@ Resources:
               - Sid: InvalidateTheOneDistribution
                 Effect: Allow
                 Action: cloudfront:CreateInvalidation
+                Resource: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${DistributionId}'
+              - Sid: ReadBackTheInvalidationSoCompletionCanBeCONFIRMED
+                Effect: Allow
+                # Creating an invalidation is not the same as knowing it landed.
+                # Without this read, publish can purge the edge but cannot say
+                # whether the purge completed — so its success message could only
+                # ever describe the ONE edge location the runner sampled, and was
+                # previously worded as though it covered all of them.
+                #
+                # Read-only, and scoped to the same single distribution as the
+                # create. It grants no new ability to change anything.
+                Action:
+                  - cloudfront:GetInvalidation
+                  - cloudfront:ListInvalidations
                 Resource: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${DistributionId}'
               - Sid: NeverReadASourceNorChangeTheBucketItself
                 Effect: Deny

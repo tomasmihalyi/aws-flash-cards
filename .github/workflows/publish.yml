@@ -69,30 +69,78 @@ jobs:
             --content-type 'text/html; charset=utf-8' \
             --cache-control 'public, max-age=300'
 
+      - name: Invalidate the edge
+        env:
+          DIST: ${{ vars.DECK_DISTRIBUTION_ID }}
+        run: |
+          set -euo pipefail
+          # WHY THIS STEP EXISTS AT ALL — it did not, for the first three weeks.
+          #
+          # Upload alone leaves propagation to `max-age=300` expiry, PER EDGE
+          # LOCATION, and each POP caches independently. The symptom that exposed
+          # it: a publish reported success from a US runner while the Sydney POP
+          # served the previous deck for four more minutes, and the distribution's
+          # invalidation history was empty. So the deck's actual visible-update
+          # window was "up to five minutes, depending where you are", which is not
+          # something anyone had decided.
+          #
+          # A single /* is one free invalidation path per month's allowance and
+          # purges every POP.
+          id=$(aws cloudfront create-invalidation \
+                 --distribution-id "$DIST" \
+                 --paths '/*' \
+                 --query 'Invalidation.Id' --output text)
+          echo "invalidation=$id"
+          echo "INVALIDATION_ID=$id" >> "$GITHUB_ENV"
+
       - name: Verify what CloudFront serves is what the gate validated
         env:
           DECK_URL: ${{ vars.DECK_URL }}
+          DIST: ${{ vars.DECK_DISTRIBUTION_ID }}
         run: |
           set -euo pipefail
-          # max-age=300 means the edge may still hold the previous object, so poll
-          # rather than assert immediately. Byte-identity is the only check that
-          # cannot pass while serving a stale or truncated artifact — a 200 and a
-          # header set can both look healthy over the wrong bytes.
+          # WHAT THIS PROVES, AND WHAT IT DOES NOT
           #
-          # sha256sum, not shasum: this runs on Linux. shasum is a perl script that
-          # happens to be present on GitHub's ubuntu images, so depending on it
-          # would make the gate hostage to an image change nobody would connect to
-          # this file.
+          # Byte-identity is the only check that cannot pass while serving a stale
+          # or truncated artifact — a 200 and a healthy header set can both sit on
+          # top of the wrong bytes.
+          #
+          # But it is sampled from ONE edge location: whichever POP this runner
+          # resolves to, which is wherever GitHub happens to run the job. It is
+          # therefore evidence about that POP, not a global guarantee, and this
+          # step used to be described as though it were the latter.
+          #
+          # The invalidation above is what makes the sample meaningful: once a
+          # purge lands, every POP must refetch from origin, so a correct sample
+          # after a purge is good evidence the origin is correct. Confirming the
+          # purge COMPLETED globally needs cloudfront:GetInvalidation, which the
+          # publish role deliberately does not have yet — so when that call is
+          # denied this step says so rather than implying a guarantee it did not
+          # obtain.
+          #
+          # sha256sum, not shasum: this runs on Linux, and shasum is a perl script
+          # that merely happens to be present on GitHub's ubuntu images.
           expected=$(sha256sum dist/aws-ai-native-development-flashcards.html | cut -d' ' -f1)
+
+          global='NOT CONFIRMED (cloudfront:GetInvalidation not granted to the publish role)'
+          if aws cloudfront wait invalidation-completed \
+               --distribution-id "$DIST" --id "$INVALIDATION_ID" 2>/dev/null; then
+            global='CONFIRMED — the purge completed across all edge locations'
+          else
+            echo "note: could not poll invalidation status; falling back to sampling the edge"
+          fi
+
           for attempt in 1 2 3 4 5 6 7; do
             curl -fsS "$DECK_URL/" -o /tmp/live.html || true
             actual=$(sha256sum /tmp/live.html 2>/dev/null | cut -d' ' -f1 || echo none)
             if [ "$expected" = "$actual" ]; then
               echo "IDENTICAL after ${attempt} attempt(s) — $expected"
+              echo "  sampled POP: byte-identical"
+              echo "  global purge: $global"
               exit 0
             fi
-            echo "attempt ${attempt}: edge still serving something else, waiting 60s"
-            sleep 60
+            echo "attempt ${attempt}: this POP still serving something else, waiting 30s"
+            sleep 30
           done
           echo "::error::CloudFront never served the published bytes. Expected $expected"
           exit 1
