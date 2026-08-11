@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "card_id": "CA-10",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "kiro",
+  "category": "coding-agents",
+  "tags": [
+    "agent-plugin",
+    "coding-agents",
+    "kiro",
+    "mcp",
+    "prompt-injection",
+    "security",
+    "session-pinning"
+  ],
+  "badge_variant": "core",
+  "badge_text": "CODING AGENT",
+  "art": "policy",
+  "title": "Opening someone else’s repo is an input",
+  "hook": "You cloned an unfamiliar repository and opened it. What did you just feed your agent?",
+  "back": {
+    "lead": "Alongside Agent Plugin support and session pinning, Kiro changed how spec hovers and MCP installs handle **untrusted workspace content**. That is the sentence worth stopping on: a workspace you did not write is attacker-controlled input, and anything in it that an agent reads — a spec file, an MCP server definition, a hover — is a channel into your session.",
+    "kv": [
+      {
+        "k": "The surface",
+        "v": "A repository can carry a spec, a hook, or an MCP server config. An agent that reads those on open is executing someone else's instructions before you have read a line of their code."
+      },
+      {
+        "k": "Why an MCP install is the sharpest edge",
+        "v": "A spec hover shows you text. An MCP server definition adds TOOLS. Auto-trusting one from an unfamiliar repository hands a stranger the ability to name what your agent can do."
+      },
+      {
+        "k": "What to carry into a review",
+        "v": "Ask where workspace trust is decided and what happens before it is. \"We prompt on first open\" is a real answer; \"the config is just data\" is not — data an agent reads is instructions."
+      }
+    ],
+    "hookline": "Cloning a repo is reading untrusted input. The agent reads it too, and it is more credulous than you are."
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://kiro.dev/changelog/",
+      "title": "Kiro changelog",
+      "kind": "vendor-changelog",
+      "fetched_at": "2026-08-11T00:37:32.866Z",
+      "content_hash": "sha256:da6ce9f7baf5e24f73b43af48b7b829bb486f79ee557cb4ac0eb2cb42a2730f9"
+    }
+  ],
+  "verified_at": "2026-08-11T00:37:32.866Z",
+  "confidence": "medium",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": false,
+  "review_reasons": [],
+  "signed_off": null,
+  "provenance": {
+    "tier": "C",
+    "authored_by": "human",
+    "history": [
+      {
+        "at": "2026-08-11T06:10:10.847Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/add-cards-kiro-gaps.ts",
+        "reason": "Authored to close an actionable check-coverage gap: the Kiro changelog entry this card covers matched no existing card's subject. New cards are Tier C by definition."
+      }
+    ]
+  },
+  "created_at": "2026-08-11T06:10:10.847Z",
+  "updated_at": "2026-08-11T06:10:10.847Z"
+}
