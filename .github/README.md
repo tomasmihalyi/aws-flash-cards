@@ -93,7 +93,7 @@ Two consequences worth knowing before doing this again:
   two routes look identical in `git log` and produce different subjects, so take
   both numbers from the API afterwards, not from this document.
 
-**2. Set five repository variables** (Settings → Secrets and variables → Actions →
+**2. Set six repository variables** (Settings → Secrets and variables → Actions →
 Variables). They are variables, not secrets: a role ARN and a bucket name are not
 credentials, and putting them in secrets would only make them harder to read in a
 log when something breaks.
@@ -103,7 +103,28 @@ gh variable set AWS_REFRESH_ROLE_ARN --body "$(aws cloudformation describe-stack
 gh variable set AWS_PUBLISH_ROLE_ARN --body "$(aws cloudformation describe-stacks --profile demo --region ap-southeast-2 --stack-name FlashcardsGitHubOIDC --query 'Stacks[0].Outputs[?OutputKey==`PublishRoleArn`].OutputValue' --output text)"
 gh variable set DECK_BUCKET --body "$BUCKET"
 gh variable set DECK_URL    --body "https://$(aws cloudfront get-distribution --profile demo --id "$DIST" --query 'Distribution.DomainName' --output text)"
+# The distribution id itself, so publish can purge the edge rather than waiting
+# out a 300-second TTL per edge location. See "Publishing is not propagating".
+gh variable set DECK_DISTRIBUTION_ID --body "$DIST"
+
+# Tier B only. Optional: without it, draft.yml cannot assume a role and the
+# nightly refresh is unaffected — it is denied bedrock:* by design.
+gh variable set AWS_DRAFT_ROLE_ARN --body "$(aws cloudformation describe-stacks --profile demo --region ap-southeast-2 --stack-name FlashcardsGitHubOIDC --query 'Stacks[0].Outputs[?OutputKey==`DraftRoleArn`].OutputValue' --output text)"
 ```
+
+### Publishing is not propagating
+
+`publish.yml` uploads to S3 and then **invalidates** the distribution. The
+invalidation is not tidiness: `cache-control: max-age=300` is honoured *per edge
+location*, and each POP caches independently, so without a purge the deck's real
+visible-update window is "up to five minutes, depending where the reader is".
+
+The byte-identity check that follows is sampled from **one** POP — whichever the
+runner resolves to. It is strong evidence (a 200 and a healthy header set can both
+sit on top of the wrong bytes; only comparing bytes catches that) but it is not a
+global guarantee, and the step's output says which of the two it obtained. This
+was found the hard way: a publish reported success from a US runner while the
+Sydney POP served the previous deck for four more minutes.
 
 **3. Dry-run it once, attended.** `gh workflow run refresh.yml` then read the run
 summary before trusting the schedule. The first run will almost certainly be
@@ -161,6 +182,33 @@ calls directly, and keeps its `push` trigger for commits a human makes.
 with `git log --grep` over past commits. A shallow clone finds nothing, reports
 "never stamped", and stamps every single day — quietly restoring the noisy
 behaviour the interval exists to prevent.
+
+## Check which `gh` account is active before anything
+
+`gh` on this machine has three accounts logged in, and it **drifts back to
+`Gatherlyco-au`** — an org used by an unrelated project, which holds only `pull`
+on this repository. That has now cost two debugging detours in one day:
+
+- `gh variable set` returned `HTTP 403: You must have repository write
+  permissions`, which reads like a token-scope problem and is not.
+- A `git push` would have failed the same way, because git uses the same
+  credential helper.
+
+Neither failure names the account, so both look like a permissions bug in the
+repository rather than the wrong identity holding the wire.
+
+```bash
+gh api user --jq .login                                    # who does the API think you are?
+gh api repos/tomasmihalyi/aws-flash-cards --jq .permissions # and can they write?
+
+gh auth switch --user tomasmihalyi                          # the owner
+```
+
+Switching also fixes `git push`, since `gh auth switch` moves the credential
+helper with it. Re-check after any gap in a session: the drift is not a one-off.
+
+For the record, `tomyister` is *also* wrong now — it created the repository and
+lost admin when ownership transferred, so it reads but cannot write.
 
 ## Verifying IAM without fooling yourself
 
