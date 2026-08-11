@@ -14,13 +14,13 @@
   "badge_text": "CORE SERVICE",
   "art": "memory",
   "title": "AgentCore Memory",
-  "hook": "Managed short-term and long-term memory so agents remember across turns — and across sessions.",
+  "hook": "Managed short-term and long-term memory so agents remember across turns—and across sessions.",
   "back": {
-    "lead": "Memory gives agents managed recall. Short-term memory captures raw session events (the conversation as it happens). Long-term memory runs extraction strategies over those events to distill durable knowledge that persists across sessions.",
+    "lead": "Memory gives agents managed recall. Short-term memory captures raw session events—the conversation as it unfolds. Long-term memory applies extraction strategies to distill durable knowledge that persists across sessions.",
     "kv": [
       {
         "k": "Strategies",
-        "v": "Built-in: semantic facts, summaries, and user preferences. A self-managed strategy (GA) lets you run your own extraction/consolidation pipeline."
+        "v": "Built-in: semantic facts, summaries, and user preferences. A self-managed strategy (GA) lets you run your own extraction and consolidation pipeline."
       },
       {
         "k": "Episodic",
@@ -35,7 +35,7 @@
         "v": "{{slot:memory_price}}"
       }
     ],
-    "hookline": "Short-term = the transcript. Long-term = what a good assistant would write in their notebook afterwards."
+    "hookline": "Short-term = the transcript. Long-term = what a good assistant would write in their notebook afterward."
   },
   "slots": {
     "memory_price": {
@@ -62,16 +62,22 @@
     }
   ],
   "verified_at": "2026-08-11T00:37:23.952Z",
-  "confidence": "high",
+  "confidence": "medium",
   "depends_on": [],
   "aka": [],
   "superseded_by": null,
   "supersedes": [],
-  "needs_review": false,
-  "review_reasons": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0.",
+      "raised_at": "2026-08-11T05:06:11.926Z",
+      "raised_by": "tools/apply-draft.ts"
+    }
+  ],
   "provenance": {
-    "tier": "A",
-    "authored_by": "legacy-import",
+    "tier": "C",
+    "authored_by": "model",
     "history": [
       {
         "at": "2026-08-06T12:57:02.398Z",
@@ -92,9 +98,50 @@
           "agentcore.pricing.ap-southeast-2.memory.short-term.usd-per-1k-events"
         ],
         "reason": "Deterministic source disagreed with the rendered claim. Corrected with zero model involvement."
+      },
+      {
+        "at": "2026-08-11T05:06:11.926Z",
+        "tier": "C",
+        "action": "correct",
+        "generator": "tools/apply-draft.ts",
+        "field": "hook",
+        "before": "Managed short-term and long-term memory so agents remember across turns — and across sessions.",
+        "after": "Managed short-term and long-term memory so agents remember across turns—and across sessions.",
+        "reason": "Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0. Re-gated at apply time: well-formed and all 4 checkable claim(s) verified — writable as tier-b"
+      },
+      {
+        "at": "2026-08-11T05:06:11.926Z",
+        "tier": "C",
+        "action": "correct",
+        "generator": "tools/apply-draft.ts",
+        "field": "back.lead",
+        "before": "Memory gives agents managed recall. Short-term memory captures raw session events (the conversation as it happens). Long-term memory runs extraction strategies over those events to distill durable knowledge that persists across sessions.",
+        "after": "Memory gives agents managed recall. Short-term memory captures raw session events—the conversation as it unfolds. Long-term memory applies extraction strategies to distill durable knowledge that persists across sessions.",
+        "reason": "Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0. Re-gated at apply time: well-formed and all 4 checkable claim(s) verified — writable as tier-b"
+      },
+      {
+        "at": "2026-08-11T05:06:11.926Z",
+        "tier": "C",
+        "action": "correct",
+        "generator": "tools/apply-draft.ts",
+        "field": "back.hookline",
+        "before": "Short-term = the transcript. Long-term = what a good assistant would write in their notebook afterwards.",
+        "after": "Short-term = the transcript. Long-term = what a good assistant would write in their notebook afterward.",
+        "reason": "Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0. Re-gated at apply time: well-formed and all 4 checkable claim(s) verified — writable as tier-b"
+      },
+      {
+        "at": "2026-08-11T05:06:11.926Z",
+        "tier": "C",
+        "action": "correct",
+        "generator": "tools/apply-draft.ts",
+        "field": "back.kv[0].v",
+        "before": "Built-in: semantic facts, summaries, and user preferences. A self-managed strategy (GA) lets you run your own extraction/consolidation pipeline.",
+        "after": "Built-in: semantic facts, summaries, and user preferences. A self-managed strategy (GA) lets you run your own extraction and consolidation pipeline.",
+        "reason": "Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0. Re-gated at apply time: well-formed and all 4 checkable claim(s) verified — writable as tier-b"
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-06T13:03:30.537Z"
+  "updated_at": "2026-08-11T05:06:11.926Z",
+  "signed_off": null
 }
