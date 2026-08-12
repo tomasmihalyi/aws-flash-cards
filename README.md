@@ -12,9 +12,19 @@ practice.
 > match the spec that defines it. Not all AWS AI: the full IN/OUT boundary is in
 > `.kiro/specs/self-maintaining-flashcards/requirements.md` §4.
 
-**Status: P0–P2 complete; P3 frontend in progress, P3 deploy parked.** No AWS
-resource is created, modified or deleted by anything in this repo; ingest is
-read-only and stays that way.
+**Status: live and self-maintaining.** The deck publishes from CI and refreshes
+itself every morning at 05:00 AEST — [d1hl3sanj0zgqn.cloudfront.net](https://d1hl3sanj0zgqn.cloudfront.net).
+
+**What this touches in AWS.** *Ingest* is read-only and stays that way: `src/lib/aws.ts`
+carries an explicit six-pair `(service, operation)` allow-list, and the refresh IAM
+role mirrors it with an explicit `Deny` on everything else. *Publish* does write — one
+S3 object and a CloudFront invalidation, nothing more. *Tier B* invokes exactly one
+inference profile. Three roles, each denied the other two's rights.
+
+[![How the deck updates itself — the daily circuit, the four outcomes, the read plane, and the Tier B path](docs/update-loop.svg)](docs/update-loop.svg)
+
+<sub>Click for full size. The detail view — every guarantee and how each one is
+enforced — is [`docs/self-updating-architecture.svg`](docs/self-updating-architecture.svg).</sub>
 
 ## The one idea worth knowing
 
@@ -58,7 +68,7 @@ than a policy someone has to remember to enforce.
 
 | Path | What it is |
 |---|---|
-| `cards/` | one JSON per card — **git is the source of truth** (30: AgentCore, Bedrock, Strands, coding agents, Quick) |
+| `cards/` | one JSON per card — **git is the source of truth** (43: AgentCore, Bedrock, Strands, coding agents, Quick) |
 | `facts/` | deterministic fact sets — ingest writes these, nothing else does |
 | `content/` | category taxonomy, pictogram library, the HTML shell and card template |
 | `schema/` | published JSON Schema for cards and fact sets |
@@ -75,7 +85,7 @@ stripping. There is no install step.
 
 ```bash
 node src/validate.ts          # schema + lint + citation gate
-node --test tests/*.test.ts   # 280 behavioural, guarantee, verifier, ingest, atom, coverage, rename, lint tests
+node --test tests/*.test.ts   # 368 behavioural, guarantee, verifier, ingest, atom, coverage, rename, lint tests
 node src/verify-claims.ts     # decompose every card into claims and verify each
 node src/build.ts             # → dist/deck.json + dist/aws-ai-native-development-flashcards.html
 node src/verify-parity.ts     # authored-content parity against the original deck
@@ -251,14 +261,22 @@ exact failure this system exists to prevent.
 
 ## Next
 
-Local, unblocked: tracks (AgentCore deep dive, agentic coding practices,
-Quick-vs-Kiro positioning, ANZ-relevant) and the "what changed this week" deck
-built from git history.
+**Shipped since this section was first written.** P3 read plane — S3 + CloudFront +
+OAC in `ap-southeast-2`, published from CI on merge, and every publish now purges the
+edge and drives the live URL through 73 browser checks. P4's Tier B — model-drafted
+prose behind the string-matching verifier — is built and proven end to end: the model
+cannot write a digit, and everything it produces arrives as a pull request. Automatic
+rename detection with `aka[]` aliasing is live, as is the dependency fan-out.
 
-P3 read plane: S3 + CloudFront + OAC in `ap-southeast-2`, published from this
-repo. P4 adds the model-drafted tiers behind a string-matching verifier; P5
-rename/retire detection and dependency fan-out; P6 content scale-up. Full detail
-and exit criteria in `.kiro/specs/self-maintaining-flashcards/`.
+**Open.** Content scale-up is the real gap: 43 cards against a 200–400 target, now a
+review problem rather than an authoring one. Then the remaining P5 detectors — doc URL
+redirects, Price List product disappearance, botocore rename-vs-remove — plus tracks
+and the "what changed this week" deck. Full detail and exit criteria in
+`.kiro/specs/self-maintaining-flashcards/`.
+
+**Unproven rather than unbuilt.** The failure watchdog has only ever run on days when
+nothing failed, so whether it correctly opens a self-closing issue on a real failure is
+still untested.
 
 ## On the contents of `facts/`
 
