@@ -57,9 +57,25 @@ try {
   process.exit(2);
 }
 
-const file = resolve(process.argv[2] ?? 'dist/aws-ai-native-development-flashcards.html');
+/**
+ * TWO TARGETS, ONE SUITE.
+ *
+ * A local path checks the artefact the gate just built. An http(s) URL checks the
+ * artefact a LEARNER actually receives, which is a different claim: publish proves
+ * byte-identity at the edge, and byte-identity says nothing about whether the page
+ * runs. A CSP header, a MIME type, or a CloudFront behaviour can serve exactly the
+ * right bytes and still break the app.
+ *
+ * `new URL(...).href` rather than the raw string, so an origin with no path becomes
+ * `https://host/` and `${TARGET}#/card/x` produces the same shape the file form
+ * does instead of `https://host#/card/x`.
+ */
+const arg = process.argv[2] ?? 'dist/aws-ai-native-development-flashcards.html';
+const isUrl = /^https?:\/\//i.test(arg);
+const TARGET = isUrl ? new URL(arg).href : `file://${resolve(arg)}`;
 const out = process.argv[3] ?? '/tmp/flashcards-browser-check';
 mkdirSync(out, { recursive: true });
+console.log(`browser-check: ${isUrl ? 'LIVE' : 'local'} target — ${TARGET}`);
 
 let failures = 0;
 const errors = [];
@@ -87,7 +103,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 460, height: 940 } });
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
   page.on('pageerror', (e) => errors.push(String(e)));
-  await page.goto(`file://${file}`, { waitUntil: 'load' });
+  await page.goto(TARGET, { waitUntil: 'load' });
   await page.waitForSelector('#card');
 
   console.log('\n[header — derived, never hand-maintained]');
@@ -228,11 +244,11 @@ try {
   await page.click('#qClear');
   await page.waitForTimeout(250);
 
-  await page.goto(`file://${file}#/card/agent-registry`);
+  await page.goto(`${TARGET}#/card/agent-registry`);
   await page.waitForTimeout(400);
   const aliasLanded = (await page.textContent('.front .partno').catch(() => '')).trim();
   ok('a deep link naming the old name still resolves', aliasLanded.includes('AC-14'), aliasLanded || 'no card shown');
-  await page.goto(`file://${file}`);
+  await page.goto(TARGET);
   await page.waitForTimeout(400);
 
   console.log('\n[keyboard does not fight the search box]');
@@ -319,7 +335,7 @@ try {
   ok('a link restores search and tag state', (await page.inputValue('#q')) === 'memory');
 
   console.log('\n[spaced repetition]');
-  await page.goto(`file://${file}`, { waitUntil: 'load' });
+  await page.goto(TARGET, { waitUntil: 'load' });
   await page.waitForSelector('#card');
   const stats = () => page.$eval('#studyStats', (e) => e.innerText.replace(/\s+/g, ' ').trim());
   // Derived from the header, because the deck grows and these assertions are not

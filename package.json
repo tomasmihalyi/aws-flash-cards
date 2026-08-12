@@ -43,6 +43,7 @@
     "draft": "node src/ingest/draft.ts",
     "draft:write": "node src/ingest/draft.ts --write",
     "draft:apply": "node tools/apply-draft.ts",
-    "draft:apply:dry": "node tools/apply-draft.ts --dry-run"
+    "draft:apply:dry": "node tools/apply-draft.ts --dry-run",
+    "browser-check:live": "node tools/browser-check.mjs https://d1hl3sanj0zgqn.cloudfront.net"
   }
 }
