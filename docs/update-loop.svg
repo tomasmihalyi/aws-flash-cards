@@ -76,7 +76,7 @@
 
   <rect x="904" y="154" width="188" height="150" fill="#ffffff" stroke="#1f8a4c" rx="6"/>
   <text x="918" y="178" class="b">5 · the deck</text>
-  <text x="918" y="200" class="xs mono">cards/*.json — 40</text>
+  <text x="918" y="200" class="xs mono">cards/*.json — 43</text>
   <text x="918" y="222" class="xs">prose is authored by a</text>
   <text x="918" y="238" class="xs">human; a number lives</text>
   <text x="918" y="254" class="xs">in a <tspan class="mono">{{slot}}</tspan></text>
@@ -85,7 +85,7 @@
   <rect x="1119" y="154" width="188" height="150" fill="#ffffff" stroke="#1f8a4c" rx="6"/>
   <text x="1133" y="178" class="b">6 · the gate</text>
   <text x="1133" y="200" class="xs mono">npm run check</text>
-  <text x="1133" y="222" class="xs">validate · 363 tests ·</text>
+  <text x="1133" y="222" class="xs">validate · 368 tests ·</text>
   <text x="1133" y="238" class="xs">parity · claims 29/29</text>
   <text x="1133" y="262" class="xs">authored content pinned</text>
   <text x="1133" y="278" class="xs">byte-for-byte</text>
@@ -159,7 +159,7 @@
 
   <rect x="60" y="664" width="238" height="114" fill="#ffffff" stroke="#1d4ed8" rx="6"/>
   <text x="74" y="688" class="b">build</text>
-  <text x="74" y="710" class="xs mono">dist/ — 148 KB</text>
+  <text x="74" y="710" class="xs mono">dist/ — 156 KB</text>
   <text x="74" y="732" class="xs">one self-contained HTML,</text>
   <text x="74" y="748" class="xs">from cards + facts —</text>
   <text x="74" y="764" class="xs">never hand-edited</text>
@@ -175,8 +175,8 @@
   <text x="602" y="688" class="b">CloudFront</text>
   <text x="602" y="710" class="xs">OAC — the only reader</text>
   <text x="602" y="732" class="xs">TLS 1.2+ · HSTS · CSP</text>
-  <text x="602" y="752" class="xs">publish polls until the</text>
-  <text x="602" y="768" class="xs">edge serves those bytes</text>
+  <text x="602" y="752" class="xs">publish PURGES the edge,</text>
+  <text x="602" y="768" class="xs">then samples one POP</text>
 
   <rect x="852" y="664" width="276" height="114" fill="#ffffff" stroke="#1d4ed8" rx="6"/>
   <text x="866" y="688" class="b">the learner — no auth</text>
@@ -188,6 +188,11 @@
   <line x1="298" y1="721" x2="322" y2="721" class="lnG"/>
   <line x1="562" y1="721" x2="586" y2="721" class="lnG"/>
   <line x1="826" y1="721" x2="850" y2="721" class="lnG"/>
+
+  <!-- The four things publish proves, in order. The fourth is the newest and the
+       one byte-identity could never cover: a CSP header or a MIME type can serve
+       exactly the right bytes and still leave a page that does not run. -->
+  <text x="60" y="790" class="xs" fill="#1d4ed8">publish proves four things: the gate saw it · the edge serves those bytes · the purge completed everywhere · <tspan font-weight="700">and 73 checks drive the live URL in a real browser</tspan></text>
 
   <!-- human box -->
   <rect x="1180" y="646" width="342" height="150" fill="#fffbeb" stroke="#b45309" rx="8"/>
@@ -207,7 +212,7 @@
   <rect x="44" y="824" width="1100" height="94" fill="#ffffff" stroke="#9ca3af" stroke-dasharray="5 4" rx="8"/>
   <text x="60" y="850" class="b">alongside, never gating — the four detectors that answer what a refresh cannot</text>
   <text x="60" y="874" class="xs"><tspan font-weight="700">check-lifecycle</tspan> has a preview/GA badge gone stale? · <tspan font-weight="700">check-rename</tspan> was the thing renamed? · <tspan font-weight="700">verify-claims</tspan> is every claim still true?</text>
-  <text x="60" y="898" class="xs"><tspan font-weight="700">check-coverage</tspan> — the only one that can see AWS shipped something NO card covers. 117 entries · 101 covered · 3 actionable. A gap is a to-do, not a defect.</text>
+  <text x="60" y="898" class="xs"><tspan font-weight="700">check-coverage</tspan> — the only one that can see AWS shipped something NO card covers. 117 entries · 104 covered · 0 actionable. A gap is a to-do, not a defect.</text>
   <path d="M594 820 L594 800" class="lnK"/>
 
   <!-- ===================== THE POINT ===================== -->
@@ -278,7 +283,7 @@
   <text transform="translate(1156,880) rotate(-90)" class="xs mono" fill="#b45309">the same human step</text>
 
   <!-- FOOTER -->
-  <text x="44" y="1218" class="xs" fill="#6b7280">Every number here is one the build can print: 10 ingest jobs · 15 fact sets · 40 cards · 363 tests · 29/29 checkable claims verified · coverage 117/101/3.</text>
+  <text x="44" y="1218" class="xs" fill="#6b7280">Every number here is one the build can print: 10 ingest jobs · 15 fact sets · 43 cards · 368 tests · 29/29 checkable claims verified · coverage 117/104/0 actionable.</text>
   <text x="44" y="1240" class="xs" fill="#6b7280">This is the flow. The detail view — every guarantee and how each is enforced — is <tspan class="mono">docs/self-updating-architecture.svg</tspan>.</text>
   <text x="44" y="1266" class="xs mono" fill="#9ca3af">tomasmihalyi/aws-flash-cards · ap-southeast-2 · https://d1hl3sanj0zgqn.cloudfront.net</text>
 </svg>

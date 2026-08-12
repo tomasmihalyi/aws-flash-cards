@@ -53,7 +53,7 @@ That distinction — **prose is authored, facts are ingested** — is the single
 
 ## **Three Outcomes, and the Third Is the Point**
 
-Thirteen ingest jobs read published sources — AWS APIs, docs pages, product changelogs — and write typed facts. Then one job resolves each slot. It has exactly three outcomes:
+Ten ingest jobs read published sources — AWS APIs, docs pages, product changelogs — and write typed facts. Then one job resolves each slot. It has exactly three outcomes:
 
 **VERIFY** — the source agrees. Stamp the verification date, change no text.
 
@@ -89,7 +89,7 @@ Finding out why was the actual work:
 
 ❌ Lifecycle language is not a subject — "General Availability" is a real heading and it names nothing.
 
-The version that survived: **116 entries, 100 covered, 3 actionable.** Those three are a to-do list, not a defect. It reports; it never fails a build.
+The version that survived: **117 entries, 104 covered, 0 actionable.** The three it did flag were a to-do list, not a defect — I have since written those cards. It reports; it never fails a build.
 
 > A missing card is a to-do. A wrong card is a defect. Conflating them produces a report nobody reads.
 
@@ -154,7 +154,7 @@ Strip out the flashcards and this is a pattern for any reference that has to sta
 
 **4. Let a machine correct a number. Never let it publish a judgement.** My pipeline commits a price change unattended and opens a pull request for anything involving positioning. That line is the whole safety model.
 
-The deck is 40 cards now. It refreshes itself every morning at 5am, corrects its own numbers against live AWS APIs, and tells me each day what AWS shipped that I have not written about yet.
+The deck is 43 cards now. It refreshes itself every morning at 5am, corrects its own numbers against live AWS APIs, and tells me each day what AWS shipped that I have not written about yet.
 
 One limit is permanent, and it is worth naming. A handful of those cards carry my own positioning judgement — where one service stops and another starts. No document settles that, so no ingest job can ever verify it. Those cards render as *"Unsourced — positioning and practice judgement"* and always will.
 

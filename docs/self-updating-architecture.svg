@@ -132,7 +132,7 @@
 
   <!-- ============================ CARDS ============================ -->
   <rect x="1300" y="180" width="340" height="240" class="card" rx="5"/>
-  <text x="1316" y="204" class="t" font-weight="700">cards/*.json — 40 cards · git is the source of truth</text>
+  <text x="1316" y="204" class="t" font-weight="700">cards/*.json — 43 cards · git is the source of truth</text>
   <text x="1316" y="228" class="sm">prose</text><text x="1380" y="228" class="xs">authored by a human, or a model under the Tier B/C gate</text>
   <text x="1316" y="248" class="sm mono">{{slot:x}}</text><text x="1400" y="248" class="xs">written ONLY by an applier</text>
   <text x="1316" y="268" class="sm mono">seed_text</text><text x="1400" y="268" class="xs">the original claim, kept permanently</text>
@@ -178,7 +178,7 @@
   <text x="974" y="590" class="xs">Every gate above keeps EXISTING cards</text>
   <text x="974" y="608" class="xs">correct. This is the only one that sees</text>
   <text x="974" y="624" class="xs">something shipped that no card covers.</text>
-  <text x="974" y="642" class="xs mono">117 entries · 101 covered · 3 actionable</text>
+  <text x="974" y="642" class="xs mono">117 entries · 104 covered · 0 actionable</text>
   <text x="974" y="660" class="xs">Reports, never fails a build.</text>
 
   <line x1="1220" y1="424" x2="1110" y2="544" class="ln"/>
@@ -187,18 +187,18 @@
   <!-- ============================ 5. GATE ============================ -->
   <text x="40" y="726" class="h">5 · THE GATE — npm run check</text>
   <rect x="34" y="736" width="1242" height="76" class="gate" rx="6"/>
-  <text x="52" y="762" class="sm mono">validate → test (363) → build → parity → claims → lifecycle → rename</text>
+  <text x="52" y="762" class="sm mono">validate → test (368) → build → parity → claims → lifecycle → rename</text>
   <text x="52" y="784" class="xs">L-CITATION a resolved slot must carry sources[] + verified_at · L-EVIDENCE every content_hash must re-hash · L-NUMERIC an ungoverned literal warns</text>
   <text x="52" y="801" class="xs">parity: revert every slot to seed_text, invert every recorded correction, and the result must equal the original deck exactly — authored content is pinned byte-for-byte</text>
 
   <!-- ============================ 6. READ PLANE (LIVE) ============================ -->
-  <text x="40" y="856" class="h">6 · READ PLANE — SERVING 40 CARDS, ap-southeast-2</text>
+  <text x="40" y="856" class="h">6 · READ PLANE — SERVING 43 CARDS, ap-southeast-2</text>
   <rect x="34" y="866" width="800" height="150" class="band" rx="6"/>
 
   <rect x="50" y="884" width="150" height="112" class="store" rx="5"/>
   <text x="64" y="906" class="t" font-weight="700">dist/</text>
   <text x="64" y="926" class="xs">single-file HTML</text>
-  <text x="64" y="942" class="xs mono">148 KB → 38.0 KB br</text>
+  <text x="64" y="942" class="xs mono">156 KB → 34.9 KB br</text>
   <text x="64" y="962" class="xs">built from cards +</text>
   <text x="64" y="977" class="xs">facts, never edited</text>
 
@@ -276,7 +276,7 @@
        landing on S3 — the publisher writes the bucket, not the reader. -->
   <path d="M1550,996 L1550,1030 L316,1030 L316,996" class="lnc"/>
   <rect x="880" y="1000" width="660" height="16" fill="#fbfcfd"/>
-  <text x="890" y="1012" class="xs" fill="#1f8a4c">publish writes the bucket and only the bucket — then polls until CloudFront serves the exact bytes the gate validated</text>
+  <text x="890" y="1012" class="xs" fill="#1f8a4c">publish writes the bucket and only the bucket · purges every POP · then drives the live URL in a browser (73 checks)</text>
 
   <!-- footer -->
   <rect x="34" y="1040" width="1606" height="104" fill="#ffffff" stroke="#dfe4ea" rx="6"/>
