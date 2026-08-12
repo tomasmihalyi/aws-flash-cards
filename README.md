@@ -24,7 +24,9 @@ inference profile. Three roles, each denied the other two's rights.
 [![How the deck updates itself — the daily circuit, the four outcomes, the read plane, and the Tier B path](docs/update-loop.svg)](docs/update-loop.svg)
 
 <sub>Click for full size. The detail view — every guarantee and how each one is
-enforced — is [`docs/self-updating-architecture.svg`](docs/self-updating-architecture.svg).</sub>
+enforced — is [`docs/self-updating-architecture.svg`](docs/self-updating-architecture.svg).
+Operating the refresh plane — OIDC setup, the variables, what to do when a run
+fails — is [`.github/RUNBOOK.md`](.github/RUNBOOK.md).</sub>
 
 ## The one idea worth knowing
 
