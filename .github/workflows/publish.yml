@@ -183,10 +183,26 @@ jobs:
           # would slowly stop meaning the same thing. 1.61.1 matches the local
           # install, so a CI failure reproduces on a laptop rather than being a
           # version difference nobody can see.
+          # ONLY THE HEADLESS SHELL, NOT THE FULL CHROMIUM
+          #
+          # browser-check calls `chromium.launch()` with no arguments, so it runs
+          # headless, and Playwright routes a headless launch to the headless shell.
+          # `install chromium` additionally pulls the full browser, which this suite
+          # never starts.
+          #
+          # Measured rather than assumed, both against a genuinely empty
+          # PLAYWRIGHT_BROWSERS_PATH:
+          #
+          #   install chromium                539 MB   (shell + full chromium + ffmpeg)
+          #   install chromium-headless-shell 195 MB   (shell + ffmpeg)
+          #
+          # All 73 checks pass on the shell alone. ffmpeg still arrives — it is a
+          # ~1 MB download that comes with the shell package and is only used for
+          # video capture, which this suite does not do.
           mkdir -p /tmp/pw
           npm install --no-save --prefix /tmp/pw playwright@1.61.1 >/dev/null
           PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers \
-            /tmp/pw/node_modules/.bin/playwright install chromium >/dev/null
+            /tmp/pw/node_modules/.bin/playwright install chromium-headless-shell >/dev/null
 
           PLAYWRIGHT_PATH=/tmp/pw/node_modules/playwright \
           PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers \
