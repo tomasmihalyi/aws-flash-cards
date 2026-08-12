@@ -154,6 +154,8 @@ Strip out the flashcards and this is a pattern for any reference that has to sta
 
 **4. Let a machine correct a number. Never let it publish a judgement.** My pipeline commits a price change unattended and opens a pull request for anything involving positioning. That line is the whole safety model.
 
+I did eventually add a model — to rewrite the *prose*, never the numbers. It cannot write a digit: a numeral is legal only where the identical span already appeared, so it can preserve what I wrote and never invent. The first draft it handed me changed `afterwards` to `afterward` and nothing else, and the gate discarded it. Even a clean pass still opens a pull request, because the verifier proves there is no fabricated fact — it cannot prove the prose is better.
+
 The deck is 43 cards now. It refreshes itself every morning at 5am, corrects its own numbers against live AWS APIs, and tells me each day what AWS shipped that I have not written about yet.
 
 One limit is permanent, and it is worth naming. A handful of those cards carry my own positioning judgement — where one service stops and another starts. No document settles that, so no ingest job can ever verify it. Those cards render as *"Unsourced — positioning and practice judgement"* and always will.
