@@ -144,3 +144,61 @@ jobs:
           done
           echo "::error::CloudFront never served the published bytes. Expected $expected"
           exit 1
+
+      - name: Drive the live deck in a real browser
+        env:
+          DECK_URL: ${{ vars.DECK_URL }}
+        run: |
+          set -euo pipefail
+          # WHAT THIS ADDS OVER BYTE-IDENTITY
+          #
+          # The step above proves the edge serves the bytes the gate validated. It
+          # cannot prove the page RUNS. A CSP header, a MIME type, or a CloudFront
+          # behaviour can serve exactly the right bytes and still leave a broken
+          # app — and every claim about search, filtering, spaced repetition and the
+          # aria-hidden/inert invariant was, until this step existed, evidence about
+          # a file:// URL on someone's laptop.
+          #
+          # WHY IT CANNOT RUN EARLIER, AND WHAT A FAILURE HERE ACTUALLY MEANS
+          #
+          # The artefact is not at the edge until the upload above put it there, so
+          # this is necessarily post-hoc. A failure does NOT roll anything back: the
+          # deck is already live and already broken. The job fails to make that
+          # VISIBLE and to wake the watchdog — the remedy is a fix-forward or a
+          # revert, never this step. Said plainly because a red check that cannot
+          # undo what it is complaining about is easy to mistake for a gate.
+          #
+          # PLAYWRIGHT INSTALLS OUTSIDE THE PROJECT TREE
+          #
+          # NFR-1 is zero dependencies: no package-lock, no node_modules, nothing to
+          # audit. Installing here would put all three in the working directory of
+          # the job that just ran the gate. --prefix keeps it in /tmp, so the tree
+          # that was validated is the tree that was published. Verified locally: the
+          # project reports 0 node_modules entries after this install.
+          #
+          # PINNED, NOT FLOATING
+          #
+          # Playwright is the measuring instrument here, and an instrument that
+          # changes itself between runs is the botocore lesson again — a green run
+          # would slowly stop meaning the same thing. 1.61.1 matches the local
+          # install, so a CI failure reproduces on a laptop rather than being a
+          # version difference nobody can see.
+          mkdir -p /tmp/pw
+          npm install --no-save --prefix /tmp/pw playwright@1.61.1 >/dev/null
+          PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers \
+            /tmp/pw/node_modules/.bin/playwright install chromium >/dev/null
+
+          PLAYWRIGHT_PATH=/tmp/pw/node_modules/playwright \
+          PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers \
+            node tools/browser-check.mjs "$DECK_URL" /tmp/flashcards-browser-check
+
+      - name: Keep the screenshots when it broke
+        # Only on failure: on a green run they are 6 identical-looking PNGs nobody
+        # opens. On a red one they are the only record of what the learner saw.
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-check-screenshots
+          path: /tmp/flashcards-browser-check
+          retention-days: 14
+          if-no-files-found: ignore
