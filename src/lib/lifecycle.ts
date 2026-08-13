@@ -25,6 +25,7 @@
 import type { Card } from './types.ts';
 import type { DatedEntry } from './verifier.ts';
 import { subjectTokens } from './verifier.ts';
+import { inScope } from './scope.ts';
 
 export type LifecycleSignal = {
   /** what the source says the state became */
@@ -161,6 +162,12 @@ export function detectLifecycle(card: Card, entries: DatedEntry[]): LifecycleFin
   const scored: { signal: LifecycleSignal; score: number; precision: number }[] = [];
 
   for (const e of entries) {
+    // A source only speaks for its own product. Checked FIRST, before scoring:
+    // Kiro's "CLI: Cloud Sessions Preview" scores perfectly against the
+    // AgentCore CLI card, because `cli` genuinely is both cards' subject. No
+    // threshold can separate those two; only the service can.
+    if (!inScope(card, e)) continue;
+
     // Headings only. A summary mentions half the platform in passing.
     const hit = scoreHeading(card, e.heading, df, total);
     if (!hit) continue;

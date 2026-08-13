@@ -40,8 +40,8 @@ function byId(id: string): Card {
 function clone(c: Card): Card {
   return JSON.parse(JSON.stringify(c)) as Card;
 }
-function entry(iso: string, heading: string): DatedEntry {
-  return { iso_month: iso, month_label: iso, heading, summary: '', url: 'https://example.test/notes' };
+function entry(iso: string, heading: string, service?: string): DatedEntry {
+  return { iso_month: iso, month_label: iso, heading, summary: '', url: 'https://example.test/notes', service };
 }
 
 describe('there is a dated source to detect against', () => {
@@ -107,6 +107,48 @@ describe('the transitions it finds, and the cards now agreeing with them', () =>
       assert.notEqual(c.badge_variant, 'pv', `${id} still carries a preview badge variant`);
       assert.match(c.badge_text, /^GA /, `${id} badge text should lead with GA, got ${c.badge_text}`);
     }
+  });
+});
+
+describe('regression: a source only speaks for its own product', () => {
+  // The defect that failed the scheduled refresh on 12 and 13 Aug 2026.
+  //
+  // Kiro shipped "CLI: Cloud Sessions Preview and Smarter Command Menus". The
+  // detector matched it to AC-16 — the AGENTCORE CLI card — on `cli`, took it as
+  // the newest signal because August beats March, and reported the card as
+  // drifting from ga to preview. The card was right.
+  //
+  // No score threshold can fix this: `cli` is honestly both cards' subject. Only
+  // the service can separate them, which is why the check is exact and runs
+  // before scoring. The rule already existed for check-coverage and had simply
+  // never been wired into this detector.
+  const KIRO_CLI = 'CLI: Cloud Sessions Preview and Smarter Command Menus';
+
+  test('a Kiro CLI preview does not make the AgentCore CLI card drift', () => {
+    const card = clone(byId('AC-16'));
+    const f = detectLifecycle(card, [
+      entry('2026-03', 'AgentCore CLI is now Generally Available', 'bedrock-agentcore'),
+      entry('2026-08', KIRO_CLI, 'kiro'),
+    ]);
+    assert.equal(f.latest?.lifecycle, 'ga', `a Kiro entry settled an AgentCore card: ${f.reason}`);
+    assert.equal(f.latest?.iso_month, '2026-03');
+    assert.equal(f.drift, false, f.reason);
+  });
+
+  test('the same entry is still allowed to speak for a Kiro card', () => {
+    // The fix must scope, not blanket-ignore the Kiro changelog.
+    const card = clone(byId('AC-16'));
+    card.service = 'kiro';
+    const f = detectLifecycle(card, [entry('2026-08', KIRO_CLI, 'kiro')]);
+    assert.equal(f.latest?.lifecycle, 'preview', 'a Kiro entry must still settle a Kiro card');
+  });
+
+  test('an entry with no declared service stays permissive', () => {
+    // Documented behaviour: an unregistered source keeps its old reach rather
+    // than silently matching nothing, which would read as a deck with no drift.
+    const card = clone(byId('AC-16'));
+    const f = detectLifecycle(card, [entry('2026-08', 'AgentCore CLI: Public Preview Launch')]);
+    assert.equal(f.latest?.lifecycle, 'preview', 'a null-scope entry should still be considered');
   });
 });
 

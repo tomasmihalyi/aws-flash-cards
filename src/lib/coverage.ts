@@ -46,6 +46,7 @@ import type { Card } from './types.ts';
 import type { DatedEntry } from './verifier.ts';
 import { scoreHeading, headingFrequency } from './lifecycle.ts';
 import { subjectTokens } from './verifier.ts';
+import { inScope } from './scope.ts';
 
 /** Why an entry looks like it deserves a card. Ranked highest first. */
 export type Significance = 'launch' | 'ga' | 'preview' | 'capability' | 'expansion' | 'minor';
@@ -134,20 +135,10 @@ const LIFECYCLE_LANGUAGE = new Set(
  * go through the stricter scorer, because tags are loose associations.
  */
 /**
- * May this source speak about this card at all?
- *
- * Checked BEFORE any token scoring, because it is an exact fact where scoring is
- * a heuristic — and because a wrong "covered" is the expensive error here. A gap
- * reported that turns out to be covered costs one line of reading; a gap marked
- * covered by an unrelated product's card is a card nobody ever writes.
- *
- * `null` scope is permissive: an unregistered source keeps its old behaviour
- * rather than silently matching nothing, which would look like total coverage.
+ * Scope is checked BEFORE any token scoring here — see `src/lib/scope.ts` for why
+ * it is exact rather than scored, and why it is a shared module rather than a
+ * function each detector keeps its own copy of.
  */
-function inScope(card: Card, entry: DatedEntry): boolean {
-  if (!entry.service) return true;
-  return card.service === entry.service;
-}
 
 function coversHeading(
   card: Card,

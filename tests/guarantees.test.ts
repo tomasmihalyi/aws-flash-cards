@@ -589,3 +589,35 @@ describe('guarantee: a Tier C judgement is accounted for, by a flag or by a huma
     }
   });
 });
+
+describe('guarantee: a source only speaks for its own product, in exactly one place', () => {
+  // The rule was implemented in coverage.ts and never wired into lifecycle.ts.
+  // It stayed invisible until two products shipped a lifecycle change under a
+  // shared noun — Kiro's "CLI: Cloud Sessions Preview" against the AgentCore CLI
+  // card — which failed the scheduled refresh twice.
+  //
+  // A shared import fixes today's bug. This test is what stops the NEXT detector
+  // from growing its own copy, which is the actual failure mode.
+  test('inScope is defined once, in src/lib/scope.ts', () => {
+    const definers: string[] = [];
+    for (const dir of ['src', 'src/lib']) {
+      const base = join(paths.root, dir);
+      if (!existsSync(base)) continue;
+      for (const f of readdirSync(base).filter((n) => n.endsWith('.ts'))) {
+        const src = readFileSync(join(base, f), 'utf8');
+        if (/function inScope\s*\(/.test(src)) definers.push(`${dir}/${f}`);
+      }
+    }
+    assert.deepEqual(definers, ['src/lib/scope.ts'],
+      `inScope must be defined once and imported everywhere else. Found: ${definers.join(', ') || 'nothing'}`);
+  });
+
+  test('every detector that matches dated entries to cards goes through it', () => {
+    for (const rel of ['src/lib/coverage.ts', 'src/lib/lifecycle.ts']) {
+      const src = readFileSync(join(paths.root, rel), 'utf8');
+      assert.match(src, /import \{ inScope \} from '\.\/scope\.ts';/,
+        `${rel} matches source entries against cards, so it must import the shared scope check`);
+      assert.match(src, /inScope\(/, `${rel} imports inScope but never calls it`);
+    }
+  });
+});
