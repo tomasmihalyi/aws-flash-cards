@@ -3,11 +3,11 @@
   "fact_set_id": "agentcore.feature-regions",
   "tier": "A",
   "generator": "src/ingest/docs-feature-regions.ts",
-  "verified_at": "2026-08-11T00:37:31.321Z",
+  "verified_at": "2026-08-13T23:04:48.495Z",
   "source": {
     "kind": "aws-docs",
     "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-regions.html",
-    "fetched_at": "2026-08-11T00:37:31.321Z",
+    "fetched_at": "2026-08-13T23:04:48.495Z",
     "content_hash": "sha256:42f174b5235365c0341cd4da2144ed55e9735c68a87312e43d348f5ceb37a758",
     "retrieved_by": "GET https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-regions.md"
   },

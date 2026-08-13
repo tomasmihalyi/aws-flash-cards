@@ -3,16 +3,38 @@
   "fact_set_id": "strands.releases",
   "tier": "A",
   "generator": "src/ingest/github-releases.ts",
-  "verified_at": "2026-08-11T00:37:34.806Z",
+  "verified_at": "2026-08-13T23:04:51.224Z",
   "source": {
     "kind": "github-releases",
     "url": "https://github.com/strands-agents/harness-sdk/releases",
-    "fetched_at": "2026-08-11T00:37:34.806Z",
-    "content_hash": "sha256:e673eba0fa17101ab2bff45660d1db6405010629e069ecbdaa3bda60c45a46f9",
+    "fetched_at": "2026-08-13T23:04:51.224Z",
+    "content_hash": "sha256:7406399a954b8aaa463ca326a01b1df8cfc5c417f615d93ef67222f05ddcf3be",
     "retrieved_by": "GET https://github.com/strands-agents/harness-sdk/releases.atom"
   },
   "evidence": {
     "canonical": [
+      {
+        "iso_date": "2026-08-12",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 12, 2026",
+        "heading": "typescript/v1.13.0",
+        "summary": "typescript/v1.13.0 Auto-drafted from commits in typescript/v1.12.0..typescript/v1.13.0, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(model-routing): add ModelRouter and accept it via Agent(model=) (#3474) (26770e1) feat(catalog): add strands-github-storage integration (#",
+        "package": "typescript",
+        "version": "v1.13.0",
+        "url": "https://github.com/strands-agents/harness-sdk/releases/tag/typescript%2Fv1.13.0"
+      },
+      {
+        "iso_date": "2026-08-12",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 12, 2026",
+        "heading": "python/v1.52.0",
+        "summary": "python/v1.52.0 Auto-drafted from commits in python/v1.51.0..python/v1.52.0, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(model-routing): add ModelRouter and accept it via Agent(model=) (#3474) (26770e1) feat(catalog): add strands-github-storage integration (#3750) (7f195",
+        "package": "python",
+        "version": "v1.52.0",
+        "url": "https://github.com/strands-agents/harness-sdk/releases/tag/python%2Fv1.52.0"
+      },
       {
         "iso_date": "2026-08-07",
         "iso_month": "2026-08",
@@ -100,31 +122,9 @@
         "package": "typescript",
         "version": "v1.11.0",
         "url": "https://github.com/strands-agents/harness-sdk/releases/tag/typescript%2Fv1.11.0"
-      },
-      {
-        "iso_date": "2026-07-24",
-        "iso_month": "2026-07",
-        "month_label": "July 2026",
-        "date_label": "July 24, 2026",
-        "heading": "python/v1.50.1",
-        "summary": "python/v1.50.1 Auto-drafted from commits in python/v1.50.0..python/v1.50.1, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(site): add Storage category to community catalog (#3414) (7db6bc0) feat: add storage docs page (#3408) (972f372) feat(model-routing): thread per-call ",
-        "package": "python",
-        "version": "v1.50.1",
-        "url": "https://github.com/strands-agents/harness-sdk/releases/tag/python%2Fv1.50.1"
-      },
-      {
-        "iso_date": "2026-07-24",
-        "iso_month": "2026-07",
-        "month_label": "July 2026",
-        "date_label": "July 24, 2026",
-        "heading": "python/v1.50.0",
-        "summary": "python/v1.50.0 Auto-drafted from commits in python/v1.48.0..python/v1.50.0, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(site): improve AI-crawler discoverability and page load performance (#3344) (1b671d6) feat(vended-tools): add sleep tool (#3393) (d9f9314) feat(vended",
-        "package": "python",
-        "version": "v1.50.0",
-        "url": "https://github.com/strands-agents/harness-sdk/releases/tag/python%2Fv1.50.0"
       }
     ],
-    "text": "August 7, 2026 — typescript/v1.12.0: typescript/v1.12.0 Auto-drafted from commits in typescript/v1.11.2..typescript/v1.12.0, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(middleware): add AgentStreamStage and AgentStreamContext types (#3635) (38980ed) feat(storage-ts): accept storage as optional top-level Ag\nAugust 7, 2026 — python/v1.51.0: python/v1.51.0 Auto-drafted from commits in python/v1.50.2..python/v1.51.0, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(middleware): add AgentStreamStage and AgentStreamContext types (#3635) (38980ed) feat(storage-ts): accept storage as optional top-level Agent paramete\nAugust 7, 2026 — mcp/v0.2.9: mcp/v0.2.9 Auto-drafted from commits in mcp/v0.2.8..mcp/v0.2.9, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(middleware): add AgentStreamStage and AgentStreamContext types (#3635) (38980ed) feat(storage-ts): accept storage as optional top-level Agent parameter (#3660) (d\nJuly 30, 2026 — mcp/v0.2.8: mcp/v0.2.8 Auto-drafted from commits in mcp/v0.2.7..mcp/v0.2.8, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🐛 Fixes fix(mcp): pin mcp dependency below v2.0.0 (#3524) (8e6b33f) fix(mcp): deduplicate inverted-index postings (#3417) (0e517d6) ⚡ Performance perf(mcp): hydrate search snippe\nJuly 27, 2026 — typescript/v1.11.2: typescript/v1.11.2 Auto-drafted from commits in typescript/v1.11.1..typescript/v1.11.2, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat: add context manager class design doc (#3307) (cb3bffb) feat(ts): add agent-as-tool delegation (#3265) (a2761fd) 🐛 Fixes fix(context): le\nJuly 27, 2026 — python/v1.50.2: python/v1.50.2 Auto-drafted from commits in python/v1.50.1..python/v1.50.2, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat: add context manager class design doc (#3307) (cb3bffb) feat(ts): add agent-as-tool delegation (#3265) (a2761fd) feat(python): add per-call MCP tool c\nJuly 24, 2026 — typescript/v1.11.1: typescript/v1.11.1 Auto-drafted from commits in typescript/v1.11.0..typescript/v1.11.1, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(python): add per-call MCP tool cancellation (#3402) (67693b7) feat(site): add Storage category to community catalog (#3414) (7db6bc0) feat\nJuly 24, 2026 — typescript/v1.11.0: typescript/v1.11.0 Auto-drafted from commits in typescript/v1.10.0..typescript/v1.11.0, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(site): improve AI-crawler discoverability and page load performance (#3344) (1b671d6) feat(vended-tools): add sleep tool (#3393) (d9f9314)\nJuly 24, 2026 — python/v1.50.1: python/v1.50.1 Auto-drafted from commits in python/v1.50.0..python/v1.50.1, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(site): add Storage category to community catalog (#3414) (7db6bc0) feat: add storage docs page (#3408) (972f372) feat(model-routing): thread per-call \nJuly 24, 2026 — python/v1.50.0: python/v1.50.0 Auto-drafted from commits in python/v1.48.0..python/v1.50.0, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(site): improve AI-crawler discoverability and page load performance (#3344) (1b671d6) feat(vended-tools): add sleep tool (#3393) (d9f9314) feat(vended"
+    "text": "August 12, 2026 — typescript/v1.13.0: typescript/v1.13.0 Auto-drafted from commits in typescript/v1.12.0..typescript/v1.13.0, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(model-routing): add ModelRouter and accept it via Agent(model=) (#3474) (26770e1) feat(catalog): add strands-github-storage integration (#\nAugust 12, 2026 — python/v1.52.0: python/v1.52.0 Auto-drafted from commits in python/v1.51.0..python/v1.52.0, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(model-routing): add ModelRouter and accept it via Agent(model=) (#3474) (26770e1) feat(catalog): add strands-github-storage integration (#3750) (7f195\nAugust 7, 2026 — typescript/v1.12.0: typescript/v1.12.0 Auto-drafted from commits in typescript/v1.11.2..typescript/v1.12.0, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(middleware): add AgentStreamStage and AgentStreamContext types (#3635) (38980ed) feat(storage-ts): accept storage as optional top-level Ag\nAugust 7, 2026 — python/v1.51.0: python/v1.51.0 Auto-drafted from commits in python/v1.50.2..python/v1.51.0, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(middleware): add AgentStreamStage and AgentStreamContext types (#3635) (38980ed) feat(storage-ts): accept storage as optional top-level Agent paramete\nAugust 7, 2026 — mcp/v0.2.9: mcp/v0.2.9 Auto-drafted from commits in mcp/v0.2.8..mcp/v0.2.9, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(middleware): add AgentStreamStage and AgentStreamContext types (#3635) (38980ed) feat(storage-ts): accept storage as optional top-level Agent parameter (#3660) (d\nJuly 30, 2026 — mcp/v0.2.8: mcp/v0.2.8 Auto-drafted from commits in mcp/v0.2.7..mcp/v0.2.8, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🐛 Fixes fix(mcp): pin mcp dependency below v2.0.0 (#3524) (8e6b33f) fix(mcp): deduplicate inverted-index postings (#3417) (0e517d6) ⚡ Performance perf(mcp): hydrate search snippe\nJuly 27, 2026 — typescript/v1.11.2: typescript/v1.11.2 Auto-drafted from commits in typescript/v1.11.1..typescript/v1.11.2, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat: add context manager class design doc (#3307) (cb3bffb) feat(ts): add agent-as-tool delegation (#3265) (a2761fd) 🐛 Fixes fix(context): le\nJuly 27, 2026 — python/v1.50.2: python/v1.50.2 Auto-drafted from commits in python/v1.50.1..python/v1.50.2, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat: add context manager class design doc (#3307) (cb3bffb) feat(ts): add agent-as-tool delegation (#3265) (a2761fd) feat(python): add per-call MCP tool c\nJuly 24, 2026 — typescript/v1.11.1: typescript/v1.11.1 Auto-drafted from commits in typescript/v1.11.0..typescript/v1.11.1, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(python): add per-call MCP tool cancellation (#3402) (67693b7) feat(site): add Storage category to community catalog (#3414) (7db6bc0) feat\nJuly 24, 2026 — typescript/v1.11.0: typescript/v1.11.0 Auto-drafted from commits in typescript/v1.10.0..typescript/v1.11.0, grouped by conventional-commit type. Edit on the release page after publish if you want a polished writeup; the canonical release notes live on the website. 🚀 Features feat(site): improve AI-crawler discoverability and page load performance (#3344) (1b671d6) feat(vended-tools): add sleep tool (#3393) (d9f9314)"
   },
   "facts": {
     "strands.releases.release-count": {
@@ -143,15 +143,15 @@
     },
     "strands.releases.latest-version": {
       "type": "string",
-      "value": "v1.12.0",
+      "value": "v1.13.0",
       "note": "Most recent release in the window, across all packages."
     },
     "strands.releases.latest-by-package": {
       "type": "string_list",
       "value": [
         "mcp=v0.2.9",
-        "python=v1.51.0",
-        "typescript=v1.12.0"
+        "python=v1.52.0",
+        "typescript=v1.13.0"
       ],
       "note": "Latest version per package. A monorepo versions each package separately."
     },
@@ -162,7 +162,7 @@
     },
     "strands.releases.window-latest": {
       "type": "string",
-      "value": "2026-08-07"
+      "value": "2026-08-12"
     }
   },
   "previous": {

@@ -3,11 +3,11 @@
   "fact_set_id": "strands.readme",
   "tier": "A",
   "generator": "src/ingest/docs-pages.ts",
-  "verified_at": "2026-08-11T00:37:32.427Z",
+  "verified_at": "2026-08-13T23:04:49.687Z",
   "source": {
     "kind": "vendor-docs",
     "url": "https://github.com/strands-agents/harness-sdk",
-    "fetched_at": "2026-08-11T00:37:32.427Z",
+    "fetched_at": "2026-08-13T23:04:49.687Z",
     "content_hash": "sha256:794375c5273f33f043bd7a85a9004d2674d44833b37d64c215198c1003e5d6de",
     "retrieved_by": "GET https://raw.githubusercontent.com/strands-agents/harness-sdk/main/README.md"
   },
