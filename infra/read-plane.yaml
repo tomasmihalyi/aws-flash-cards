@@ -84,6 +84,13 @@ Resources:
             Status: Enabled
             AbortIncompleteMultipartUpload:
               DaysAfterInitiation: 7
+      # SpringClean runs account-wide from us-east-1 and deletes untagged
+      # resources after a 3-day warning. DeletionPolicy: Retain above only
+      # guards CloudFormation stack deletion — it does nothing against a direct
+      # DeleteBucket call, so the exemption has to be a tag the cleaner reads.
+      Tags:
+        - Key: auto-delete
+          Value: never
 
   DeckBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -220,6 +227,11 @@ Resources:
         ViewerCertificate:
           CloudFrontDefaultCertificate: true
           MinimumProtocolVersion: TLSv1.2_2021
+      # Sibling of DistributionConfig, not inside it. Exempts the distribution
+      # from the account's SpringClean sweep.
+      Tags:
+        - Key: auto-delete
+          Value: never
 
 Outputs:
   BucketName:

@@ -129,6 +129,12 @@ Resources:
       ThumbprintList:
         - 6938fd4d98bab03faadb97b34396831e3780aea1
         - 1c58a3a8518e8759bf075b76b750d4f2df264fdd
+      # Exempt from the account's SpringClean sweep. Losing this provider makes
+      # every workflow unable to assume any role, so it is the single highest-
+      # consequence resource in the stack.
+      Tags:
+        - Key: auto-delete
+          Value: never
 
   # ------------------------------------------------------------- refresher ----
   RefreshRole:
@@ -137,6 +143,9 @@ Resources:
       RoleName: flashcards-refresh
       Description: Reads the three credentialed sources. Cannot touch the bucket.
       MaxSessionDuration: 3600
+      Tags:
+        - Key: auto-delete
+          Value: never
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -230,6 +239,9 @@ Resources:
       RoleName: flashcards-publish
       Description: Writes the deck bucket and invalidates one distribution. Reads no sources.
       MaxSessionDuration: 3600
+      Tags:
+        - Key: auto-delete
+          Value: never
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -314,6 +326,9 @@ Resources:
       RoleName: flashcards-draft
       Description: Invokes ONE model for Tier B prose drafting. Cannot read a source or write the bucket.
       MaxSessionDuration: 3600
+      Tags:
+        - Key: auto-delete
+          Value: never
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:

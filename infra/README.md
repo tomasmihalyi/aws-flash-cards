@@ -71,3 +71,41 @@ where nobody is watching. Two things are needed: accept Playwright as a
 dev-only dependency (it cannot be a repo dependency — this project has none by
 design, so it belongs in the CI image), and teach `browser-check.mjs` to take an
 `https://` URL as well as a path.
+
+## Why every resource carries `auto-delete: never`
+
+This account runs **SpringClean** — stack `SpringClean-XUG3HH5R` in `us-east-1`,
+which sweeps the whole account regardless of region. It warns by email, then
+deletes or stops untagged resources after three days.
+
+The documented exemption contract:
+
+| tag | effect |
+|---|---|
+| `auto-delete` = `no` or `never` | never deleted |
+| `springclean` = any value | never deleted |
+| `auto-delete` = `2026-12-31` | deferred until that date |
+| `auto-stop` = `no` | not stopped, without full deletion exemption |
+
+Every taggable resource in both templates carries `auto-delete: never` — the
+strongest form, which the spec describes as protecting a resource *regardless of
+age or execution mode*. A date-based deferral was rejected deliberately: it
+expires silently, and the failure mode is the deck disappearing on a day nobody
+chose.
+
+**`DeletionPolicy: Retain` is not a substitute.** It only constrains what
+CloudFormation may do when a stack is deleted. It has no bearing on a direct
+`DeleteBucket` call from an account janitor, so the tag is the only thing
+standing between SpringClean and the published deck.
+
+Three resources cannot be tagged at all, because their AWS resource types have
+no tag support: the bucket policy, the Origin Access Control, and the response
+headers policy. None is independently useful to a cleaner, and all three are
+recreated by a stack update, so the gap is acceptable rather than merely ignored.
+
+**What tagging does NOT exempt.** SpringClean's *lock* and *compliance* modes
+have no tag opt-out. S3 Lock keeps account-level Block Public Access switched on
+permanently. That is aligned with this design rather than in tension with it —
+the bucket is private with OAC as the only reader, so the lock enforces exactly
+what `read-plane.yaml` already asserts. Expect it to stay on, and do not design
+anything that needs a public bucket.
