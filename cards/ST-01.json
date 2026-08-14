@@ -56,11 +56,11 @@
       "url": "https://github.com/strands-agents/harness-sdk",
       "title": "strands.readme (vendor-docs)",
       "kind": "vendor-docs",
-      "fetched_at": "2026-08-13T23:04:49.687Z",
-      "content_hash": "sha256:794375c5273f33f043bd7a85a9004d2674d44833b37d64c215198c1003e5d6de"
+      "fetched_at": "2026-08-14T19:46:20.904Z",
+      "content_hash": "sha256:cd717d2bab11a20b6b7e3842ff54f6421149e34c5e0c162040746330f897e7a2"
     }
   ],
-  "verified_at": "2026-08-13T23:04:49.687Z",
+  "verified_at": "2026-08-14T19:46:20.904Z",
   "confidence": "high",
   "depends_on": [],
   "aka": [],

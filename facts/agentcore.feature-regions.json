@@ -3,12 +3,12 @@
   "fact_set_id": "agentcore.feature-regions",
   "tier": "A",
   "generator": "src/ingest/docs-feature-regions.ts",
-  "verified_at": "2026-08-13T23:04:48.495Z",
+  "verified_at": "2026-08-14T19:46:19.780Z",
   "source": {
     "kind": "aws-docs",
     "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-regions.html",
-    "fetched_at": "2026-08-13T23:04:48.495Z",
-    "content_hash": "sha256:42f174b5235365c0341cd4da2144ed55e9735c68a87312e43d348f5ceb37a758",
+    "fetched_at": "2026-08-14T19:46:19.780Z",
+    "content_hash": "sha256:01452fc1b8e213b2d08711460956125d02730a140c191f9af54af0eb13b5e3d4",
     "retrieved_by": "GET https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-regions.md"
   },
   "evidence": {
@@ -324,10 +324,20 @@
             "Asia Pacific (Tokyo)"
           ],
           "count": 5
+        },
+        {
+          "feature": "Web Search Tool",
+          "key": "web-search-tool",
+          "regions": [
+            "US East (N. Virginia)",
+            "Europe (Ireland)",
+            "Asia Pacific (Tokyo)"
+          ],
+          "count": 3
         }
       ]
     },
-    "text": "AgentCore harness: available in 15 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo)\nAgentCore Runtime microVMs: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Runtime Instances: available in 9 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo)\nAgentCore Memory: available in 15 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo)\nAgentCore Gateway: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Identity: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Built-in Tools: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Observability: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore payments (preview): available in 4 regions — US East (N. Virginia), US West (Oregon), Europe (Frankfurt), Asia Pacific (Sydney)\nPolicy in AgentCore: available in 19 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo)\nAgentCore Evaluations: available in 16 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore optimization: available in 15 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo)\nAWS Agent Registry: available in 5 regions — US East (N. Virginia), US West (Oregon), Europe (Ireland), Asia Pacific (Sydney), Asia Pacific (Tokyo)"
+    "text": "AgentCore harness: available in 15 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo)\nAgentCore Runtime microVMs: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Runtime Instances: available in 9 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo)\nAgentCore Memory: available in 15 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo)\nAgentCore Gateway: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Identity: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Built-in Tools: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Observability: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore payments (preview): available in 4 regions — US East (N. Virginia), US West (Oregon), Europe (Frankfurt), Asia Pacific (Sydney)\nPolicy in AgentCore: available in 19 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo)\nAgentCore Evaluations: available in 16 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore optimization: available in 15 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo)\nAWS Agent Registry: available in 5 regions — US East (N. Virginia), US West (Oregon), Europe (Ireland), Asia Pacific (Sydney), Asia Pacific (Tokyo)\nWeb Search Tool: available in 3 regions — US East (N. Virginia), Europe (Ireland), Asia Pacific (Tokyo)"
   },
   "facts": {
     "agentcore.feature-regions.matrix-region-count": {
@@ -341,7 +351,7 @@
     },
     "agentcore.feature-regions.feature-count": {
       "type": "integer",
-      "value": 13
+      "value": 14
     },
     "agentcore.feature-regions.harness.count": {
       "type": "integer",
@@ -668,6 +678,19 @@
         "US West (Oregon)",
         "Europe (Ireland)",
         "Asia Pacific (Sydney)",
+        "Asia Pacific (Tokyo)"
+      ]
+    },
+    "agentcore.feature-regions.web-search-tool.count": {
+      "type": "integer",
+      "value": 3,
+      "note": "Regions where the docs matrix marks \"Web Search Tool\" as supported."
+    },
+    "agentcore.feature-regions.web-search-tool.regions": {
+      "type": "string_list",
+      "value": [
+        "US East (N. Virginia)",
+        "Europe (Ireland)",
         "Asia Pacific (Tokyo)"
       ]
     }
