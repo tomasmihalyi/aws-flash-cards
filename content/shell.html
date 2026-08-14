@@ -11,6 +11,7 @@
   --paper:#EDF1F7;
   --card:#FFFFFF;
   --ink:#0E1B2C;
+  --ink-soft:#22314A;
   --slate:#55637A;
   --line:#D4DCE8;
   --blue:#1F5EFF;
@@ -19,9 +20,25 @@
   --amber-soft:#FFF3DC;
   --mint:#0B7A54;
   --mint-soft:#E2F5EC;
+  --emphasis:#0E1B2C;
+  --emphasis-text:#FFFFFF;
   --mono:'IBM Plex Mono',ui-monospace,monospace;
   --disp:'Space Grotesk',system-ui,sans-serif;
   --body:system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+[data-theme="dark"]{
+  --paper:#0B1220;
+  --card:#141C2C;
+  --ink:#EAF0FA;
+  --ink-soft:#C3CEE0;
+  --slate:#93A2BC;
+  --line:#283449;
+  --blue:#6E9CFF;
+  --blue-soft:#1C2A4A;
+  --amber:#E8B155;
+  --amber-soft:#3A2E14;
+  --mint:#5FD3A6;
+  --mint-soft:#123527;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
@@ -42,7 +59,7 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 .chips::-webkit-scrollbar{display:none}
 .chip{font-family:var(--mono);font-size:.7rem;font-weight:500;white-space:nowrap;border:1px solid var(--line);
   background:var(--card);color:var(--slate);border-radius:3px;padding:7px 12px;cursor:pointer;transition:all .15s}
-.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.on{background:var(--emphasis);color:var(--emphasis-text);border-color:var(--emphasis)}
 .chip:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
 /* ---------- search ---------- */
@@ -74,7 +91,7 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 .studyToggle{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.05em;
   border:1px solid var(--ink);background:var(--card);color:var(--ink);border-radius:3px;
   padding:8px 12px;cursor:pointer}
-.studyToggle[aria-pressed="true"]{background:var(--ink);color:#fff}
+.studyToggle[aria-pressed="true"]{background:var(--emphasis);color:var(--emphasis-text)}
 .studyToggle:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .studyStats{font-family:var(--mono);font-size:.64rem;color:var(--slate);display:flex;gap:.75rem;flex-wrap:wrap}
 .studyStats b{color:var(--ink)}
@@ -147,11 +164,11 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 /* back */
 .back .body{padding:16px 18px 18px;overflow-y:auto;font-size:.85rem}
 .back h3{font-family:var(--disp);font-size:1.05rem;margin-bottom:8px}
-.back p{margin-bottom:10px;color:#22314A}
+.back p{margin-bottom:10px;color:var(--ink-soft)}
 .kv{border-top:1px dashed var(--line);margin-top:4px;padding-top:10px}
 .kv .row{display:flex;gap:10px;margin-bottom:8px}
 .kv .k{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);min-width:86px;padding-top:2px;font-weight:600}
-.kv .v{flex:1;color:#22314A}
+.kv .v{flex:1;color:var(--ink-soft)}
 .hookline{background:var(--blue-soft);border-left:2px solid var(--blue);padding:8px 10px;border-radius:0 3px 3px 0;font-size:.8rem;margin-top:6px}
 .hookline b{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:2px}
 
@@ -167,7 +184,7 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 .nav .in{max-width:680px;margin:0 auto;display:flex;gap:8px;padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
 .btn{flex:1;font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
   border:1px solid var(--ink);background:var(--card);color:var(--ink);border-radius:3px;padding:12px 0;cursor:pointer;transition:all .12s}
-.btn.pri{background:var(--ink);color:#fff}
+.btn.pri{background:var(--emphasis);color:var(--emphasis-text)}
 .btn:active{transform:scale(.97)}
 .btn:disabled{opacity:.3;cursor:default}
 .btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
@@ -182,10 +199,16 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
   clip:rect(0 0 0 0);white-space:nowrap;border:0}
 /* ---------- focused public layout ---------- */
 .wrap{padding-bottom:34px}
-.skipLink{position:absolute;left:16px;top:-60px;background:var(--ink);color:#fff;font-family:var(--mono);
+.skipLink{position:absolute;left:16px;top:-60px;background:var(--emphasis);color:var(--emphasis-text);font-family:var(--mono);
   font-size:.72rem;padding:9px 12px;border-radius:3px;z-index:20;text-decoration:none}
 .skipLink:focus{top:10px}
 .headerTop{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.headerActions{display:flex;align-items:center;gap:12px}
+.themeToggle{font-family:var(--mono);font-size:.66rem;font-weight:600;color:var(--slate);
+  background:var(--card);border:1px solid var(--line);border-radius:3px;padding:5px 9px;cursor:pointer}
+.themeToggle:hover{border-color:var(--blue);color:var(--blue)}
+.themeToggle:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.themeToggle[aria-pressed="true"]{background:var(--emphasis);color:var(--emphasis-text);border-color:var(--emphasis)}
 .aboutLink{font-family:var(--mono);font-size:.66rem;color:var(--blue);text-decoration:none;border-bottom:1px solid var(--blue-soft)}
 .aboutLink:hover,.aboutLink:focus-visible{border-bottom-color:var(--blue)}
 .unofficial{font-family:var(--mono);font-size:.58rem;color:var(--slate);margin-top:1px}
@@ -222,13 +245,27 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
   background:rgba(237,241,247,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;gap:8px}
 .filterActions button{flex:1;font-family:var(--mono);font-size:.68rem;font-weight:600;border:1px solid var(--ink);border-radius:3px;
   padding:10px;background:var(--card);color:var(--ink);cursor:pointer}
-.filterActions .applyFilters{background:var(--ink);color:#fff}
+.filterActions .applyFilters{background:var(--emphasis);color:var(--emphasis-text)}
 .filterActions button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .studyBar{justify-content:space-between;margin:8px 0 7px}
-.studyCopy{font-family:var(--mono);font-size:.64rem;color:var(--ink);font-weight:600}
+.browseButton{font-family:var(--mono);font-size:.64rem;color:var(--blue);font-weight:600;border:1px solid var(--line);
+  background:var(--card);border-radius:3px;padding:8px 10px;cursor:pointer}
+.browseButton:hover{border-color:var(--blue);background:var(--blue-soft)}
+.browseButton:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.topicRailWrap{display:flex;align-items:flex-start;gap:8px;margin:6px 0 8px;min-width:0}
+.topicLabel{flex:0 0 auto;font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--slate);padding-top:7px;font-weight:600}
+.topicRail{display:flex;flex:1;flex-wrap:wrap;gap:5px;min-width:0}
+.topicChip{flex:0 0 auto;font-family:var(--mono);font-size:.58rem;color:var(--slate);border:1px solid var(--line);
+  background:var(--card);border-radius:999px;padding:6px 9px;cursor:pointer;white-space:nowrap}
+.topicChip i{font-style:normal;color:var(--slate);margin-left:4px}
+.topicChip:hover{border-color:var(--blue);color:var(--blue)}
+.topicChip[aria-pressed="true"]{background:var(--emphasis);border-color:var(--emphasis);color:var(--emphasis-text)}
+.topicChip[aria-pressed="true"] i{color:#fff}
+.topicChip:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .studyStats[hidden]{display:none}
 .studyIntro{position:relative;background:var(--blue-soft);border-left:2px solid var(--blue);padding:10px 38px 10px 12px;
-  border-radius:0 3px 3px 0;color:#22314A;font-size:.76rem;margin:8px 0}
+  border-radius:0 3px 3px 0;color:var(--ink-soft);font-size:.76rem;margin:8px 0}
 .studyIntro b{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:2px}
 .studyIntro button{position:absolute;right:7px;top:7px;border:0;background:none;color:var(--blue);font-size:1rem;cursor:pointer;padding:3px}
 .studyIntro[hidden]{display:none}
@@ -240,7 +277,7 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 .studyTools button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .localOnly{font-family:var(--mono);font-size:.6rem;color:var(--slate);margin-right:auto}
 .progress{margin:8px 0 10px}
-.cardShell{cursor:default}
+.cardShell{cursor:pointer}
 .front .tap{margin:18px auto 12px;font-weight:600;color:var(--blue);padding:9px 16px;border:1px solid var(--blue);
   border-radius:3px;background:var(--card);cursor:pointer}
 .front .tap::before{display:none}
@@ -259,7 +296,7 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 .showQuestion:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .nav{position:static;bottom:auto;left:auto;right:auto;margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:6px;backdrop-filter:none}
 .nav .in{max-width:none;display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:8px}
-.btn.next{text-align:right}
+.nav .btn{display:flex;align-items:center;justify-content:center;text-align:center}
 .navCount{font-family:var(--mono);font-size:.7rem;color:var(--slate);min-width:72px;text-align:center}
 .navTools{display:flex;justify-content:center;border-top:1px solid var(--line);padding:7px}
 .shuffle{font-family:var(--mono);font-size:.64rem;color:var(--blue);background:none;border:0;cursor:pointer;padding:4px 8px}
@@ -279,6 +316,9 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
   .filterControls{margin-top:8px}
   .filterButton{padding:0 10px}
   .studyBar{margin-top:6px}
+  .topicRailWrap{display:block;margin-top:5px}
+  .topicLabel{display:block;padding:0 0 4px}
+  .topicRail{flex-wrap:nowrap;overflow-x:auto;padding:1px 1px 6px;scrollbar-width:thin}
   .front .art{padding:14px 0 4px}
   .front .art svg{width:116px;height:116px}
   .front h2{font-size:1.35rem;padding-top:2px}
@@ -287,12 +327,22 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
   .filterDialog{width:calc(100% - 16px);max-height:calc(100dvh - 16px)}
 }
 </style>
+<script>
+(function(){
+  try{
+    var stored=localStorage.getItem('aws-flashcards.theme.v1');
+    var theme=stored==='dark'||stored==='light'?stored:
+      (matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    if(theme==='dark')document.documentElement.setAttribute('data-theme','dark');
+  }catch(e){/* storage or matchMedia unavailable -- default light */}
+})();
+</script>
 </head>
 <body>
 <div class="wrap">
   <a class="skipLink" href="#stage">Skip to current card</a>
   <header>
-    <div class="headerTop"><div><div class="eyebrow">Independent field deck · AWS topics</div><div class="unofficial">Not official AWS documentation</div></div><a class="aboutLink" href="#about">About</a></div>
+    <div class="headerTop"><div><div class="eyebrow">Independent field deck · AWS topics</div><div class="unofficial">Not official AWS documentation</div></div><div class="headerActions"><button class="themeToggle" id="themeToggle" type="button" aria-pressed="false">Dark mode</button><a class="aboutLink" href="#about">About</a></div></div>
     <h1>AWS AI-Native Development Flashcards</h1>
     <p class="sub">Verified facts and explicit judgements for AWS builders — one idea per card. @@FRESHNESS@@</p>
     <div class="meta">@@META@@</div>
@@ -328,8 +378,12 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 
   <div class="studyBar">
     <button class="studyToggle" id="studyBtn" type="button" aria-pressed="false" aria-describedby="studyModeHelp">Start scheduled study</button>
-    <span class="studyCopy" id="studyCopy">Browse all cards</span>
+    <button class="browseButton" id="browseBtn" type="button" aria-pressed="true">Browse all cards</button>
     <span class="sr-only" id="studyModeHelp">Study mode adds recall ratings and schedules future reviews.</span>
+  </div>
+  <div class="topicRailWrap">
+    <span class="topicLabel">Sections</span>
+    <div class="topicRail" id="topicRail" role="toolbar" aria-label="Card sections"></div>
   </div>
   <div class="studyIntro" id="studyIntro" hidden><b>How study works</b>Reveal the answer, then rate your recall. Ratings schedule future reviews. Progress stays in this browser.<button type="button" id="dismissStudyIntro" aria-label="Dismiss study explanation">&times;</button></div>
   <div class="studyStats" id="studyStats" hidden></div>
@@ -513,7 +567,7 @@ function setStudyMode(on){
   if(!on&&tools.contains(document.activeElement))b.focus();
   b.setAttribute('aria-pressed',on?'true':'false');
   b.textContent=on?'Exit scheduled study':'Start scheduled study';
-  document.getElementById('studyCopy').textContent=on?'Review scheduling on':'Browse all cards';
+  document.getElementById('browseBtn').setAttribute('aria-pressed',on?'false':'true');
   document.getElementById('studyStats').hidden=!on;
   tools.hidden=!on;
   document.getElementById('studyIntro').hidden=!on||studyIntroSeen();
@@ -525,6 +579,16 @@ function setStudyMode(on){
   announce(on
     ?'Study mode on. '+c.total+' card'+(c.total===1?'':'s')+' to review'+(c.changed?', '+c.changed+' changed since you studied them':'')+'.'
     :'Study mode off, browsing all cards.');
+}
+
+function browseAll(){
+  clearTimeout(qTimer);
+  filter=-1;tag=null;query='';tagsExpanded=false;pos=0;flipped=false;
+  document.getElementById('q').value='';
+  if(studyMode)setStudyMode(false);
+  else{syncControls();render();}
+  document.getElementById('browseBtn').focus();
+  announce('Browsing all '+DECK.length+' cards.');
 }
 
 /* ---- state & render ---- */
@@ -609,7 +673,7 @@ function render(){
       '<br><button type="button" id="resetBtn">'+(studyMode?'Browse all cards':'Clear filters')+'</button></div>';
     const r=document.getElementById('resetBtn');
     if(r)r.onclick=()=>{
-      if(studyMode){setStudyMode(false);return;}
+      if(studyMode){browseAll();return;}
       filter=-1;tag=null;query='';document.getElementById('q').value='';syncControls();pos=0;flipped=false;render();
     };
     announce(studyMode?'Nothing left to review.':'No cards match. '+describeFilters());
@@ -622,8 +686,16 @@ function render(){
   decorateForStudy(d);
   const reveal=document.getElementById('flipBtn');
   const showQuestion=document.getElementById('showQuestionBtn');
+  const card=document.getElementById('card');
   if(reveal)reveal.onclick=()=>flip(true);
   if(showQuestion)showQuestion.onclick=()=>flip(true);
+  if(card)card.onclick=e=>{
+    if(e.defaultPrevented||e.button!==0)return;
+    const target=e.target instanceof Element?e.target:null;
+    if(!target||target.closest('a,button,input,select,textarea,summary,details,[contenteditable="true"]'))return;
+    if(window.getSelection()?.toString())return;
+    flip();
+  };
   fitCard();
   syncHash();
   if(restoreStageFocus)requestAnimationFrame(()=>document.querySelector('.front h2')?.focus());
@@ -688,14 +760,38 @@ function flip(moveFocus=false){
 function go(d){const t=visible().length;const n=Math.min(Math.max(pos+d,0),t-1);if(n!==pos){pos=n;flipped=false;render();}}
 function shuffle(){for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}pos=0;flipped=false;render();}
 
-/* chips */
+/* topics — one source of category state for the visible rail and dialog */
 const chipsEl=document.getElementById('chips');
+const topicRailEl=document.getElementById('topicRail');
+function chooseTopic(value){
+  filter=value;pos=0;flipped=false;syncControls();render();
+  announce((value<0?'All sections':CAT[value])+', '+visible().length+' card'+(visible().length===1?'':'s')+'.');
+}
 ["All",...CAT].forEach((label,i)=>{
-  const b=document.createElement('button');
-  b.type='button';b.className='chip';b.textContent=label;b.dataset.cat=String(i-1);
-  b.setAttribute('aria-pressed','false');
-  b.onclick=()=>{filter=i-1;pos=0;flipped=false;syncControls();render();};
-  chipsEl.appendChild(b);
+  const value=i-1;
+  const chip=document.createElement('button');
+  chip.type='button';chip.className='chip';chip.textContent=label;chip.dataset.cat=String(value);
+  chip.setAttribute('aria-pressed','false');
+  chip.onclick=()=>chooseTopic(value);
+  chipsEl.appendChild(chip);
+
+  const count=value<0?DECK.length:DECK.filter(d=>d.c===value).length;
+  const rail=document.createElement('button');
+  rail.type='button';rail.className='topicChip';rail.dataset.cat=String(value);rail.tabIndex=-1;
+  rail.setAttribute('aria-pressed','false');
+  rail.setAttribute('aria-label',label+', '+count+' card'+(count===1?'':'s'));
+  rail.innerHTML=escapeHtml(label)+'<i aria-hidden="true">'+count+'</i>';
+  rail.onclick=()=>chooseTopic(value);
+  topicRailEl.appendChild(rail);
+});
+topicRailEl.addEventListener('keydown',e=>{
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
+  e.preventDefault();e.stopPropagation();
+  const buttons=[...topicRailEl.querySelectorAll('.topicChip')];
+  const at=buttons.indexOf(document.activeElement);
+  const next=e.key==='Home'?0:e.key==='End'?buttons.length-1:
+    (at+(e.key==='ArrowRight'?1:-1)+buttons.length)%buttons.length;
+  buttons[next].focus();
 });
 
 /* tags — derived from the cards, so the taxonomy cannot drift from the content */
@@ -739,10 +835,11 @@ function renderTags(){
 /* Reflect state back into the controls. Called after any state change so the
    controls, the URL and the deck can never disagree about what is filtered. */
 function syncControls(){
-  chipsEl.querySelectorAll('.chip').forEach(x=>{
+  document.querySelectorAll('.chip,.topicChip').forEach(x=>{
     const on=Number(x.dataset.cat)===filter;
     x.classList.toggle('on',on);
     x.setAttribute('aria-pressed',on?'true':'false');
+    if(x.classList.contains('topicChip'))x.tabIndex=on?0:-1;
   });
   const qi=document.getElementById('q');
   if(qi.value!==query)qi.value=query;
@@ -843,6 +940,22 @@ document.getElementById('prevBtn').onclick=()=>go(-1);
 document.getElementById('nextBtn').onclick=()=>go(1);
 document.getElementById('shufBtn').onclick=shuffle;
 document.getElementById('studyBtn').onclick=()=>setStudyMode(!studyMode);
+document.getElementById('browseBtn').onclick=browseAll;
+
+const THEME_KEY='aws-flashcards.theme.v1';
+const themeToggle=document.getElementById('themeToggle');
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme',theme);
+  themeToggle.setAttribute('aria-pressed',theme==='dark'?'true':'false');
+  themeToggle.textContent=theme==='dark'?'Light mode':'Dark mode';
+}
+applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light');
+themeToggle.onclick=()=>{
+  const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  applyTheme(next);
+  try{localStorage.setItem(THEME_KEY,next);}catch(e){/* session-only */}
+  announce(next==='dark'?'Dark mode on.':'Light mode on.');
+};
 document.getElementById('dismissStudyIntro').onclick=()=>{
   rememberStudyIntro();document.getElementById('studyBtn').focus();document.getElementById('studyIntro').hidden=true;
 };
