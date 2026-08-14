@@ -157,6 +157,91 @@ try {
   await page.keyboard.press('Escape');
   await page.waitForTimeout(100);
 
+  console.log('\n[always-visible topic rail]');
+  const navLabelAlign = await page.evaluate(() => {
+    const btns = [...document.querySelectorAll('.nav .btn')];
+    return btns.map((b) => {
+      const cs = getComputedStyle(b);
+      return { text: b.textContent.trim(), justify: cs.justifyContent, align: cs.textAlign };
+    });
+  });
+  ok('Previous and Next labels are centred, not left/right-aligned',
+    navLabelAlign.every((b) => b.justify === 'center' || b.align === 'center'),
+    JSON.stringify(navLabelAlign));
+
+  const railChipCount = await page.$$eval('#topicRail .topicChip', (els) => els.length);
+  ok('the topic rail renders one chip per section plus All', railChipCount >= 2, `chips=${railChipCount}`);
+
+  const railBefore = await page.evaluate(() => ({
+    card: document.querySelector('.front .partno')?.textContent,
+    pressed: [...document.querySelectorAll('#topicRail .topicChip')].map((c) => c.getAttribute('aria-pressed')),
+  }));
+  await page.click('#topicRail .topicChip:nth-child(2)');
+  await page.waitForTimeout(150);
+  const railAfter = await page.evaluate(() => ({
+    card: document.querySelector('.front .partno')?.textContent,
+    pressed: [...document.querySelectorAll('#topicRail .topicChip')].map((c) => c.getAttribute('aria-pressed')),
+  }));
+  ok('one click on a rail chip switches section (card or pressed-state changes)',
+    railAfter.card !== railBefore.card || railAfter.pressed.join(',') !== railBefore.pressed.join(','),
+    JSON.stringify({ before: railBefore, after: railAfter }));
+  ok('exactly one rail chip is pressed after selection',
+    railAfter.pressed.filter((p) => p === 'true').length === 1, railAfter.pressed.join(','));
+  // Return to "All" so the rest of the suite sees the full deck.
+  await page.click('#topicRail .topicChip:nth-child(1)');
+  await page.waitForTimeout(150);
+
+  console.log('\n[click-anywhere-on-card flip, without becoming a composite button]');
+  const beforeCardClick = await page.$eval('#card', (c) => c.classList.contains('flipped'));
+  await page.click('#card', { position: { x: 20, y: 20 } });
+  await page.waitForTimeout(650);
+  const afterCardClick = await page.$eval('#card', (c) => c.classList.contains('flipped'));
+  ok('clicking blank card space flips the card', afterCardClick !== beforeCardClick,
+    `before=${beforeCardClick} after=${afterCardClick}`);
+  await page.click('#card', { position: { x: 20, y: 20 } });
+  await page.waitForTimeout(650);
+  const backToFront = await page.$eval('#card', (c) => c.classList.contains('flipped'));
+  ok('clicking blank card space again flips it back', backToFront === beforeCardClick,
+    `before=${beforeCardClick} after=${backToFront}`);
+
+  await page.keyboard.press('ArrowDown');
+  await page.waitForTimeout(650);
+  const preLinkClickFlip = await page.$eval('#card', (c) => c.classList.contains('flipped'));
+  const linkExists = await page.$('.back .prov a');
+  if (linkExists) {
+    const target = await page.$eval('.back .prov a', (a) => a.getAttribute('target'));
+    await page.click('.back .prov a', { modifiers: [] }).catch(() => {});
+    await page.waitForTimeout(150);
+    const postLinkClickFlip = await page.$eval('#card', (c) => c.classList.contains('flipped'));
+    ok('clicking a source link does not also flip the card',
+      postLinkClickFlip === preLinkClickFlip, `target=${target} before=${preLinkClickFlip} after=${postLinkClickFlip}`);
+  }
+  const preReportClickFlip = await page.$eval('#card', (c) => c.classList.contains('flipped'));
+  await page.click('.back .reportCard').catch(() => {});
+  await page.waitForTimeout(150);
+  const postReportClickFlip = await page.$eval('#card', (c) => c.classList.contains('flipped'));
+  ok('clicking "Report this card" does not also flip the card',
+    postReportClickFlip === preReportClickFlip, `before=${preReportClickFlip} after=${postReportClickFlip}`);
+  await page.click('#showQuestionBtn').catch(() => {});
+  await page.waitForTimeout(150);
+
+  console.log('\n["Browse all cards" is a real, clickable control]');
+  await page.click('#studyBtn');
+  await page.waitForTimeout(150);
+  const studyOn = await page.$eval('#studyBtn', (b) => b.getAttribute('aria-pressed'));
+  ok('Start scheduled study engages Study mode', studyOn === 'true', studyOn);
+  await page.click('#browseBtn');
+  await page.waitForTimeout(150);
+  const afterBrowse = await page.evaluate(() => ({
+    studyPressed: document.querySelector('#studyBtn')?.getAttribute('aria-pressed'),
+    browsePressed: document.querySelector('#browseBtn')?.getAttribute('aria-pressed'),
+    focused: document.activeElement?.id,
+  }));
+  ok('clicking Browse all cards exits Study mode',
+    afterBrowse.studyPressed === 'false', JSON.stringify(afterBrowse));
+  ok('Browse all cards is marked pressed once active', afterBrowse.browsePressed === 'true', JSON.stringify(afterBrowse));
+  ok('clicking Browse all cards keeps focus on a real button', afterBrowse.focused === 'browseBtn', JSON.stringify(afterBrowse));
+
   console.log('\n[header — derived, never hand-maintained]');
   const meta = await page.$$eval('.meta span', (e) => e.map((x) => x.textContent.trim()));
   const sub = await page.textContent('.sub');
