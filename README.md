@@ -153,10 +153,10 @@ build. npm is only a task runner here; there are no packages to install.
 | Action | How |
 |---|---|
 | Search | type in the box, or press `/` from anywhere. Tokens are ANDed and results ranked by where the match lands |
-| Filter | category chips, tag chips (click an active tag again to clear), or both at once — they compose with search |
+| Filter | open **Filters** for topics and tags (click an active tag again to clear); both compose with search |
 | Navigate | `←` `→` or the buttons; `↑` `↓` flips |
 | Share a card | copy the URL — it is `#/card/ac-19?cat=…&tag=…&q=…` and restores the whole view |
-| Study | press `s` or the Study mode button; flip, then grade with `1`–`4` (Again / Hard / Good / Easy). Progress lives in `localStorage`, no account |
+| Study | press `s` or **Start scheduled study**; flip, then grade with `1`–`4` (Again / Hard / Good / Easy). Progress lives in `localStorage`, no account; use Export, Import, or Reset to manage it |
 
 A link that names a card wins over filters that would hide it, and an unknown
 slug, tag or category degrades to the full deck rather than a blank page.

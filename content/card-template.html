@@ -1,20 +1,24 @@
 
-  <div class="cardShell ${flipped?'flipped':''}" id="card" role="button" tabindex="0" aria-pressed="${flipped?'true':'false'}" aria-label="Flashcard: ${d.t}. ${flipped?'Showing detail. Press to show the question.':'Showing the question. Press to reveal detail.'}">
+  <article class="cardShell ${flipped?'flipped':''}" id="card" aria-label="Flashcard: ${d.t}. ${flipped?'Showing detail.':'Showing the question.'}">
     <div class="face front" aria-hidden="${flipped?'true':'false'}" ${flipped?'inert':''}>
-      <div class="strip"><span class="partno">${d.id} · ${CAT[d.c].toUpperCase()}</span><span class="badge ${d.b}">${d.bt}</span></div>
+      <div class="strip"><span class="partno">${d.id} · ${CAT[d.c].toUpperCase()}</span><span class="badge ${d.b}" title="Lifecycle status: ${d.bt}">${d.bt}</span></div>
       <div class="art">${ART[d.art]}</div>
-      <h2>${d.t}</h2>
-      <p class="hook">${d.hook}</p>
-      <div class="tap">Tap to flip</div>
+      <h2 tabindex="-1">${d.t}</h2>
+      <details class="hint"><summary>Show hint</summary><p class="hook">${d.hook}</p></details>
+      <button class="tap" id="flipBtn" type="button" aria-label="Reveal answer for ${d.t}">Reveal answer</button>
     </div>
     <div class="face back" aria-hidden="${flipped?'false':'true'}" ${flipped?'':'inert'}>
       <div class="strip"><span class="partno">${d.id} · DETAIL</span><span class="badge ${d.b}">${d.bt}</span></div>
       <div class="body">
-        <h3>${d.t}</h3>
+        <h3 tabindex="-1">${d.t}</h3>
         <p>${d.back.lead}</p>
         <div class="kv">${d.back.kv.map(r=>`<div class="row"><div class="k">${r[0]}</div><div class="v">${r[1]}</div></div>`).join('')}</div>
         <div class="hookline"><b>Memory hook</b>${d.back.hookline}</div>
         ${d.prov?`<div class="prov">${d.prov}</div>`:''}
+        <div class="cardActions">
+          <a class="reportCard" href="https://github.com/tomasmihalyi/aws-flash-cards/issues/new?title=${encodeURIComponent('Card '+d.id+': '+d.t)}" target="_blank" rel="noopener noreferrer">Report this card</a>
+          <button class="showQuestion" id="showQuestionBtn" type="button">Show question</button>
+        </div>
       </div>
     </div>
-  </div>
+  </article>
