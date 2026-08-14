@@ -11,6 +11,7 @@
   --paper:#EDF1F7;
   --card:#FFFFFF;
   --ink:#0E1B2C;
+  --ink-soft:#22314A;
   --slate:#55637A;
   --line:#D4DCE8;
   --blue:#1F5EFF;
@@ -19,9 +20,25 @@
   --amber-soft:#FFF3DC;
   --mint:#0B7A54;
   --mint-soft:#E2F5EC;
+  --emphasis:#0E1B2C;
+  --emphasis-text:#FFFFFF;
   --mono:'IBM Plex Mono',ui-monospace,monospace;
   --disp:'Space Grotesk',system-ui,sans-serif;
   --body:system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+[data-theme="dark"]{
+  --paper:#0B1220;
+  --card:#141C2C;
+  --ink:#EAF0FA;
+  --ink-soft:#C3CEE0;
+  --slate:#93A2BC;
+  --line:#283449;
+  --blue:#6E9CFF;
+  --blue-soft:#1C2A4A;
+  --amber:#E8B155;
+  --amber-soft:#3A2E14;
+  --mint:#5FD3A6;
+  --mint-soft:#123527;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
@@ -42,7 +59,7 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 .chips::-webkit-scrollbar{display:none}
 .chip{font-family:var(--mono);font-size:.7rem;font-weight:500;white-space:nowrap;border:1px solid var(--line);
   background:var(--card);color:var(--slate);border-radius:3px;padding:7px 12px;cursor:pointer;transition:all .15s}
-.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.on{background:var(--emphasis);color:var(--emphasis-text);border-color:var(--emphasis)}
 .chip:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
 /* ---------- search ---------- */
@@ -74,7 +91,7 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 .studyToggle{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.05em;
   border:1px solid var(--ink);background:var(--card);color:var(--ink);border-radius:3px;
   padding:8px 12px;cursor:pointer}
-.studyToggle[aria-pressed="true"]{background:var(--ink);color:#fff}
+.studyToggle[aria-pressed="true"]{background:var(--emphasis);color:var(--emphasis-text)}
 .studyToggle:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .studyStats{font-family:var(--mono);font-size:.64rem;color:var(--slate);display:flex;gap:.75rem;flex-wrap:wrap}
 .studyStats b{color:var(--ink)}
@@ -147,11 +164,11 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 /* back */
 .back .body{padding:16px 18px 18px;overflow-y:auto;font-size:.85rem}
 .back h3{font-family:var(--disp);font-size:1.05rem;margin-bottom:8px}
-.back p{margin-bottom:10px;color:#22314A}
+.back p{margin-bottom:10px;color:var(--ink-soft)}
 .kv{border-top:1px dashed var(--line);margin-top:4px;padding-top:10px}
 .kv .row{display:flex;gap:10px;margin-bottom:8px}
 .kv .k{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);min-width:86px;padding-top:2px;font-weight:600}
-.kv .v{flex:1;color:#22314A}
+.kv .v{flex:1;color:var(--ink-soft)}
 .hookline{background:var(--blue-soft);border-left:2px solid var(--blue);padding:8px 10px;border-radius:0 3px 3px 0;font-size:.8rem;margin-top:6px}
 .hookline b{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:2px}
 
@@ -167,7 +184,7 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
 .nav .in{max-width:680px;margin:0 auto;display:flex;gap:8px;padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
 .btn{flex:1;font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
   border:1px solid var(--ink);background:var(--card);color:var(--ink);border-radius:3px;padding:12px 0;cursor:pointer;transition:all .12s}
-.btn.pri{background:var(--ink);color:#fff}
+.btn.pri{background:var(--emphasis);color:var(--emphasis-text)}
 .btn:active{transform:scale(.97)}
 .btn:disabled{opacity:.3;cursor:default}
 .btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
@@ -182,10 +199,16 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
   clip:rect(0 0 0 0);white-space:nowrap;border:0}
 /* ---------- focused public layout ---------- */
 .wrap{padding-bottom:34px}
-.skipLink{position:absolute;left:16px;top:-60px;background:var(--ink);color:#fff;font-family:var(--mono);
+.skipLink{position:absolute;left:16px;top:-60px;background:var(--emphasis);color:var(--emphasis-text);font-family:var(--mono);
   font-size:.72rem;padding:9px 12px;border-radius:3px;z-index:20;text-decoration:none}
 .skipLink:focus{top:10px}
 .headerTop{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.headerActions{display:flex;align-items:center;gap:12px}
+.themeToggle{font-family:var(--mono);font-size:.66rem;font-weight:600;color:var(--slate);
+  background:var(--card);border:1px solid var(--line);border-radius:3px;padding:5px 9px;cursor:pointer}
+.themeToggle:hover{border-color:var(--blue);color:var(--blue)}
+.themeToggle:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.themeToggle[aria-pressed="true"]{background:var(--emphasis);color:var(--emphasis-text);border-color:var(--emphasis)}
 .aboutLink{font-family:var(--mono);font-size:.66rem;color:var(--blue);text-decoration:none;border-bottom:1px solid var(--blue-soft)}
 .aboutLink:hover,.aboutLink:focus-visible{border-bottom-color:var(--blue)}
 .unofficial{font-family:var(--mono);font-size:.58rem;color:var(--slate);margin-top:1px}
@@ -222,7 +245,7 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
   background:rgba(237,241,247,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;gap:8px}
 .filterActions button{flex:1;font-family:var(--mono);font-size:.68rem;font-weight:600;border:1px solid var(--ink);border-radius:3px;
   padding:10px;background:var(--card);color:var(--ink);cursor:pointer}
-.filterActions .applyFilters{background:var(--ink);color:#fff}
+.filterActions .applyFilters{background:var(--emphasis);color:var(--emphasis-text)}
 .filterActions button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .studyBar{justify-content:space-between;margin:8px 0 7px}
 .browseButton{font-family:var(--mono);font-size:.64rem;color:var(--blue);font-weight:600;border:1px solid var(--line);
@@ -237,12 +260,12 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
   background:var(--card);border-radius:999px;padding:6px 9px;cursor:pointer;white-space:nowrap}
 .topicChip i{font-style:normal;color:var(--slate);margin-left:4px}
 .topicChip:hover{border-color:var(--blue);color:var(--blue)}
-.topicChip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.topicChip[aria-pressed="true"]{background:var(--emphasis);border-color:var(--emphasis);color:var(--emphasis-text)}
 .topicChip[aria-pressed="true"] i{color:#fff}
 .topicChip:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .studyStats[hidden]{display:none}
 .studyIntro{position:relative;background:var(--blue-soft);border-left:2px solid var(--blue);padding:10px 38px 10px 12px;
-  border-radius:0 3px 3px 0;color:#22314A;font-size:.76rem;margin:8px 0}
+  border-radius:0 3px 3px 0;color:var(--ink-soft);font-size:.76rem;margin:8px 0}
 .studyIntro b{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:2px}
 .studyIntro button{position:absolute;right:7px;top:7px;border:0;background:none;color:var(--blue);font-size:1rem;cursor:pointer;padding:3px}
 .studyIntro[hidden]{display:none}
@@ -304,12 +327,22 @@ h1{font-family:var(--disp);font-weight:700;font-size:1.65rem;line-height:1.15;ma
   .filterDialog{width:calc(100% - 16px);max-height:calc(100dvh - 16px)}
 }
 </style>
+<script>
+(function(){
+  try{
+    var stored=localStorage.getItem('aws-flashcards.theme.v1');
+    var theme=stored==='dark'||stored==='light'?stored:
+      (matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    if(theme==='dark')document.documentElement.setAttribute('data-theme','dark');
+  }catch(e){/* storage or matchMedia unavailable -- default light */}
+})();
+</script>
 </head>
 <body>
 <div class="wrap">
   <a class="skipLink" href="#stage">Skip to current card</a>
   <header>
-    <div class="headerTop"><div><div class="eyebrow">Independent field deck · AWS topics</div><div class="unofficial">Not official AWS documentation</div></div><a class="aboutLink" href="#about">About</a></div>
+    <div class="headerTop"><div><div class="eyebrow">Independent field deck · AWS topics</div><div class="unofficial">Not official AWS documentation</div></div><div class="headerActions"><button class="themeToggle" id="themeToggle" type="button" aria-pressed="false">Dark mode</button><a class="aboutLink" href="#about">About</a></div></div>
     <h1>AWS AI-Native Development Flashcards</h1>
     <p class="sub">Verified facts and explicit judgements for AWS builders — one idea per card. @@FRESHNESS@@</p>
     <div class="meta">@@META@@</div>
@@ -908,6 +941,21 @@ document.getElementById('nextBtn').onclick=()=>go(1);
 document.getElementById('shufBtn').onclick=shuffle;
 document.getElementById('studyBtn').onclick=()=>setStudyMode(!studyMode);
 document.getElementById('browseBtn').onclick=browseAll;
+
+const THEME_KEY='aws-flashcards.theme.v1';
+const themeToggle=document.getElementById('themeToggle');
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme',theme);
+  themeToggle.setAttribute('aria-pressed',theme==='dark'?'true':'false');
+  themeToggle.textContent=theme==='dark'?'Light mode':'Dark mode';
+}
+applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light');
+themeToggle.onclick=()=>{
+  const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  applyTheme(next);
+  try{localStorage.setItem(THEME_KEY,next);}catch(e){/* session-only */}
+  announce(next==='dark'?'Dark mode on.':'Light mode on.');
+};
 document.getElementById('dismissStudyIntro').onclick=()=>{
   rememberStudyIntro();document.getElementById('studyBtn').focus();document.getElementById('studyIntro').hidden=true;
 };
