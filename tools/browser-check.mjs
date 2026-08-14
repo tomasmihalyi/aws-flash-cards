@@ -98,21 +98,73 @@ async function goTo(page, cardId) {
   return false;
 }
 
+async function openFilters(page) {
+  if (!(await page.$eval('#filterDialog', (d) => d.open))) await page.click('#filtersBtn');
+}
+
+async function chooseCategory(page, nth) {
+  await openFilters(page);
+  await page.click(`.chip:nth-child(${nth})`);
+  await page.click('#filterDone');
+  await page.waitForTimeout(150);
+}
+
 const browser = await chromium.launch();
 try {
-  const page = await browser.newPage({ viewport: { width: 460, height: 940 } });
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
   page.on('pageerror', (e) => errors.push(String(e)));
   await page.goto(TARGET, { waitUntil: 'load' });
   await page.waitForSelector('#card');
+  const layout = await page.evaluate(() => {
+    const q = document.querySelector('.front h2').getBoundingClientRect();
+    const reveal = document.querySelector('#flipBtn').getBoundingClientRect();
+    const card = document.querySelector('#card').getBoundingClientRect();
+    const nav = document.querySelector('.nav').getBoundingClientRect();
+    return { questionTop: q.top, revealBottom: reveal.bottom, viewport: innerHeight, cardTop: card.top, navBottom: nav.bottom };
+  });
+  ok('the first question is visible without scrolling', layout.questionTop < layout.viewport, JSON.stringify(layout));
+  ok('the reveal action is visible without scrolling', layout.revealBottom < layout.viewport, JSON.stringify(layout));
+  ok('deck navigation does not overlap the card', layout.navBottom <= layout.cardTop + 1, JSON.stringify(layout));
+  ok('deck navigation is visible without scrolling', layout.navBottom < layout.viewport, JSON.stringify(layout));
+  ok('advanced filters are outside the browse tab order until opened',
+    await page.$eval('#filterDialog', (d) => !d.open && d.querySelector('.chip').offsetParent === null));
+  await openFilters(page);
+  const modalBefore = await page.evaluate(() => ({
+    card: document.querySelector('.front .partno')?.textContent,
+    flipped: document.querySelector('#card')?.classList.contains('flipped'),
+    study: document.querySelector('#studyBtn')?.getAttribute('aria-pressed'),
+  }));
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('s');
+  await page.keyboard.press('/');
+  const modalAfter = await page.evaluate(() => {
+    const d = document.querySelector('#filterDialog');
+    return {
+      card: document.querySelector('.front .partno')?.textContent,
+      flipped: document.querySelector('#card')?.classList.contains('flipped'),
+      study: document.querySelector('#studyBtn')?.getAttribute('aria-pressed'),
+      focusInside: d?.contains(document.activeElement),
+    };
+  });
+  ok('the modal filter dialog suppresses background deck shortcuts',
+    modalAfter.card === modalBefore.card &&
+      modalAfter.flipped === modalBefore.flipped &&
+      modalAfter.study === modalBefore.study &&
+      modalAfter.focusInside,
+    JSON.stringify({ before: modalBefore, after: modalAfter }));
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(100);
 
   console.log('\n[header — derived, never hand-maintained]');
   const meta = await page.$$eval('.meta span', (e) => e.map((x) => x.textContent.trim()));
   const sub = await page.textContent('.sub');
   console.log('  meta:', meta.join(' | '));
-  ok('region count comes from the fact store', meta.some((m) => /^REGIONS \d+$/.test(m)), meta.join(','));
-  ok('Sydney availability comes from the fact store', meta.some((m) => /^SYD REGION (YES|NO)$/.test(m)));
-  ok('a verification date is shown', meta.some((m) => /^VERIFIED /.test(m)));
+  ok('the card count is shown', meta.some((m) => /^CARDS \d+$/.test(m)), meta.join(','));
+  ok('verification dates are left to individual cards', !meta.some((m) => /^OLDEST SOURCE |^VERIFIED /.test(m)), meta.join(','));
+  ok('global region trivia no longer competes with the learning task', !meta.some((m) => /^REGIONS |^SYD REGION /.test(m)));
+  ok('independent status is visible beside the deck identity', /not official AWS documentation/i.test(await page.textContent('.unofficial')));
   ok('no hand-maintained "current to" claim', !/current to/i.test(sub), sub.slice(0, 80));
   ok('no unsourced GA-date badge', !meta.some((m) => /^GA /.test(m)));
 
@@ -120,20 +172,28 @@ try {
   const faceState = () => page.$eval('#card', (c) => ({
     front: c.querySelector('.face.front').getAttribute('aria-hidden'),
     back: c.querySelector('.face.back').getAttribute('aria-hidden'),
-    pressed: c.getAttribute('aria-pressed'),
+    role: c.getAttribute('role'),
     label: c.getAttribute('aria-label'),
   }));
   let s = await faceState();
   ok('front exposed, back hidden on first paint', s.front === 'false' && s.back === 'true', JSON.stringify(s));
-  ok('aria-pressed is false unflipped', s.pressed === 'false');
+  ok('the card is an article, not a composite button', s.role === null);
   ok('label names the visible side', /Showing the question/.test(s.label), s.label);
 
   await page.click('#flipBtn');
   await page.waitForTimeout(650);
   s = await faceState();
   ok('front hidden, back exposed after flip', s.front === 'true' && s.back === 'false', JSON.stringify(s));
-  ok('aria-pressed is true flipped', s.pressed === 'true');
+  ok('the flipped card remains non-button content', s.role === null);
   ok('label updated to the detail side', /Showing detail/.test(s.label), s.label);
+  ok('Reveal answer moves focus to the visible answer heading',
+    await page.$eval('.back h3', (h) => document.activeElement === h));
+  await page.click('#showQuestionBtn');
+  await page.waitForTimeout(100);
+  ok('Show question moves focus to the visible question heading',
+    await page.$eval('.front h2', (h) => document.activeElement === h));
+  await page.click('#flipBtn');
+  await page.waitForTimeout(100);
 
   const readable = await page.$eval('#card', (c) =>
     [...c.querySelectorAll('.face')]
@@ -167,8 +227,7 @@ try {
   // AC-12's Evaluations region count could not be verified from service-level
   // SSM data. A feature x region docs matrix now settles it, so this card should
   // show a real citation — and the number should be 16, not the stale 9.
-  await page.click('.chip:nth-child(1)');
-  await page.waitForTimeout(150);
+  await chooseCategory(page, 1);
   ok('AC-12 is reachable', await goTo(page, 'AC-12'));
   await page.keyboard.press('ArrowDown');
   await page.waitForTimeout(650);
@@ -177,6 +236,10 @@ try {
   ok('the stale region count is gone', Boolean(back12 && !/\b9 regions\b/.test(back12)), back12?.slice(0, 90) ?? 'no back face');
   ok('it shows the corrected count from the docs matrix', Boolean(back12 && /16 regions/.test(back12)), back12?.slice(0, 90) ?? 'no back face');
   ok('it now carries a verification date and source', Boolean(prov12 && /verified/i.test(prov12) && /source/i.test(prov12)), prov12 ?? 'no footer');
+  await page.focus('.back h3');
+  await page.keyboard.press('Tab');
+  ok('the visible HTTP source link is keyboard reachable',
+    await page.$eval('.back .prov a', (a) => document.activeElement === a).catch(() => false));
   if (prov12) console.log('  AC-12:', prov12);
   await page.screenshot({ path: `${out}/corrected-card.png` });
 
@@ -193,12 +256,10 @@ try {
   await page.screenshot({ path: `${out}/unsourced-card.png` });
 
   console.log('\n[behaviour regression]');
-  await page.click('.chip:nth-child(3)');
-  await page.waitForTimeout(150);
+  await chooseCategory(page, 3);
   const filtered = (await page.textContent('#count')).trim();
   ok('category filter narrows the deck', /^1 \/ \d+$/.test(filtered) && filtered !== '1 / 21', filtered);
-  await page.click('.chip:nth-child(1)');
-  await page.waitForTimeout(150);
+  await chooseCategory(page, 1);
   const all = (await page.textContent('#count')).trim();
   ok('All restores the full deck', /^1 \/ \d+$/.test(all));
   await page.click('#shufBtn');
@@ -268,8 +329,46 @@ try {
   await page.keyboard.press('Escape');
   await page.waitForTimeout(200);
 
+  console.log('\n[in-page navigation preserves deck state]');
+  await page.fill('#q', 'gateway');
+  await page.waitForTimeout(250);
+  const anchorState = await page.evaluate(() => ({
+    query: document.querySelector('#q').value,
+    count: document.querySelector('#count').textContent,
+    card: document.querySelector('.front .partno')?.textContent,
+    hash: location.hash,
+  }));
+  await page.focus('.skipLink');
+  await page.keyboard.press('Enter');
+  const afterSkip = await page.evaluate(() => ({
+    query: document.querySelector('#q').value,
+    count: document.querySelector('#count').textContent,
+    card: document.querySelector('.front .partno')?.textContent,
+    hash: location.hash,
+    focus: document.activeElement?.id,
+  }));
+  ok('Skip to current card preserves filters, position and URL state',
+    afterSkip.query === anchorState.query && afterSkip.count === anchorState.count &&
+      afterSkip.card === anchorState.card && afterSkip.hash === anchorState.hash && afterSkip.focus === 'stage',
+    JSON.stringify({ before: anchorState, after: afterSkip }));
+  await page.click('.aboutLink');
+  const afterAbout = await page.evaluate(() => ({
+    query: document.querySelector('#q').value,
+    count: document.querySelector('#count').textContent,
+    card: document.querySelector('.front .partno')?.textContent,
+    hash: location.hash,
+    focus: document.activeElement?.id,
+  }));
+  ok('About preserves filters, position and URL state',
+    afterAbout.query === anchorState.query && afterAbout.count === anchorState.count &&
+      afterAbout.card === anchorState.card && afterAbout.hash === anchorState.hash && afterAbout.focus === 'about',
+    JSON.stringify({ before: anchorState, after: afterAbout }));
+  await page.click('#qClear');
+  await page.waitForTimeout(250);
+
   console.log('\n[tag filtering]');
   await page.click('body');
+  await openFilters(page);
   const tagButtons = await page.$$eval('.tag', (e) => e.map((x) => x.textContent.trim()));
   ok('tags are derived and rendered', tagButtons.length > 0, `${tagButtons.length} tags`);
   ok('tags show a card count', /\d$/.test(tagButtons[0] ?? ''), tagButtons[0] ?? '');
@@ -301,8 +400,10 @@ try {
     }, narrowing);
     await page.waitForTimeout(250);
     const tagged = (await page.textContent('#count')).trim();
+    const activeTag = await page.$eval('.tag[aria-pressed="true"]', (e) => e.dataset.tag);
     ok(`tag "${narrowing}" narrows the deck`, /^1 \/ \d+$/.test(tagged) && tagged !== all, tagged);
-    ok('the URL carries the tag', page.url().includes(`tag=${encodeURIComponent(narrowing)}`), page.url().split('#')[1] ?? '');
+    ok('the URL carries the selected raw tag',
+      page.url().includes('tag=' + encodeURIComponent(activeTag)), page.url().split('#')[1] ?? '');
     ok('the active tag is marked pressed for assistive tech',
       (await page.$$eval('.tag[aria-pressed="true"]', (e) => e.length)) === 1);
 
@@ -314,6 +415,7 @@ try {
     await page.waitForTimeout(250);
     ok('clicking an active tag clears it', (await page.textContent('#count')).trim() === all);
   }
+  await page.click('#filterDone');
 
   console.log('\n[deep links]');
   const base = page.url().split('#')[0];
@@ -337,17 +439,20 @@ try {
   console.log('\n[spaced repetition]');
   await page.goto(TARGET, { waitUntil: 'load' });
   await page.waitForSelector('#card');
-  const stats = () => page.$eval('#studyStats', (e) => e.innerText.replace(/\s+/g, ' ').trim());
+  const stats = () => page.$eval('#studyStats', (e) => e.textContent.replace(/\s+/g, ' ').trim());
   // Derived from the header, because the deck grows and these assertions are not
   // about its size.
   const deckSize = Number((await page.$$eval('.meta span', (e) => e.map((x) => x.textContent)))
     .map((s) => /CARDS\s+(\d+)/.exec(s)?.[1]).find(Boolean));
-  console.log('  stats:', await stats(), `(deck size ${deckSize})`);
-  ok('a fresh learner sees every card as new', new RegExp(`NEW ${deckSize}\\b`).test(await stats()), await stats());
+  ok('study counters stay out of browse mode', await page.$eval('#studyStats', (e) => e.hidden));
 
   await page.click('#studyBtn');
   await page.waitForTimeout(300);
+  console.log('  stats:', await stats(), `(deck size ${deckSize})`);
+  ok('a fresh learner sees every card as new', new RegExp(`NEW ${deckSize}\\b`).test(await stats()), await stats());
   ok('study mode is a pressed toggle', (await page.getAttribute('#studyBtn', 'aria-pressed')) === 'true');
+  ok('first-use study guidance explains recall, scheduling and local progress',
+    /rate your recall/i.test(await page.textContent('#studyIntro')) && /stays in this browser/i.test(await page.textContent('#studyIntro')));
   /* The real invariant is not "grade buttons absent" but "nothing on the hidden
      face is reachable". Focusable content inside aria-hidden is an a11y
      violation, and it would let a keyboard user grade a card unseen. */
@@ -367,13 +472,22 @@ try {
     ['Again', 'Hard', 'Good', 'Easy'].every((l) => gradeLabels.includes(l)), gradeLabels.join(','));
   ok('the grade group is labelled for assistive tech',
     Boolean(await page.$('.grades[role="group"][aria-label]')));
+  ok('grade controls precede secondary report and question controls',
+    await page.$eval('.grades', (g) => Boolean(g.compareDocumentPosition(document.querySelector('.cardActions')) & Node.DOCUMENT_POSITION_FOLLOWING)));
   await page.screenshot({ path: `${out}/study-mode.png` });
+  if (await page.isVisible('#studyIntro')) {
+    await page.click('#dismissStudyIntro');
+    ok('dismissing Study guidance returns focus to the Study toggle',
+      await page.$eval('#studyBtn', (b) => document.activeElement === b));
+  }
 
   const beforeId = (await page.textContent('.back .partno')).trim();
   await page.click('.grades .g4');
   await page.waitForTimeout(300);
   ok('grading advances past the card', (await page.textContent('.front .partno')).trim() !== beforeId,
     `still on ${beforeId}`);
+  ok('grading restores focus to the next question',
+    await page.$eval('.front h2', (h) => document.activeElement === h));
   ok('the queue count drops after grading', new RegExp(`NEW ${deckSize - 1}\\b`).test(await stats()), await stats());
 
   const stored = await page.evaluate(() => localStorage.getItem('aws-flashcards.progress.v1'));
@@ -387,6 +501,30 @@ try {
   await page.reload({ waitUntil: 'load' });
   await page.waitForSelector('#card');
   ok('progress survives a reload', new RegExp(`NEW ${deckSize - 1}\\b`).test(await stats()), await stats());
+
+  const beforeInvalidImport = await page.evaluate(() => localStorage.getItem('aws-flashcards.progress.v1'));
+  await page.setInputFiles('#importProgressFile', {
+    name: 'not-flashcard-progress.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from('{"unrelated":true}'),
+  });
+  await page.waitForTimeout(300);
+  const afterInvalidImport = await page.evaluate(() => localStorage.getItem('aws-flashcards.progress.v1'));
+  ok('incompatible JSON import leaves existing progress unchanged',
+    afterInvalidImport === beforeInvalidImport,
+    `before=${beforeInvalidImport} after=${afterInvalidImport}`);
+  ok('incompatible JSON import is announced as invalid',
+    /not valid flashcard progress/i.test(await page.textContent('#live')),
+    await page.textContent('#live'));
+
+  await page.click('#studyBtn');
+  await page.waitForTimeout(200);
+  const queueTotal = Number((await page.textContent('#count')).split('/')[1].trim());
+  await openFilters(page);
+  ok('Filters result count follows the active Study queue',
+    (await page.textContent('#filterDone')).trim() === `Show ${queueTotal} card${queueTotal === 1 ? '' : 's'}`,
+    (await page.textContent('#filterDone')).trim());
+  await page.keyboard.press('Escape');
 
   console.log('\n[a corrected card is resurfaced — the point of the whole exercise]');
   // Study a card, then corrupt its stored hash to simulate a Tier A correction

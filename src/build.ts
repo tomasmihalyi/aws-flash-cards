@@ -16,7 +16,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT, paths, DIST_HTML, loadCards, loadCategories, loadArt, loadFactStore } from './lib/store.ts';
-import { toLegacyShape, loadTemplateSource, compileTemplate, splitFaces, serialiseDeckLiteral, formatDate } from './lib/render.ts';
+import { toLegacyShape, loadTemplateSource, compileTemplate, splitFaces, serialiseDeckLiteral } from './lib/render.ts';
 import { hashPayload, sha256 } from './lib/hash.ts';
 import type { Card } from './lib/types.ts';
 
@@ -44,32 +44,21 @@ function inlineModule(source: string, label: string): string {
 }
 
 /**
- * The header used to hardcode "Content is current to mid-2026" and
- * "GA OCT 2025 / SYD REGION YES" — factual claims sitting outside the card
- * schema, which no slot governed and no ingest job could ever correct. A
- * self-maintaining deck with a hand-maintained "current to" line is not
- * self-maintaining. Every figure below is now derived from the cards or from a
- * deterministic fact set, and anything without a source is simply omitted
- * rather than guessed.
+ * Keep the public header intentionally small. Verification freshness belongs to
+ * each card because sources are updated independently; a deck-wide date would
+ * be ambiguous and would compete with the learning task.
  */
-function headerMeta(cards: Card[], store: ReturnType<typeof loadFactStore>): { meta: string; freshness: string } {
+function headerMeta(cards: Card[]): { meta: string; freshness: string } {
   const cells: string[] = [`<span>CARDS <b>${cards.length}</b></span>`];
 
-  const regionCount = store.get('agentcore.regions.count');
-  if (regionCount) cells.push(`<span>REGIONS <b>${String(regionCount.value.value)}</b></span>`);
-
-  const syd = store.get('agentcore.regions.includes.ap-southeast-2');
-  if (syd) cells.push(`<span>SYD REGION <b>${syd.value.value ? 'YES' : 'NO'}</b></span>`);
-
   const verifiedTimes = cards.map((c) => c.verified_at).filter((t): t is string => Boolean(t)).sort();
-  if (verifiedTimes.length) cells.push(`<span>VERIFIED <b>${formatDate(verifiedTimes[0]).toUpperCase()}</b></span>`);
 
   const unverified = cards.flatMap((c) =>
     Object.values(c.slots).filter((s) => s.rendered_from === 'seed'),
   ).length;
 
   const freshness = verifiedTimes.length
-    ? `Region and price figures are read from AWS APIs, not written by hand — last verified ${formatDate(verifiedTimes[0])}.` +
+    ? 'Every card shows its own verification date and source status.' +
       (unverified
         ? ` ${unverified} claim${unverified > 1 ? 's' : ''} ${unverified > 1 ? 'have' : 'has'} no deterministic source and ${unverified > 1 ? 'are' : 'is'} marked unverified on ${unverified > 1 ? 'their cards' : 'its card'}.`
         : '')
@@ -179,7 +168,7 @@ function main(): void {
   for (const m of [DECK_MARKER, TEMPLATE_MARKER, SRS_MARKER, CAT_MARKER, META_MARKER, FRESHNESS_MARKER]) {
     if (!shellHtml.includes(m)) throw new Error(`shell.html is missing ${m}`);
   }
-  const { meta, freshness } = headerMeta(cards, store);
+  const { meta, freshness } = headerMeta(cards);
   // One template, two consumers: the runtime renderer in the page and the
   // pre-rendered faces in deck.json.
   const templateFn = `function renderCard(d,flipped,CAT,ART){return \`${templateSource}\`;}`;

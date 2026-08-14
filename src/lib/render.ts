@@ -159,7 +159,7 @@ export function provenanceLine(card: Card): string {
   const parts: string[] = [];
 
   if (card.verified_at) {
-    parts.push(`<b>Verified</b> ${formatDate(card.verified_at)}`);
+    parts.push(`<b>Verified against cited source</b> ${formatDate(card.verified_at)}`);
   }
 
   const seeds = Object.entries(card.slots).filter(([, s]) => s.rendered_from === 'seed');
@@ -222,6 +222,10 @@ function sourceLabel(url: string): string {
     const host = u.hostname.replace(/^www\./, '');
     if (/(^|\.)docs\.aws\.amazon\.com$/.test(host)) {
       const page = u.pathname.split('/').filter(Boolean).pop()?.replace(/\.html?$/, '') ?? '';
+      if (u.pathname.includes('/bedrock-agentcore/')) {
+        if (page === 'release-notes') return 'Amazon Bedrock AgentCore release notes';
+        if (page === 'agentcore-regions') return 'Amazon Bedrock AgentCore regional availability';
+      }
       if (page) return `AWS docs: ${page}`;
     }
     return host;
