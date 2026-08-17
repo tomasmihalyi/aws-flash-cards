@@ -3,11 +3,11 @@
   "fact_set_id": "agentcore.pricing.ap-southeast-2",
   "tier": "A",
   "generator": "src/ingest/pricelist.ts",
-  "verified_at": "2026-08-14T19:46:13.416Z",
+  "verified_at": "2026-08-17T19:25:49.596Z",
   "source": {
     "kind": "price-list-api",
     "url": "https://api.pricing.us-east-1.amazonaws.com/ · GetProducts ServiceCode=AmazonBedrockAgentCore regionCode=ap-southeast-2",
-    "fetched_at": "2026-08-14T19:46:13.416Z",
+    "fetched_at": "2026-08-17T19:25:49.596Z",
     "content_hash": "sha256:07118f8c9240cfa8e15bd076bb4e1cb20c7a26a4890544559d085d7cd3b2dec7",
     "retrieved_by": "aws pricing get-products --service-code AmazonBedrockAgentCore --filters Type=TERM_MATCH,Field=regionCode,Value=ap-southeast-2 --region us-east-1",
     "aws_region": "us-east-1"

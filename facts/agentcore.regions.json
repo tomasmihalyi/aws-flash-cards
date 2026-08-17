@@ -3,11 +3,11 @@
   "fact_set_id": "agentcore.regions",
   "tier": "A",
   "generator": "src/ingest/ssm-regions.ts",
-  "verified_at": "2026-08-14T19:46:10.696Z",
+  "verified_at": "2026-08-17T19:25:47.614Z",
   "source": {
     "kind": "ssm-public-parameter",
     "url": "ssm://aws/service/global-infrastructure/services/bedrock-agentcore/regions",
-    "fetched_at": "2026-08-14T19:46:10.696Z",
+    "fetched_at": "2026-08-17T19:25:47.614Z",
     "content_hash": "sha256:c5cfe622a53ad931055a3b605f11bd6e5fe3b950e2f2947c49bbdc2efe875927",
     "retrieved_by": "aws ssm get-parameters-by-path --path /aws/service/global-infrastructure/services/bedrock-agentcore/regions --region us-east-1",
     "aws_region": "us-east-1"
