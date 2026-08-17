@@ -25,3 +25,7 @@ docs/*.png
 # history fills up with the model's working notes. What a reviewer needs is the
 # CARD diff; the artifact is how it got there, not what it is.
 drafts/
+
+# Kiro agent process artifacts (specs, session settings) — development
+# tooling, not the deck itself. Kept locally, never published.
+.kiro/
