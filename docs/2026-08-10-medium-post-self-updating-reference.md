@@ -89,7 +89,7 @@ Finding out why was the actual work:
 
 ❌ Lifecycle language is not a subject — "General Availability" is a real heading and it names nothing.
 
-The version that survived: **117 entries, 104 covered, 0 actionable.** The three it did flag were a to-do list, not a defect — I have since written those cards. It reports; it never fails a build.
+The version that survived: **118 entries, 105 covered, 1 actionable.** The one it did flag was a to-do item, not a defect — the number moves by exactly this margin most days, which is the point: it reports; it never fails a build.
 
 > A missing card is a to-do. A wrong card is a defect. Conflating them produces a report nobody reads.
 
