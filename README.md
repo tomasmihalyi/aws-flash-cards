@@ -10,7 +10,7 @@ practice.
 
 > Renamed from "AgentCore Flashcards" once the deck outgrew AgentCore, and named to
 > match the spec that defines it. Not all AWS AI: the full IN/OUT boundary is in
-> `.kiro/specs/self-maintaining-flashcards/requirements.md` §4.
+> §4 of the project's requirements spec (development artifact, not published here).
 
 **Status: live and self-maintaining.** The deck publishes from CI and refreshes
 itself every morning at 05:00 AEST — [d1hl3sanj0zgqn.cloudfront.net](https://d1hl3sanj0zgqn.cloudfront.net).
@@ -273,8 +273,7 @@ rename detection with `aka[]` aliasing is live, as is the dependency fan-out.
 **Open.** Content scale-up is the real gap: 43 cards against a 200–400 target, now a
 review problem rather than an authoring one. Then the remaining P5 detectors — doc URL
 redirects, Price List product disappearance, botocore rename-vs-remove — plus tracks
-and the "what changed this week" deck. Full detail and exit criteria in
-`.kiro/specs/self-maintaining-flashcards/`.
+and the "what changed this week" deck.
 
 **Unproven rather than unbuilt.** The failure watchdog has only ever run on days when
 nothing failed, so whether it correctly opens a self-closing issue on a real failure is
