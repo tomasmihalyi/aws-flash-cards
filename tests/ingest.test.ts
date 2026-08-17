@@ -122,6 +122,24 @@ describe('feature x region matrix ingest', () => {
     // would put an invented availability claim into a fact set.
     assert.throws(() => parseFeatureRegions(odd), /unexpected cell value/);
   });
+
+  test('AWS\'s current cell format — "✓ Yes" / literal "No" — parses correctly', () => {
+    // 2026-08-16: docs.aws.amazon.com/bedrock-agentcore/.../agentcore-regions.md
+    // moved from a bare tick to "✓ Yes", and from a blank cell to a literal
+    // "No", for every cell in the table. The bare-tick and blank-cell forms
+    // stay supported above for whichever format shows up next.
+    const CURRENT_FORMAT = [
+      '| Feature | US East (N. Virginia) | Europe (Milan) | Asia Pacific (Sydney) |',
+      '| --- | --- | --- | --- |',
+      '| AgentCore harness | \u2713 Yes | No | \u2713 Yes |',
+    ].join('\n');
+    const { features } = parseFeatureRegions(CURRENT_FORMAT);
+    const harness = features.find((f) => f.key === 'harness');
+    assert.ok(harness);
+    assert.equal(harness.count, 2);
+    assert.ok(harness.regions.includes('US East (N. Virginia)'));
+    assert.ok(!harness.regions.includes('Europe (Milan)'));
+  });
 });
 
 describe('service quotas ingest', () => {

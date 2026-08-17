@@ -94,11 +94,13 @@ export function parseFeatureRegions(md: string): { regions: string[]; features: 
     const marks = row.slice(1);
     const available: string[] = [];
     for (let i = 0; i < regions.length; i++) {
-      // A tick means supported; an empty cell means not. Anything else is
-      // unexpected and must not be guessed at.
+      // A tick (optionally followed by "Yes") means supported; a literal "No"
+      // or an empty cell means not. Anything else is unexpected and must not
+      // be guessed at.
       const cell = (marks[i] ?? '').trim();
-      if (cell === '') continue;
-      if (cell === '\u2713' || cell === '\u2714' || cell.toLowerCase() === 'yes') available.push(regions[i]);
+      if (cell === '' || cell.toLowerCase() === 'no') continue;
+      if (cell === '\u2713' || cell === '\u2714' || cell.toLowerCase() === 'yes' ||
+          /^[\u2713\u2714]\s*yes$/i.test(cell)) available.push(regions[i]);
       else throw new Error(`unexpected cell value ${JSON.stringify(cell)} for ${feature} / ${regions[i]}`);
     }
     features.push({ feature, key: slugify(feature), regions: available, count: available.length });
