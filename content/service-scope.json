@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "comment": "Per-service scope for the What's New ingest (src/ingest/docs-whats-new.ts) and, downstream, check-coverage.ts's actionability filter. Two things are decided here, deliberately kept apart from code so they can be revised without touching the ingest or the detector: (1) which services this deck watches for news at all — the global feed carries every AWS service, and only the ones listed here are pulled out of it; (2) how deep the deck's coverage promise goes for each — 'comprehensive' means a matched, uncovered entry is a real gap (the deck claims to track this service's news); 'boundary' means the deck deliberately covers only a narrow question about the service (Quick vs. Kiro), so a feature-level announcement outside that question is real news but not a gap in what this deck promises. Matching is substring, case-insensitive, against the announcement title + permalink — the same crude-but-auditable approach the coverage detector already uses for card-subject matching, chosen for the same reason: a keyword list is a diff a human can review, an embedding match is not.",
+  "services": [
+    {
+      "service": "agentcore",
+      "keywords": ["agentcore", "bedrock agentcore"],
+      "depth": "comprehensive",
+      "note": "Already watched via agentcore.release-notes; kept here too so a What's New item that release-notes' devguide page misses (a cross-cutting announcement, say) is not silently lost."
+    },
+    {
+      "service": "bedrock",
+      "keywords": ["amazon bedrock", "aws bedrock"],
+      "depth": "comprehensive",
+      "note": "Bedrock's own document-history page fails the coverage admission test (too much doc-reorg noise — see check-coverage.ts's NEWS_KINDS comment). This is the source that actually lets Bedrock product news reach the detector."
+    },
+    {
+      "service": "strands",
+      "keywords": ["strands agents", "strands sdk"],
+      "depth": "comprehensive",
+      "note": "Strands has no curated changelog (see docs-release-notes.ts and the excluded github-releases source); AWS's own What's New posts about Strands are the one curated, dated surface available."
+    },
+    {
+      "service": "quick",
+      "keywords": ["amazon quick"],
+      "depth": "boundary",
+      "note": "The deck covers Quick only for the business-vs-engineer boundary question (README: 'the Quick business-vs-engineer boundary'), not Quick's feature roadmap. A feature GA (new connector, new extension) is real Quick news but not a gap in this deck's stated scope unless it topically bears on the boundary question itself."
+    }
+  ]
+}
