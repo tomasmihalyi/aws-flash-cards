@@ -28,6 +28,7 @@ import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadCards, saveCard, paths } from '../lib/store.ts';
 import { datedEntriesFrom } from '../lib/verifier.ts';
+import { deriveConfidence } from '../lib/provenance.ts';
 import { detectAll, type LifecycleFinding } from '../lib/lifecycle.ts';
 import type { Card, FactSet, HistoryEntry } from '../lib/types.ts';
 
@@ -69,6 +70,103 @@ function proseMentionsPreview(card: Card): string[] {
     .map(([field]) => field);
 }
 
+/**
+ * Apply one lifecycle finding to its card, mutating it in place.
+ *
+ * Extracted from main()'s loop so the confidence-derivation invariant (and the
+ * rest of this logic) can be tested directly against a minimal fixture, the
+ * same way tests/apply-draft.test.ts tests provenance.ts's inversion logic
+ * without going through the CLI or the real deck.
+ *
+ * `sourceLookup` stands in for factSets() so a test can supply a stub instead
+ * of reading facts/.
+ */
+export function applyLifecycleToCard(
+  card: Card,
+  finding: LifecycleFinding,
+  sourceLookup: (url: string) => FactSet | undefined,
+  now: string,
+): { changed: boolean; changes: [string, string, string][]; stale: string[] } {
+  const signal = finding.latest!;
+  const history: HistoryEntry[] = [];
+  const changes: [keyof Card, string, string][] = [];
+
+  // lifecycle
+  if (card.lifecycle !== signal.lifecycle) {
+    changes.push(['lifecycle', card.lifecycle, signal.lifecycle]);
+  }
+  // badge_variant must agree with lifecycle or the L-BADGE lint fails — and the
+  // badge is the part a learner actually reads.
+  const wantVariant = signal.lifecycle === 'preview' ? 'pv' : 'ga';
+  if (card.badge_variant !== wantVariant) {
+    changes.push(['badge_variant', card.badge_variant, wantVariant]);
+  }
+  // badge_text carries the month the source actually attests.
+  const wantText = badgeTextFor(signal.lifecycle, signal.iso_month);
+  if (card.badge_text !== wantText) {
+    changes.push(['badge_text', card.badge_text, wantText]);
+  }
+
+  if (!changes.length) return { changed: false, changes: [], stale: [] };
+
+  for (const [field, before, after] of changes) {
+    history.push({
+      at: now,
+      tier: 'A',
+      action: 'correct',
+      generator: GENERATOR,
+      field: String(field),
+      before,
+      after,
+      reason: `${signal.month_label} release notes: "${signal.heading}" (matched on ${signal.matched.join(', ')})`,
+    });
+    (card as unknown as Record<string, string>)[field as string] = after;
+  }
+
+  // The source is now a citation on this card.
+  const already = card.sources.some((s) => s.url === signal.url);
+  if (!already) {
+    const set = sourceLookup(signal.url);
+    if (set) {
+      card.sources = [
+        ...card.sources,
+        {
+          url: set.source.url,
+          title: `${set.fact_set_id} (${set.source.kind})`,
+          kind: set.source.kind,
+          fetched_at: set.source.fetched_at,
+          content_hash: set.source.content_hash,
+        },
+      ].sort((a, b) => a.url.localeCompare(b.url));
+      card.verified_at = card.sources.map((s) => s.fetched_at).sort()[0];
+    }
+  }
+
+  // Prose that still says "preview" after a GA transition is a Tier C problem.
+  const stale = signal.lifecycle === 'ga' ? proseMentionsPreview(card) : [];
+  if (stale.length) {
+    const reason = `Lifecycle corrected to "ga" from ${signal.month_label} release notes, but prose still says "preview" in ${stale.join(', ')}. Rewording is Tier C (judgement) and needs a human.`;
+    card.needs_review = true;
+    card.review_reasons = [
+      ...card.review_reasons.filter((r) => !r.reason.startsWith('Lifecycle corrected')),
+      { reason, raised_at: now, raised_by: GENERATOR },
+    ];
+    history.push({ at: now, tier: 'A', action: 'flag-review', generator: GENERATOR, reason });
+  }
+
+  card.provenance.history.push(...history);
+  card.updated_at = now;
+  // Confidence is derived, never asserted -- deriveConfidence is the single
+  // shared implementation (see lib/provenance.ts). A hand-rolled downgrade
+  // here would silently undo a genuine sign-off/verification on any card
+  // whose lifecycle happened to also transition, which is exactly the
+  // "sign-off is endorsement, never verification" invariant this repo
+  // otherwise protects everywhere else.
+  card.confidence = deriveConfidence(card);
+
+  return { changed: true, changes: changes.map(([f, b, a]) => [String(f), b, a]), stale };
+}
+
 function main(): void {
   const dated = datedEntriesFrom(factSets());
   if (!dated.length) {
@@ -90,86 +188,15 @@ function main(): void {
 
   for (const f of findings) {
     const card = byId.get(f.card_id)!;
-    const signal = f.latest!;
-    const history: HistoryEntry[] = [];
-
-    const changes: [keyof Card, string, string][] = [];
-
-    // lifecycle
-    if (card.lifecycle !== signal.lifecycle) {
-      changes.push(['lifecycle', card.lifecycle, signal.lifecycle]);
-    }
-    // badge_variant must agree with lifecycle or the L-BADGE lint fails — and the
-    // badge is the part a learner actually reads.
-    const wantVariant = signal.lifecycle === 'preview' ? 'pv' : 'ga';
-    if (card.badge_variant !== wantVariant) {
-      changes.push(['badge_variant', card.badge_variant, wantVariant]);
-    }
-    // badge_text carries the month the source actually attests.
-    const wantText = badgeTextFor(signal.lifecycle, signal.iso_month);
-    if (card.badge_text !== wantText) {
-      changes.push(['badge_text', card.badge_text, wantText]);
-    }
-
-    if (!changes.length) continue;
-
-    for (const [field, before, after] of changes) {
-      history.push({
-        at: now,
-        tier: 'A',
-        action: 'correct',
-        generator: GENERATOR,
-        field: String(field),
-        before,
-        after,
-        reason: `${signal.month_label} release notes: "${signal.heading}" (matched on ${signal.matched.join(', ')})`,
-      });
-      (card as unknown as Record<string, string>)[field as string] = after;
-    }
-
-    // The source is now a citation on this card.
-    const already = card.sources.some((s) => s.url === signal.url);
-    if (!already) {
-      const set = factSets().find((s) => s.source.url === signal.url);
-      if (set) {
-        card.sources = [
-          ...card.sources,
-          {
-            url: set.source.url,
-            title: `${set.fact_set_id} (${set.source.kind})`,
-            kind: set.source.kind,
-            fetched_at: set.source.fetched_at,
-            content_hash: set.source.content_hash,
-          },
-        ].sort((a, b) => a.url.localeCompare(b.url));
-        card.verified_at = card.sources.map((s) => s.fetched_at).sort()[0];
-      }
-    }
-
-    // Prose that still says "preview" after a GA transition is a Tier C problem.
-    const stale = signal.lifecycle === 'ga' ? proseMentionsPreview(card) : [];
-    if (stale.length) {
-      const reason = `Lifecycle corrected to "ga" from ${signal.month_label} release notes, but prose still says "preview" in ${stale.join(', ')}. Rewording is Tier C (judgement) and needs a human.`;
-      card.needs_review = true;
-      card.review_reasons = [
-        ...card.review_reasons.filter((r) => !r.reason.startsWith('Lifecycle corrected')),
-        { reason, raised_at: now, raised_by: GENERATOR },
-      ];
-      history.push({ at: now, tier: 'A', action: 'flag-review', generator: GENERATOR, reason });
-    }
-
-    card.provenance.history.push(...history);
-    card.updated_at = now;
-    // A card under review is never "high", and a corrected one is no longer "low"
-    // on account of this field.
-    card.confidence = card.needs_review ? 'medium' : card.confidence === 'low' ? 'low' : 'medium';
+    const result = applyLifecycleToCard(card, f, (url) => factSets().find((s) => s.source.url === url), now);
+    if (!result.changed) continue;
 
     console.log(`\n${card.card_id}`);
-    for (const [field, before, after] of changes) {
-      console.log(`  ${String(field).padEnd(14)} ${JSON.stringify(before)} → ${JSON.stringify(after)}`);
+    for (const [field, before, after] of result.changes) {
+      console.log(`  ${field.padEnd(14)} ${JSON.stringify(before)} → ${JSON.stringify(after)}`);
     }
-    console.log(`  evidence       ${signal.month_label} "${signal.heading}"`);
-    if (stale.length) console.log(`  flagged        prose still says "preview" in ${stale.join(', ')}`);
+    console.log(`  evidence       ${f.latest!.month_label} "${f.latest!.heading}"`);
+    if (result.stale.length) console.log(`  flagged        prose still says "preview" in ${result.stale.join(', ')}`);
 
     if (!dryRun) saveCard(card);
     applied.push(card.card_id);

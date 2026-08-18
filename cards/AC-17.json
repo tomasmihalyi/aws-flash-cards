@@ -2,7 +2,7 @@
   "schema_version": 1,
   "card_id": "AC-17",
   "kind": "service-fact",
-  "lifecycle": "preview",
+  "lifecycle": "ga",
   "service": "bedrock-agentcore",
   "category": "new-in-2026",
   "tags": [
@@ -10,8 +10,8 @@
     "agentic-economy",
     "payments"
   ],
-  "badge_variant": "pv",
-  "badge_text": "NEW",
+  "badge_variant": "ga",
+  "badge_text": "GA AUG 2026",
   "art": "payments",
   "title": "AgentCore payments",
   "hook": "Agents that can pay: secure micropayments to paid APIs and services without per-vendor billing code.",
@@ -94,11 +94,41 @@
         "action": "clear-review",
         "generator": "tools/sign-off.ts",
         "reason": "Signed off by Tomas Mihalyi. Approved: Tier C prose correction applied by an agent (transaction_size). Needs human sign-off: the design gates judgement rewrites behind a human, and there is no remote to raise a PR against. (The flag-review entries recording why this was raised remain in this history.)"
+      },
+      {
+        "at": "2026-08-18T21:03:16.087Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply-lifecycle.ts",
+        "field": "lifecycle",
+        "before": "preview",
+        "after": "ga",
+        "reason": "August 2026 release notes: \"AgentCore payments is now generally available in Amazon Bedrock AgentCore\" (matched on payme)"
+      },
+      {
+        "at": "2026-08-18T21:03:16.087Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply-lifecycle.ts",
+        "field": "badge_variant",
+        "before": "pv",
+        "after": "ga",
+        "reason": "August 2026 release notes: \"AgentCore payments is now generally available in Amazon Bedrock AgentCore\" (matched on payme)"
+      },
+      {
+        "at": "2026-08-18T21:03:16.087Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply-lifecycle.ts",
+        "field": "badge_text",
+        "before": "NEW",
+        "after": "GA AUG 2026",
+        "reason": "August 2026 release notes: \"AgentCore payments is now generally available in Amazon Bedrock AgentCore\" (matched on payme)"
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-09T11:51:25.623Z",
+  "updated_at": "2026-08-18T21:03:16.087Z",
   "signed_off": {
     "by": "Tomas Mihalyi",
     "at": "2026-08-09T11:51:25.623Z"
