@@ -27,7 +27,7 @@
     "browser-check": "node tools/browser-check.mjs dist/aws-ai-native-development-flashcards.html",
     "claims": "node src/verify-claims.ts",
     "claims:failing": "node src/verify-claims.ts --failing",
-    "ingest:docs": "node src/ingest/docs-release-notes.ts && node src/ingest/docs-doc-history.ts && node src/ingest/docs-feature-regions.ts && node src/ingest/docs-pages.ts",
+    "ingest:docs": "node src/ingest/docs-release-notes.ts && node src/ingest/docs-doc-history.ts && node src/ingest/docs-feature-regions.ts && node src/ingest/docs-pages.ts && node src/ingest/docs-whats-new.ts",
     "claims:strict": "node src/verify-claims.ts --strict",
     "lifecycle": "node src/check-lifecycle.ts",
     "rename": "node src/check-rename.ts",

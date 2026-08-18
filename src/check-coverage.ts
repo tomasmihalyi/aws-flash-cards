@@ -22,7 +22,7 @@ import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadCards, paths } from './lib/store.ts';
 import { datedEntriesFrom } from './lib/verifier.ts';
-import { detectCoverage, coverageSummary, type IgnoreEntry } from './lib/coverage.ts';
+import { detectCoverage, coverageSummary, type IgnoreEntry, type CoverageFinding } from './lib/coverage.ts';
 import type { FactSet } from './lib/types.ts';
 
 const showAll = process.argv.includes('--all');
@@ -80,8 +80,56 @@ function factSets(): FactSet[] {
  */
 const NEWS_KINDS = new Set(['aws-docs-release-notes', 'vendor-changelog']);
 
-function newsSets(sets: FactSet[]): FactSet[] {
-  return sets.filter((s) => NEWS_KINDS.has(s.source.kind));
+/**
+ * docs-whats-new.ts also produces day-precision, per-item announcements —
+ * the same SHAPE as the doc-history sources, but curated news rather than a
+ * documentation changelog (see that file's header for the admission
+ * reasoning). It reuses the 'aws-docs-doc-history' source.kind because the
+ * data shape genuinely is identical (evidence.canonical rows with iso_date +
+ * heading + summary + url), which is what datedEntriesFrom() actually keys
+ * on. But that kind ALSO covers bedrock.doc-history — precisely the noisy
+ * source the original NEWS_KINDS comment excludes (261 false gaps out of
+ * 366, measured). Discriminating by generator rather than kind keeps that
+ * exclusion intact while admitting the new source.
+ */
+const WHATS_NEW_GENERATOR = 'src/ingest/docs-whats-new.ts';
+
+export function newsSets(sets: FactSet[]): FactSet[] {
+  return sets.filter((s) => NEWS_KINDS.has(s.source.kind) || s.generator === WHATS_NEW_GENERATOR);
+}
+
+export type ServiceScope = { service: string; depth: 'comprehensive' | 'boundary' };
+
+export function loadServiceScope(): ServiceScope[] {
+  const p = join(paths.content, 'service-scope.json');
+  if (!existsSync(p)) return [];
+  const raw = JSON.parse(readFileSync(p, 'utf8'));
+  return Array.isArray(raw?.services) ? raw.services : [];
+}
+
+/**
+ * A 'boundary' service (Quick, today) is deliberately covered only for one
+ * question, not tracked comprehensively. An uncovered entry there is real
+ * news, but reporting it as a gap the same way an AgentCore gap is reported
+ * would misstate what this deck promises — see content/service-scope.json
+ * for the reasoning. Downgrading rather than dropping it: the entry still
+ * appears with --all, just not in the actionable queue, so 'we decided not
+ * to track this' stays visible rather than silently vanishing.
+ *
+ * Deliberately does NOT touch a 'covered' finding — a boundary service that
+ * already matched a card (even loosely) is a separate, pre-existing matcher
+ * question, not this filter's job.
+ */
+export function applyServiceScope(findings: CoverageFinding[], scopes: ServiceScope[]): CoverageFinding[] {
+  const boundaryServices = new Set(scopes.filter((s) => s.depth === 'boundary').map((s) => s.service));
+  return findings.map((f) => {
+    if (f.status !== 'uncovered' || !f.entry.service || !boundaryServices.has(f.entry.service)) return f;
+    return {
+      ...f,
+      status: 'ignored' as const,
+      reason: `${f.entry.service} is covered only for its boundary question (content/service-scope.json), not tracked comprehensively. Feature-level news outside that question is not a gap in this deck's stated scope.`,
+    };
+  });
 }
 
 function loadIgnore(): IgnoreEntry[] {
@@ -101,7 +149,8 @@ function main(): void {
   }
 
   const ignore = loadIgnore();
-  const findings = detectCoverage(loadCards(), entries, ignore);
+  const scopes = loadServiceScope();
+  const findings = applyServiceScope(detectCoverage(loadCards(), entries, ignore), scopes);
   const s = coverageSummary(findings);
 
   const wanted = findings.filter((f) => {

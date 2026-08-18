@@ -12,6 +12,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { detectCoverage, coverageSummary, significanceOf } from '../src/lib/coverage.ts';
+import { applyServiceScope, newsSets } from '../src/check-coverage.ts';
 import type { DatedEntry } from '../src/lib/verifier.ts';
 import type { Card } from '../src/lib/types.ts';
 import { loadCards } from '../src/lib/store.ts';
@@ -188,5 +189,96 @@ describe('against the real deck', () => {
     const f = detectCoverage(loadCards(), [entry('Something entirely new launches')], []);
     assert.equal(f.length, 1);
     assert.ok(['uncovered', 'stale', 'covered', 'ignored', 'unmatchable'].includes(f[0].status));
+  });
+});
+
+describe('per-service scope (content/service-scope.json)', () => {
+  const entryFor = (service: string, heading = 'Something new launches'): DatedEntry => ({
+    ...entry(heading),
+    service,
+  });
+
+  test('a comprehensive-scope service is left alone — an uncovered gap stays a gap', () => {
+    const f = detectCoverage([], [entryFor('bedrock')], []);
+    const scoped = applyServiceScope(f, [{ service: 'bedrock', depth: 'comprehensive' }]);
+    assert.equal(scoped[0].status, 'uncovered');
+  });
+
+  test('a boundary-scope service is downgraded from uncovered to ignored, with a reason naming why', () => {
+    // Quick's whole deal: the deck covers ONE question about it, not its feature
+    // roadmap. An uncovered Quick entry is real news, but reporting it the same
+    // way as an AgentCore gap would misstate what this deck promises to track.
+    const f = detectCoverage([], [entryFor('quick')], []);
+    const scoped = applyServiceScope(f, [{ service: 'quick', depth: 'boundary' }]);
+    assert.equal(scoped[0].status, 'ignored');
+    assert.match(scoped[0].reason, /boundary question/);
+  });
+
+  test('a service with no scope entry at all is left alone, not silently downgraded', () => {
+    // Absence from service-scope.json must not read as "boundary" by default —
+    // that would quietly narrow coverage for every service someone forgets to list.
+    const f = detectCoverage([], [entryFor('some-future-service')], []);
+    const scoped = applyServiceScope(f, [{ service: 'quick', depth: 'boundary' }]);
+    assert.equal(scoped[0].status, 'uncovered');
+  });
+
+  test('a COVERED finding for a boundary service is never touched by this filter', () => {
+    // The filter only downgrades UNCOVERED entries. A boundary-service entry that
+    // already matched a card (rightly or wrongly) is a separate matcher question,
+    // not this filter's job to relitigate.
+    const quickCard = { ...card('QK-01', 'Amazon Quick', ['quick'], '2026-12-01T00:00:00Z'), service: 'quick' } as Card;
+    const f = detectCoverage(
+      [quickCard],
+      [entryFor('quick', 'Amazon Quick now supports something new')],
+      [],
+    );
+    const before = f[0].status;
+    assert.equal(before, 'covered', 'fixture must actually produce a covered finding for this test to mean anything');
+    const scoped = applyServiceScope(f, [{ service: 'quick', depth: 'boundary' }]);
+    assert.equal(scoped[0].status, before);
+  });
+
+  test('an unmatchable or already-ignored finding is untouched', () => {
+    const f = detectCoverage([], [entryFor('quick', 'General Availability')], [
+      { heading: 'General Availability', reason: 'pre-existing suppression' },
+    ]);
+    const scoped = applyServiceScope(f, [{ service: 'quick', depth: 'boundary' }]);
+    assert.equal(scoped[0].status, f[0].status);
+  });
+});
+
+describe('the What\'s New source is admitted without reopening the noisy Bedrock exclusion', () => {
+  const factSet = (id: string, kind: string, generator = 'some-other-ingest.ts') => ({
+    fact_set_id: id,
+    tier: 'A' as const,
+    schema_version: 1 as const,
+    generator,
+    verified_at: '2026-08-18T00:00:00Z',
+    source: { kind, url: 'https://x', fetched_at: '2026-08-18T00:00:00Z', content_hash: 'sha256:x' },
+    evidence: { canonical: [], text: '' },
+    facts: {},
+  });
+
+  test('a fact set written by docs-whats-new.ts is admitted as news', () => {
+    const sets = [factSet('bedrock.whats-new', 'aws-docs-doc-history', 'src/ingest/docs-whats-new.ts')];
+    assert.equal(newsSets(sets).length, 1);
+  });
+
+  test('bedrock.doc-history — the exact source the original exclusion measured — stays excluded', () => {
+    // Both this and the What's New fact set share source.kind
+    // 'aws-docs-doc-history' by construction (see check-coverage.ts's
+    // WHATS_NEW_GENERATOR comment for why). Discriminating on `generator`
+    // rather than `kind` is the whole point of this test: a kind-only check
+    // would silently readmit the noisy source measured at 261 false gaps.
+    const sets = [factSet('bedrock.doc-history', 'aws-docs-doc-history', 'src/ingest/docs-doc-history.ts')];
+    assert.equal(newsSets(sets).length, 0);
+  });
+
+  test('the existing release-notes and changelog kinds are still admitted', () => {
+    const sets = [
+      factSet('agentcore.release-notes', 'aws-docs-release-notes'),
+      factSet('kiro.changelog', 'vendor-changelog'),
+    ];
+    assert.equal(newsSets(sets).length, 2);
   });
 });

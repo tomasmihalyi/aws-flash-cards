@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "fact_set_id": "agentcore.whats-new",
+  "tier": "A",
+  "generator": "src/ingest/docs-whats-new.ts",
+  "verified_at": "2026-08-18T07:12:22.505Z",
+  "source": {
+    "kind": "aws-docs-doc-history",
+    "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
+    "fetched_at": "2026-08-18T07:12:22.505Z",
+    "content_hash": "sha256:e0f50530e88ec75c56dfd2071f1edc09cd3370187f07134d5620bfc816f6f7d7",
+    "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
+  },
+  "evidence": {
+    "canonical": [
+      {
+        "iso_date": "2026-08-07",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 8, 2026",
+        "heading": "Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West)",
+        "summary": "Today, Amazon Bedrock AgentCore introduces new capabilities in AWS GovCloud (US-West). AgentCore is the platform to build, connect, and optimize agents. With these capabilities, teams operating in regulated environments can build context-aware agents and take them from prototype to production faster, with the controls needed to scale across their organization. AgentCore memory gives agents short-t",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/agentcore-memory-policy-harness-govcloud/"
+      },
+      {
+        "iso_date": "2026-08-06",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 7, 2026",
+        "heading": "AgentCore runtime instances are now generally available",
+        "summary": "Today, AWS announces runtime instances, a new feature in Amazon Bedrock AgentCore that lets you run agents on your own Amazon EC2 instances without managing infrastructure. AgentCore runtime provides purpose-built infrastructure to deploy and operate AI agents securely at scale. Runtime instances complement the existing microVM-based option in AgentCore runtime and give teams running sustained, re",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/aws-bedrock-agentcore-runtime-instances-generally-available/"
+      },
+      {
+        "iso_date": "2026-08-06",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 6, 2026",
+        "heading": "Announcing temporal policies and rate limiting in Amazon Bedrock AgentCore",
+        "summary": "Amazon Bedrock AgentCore announces two new controls: temporal policies for stateful agent authorization and rate limiting for AI traffic. Temporal policies let you define stateful authorization rules that evaluate each request in the context of an agent's prior actions within a session, because a single tool call can be safe in isolation yet harmful given what preceded it. With temporal policies y",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/temporal-policies-agentcore/"
+      }
+    ],
+    "text": "August 8, 2026 — Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West): Today, Amazon Bedrock AgentCore introduces new capabilities in AWS GovCloud (US-West). AgentCore is the platform to build, connect, and optimize agents. With these capabilities, teams operating in regulated environments can build context-aware agents and take them from prototype to production faster, with the controls needed to scale across their organization. AgentCore memory gives agents short-t\nAugust 7, 2026 — AgentCore runtime instances are now generally available: Today, AWS announces runtime instances, a new feature in Amazon Bedrock AgentCore that lets you run agents on your own Amazon EC2 instances without managing infrastructure. AgentCore runtime provides purpose-built infrastructure to deploy and operate AI agents securely at scale. Runtime instances complement the existing microVM-based option in AgentCore runtime and give teams running sustained, re\nAugust 6, 2026 — Announcing temporal policies and rate limiting in Amazon Bedrock AgentCore: Amazon Bedrock AgentCore announces two new controls: temporal policies for stateful agent authorization and rate limiting for AI traffic. Temporal policies let you define stateful authorization rules that evaluate each request in the context of an agent's prior actions within a session, because a single tool call can be safe in isolation yet harmful given what preceded it. With temporal policies y"
+  },
+  "facts": {
+    "agentcore.whats-new.entry-count": {
+      "type": "integer",
+      "value": 3,
+      "note": "Dated agentcore announcements matched from the AWS What's New feed in the fetched window."
+    },
+    "agentcore.whats-new.earliest-date": {
+      "type": "string",
+      "value": "2026-08-06"
+    },
+    "agentcore.whats-new.latest-date": {
+      "type": "string",
+      "value": "2026-08-07"
+    },
+    "agentcore.whats-new.precision": {
+      "type": "string",
+      "value": "day",
+      "note": "Each entry carries the day it was posted and its own permalink."
+    }
+  },
+  "previous": {
+    "entry-count": 3
+  }
+}
