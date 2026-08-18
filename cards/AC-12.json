@@ -55,11 +55,11 @@
       "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-regions.html",
       "title": "agentcore.feature-regions (aws-docs)",
       "kind": "aws-docs",
-      "fetched_at": "2026-08-17T19:25:57.965Z",
+      "fetched_at": "2026-08-18T19:25:18.715Z",
       "content_hash": "sha256:bfc246ac95be21d20086ea91ffafafda555b04e52698d78a53808d7c1d418cca"
     }
   ],
-  "verified_at": "2026-08-17T19:25:57.965Z",
+  "verified_at": "2026-08-18T19:25:18.715Z",
   "confidence": "high",
   "depends_on": [],
   "aka": [],

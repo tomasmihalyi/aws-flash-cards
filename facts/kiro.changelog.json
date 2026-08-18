@@ -3,11 +3,11 @@
   "fact_set_id": "kiro.changelog",
   "tier": "A",
   "generator": "src/ingest/kiro-changelog.ts",
-  "verified_at": "2026-08-17T19:25:59.538Z",
+  "verified_at": "2026-08-18T19:25:20.654Z",
   "source": {
     "kind": "vendor-changelog",
     "url": "https://kiro.dev/changelog/",
-    "fetched_at": "2026-08-17T19:25:59.538Z",
+    "fetched_at": "2026-08-18T19:25:20.654Z",
     "content_hash": "sha256:867aef590718e8a0a7c0a6cd3524b92c5d356215b97f913da62ecc918e08f07e",
     "retrieved_by": "GET https://kiro.dev/changelog/feed.atom"
   },

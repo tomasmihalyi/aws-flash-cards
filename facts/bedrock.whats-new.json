@@ -3,12 +3,12 @@
   "fact_set_id": "bedrock.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-18T07:12:22.505Z",
+  "verified_at": "2026-08-18T19:25:20.195Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-18T07:12:22.505Z",
-    "content_hash": "sha256:608d5b29b95dcb8adb2f71e8b95d185a27d6f1010e622dda17f443736a56cffe",
+    "fetched_at": "2026-08-18T19:25:20.195Z",
+    "content_hash": "sha256:de8678cecc798977d24ec8a558c5c8bd3937b87e17c66e5309edc9e81c996f01",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
   "evidence": {
@@ -17,7 +17,7 @@
         "iso_date": "2026-08-17",
         "iso_month": "2026-08",
         "month_label": "August 2026",
-        "date_label": "August 18, 2026",
+        "date_label": "August 17, 2026",
         "heading": "Amazon Bedrock expands API support and introduces Cross Region Inferencing for OpenAI models",
         "summary": "Amazon Bedrock now supports the OpenAI GPT-5.6 models (Sol, Terra, and Luna) on the bedrock-runtime endpoint, with support for the Responses, Converse, and Chat Completions APIs. It also adds support for cross-Region inference, allowing customers to use Global and Geo cross-Region inference to access higher throughput and lower inference costs. Cross-Region inference automatically routes inference",
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-bedrock-cross-region-openai-v2/"
@@ -26,7 +26,7 @@
         "iso_date": "2026-08-13",
         "iso_month": "2026-08",
         "month_label": "August 2026",
-        "date_label": "August 14, 2026",
+        "date_label": "August 13, 2026",
         "heading": "Daybreak Red and Daybreak Blue from OpenAI are now available to eligible customers on Amazon Bedrock",
         "summary": "Security teams can now access Daybreak Red and Daybreak Blue from OpenAI on Amazon Bedrock. Both are part of Daybreak, the cyber defense initiative from OpenAI that gives defenders governed access to frontier AI for cybersecurity work. Daybreak Blue is the starting point for most security teams across defensive workflows including vulnerability discovery, detection engineering, and incident respon",
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/openai-daybreak-red-and-blue-on-amazon-bedrock/"
@@ -35,7 +35,7 @@
         "iso_date": "2026-08-11",
         "iso_month": "2026-08",
         "month_label": "August 2026",
-        "date_label": "August 12, 2026",
+        "date_label": "August 11, 2026",
         "heading": "Amazon Bedrock expands IAM principal cost allocation to the bedrock-mantle endpoint",
         "summary": "Amazon Bedrock is a fully managed service that provides secure, enterprise-grade access to high-performing foundation models from leading AI companies, enabling you to build and scale generative AI applications. Amazon Bedrock now supports cost allocation by AWS Identity and Access Management (IAM) principal, including IAM users and roles, for model inference requests made through the bedrock-mant",
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-bedrock-expands-iam-principal-cost-allocation-bedrock-mantle/"
@@ -44,7 +44,7 @@
         "iso_date": "2026-08-07",
         "iso_month": "2026-08",
         "month_label": "August 2026",
-        "date_label": "August 8, 2026",
+        "date_label": "August 7, 2026",
         "heading": "Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West)",
         "summary": "Today, Amazon Bedrock AgentCore introduces new capabilities in AWS GovCloud (US-West). AgentCore is the platform to build, connect, and optimize agents. With these capabilities, teams operating in regulated environments can build context-aware agents and take them from prototype to production faster, with the controls needed to scale across their organization. AgentCore memory gives agents short-t",
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/agentcore-memory-policy-harness-govcloud/"
@@ -62,13 +62,13 @@
         "iso_date": "2026-08-04",
         "iso_month": "2026-08",
         "month_label": "August 2026",
-        "date_label": "August 5, 2026",
+        "date_label": "August 4, 2026",
         "heading": "Amazon Bedrock launches Web Search for OpenAI GPT models",
         "summary": "Today, we are announcing the general availability of Web Search on Amazon Bedrock, a built-in server side tool that performs web search entirely within AWS, enabling OpenAI models (GPT-5.4, GPT-5.5, and GPT-5.6 Sol/Terra/Luna) to ground responses with current web knowledge while maintaining data residency within your secured AWS environment with zero data egress. Previously, adding web grounding r",
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-bedrock-web/"
       }
     ],
-    "text": "August 18, 2026 — Amazon Bedrock expands API support and introduces Cross Region Inferencing for OpenAI models: Amazon Bedrock now supports the OpenAI GPT-5.6 models (Sol, Terra, and Luna) on the bedrock-runtime endpoint, with support for the Responses, Converse, and Chat Completions APIs. It also adds support for cross-Region inference, allowing customers to use Global and Geo cross-Region inference to access higher throughput and lower inference costs. Cross-Region inference automatically routes inference\nAugust 14, 2026 — Daybreak Red and Daybreak Blue from OpenAI are now available to eligible customers on Amazon Bedrock: Security teams can now access Daybreak Red and Daybreak Blue from OpenAI on Amazon Bedrock. Both are part of Daybreak, the cyber defense initiative from OpenAI that gives defenders governed access to frontier AI for cybersecurity work. Daybreak Blue is the starting point for most security teams across defensive workflows including vulnerability discovery, detection engineering, and incident respon\nAugust 12, 2026 — Amazon Bedrock expands IAM principal cost allocation to the bedrock-mantle endpoint: Amazon Bedrock is a fully managed service that provides secure, enterprise-grade access to high-performing foundation models from leading AI companies, enabling you to build and scale generative AI applications. Amazon Bedrock now supports cost allocation by AWS Identity and Access Management (IAM) principal, including IAM users and roles, for model inference requests made through the bedrock-mant\nAugust 8, 2026 — Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West): Today, Amazon Bedrock AgentCore introduces new capabilities in AWS GovCloud (US-West). AgentCore is the platform to build, connect, and optimize agents. With these capabilities, teams operating in regulated environments can build context-aware agents and take them from prototype to production faster, with the controls needed to scale across their organization. AgentCore memory gives agents short-t\nAugust 6, 2026 — Announcing temporal policies and rate limiting in Amazon Bedrock AgentCore: Amazon Bedrock AgentCore announces two new controls: temporal policies for stateful agent authorization and rate limiting for AI traffic. Temporal policies let you define stateful authorization rules that evaluate each request in the context of an agent's prior actions within a session, because a single tool call can be safe in isolation yet harmful given what preceded it. With temporal policies y\nAugust 5, 2026 — Amazon Bedrock launches Web Search for OpenAI GPT models: Today, we are announcing the general availability of Web Search on Amazon Bedrock, a built-in server side tool that performs web search entirely within AWS, enabling OpenAI models (GPT-5.4, GPT-5.5, and GPT-5.6 Sol/Terra/Luna) to ground responses with current web knowledge while maintaining data residency within your secured AWS environment with zero data egress. Previously, adding web grounding r"
+    "text": "August 17, 2026 — Amazon Bedrock expands API support and introduces Cross Region Inferencing for OpenAI models: Amazon Bedrock now supports the OpenAI GPT-5.6 models (Sol, Terra, and Luna) on the bedrock-runtime endpoint, with support for the Responses, Converse, and Chat Completions APIs. It also adds support for cross-Region inference, allowing customers to use Global and Geo cross-Region inference to access higher throughput and lower inference costs. Cross-Region inference automatically routes inference\nAugust 13, 2026 — Daybreak Red and Daybreak Blue from OpenAI are now available to eligible customers on Amazon Bedrock: Security teams can now access Daybreak Red and Daybreak Blue from OpenAI on Amazon Bedrock. Both are part of Daybreak, the cyber defense initiative from OpenAI that gives defenders governed access to frontier AI for cybersecurity work. Daybreak Blue is the starting point for most security teams across defensive workflows including vulnerability discovery, detection engineering, and incident respon\nAugust 11, 2026 — Amazon Bedrock expands IAM principal cost allocation to the bedrock-mantle endpoint: Amazon Bedrock is a fully managed service that provides secure, enterprise-grade access to high-performing foundation models from leading AI companies, enabling you to build and scale generative AI applications. Amazon Bedrock now supports cost allocation by AWS Identity and Access Management (IAM) principal, including IAM users and roles, for model inference requests made through the bedrock-mant\nAugust 7, 2026 — Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West): Today, Amazon Bedrock AgentCore introduces new capabilities in AWS GovCloud (US-West). AgentCore is the platform to build, connect, and optimize agents. With these capabilities, teams operating in regulated environments can build context-aware agents and take them from prototype to production faster, with the controls needed to scale across their organization. AgentCore memory gives agents short-t\nAugust 6, 2026 — Announcing temporal policies and rate limiting in Amazon Bedrock AgentCore: Amazon Bedrock AgentCore announces two new controls: temporal policies for stateful agent authorization and rate limiting for AI traffic. Temporal policies let you define stateful authorization rules that evaluate each request in the context of an agent's prior actions within a session, because a single tool call can be safe in isolation yet harmful given what preceded it. With temporal policies y\nAugust 4, 2026 — Amazon Bedrock launches Web Search for OpenAI GPT models: Today, we are announcing the general availability of Web Search on Amazon Bedrock, a built-in server side tool that performs web search entirely within AWS, enabling OpenAI models (GPT-5.4, GPT-5.5, and GPT-5.6 Sol/Terra/Luna) to ground responses with current web knowledge while maintaining data residency within your secured AWS environment with zero data egress. Previously, adding web grounding r"
   },
   "facts": {
     "bedrock.whats-new.entry-count": {
