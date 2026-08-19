@@ -120,29 +120,22 @@ jobs:
             --base main \
             --request-reviewer tomasmihalyi
 
-          # Arm auto-merge NOW, at PR-creation time, rather than after approval.
+          # NO gh pr merge --auto here, by design.
           #
-          # This is what makes GitHub's own reply-to-email approval flow the
-          # entire human gate: replying "Approve" to the review-request email
-          # satisfies the merge condition GitHub checks, and the merge happens
-          # without a second visit to this workflow or a second click anywhere.
-          # No new infrastructure, no magic-link endpoint -- the human action
-          # IS the approval, and GitHub's own mechanism does the rest.
+          # --auto only WAITS on a condition if one exists. Branch protection
+          # requiring a review was tried and reverted the same day (2026-08-19):
+          # it also blocks refresh.yml's Tier A direct-commit path for
+          # deterministic corrections, which is a real, working, deliberate
+          # feature this repo has relied on since P3 — GitHub gives no bypass
+          # list on a personal (non-org) repo, and the only workaround is a
+          # stored PAT, which is new infrastructure this project's design
+          # explicitly avoids (OIDC only, no long-lived secrets anywhere).
           #
-          # SAFE AS OF 2026-08-19: main now requires 1 approving review
-          # (`gh api repos/.../branches/main/protection`, required_pull_request_
-          # reviews.required_approving_review_count=1). Before that change this
-          # line merged immediately with no gate at all -- `--auto` only waits
-          # on a condition that EXISTS; with none configured there was nothing
-          # to wait for. If that protection is ever removed, this line reverts
-          # to being unsafe and should be disabled again until it is restored.
-          #
-          # This does NOT weaken the "never accept-and-merge for a new card"
-          # rule: --auto only tells GitHub to merge once its own required-review
-          # condition is satisfied, and that condition still requires a human to
-          # have approved this specific PR. A discard never reaches this line at
-          # all -- the job fails at the draft step, above, with no PR opened.
-          gh pr merge "$branch" --auto --squash
+          # So the human step stays exactly what it always was: reply to
+          # GitHub's review-request email to approve, then merge the PR
+          # yourself (button, or `gh pr merge --squash`). One extra click
+          # versus the fully-armed version, in exchange for not touching the
+          # branch-level guarantee refresh.yml depends on.
 
       - name: Summarise
         if: always()
