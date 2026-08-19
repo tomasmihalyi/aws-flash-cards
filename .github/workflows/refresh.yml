@@ -27,6 +27,7 @@ concurrency:
 permissions:
   contents: write        # commit a Tier A correction, or push a review branch
   pull-requests: write   # open the PR when a judgement is involved
+  issues: write           # the coverage-gap tracking issue — GitHub's own notification email
   id-token: write        # OIDC into AWS; no stored credentials
 
 jobs:
@@ -115,6 +116,20 @@ jobs:
             node src/check-coverage.ts --limit 20 || true
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Email on a genuinely NEW coverage gap
+        # A run summary is only read if someone goes looking. GitHub already
+        # emails every watcher the moment an issue is opened or commented on
+        # (using this same token — no new mail credential, no new service),
+        # so this reuses that mechanism rather than the run summary alone.
+        # It tracks ONE open issue and only comments when a heading was not
+        # already reported, so a gap sitting unaddressed for a week does not
+        # re-notify every single morning. Never opens a card PR itself — see
+        # tools/notify-new-gaps.ts's header for why that stays a human click.
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/notify-new-gaps.ts
 
       - name: Discard a no-op
         if: steps.classify.outputs.action == 'discard' || steps.classify.outputs.action == 'nothing'
