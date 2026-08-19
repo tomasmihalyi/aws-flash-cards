@@ -83,9 +83,17 @@ export function gapLine(f: CoverageFinding): string {
   // facts/bedrock.whats-new.json reports service=bedrock here even when a
   // human would call it bedrock-agentcore. This is a pre-existing property of
   // docs-whats-new.ts's classification, not something this tool can correct,
-  // which is exactly why draft-new-card.yml's --service input exists: read the
+  // which is exactly why draft-new-card.yml's service input exists: read the
   // heading before trusting the value printed below.
-  const service = f.entry.service ? ` --service ${f.entry.service}` : ' --service <see below, none recorded>';
+  //
+  // `gh workflow run` takes every workflow_dispatch input as its own `-f
+  // key=value` pair -- there is no bare `--service` flag. Emitting one
+  // produced "unknown flag: --service" when pasted verbatim (confirmed
+  // 2026-08-20), so every command this tool had emitted before that fix was
+  // silently wrong to copy-paste.
+  const service = f.entry.service
+    ? ` -f service=${f.entry.service}`
+    : ' # no service recorded — pass -f service=<bedrock|bedrock-agentcore|strands|kiro|quick> yourself';
   return [
     `- **${f.entry.heading}** (${f.entry.month_label}, ${f.significance})`,
     '  ```',

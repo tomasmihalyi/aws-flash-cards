@@ -63,8 +63,20 @@ describe('gapLine emits a safe, complete drafting command', () => {
   test('carries the exact heading and service into the gh workflow run command', () => {
     const line = gapLine(finding('Some new capability', 'bedrock-agentcore'));
     assert.ok(line.includes('Some new capability'));
-    assert.ok(line.includes('--service bedrock-agentcore'));
+    assert.ok(line.includes('-f service=bedrock-agentcore'));
     assert.ok(line.includes('gh workflow run draft-new-card.yml'));
+  });
+
+  test('REGRESSION: every workflow_dispatch input is a -f key=value pair, never a bare --flag', () => {
+    // gh workflow run has no --service flag at all -- workflow_dispatch inputs
+    // are ALL passed as -f key=value. Emitting `--service X` produced "unknown
+    // flag: --service" when pasted verbatim (confirmed 2026-08-20, issue #13's
+    // first live gap notification), so every comment this tool posted before
+    // the fix contained a command that could not actually run. This test pins
+    // the corrected form so the regression cannot silently return.
+    const line = gapLine(finding('Some new capability', 'bedrock-agentcore'));
+    assert.ok(!/--service\b/.test(line), 'must not emit a bare --service flag');
+    assert.match(line, /gh workflow run draft-new-card\.yml -f entry="[^"]*" -f service=bedrock-agentcore/);
   });
 
   test('a heading containing a double quote is escaped, not left to break the command', () => {
@@ -74,8 +86,9 @@ describe('gapLine emits a safe, complete drafting command', () => {
 
   test('a missing service is called out explicitly rather than emitting an empty flag', () => {
     const line = gapLine(finding('No service recorded', null));
-    assert.ok(line.includes('none recorded'));
-    assert.ok(!line.includes('--service \n'));
+    assert.ok(line.includes('no service recorded'));
+    assert.ok(!/--service\b/.test(line));
+    assert.ok(!/-f service=\s*$/.test(line));
   });
 
   test('names the month label and significance for a human skimming the list', () => {
