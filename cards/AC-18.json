@@ -80,11 +80,11 @@
       "url": "https://api.pricing.us-east-1.amazonaws.com/ · GetProducts ServiceCode=AmazonBedrockAgentCore regionCode=ap-southeast-2",
       "title": "agentcore.pricing.ap-southeast-2 (price-list-api)",
       "kind": "price-list-api",
-      "fetched_at": "2026-08-19T05:30:37.189Z",
+      "fetched_at": "2026-08-19T19:22:47.403Z",
       "content_hash": "sha256:07118f8c9240cfa8e15bd076bb4e1cb20c7a26a4890544559d085d7cd3b2dec7"
     }
   ],
-  "verified_at": "2026-08-19T05:30:37.189Z",
+  "verified_at": "2026-08-19T19:22:47.403Z",
   "confidence": "high",
   "depends_on": [
     "AC-04",

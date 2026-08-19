@@ -3,12 +3,12 @@
   "fact_set_id": "agentcore.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-19T05:30:46.507Z",
+  "verified_at": "2026-08-19T19:22:57.428Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-19T05:30:46.507Z",
-    "content_hash": "sha256:3831a439eecfdfc7cc0da990dfce3ff9d18aa3d3d4816a1a2293bad72fad057f",
+    "fetched_at": "2026-08-19T19:22:57.428Z",
+    "content_hash": "sha256:3d102ff32a7310cc8d78d34237cc6db13a82a4f6e786cc27eb54c299403bce15",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
   "evidence": {
@@ -39,23 +39,14 @@
         "heading": "AgentCore runtime instances are now generally available",
         "summary": "Today, AWS announces runtime instances, a new feature in Amazon Bedrock AgentCore that lets you run agents on your own Amazon EC2 instances without managing infrastructure. AgentCore runtime provides purpose-built infrastructure to deploy and operate AI agents securely at scale. Runtime instances complement the existing microVM-based option in AgentCore runtime and give teams running sustained, re",
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/aws-bedrock-agentcore-runtime-instances-generally-available/"
-      },
-      {
-        "iso_date": "2026-08-06",
-        "iso_month": "2026-08",
-        "month_label": "August 2026",
-        "date_label": "August 6, 2026",
-        "heading": "Announcing temporal policies and rate limiting in Amazon Bedrock AgentCore",
-        "summary": "Amazon Bedrock AgentCore announces two new controls: temporal policies for stateful agent authorization and rate limiting for AI traffic. Temporal policies let you define stateful authorization rules that evaluate each request in the context of an agent's prior actions within a session, because a single tool call can be safe in isolation yet harmful given what preceded it. With temporal policies y",
-        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/temporal-policies-agentcore/"
       }
     ],
-    "text": "August 18, 2026 — AgentCore payments is now generally available in Amazon Bedrock AgentCore: Today, AWS announces the general availability of AgentCore payments, a capability within Amazon Bedrock AgentCore that enables AI agents to autonomously discover, access, and pay for paid APIs, MCPs, and content with just a few lines of code. AgentCore payments provides the security, guardrails, and observability enterprises need to deploy transacting agents in production at scale. AgentCore payme\nAugust 7, 2026 — Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West): Today, Amazon Bedrock AgentCore introduces new capabilities in AWS GovCloud (US-West). AgentCore is the platform to build, connect, and optimize agents. With these capabilities, teams operating in regulated environments can build context-aware agents and take them from prototype to production faster, with the controls needed to scale across their organization. AgentCore memory gives agents short-t\nAugust 6, 2026 — AgentCore runtime instances are now generally available: Today, AWS announces runtime instances, a new feature in Amazon Bedrock AgentCore that lets you run agents on your own Amazon EC2 instances without managing infrastructure. AgentCore runtime provides purpose-built infrastructure to deploy and operate AI agents securely at scale. Runtime instances complement the existing microVM-based option in AgentCore runtime and give teams running sustained, re\nAugust 6, 2026 — Announcing temporal policies and rate limiting in Amazon Bedrock AgentCore: Amazon Bedrock AgentCore announces two new controls: temporal policies for stateful agent authorization and rate limiting for AI traffic. Temporal policies let you define stateful authorization rules that evaluate each request in the context of an agent's prior actions within a session, because a single tool call can be safe in isolation yet harmful given what preceded it. With temporal policies y"
+    "text": "August 18, 2026 — AgentCore payments is now generally available in Amazon Bedrock AgentCore: Today, AWS announces the general availability of AgentCore payments, a capability within Amazon Bedrock AgentCore that enables AI agents to autonomously discover, access, and pay for paid APIs, MCPs, and content with just a few lines of code. AgentCore payments provides the security, guardrails, and observability enterprises need to deploy transacting agents in production at scale. AgentCore payme\nAugust 7, 2026 — Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West): Today, Amazon Bedrock AgentCore introduces new capabilities in AWS GovCloud (US-West). AgentCore is the platform to build, connect, and optimize agents. With these capabilities, teams operating in regulated environments can build context-aware agents and take them from prototype to production faster, with the controls needed to scale across their organization. AgentCore memory gives agents short-t\nAugust 6, 2026 — AgentCore runtime instances are now generally available: Today, AWS announces runtime instances, a new feature in Amazon Bedrock AgentCore that lets you run agents on your own Amazon EC2 instances without managing infrastructure. AgentCore runtime provides purpose-built infrastructure to deploy and operate AI agents securely at scale. Runtime instances complement the existing microVM-based option in AgentCore runtime and give teams running sustained, re"
   },
   "facts": {
     "agentcore.whats-new.entry-count": {
       "type": "integer",
-      "value": 4,
+      "value": 3,
       "note": "Dated agentcore announcements matched from the AWS What's New feed in the fetched window."
     },
     "agentcore.whats-new.earliest-date": {

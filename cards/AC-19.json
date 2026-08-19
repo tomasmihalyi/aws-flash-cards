@@ -68,11 +68,11 @@
       "url": "ssm://aws/service/global-infrastructure/services/bedrock-agentcore/regions",
       "title": "agentcore.regions (ssm-public-parameter)",
       "kind": "ssm-public-parameter",
-      "fetched_at": "2026-08-19T05:30:34.852Z",
+      "fetched_at": "2026-08-19T19:22:45.390Z",
       "content_hash": "sha256:c5cfe622a53ad931055a3b605f11bd6e5fe3b950e2f2947c49bbdc2efe875927"
     }
   ],
-  "verified_at": "2026-08-19T05:30:34.852Z",
+  "verified_at": "2026-08-19T19:22:45.390Z",
   "confidence": "high",
   "depends_on": [],
   "aka": [],
