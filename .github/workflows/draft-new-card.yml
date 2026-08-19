@@ -1,0 +1,155 @@
+name: draft-new-card
+
+# The new-card counterpart to draft.yml — one gap, drafted deliberately, never
+# on the daily schedule.
+#
+# WHY THIS IS MANUAL, LIKE draft.yml, AND NOT WIRED INTO refresh.yml
+#
+# refresh.yml assumes flashcards-refresh, which carries an explicit Deny on
+# bedrock:*. That Deny is deliberate (see infra/github-oidc.yaml's DraftRole
+# comment) and this workflow does not touch it: drafting a brand-new card still
+# costs a model call, and the daily unattended job still cannot make one.
+#
+# check-coverage.ts --new already tells a human exactly which gaps exist and
+# what their exact heading is. Naming one here is the one manual step in the
+# whole new-card pipeline — everything after it is automatic.
+#
+# THREE OUTCOMES, TWO REACH HERE
+#
+#   review    every checkable claim verified against the source entry -> PR.
+#             Still needs a human: category, kind, lifecycle and "is this gap
+#             worth a card at all" are judgement calls no source can settle.
+#   discard   a claim could not be verified, or the shape was broken -> the
+#             drafter exits non-zero, this job FAILS, no PR.
+#
+# There is no `accept` outcome for a new card, ever — see new-card-gate.ts's
+# NewCardVerdict type, which does not have that value at all. Every new card
+# reaches the deck through a PR a human reads, however clean the gate result.
+
+on:
+  workflow_dispatch:
+    inputs:
+      entry:
+        description: 'Exact heading of the coverage-gap entry to draft (from: node src/check-coverage.ts --new)'
+        required: true
+        type: string
+      service:
+        description: 'Override the entry service if it has none recorded (bedrock-agentcore | bedrock | strands | kiro | quick)'
+        required: false
+        type: string
+
+permissions:
+  contents: write        # push a review branch — never main
+  pull-requests: write   # open the PR
+  id-token: write        # OIDC; no access key exists anywhere in this repo
+
+concurrency:
+  # One draft at a time per entry. Two runs racing the same gap would collide
+  # on card-id allocation as well as the branch name.
+  group: draft-new-card-${{ inputs.entry }}
+  cancel-in-progress: false
+
+jobs:
+  draft-new-card:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Assume the draft role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DRAFT_ROLE_ARN }}
+          aws-region: ap-southeast-2
+
+      - name: Confirm which identity is drafting
+        run: aws sts get-caller-identity
+
+      - name: Draft the new card
+        id: draft
+        run: |
+          set -euo pipefail
+          SERVICE_FLAG=""
+          if [ -n "${{ inputs.service }}" ]; then
+            SERVICE_FLAG="--service ${{ inputs.service }}"
+          fi
+          # --write produces drafts/<ID>.new-card.json, where <ID> is only known
+          # once the drafter allocates it against the current ledger. It never
+          # touches cards/: tools/apply-new-card.ts is the single writer.
+          node src/ingest/draft-new-card.ts --entry "${{ inputs.entry }}" $SERVICE_FLAG --write \
+            --region ap-southeast-2 | tee draft.log
+          card_id=$(ls drafts/*.new-card.json | head -1 | xargs basename | sed 's/\.new-card\.json$//')
+          if [ -z "$card_id" ]; then
+            echo "draft-new-card: no artifact produced (discard, or drafting failed) — see draft.log above"
+            exit 1
+          fi
+          echo "card_id=$card_id" >> "$GITHUB_OUTPUT"
+
+      - name: Apply it to a review branch and open the PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          card_id="${{ steps.draft.outputs.card_id }}"
+          branch="new-card/${card_id}-${{ github.run_id }}"
+          git checkout -b "$branch"
+
+          # apply-new-card RE-GATES against current fact sets before writing, and
+          # refuses to write on main — which is why the branch exists first.
+          node tools/apply-new-card.ts --card "$card_id"
+
+          # cards/ + the id ledger only. The artifact and PR body are gitignored
+          # scratch, same convention as draft.yml.
+          git add cards content/card-id-ledger.json
+          git commit -m "feat(${card_id}): new card drafted from coverage gap, Tier C pending review" \
+                     -m "$(cat drafts/${card_id}.pr.md)"
+          git push origin "$branch"
+
+          gh pr create \
+            --title "New card: ${card_id} (Tier C — needs review, never auto-merged)" \
+            --body-file "drafts/${card_id}.pr.md" \
+            --head "$branch" \
+            --base main \
+            --request-reviewer tomasmihalyi
+
+          # Arm auto-merge NOW, at PR-creation time, rather than after approval.
+          #
+          # This is what makes GitHub's own reply-to-email approval flow the
+          # entire human gate: replying "Approve" to the review-request email
+          # satisfies the merge condition GitHub checks, and the merge happens
+          # without a second visit to this workflow or a second click anywhere.
+          # No new infrastructure, no magic-link endpoint -- the human action
+          # IS the approval, and GitHub's own mechanism does the rest.
+          #
+          # SAFE AS OF 2026-08-19: main now requires 1 approving review
+          # (`gh api repos/.../branches/main/protection`, required_pull_request_
+          # reviews.required_approving_review_count=1). Before that change this
+          # line merged immediately with no gate at all -- `--auto` only waits
+          # on a condition that EXISTS; with none configured there was nothing
+          # to wait for. If that protection is ever removed, this line reverts
+          # to being unsafe and should be disabled again until it is restored.
+          #
+          # This does NOT weaken the "never accept-and-merge for a new card"
+          # rule: --auto only tells GitHub to merge once its own required-review
+          # condition is satisfied, and that condition still requires a human to
+          # have approved this specific PR. A discard never reaches this line at
+          # all -- the job fails at the draft step, above, with no PR opened.
+          gh pr merge "$branch" --auto --squash
+
+      - name: Summarise
+        if: always()
+        run: |
+          {
+            echo "## draft-new-card — ${{ inputs.entry }}"
+            echo '```'
+            cat draft.log 2>/dev/null || echo 'no draft produced'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
