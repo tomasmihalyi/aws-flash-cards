@@ -3,11 +3,11 @@
   "fact_set_id": "quick.what-is",
   "tier": "A",
   "generator": "src/ingest/docs-pages.ts",
-  "verified_at": "2026-08-19T04:46:30.781Z",
+  "verified_at": "2026-08-19T05:30:45.471Z",
   "source": {
     "kind": "aws-docs",
     "url": "https://docs.aws.amazon.com/quicksuite/latest/userguide/what-is.html",
-    "fetched_at": "2026-08-19T04:46:30.781Z",
+    "fetched_at": "2026-08-19T05:30:45.471Z",
     "content_hash": "sha256:658c9480ad90dc41d16ba6027c4e43a9e99121d1399bdca77ff9d67ecfe20762",
     "retrieved_by": "GET https://docs.aws.amazon.com/quicksuite/latest/userguide/what-is.md"
   },
@@ -23,6 +23,6 @@
     }
   },
   "previous": {
-    "content_hash": "sha256:9be90e83bad94357e25e95169e39456b24a353718b730086ecc630cad216bd1e"
+    "content_hash": "sha256:658c9480ad90dc41d16ba6027c4e43a9e99121d1399bdca77ff9d67ecfe20762"
   }
 }

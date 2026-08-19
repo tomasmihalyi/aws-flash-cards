@@ -3,11 +3,11 @@
   "fact_set_id": "quick.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-19T04:46:31.448Z",
+  "verified_at": "2026-08-19T05:30:46.507Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-19T04:46:31.448Z",
+    "fetched_at": "2026-08-19T05:30:46.507Z",
     "content_hash": "sha256:523d471e011998d3e8ca2e489edb239a701ede83b01d14840693c006cc35c9cf",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
