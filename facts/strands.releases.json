@@ -3,11 +3,11 @@
   "fact_set_id": "strands.releases",
   "tier": "A",
   "generator": "src/ingest/github-releases.ts",
-  "verified_at": "2026-08-18T19:25:23.390Z",
+  "verified_at": "2026-08-19T04:46:33.170Z",
   "source": {
     "kind": "github-releases",
     "url": "https://github.com/strands-agents/harness-sdk/releases",
-    "fetched_at": "2026-08-18T19:25:23.390Z",
+    "fetched_at": "2026-08-19T04:46:33.170Z",
     "content_hash": "sha256:7406399a954b8aaa463ca326a01b1df8cfc5c417f615d93ef67222f05ddcf3be",
     "retrieved_by": "GET https://github.com/strands-agents/harness-sdk/releases.atom"
   },
