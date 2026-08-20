@@ -107,6 +107,30 @@ describe('ranking makes the list usable', () => {
     assert.equal(coverageSummary(f).actionable, 0, 'housekeeping must not reach the actionable queue');
   });
 
+  test('SageMaker JumpStart model-roster additions are minor, same reason as Bedrock/Kiro model rosters', () => {
+    // Measured live 2026-08-20 (the day SageMaker was added to
+    // service-scope.json): 8 of a single What's New feed page's SageMaker
+    // entries were JumpStart model additions, and every one is "launch"
+    // language by construction ("X model now available on ... JumpStart").
+    // Without this downweight, the coverage detector would flood the
+    // tracking issue with per-model gaps -- the exact anti-pattern
+    // content/coverage-ignore.json already names for Bedrock and Kiro.
+    for (const h of [
+      'LocateAnything-3B, Qwen-AgentWorld-35B-A3B, and Qwen3.5-122B-A10B models now available on Amazon SageMaker JumpStart',
+      'NVIDIA Nemotron 3.5 Lightning model is now available on Amazon SageMaker JumpStart',
+      'FLUX.2-small-decoder and gemma-4-12B-it models now available on Amazon SageMaker JumpStart',
+    ]) {
+      assert.equal(significanceOf(h, '').kind, 'minor', h);
+    }
+  });
+
+  test('a genuine SageMaker platform feature is NOT caught by the JumpStart downweight', () => {
+    // The downweight is deliberately narrow (matches only the JumpStart
+    // model-availability phrasing) so it never swallows real platform news.
+    assert.notEqual(significanceOf('Amazon SageMaker notebooks now support trusted identity propagation', '').kind, 'minor');
+    assert.notEqual(significanceOf('Amazon SageMaker Unified Studio now supports data profiling and anomaly detection', '').kind, 'minor');
+  });
+
   test('the ranking is deterministic across runs', () => {
     const cards = [card('AC-01', 'What is AgentCore?')];
     const entries = [entry('Policy launches', '2026-03'), entry('Memory now supports X', '2026-05'), entry('Failure Insights is now in Public Preview', '2026-07')];

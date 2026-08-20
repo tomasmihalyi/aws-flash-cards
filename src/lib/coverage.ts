@@ -66,8 +66,26 @@ const SIGNAL_RE: { kind: Significance; re: RegExp; weight: number }[] = [
 const HOUSEKEEPING_RE =
   /\b(?:added documentation|documentation for|ui enhancements?|latency improvements?|updated list|clarified|doc(?:umentation)? (?:update|history))\b/i;
 
+/**
+ * SageMaker JumpStart model-roster additions, downweighted for the same
+ * reason Bedrock's model roster is (content/coverage-ignore.json's Claude
+ * Opus 5 / GPT-5.6 / Grok 4.6 entries): a JumpStart model announcement is
+ * "launch"-language by construction ("X model now available on Amazon
+ * SageMaker JumpStart"), so SIGNAL_RE alone would classify every one of them
+ * at the HIGHEST significance weight — measured at 8 of a single feed page's
+ * SageMaker entries the day SageMaker was added to service-scope.json. Unlike
+ * Bedrock, where one concept card (BR-01) already exists to absorb this
+ * pattern, this repo has authored no SageMaker JumpStart concept card yet —
+ * so this downweights to `minor` rather than routing to per-model suppression
+ * entries, which content/coverage-ignore.json's exact-heading matching would
+ * otherwise need one of per model, forever. Revisit (raise this back up, or
+ * write the concept card and keep the downweight) once that card exists.
+ */
+const JUMPSTART_MODEL_RE = /\bmodels? (?:is )?now available on (?:amazon )?sagemaker jumpstart\b/i;
+
 export function significanceOf(heading: string, summary: string): { kind: Significance; weight: number } {
   if (HOUSEKEEPING_RE.test(heading)) return { kind: 'minor', weight: 0 };
+  if (JUMPSTART_MODEL_RE.test(heading)) return { kind: 'minor', weight: 0 };
   for (const s of SIGNAL_RE) {
     if (s.re.test(heading)) return { kind: s.kind, weight: s.weight };
   }
