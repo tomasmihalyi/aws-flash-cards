@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "card_id": "CA-12",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "kiro",
+  "category": "coding-agents",
+  "tags": [
+    "cli",
+    "cloud-sessions",
+    "preview",
+    "sandbox",
+    "agent-workflow"
+  ],
+  "badge_variant": "ga",
+  "badge_text": "GA",
+  "art": "platform",
+  "title": "CLI cloud sessions (preview)",
+  "hook": "How do cloud sessions let you run CLI agents more flexibly?",
+  "back": {
+    "lead": "Cloud sessions run your session in a managed cloud sandbox with --cloud, let you disconnect while the agent keeps working, and resume from any machine.",
+    "hookline": "Disconnect and resume agent work from anywhere.",
+    "kv": [
+      {
+        "k": "Launch",
+        "v": "Use --cloud flag"
+      },
+      {
+        "k": "Environment",
+        "v": "Managed cloud sandbox"
+      },
+      {
+        "k": "Status",
+        "v": "Preview"
+      }
+    ]
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://kiro.dev/changelog/",
+      "kind": "aws-whats-new",
+      "fetched_at": "2026-08-20T03:25:08.811Z",
+      "content_hash": "sha256:76378b0b36f85f61270f4ef2ecf9f89f4e5cf905334e896063000347a4bb3535"
+    }
+  ],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "New card drafted from coverage gap \"CLI: Cloud Sessions Preview and Smarter Command Menus\". Every checkable claim verified against the source entry, but a new card's category, kind, lifecycle and framing are judgement calls no source can settle. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0.",
+      "raised_at": "2026-08-20T04:10:03.982Z",
+      "raised_by": "tools/apply-new-card.ts"
+    }
+  ],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-20T04:10:03.982Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/apply-new-card.ts",
+        "reason": "Drafted from coverage gap \"CLI: Cloud Sessions Preview and Smarter Command Menus\" (August 2026). no checkable (numeric/date/region) claim in the draft — needs a human read regardless"
+      },
+      {
+        "at": "2026-08-20T04:10:03.982Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "tools/apply-new-card.ts",
+        "reason": "New card drafted from coverage gap \"CLI: Cloud Sessions Preview and Smarter Command Menus\". Every checkable claim verified against the source entry, but a new card's category, kind, lifecycle and framing are judgement calls no source can settle. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0."
+      }
+    ]
+  },
+  "created_at": "2026-08-20T04:10:03.982Z",
+  "updated_at": "2026-08-20T04:10:03.982Z"
+}
