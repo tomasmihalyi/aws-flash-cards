@@ -25,6 +25,12 @@
       "keywords": ["amazon quick"],
       "depth": "boundary",
       "note": "The deck covers Quick only for the business-vs-engineer boundary question (README: 'the Quick business-vs-engineer boundary'), not Quick's feature roadmap. A feature GA (new connector, new extension) is real Quick news but not a gap in this deck's stated scope unless it topically bears on the boundary question itself."
+    },
+    {
+      "service": "sagemaker",
+      "keywords": ["amazon sagemaker", "sagemaker ai"],
+      "depth": "boundary",
+      "note": "First addition under the 2026-08-20 scope widening (docs/decisions/2026-08-20-scope-widened-to-aws-ai-broadly.md), added deliberately one service at a time rather than all at once. Depth is 'boundary', not 'comprehensive', on purpose: measured 8 of one feed page's SageMaker entries as JumpStart model-roster additions (downweighted to 'minor' in coverage.ts's JUMPSTART_MODEL_RE, same anti-pattern as Bedrock's model roster), so genuine platform-feature volume through this filter is still unproven. Revisit depth once a few real cycles show what actually reaches the actionable queue."
     }
   ]
 }
