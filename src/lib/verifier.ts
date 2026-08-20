@@ -923,6 +923,7 @@ const SOURCE_SERVICE: Record<string, string> = {
   strands: 'strands',
   'q-developer': 'q-developer',
   quick: 'quick',
+  sagemaker: 'sagemaker',
 };
 
 /** The card service a fact set may speak for, by id prefix. */

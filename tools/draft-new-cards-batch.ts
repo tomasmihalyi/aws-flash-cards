@@ -138,10 +138,26 @@ function processOneGap(
   }
 
   if (opts.skipPr) {
-    // Test/dry-run path: leave the drafted card + ledger update as
-    // UNCOMMITTED changes on this gap's branch (never committed, never
-    // pushed, no PR). Caller is responsible for inspecting/discarding them.
-    return { heading, status: 'pr-opened', detail: `${cardId} (--skip-pr: left uncommitted on ${branch}, not pushed)` };
+    // Test path: draft, branch, apply, and COMMIT locally (so the next
+    // gap's draft call reads a ledger that includes this commit, exercising
+    // the same fast-forward this mode exists to test) — but never push and
+    // never call `gh pr create`. Caller is responsible for cleaning up the
+    // branches this creates.
+    const prBody = join(ROOT, 'drafts', `${cardId}.pr.md`);
+    const add = git(['add', 'cards', 'content/card-id-ledger.json']);
+    if (!add.ok) return { heading, status: 'errored', detail: `git add failed: ${add.output}` };
+    const commit = git([
+      'commit',
+      '-m', `feat(${cardId}): new card drafted from coverage gap, Tier C pending review [test]`,
+      '-m', readFileSync(prBody, 'utf8'),
+    ]);
+    if (!commit.ok) return { heading, status: 'errored', detail: `git commit failed: ${commit.output}` };
+
+    const ffMain = git(['checkout', 'main', '--quiet']);
+    if (ffMain.ok) git(['merge', '--ff-only', branch]);
+    git(['checkout', branch, '--quiet']);
+
+    return { heading, status: 'pr-opened', detail: `${cardId} (--skip-pr: committed to ${branch}, main fast-forwarded LOCALLY, nothing pushed)` };
   }
 
   const prBody = join(ROOT, 'drafts', `${cardId}.pr.md`);
@@ -165,6 +181,25 @@ function processOneGap(
     '--reviewer', REVIEWER,
   ]);
   if (!pr.ok) return { heading, status: 'errored', detail: `gh pr create failed: ${pr.output}` };
+
+  // Fast-forward the LOCAL main to include this card's commit — NOT pushed,
+  // NOT a real merge on GitHub (the PR above is still open, still needs its
+  // own human review and merge). This exists purely so the NEXT gap's draft
+  // call reads a ledger that actually reflects every id allocated earlier in
+  // THIS SAME batch run.
+  //
+  // Without this, every gap in a batch reads the same pre-batch main's
+  // ledger, because each card's commit lives only on its own PR branch and
+  // main itself never advances during the run — caught live 2026-08-20 on a
+  // 7-gap batch: the 5th gap (a Kiro/CA-prefix heading) and the 6th gap (a
+  // Bedrock/BR-prefix heading) both re-allocated ids ALREADY claimed by
+  // earlier gaps in the same batch (CA-12 and BR-07 respectively), and their
+  // `git checkout -b` then failed outright because that branch name already
+  // existed from the earlier gap. This local fast-forward is what makes id
+  // allocation actually see prior gaps in the batch, not just prior batches.
+  const ffMain = git(['checkout', 'main', '--quiet']);
+  if (ffMain.ok) git(['merge', '--ff-only', branch]);
+  git(['checkout', branch, '--quiet']);
 
   // NO gh pr merge --auto — same reasoning as draft-new-card.yml: main has no
   // branch protection on this personal repo (the only bypass mechanism is a
