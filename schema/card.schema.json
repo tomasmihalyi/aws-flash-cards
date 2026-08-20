@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://tomasmihalyi.dev/schema/flashcard-card-v1.json",
-  "title": "AI-Native Development Flashcard",
+  "title": "AWS AI Flashcard",
   "description": "One card. Git-versioned. Prose is authored; numbers/prices/dates/region-lists arrive only through fact-governed slots. Fields consumed only by later phases (P4 verifier, P5 rename/fan-out) are present and required from P0 so those phases drop in without a migration.",
   "type": "object",
   "additionalProperties": false,

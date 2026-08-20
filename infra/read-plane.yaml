@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >
-  Read plane for the AWS AI-Native Development Flashcards deck.
+  Read plane for the AWS AI Flashcards deck.
   Private S3 origin + Origin Access Control + CloudFront. No public bucket,
   no website endpoint, no origin reachable except through the distribution.
 
@@ -196,7 +196,7 @@ Resources:
     Properties:
       DistributionConfig:
         Enabled: true
-        Comment: AWS AI-Native Development Flashcards — read plane
+        Comment: AWS AI Flashcards — read plane
         DefaultRootObject: index.html
         HttpVersion: http2and3
         IPV6Enabled: true
