@@ -52,7 +52,15 @@ function check(name: string, ok: boolean, detail = ''): void {
 
 function main(): void {
   const legacy = loadLegacy(paths.legacyHtml);
-  const cards = loadCards().sort((a, b) => a.card_id.localeCompare(b.card_id));
+  // Same exclusion build.ts applies (2026-08-20): a retired card's lead text
+  // is deliberately NOT in the published HTML, so checking for it here would
+  // fail this gate every time a card is retired, on a mismatch this gate
+  // itself created rather than a real parity defect. Excluding it keeps this
+  // gate's claim accurate: "the built HTML matches what SHOULD be built",
+  // not "matches everything sitting in cards/ regardless of lifecycle".
+  const cards = loadCards()
+    .filter((c) => c.lifecycle !== 'retired')
+    .sort((a, b) => a.card_id.localeCompare(b.card_id));
   const categories = loadCategories();
 
   /**
