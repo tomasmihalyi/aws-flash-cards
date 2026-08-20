@@ -28,7 +28,7 @@
       },
       {
         "k": "Streaming",
-        "v": "Memory streaming (2026) reduces the lag between an event happening and it becoming retrievable."
+        "v": "Memory streaming, added March 2026, reduces the lag between an event happening and it becoming retrievable."
       },
       {
         "k": "Pricing",
@@ -146,11 +146,21 @@
         "action": "clear-review",
         "generator": "tools/sign-off.ts",
         "reason": "Signed off by Tomas Mihalyi. Approved: Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0. (The flag-review entries recording why this was raised remain in this history.)"
+      },
+      {
+        "at": "2026-08-20T01:20:00.000Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "human",
+        "field": "back.kv[2].v",
+        "before": "Memory streaming (2026) reduces the lag between an event happening and it becoming retrievable.",
+        "after": "Memory streaming, added March 2026, reduces the lag between an event happening and it becoming retrievable.",
+        "reason": "validate flagged a bare current-year literal ('2026') as an ungoverned numeric/date claim — per this repo's own rule, a bare year is imprecise prose, not settled history. facts/agentcore.release-notes.json's 'Memory: Record Streaming' entry dates this feature to March 2026 (month-precision source, no day claimed). No slot was created: apply.ts's Tier A resolver currently only resolves against facts/ fact VALUES, not release-notes dated entries directly, and building that generic resolution path is out of scope for a single-warning fix. Rewritten as authored prose citing the month the source actually supports, matching the fix already applied to five other cards per README's 'What the deterministic sources cannot do' section."
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-11T05:11:33.078Z",
+  "updated_at": "2026-08-20T01:20:00.000Z",
   "signed_off": {
     "by": "Tomas Mihalyi",
     "at": "2026-08-11T05:11:33.078Z"
