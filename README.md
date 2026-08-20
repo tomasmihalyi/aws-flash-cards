@@ -1,4 +1,4 @@
-# AWS AI-Native Development Flashcards
+# AWS AI Flashcards
 
 A flashcard deck that keeps its own factual claims current, and that shows a
 learner the difference between a verified fact and an unverified judgement.
@@ -92,7 +92,7 @@ stripping. There is no install step.
 node src/validate.ts          # schema + lint + citation gate
 node --test tests/*.test.ts   # 368 behavioural, guarantee, verifier, ingest, atom, coverage, rename, lint tests
 node src/verify-claims.ts     # decompose every card into claims and verify each
-node src/build.ts             # → dist/deck.json + dist/aws-ai-native-development-flashcards.html
+node src/build.ts             # → dist/deck.json + dist/aws-ai-flashcards.html
 node src/verify-parity.ts     # authored-content parity against the original deck
 node src/check-lifecycle.ts   # has a preview/GA badge gone stale?
 node src/check-rename.ts      # has the thing a card describes been renamed?

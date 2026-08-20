@@ -16,7 +16,7 @@ export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
  * a gate still pointing at the old name would have failed for a reason that had
  * nothing to do with the deck being wrong.
  */
-export const DIST_HTML = 'aws-ai-native-development-flashcards.html';
+export const DIST_HTML = 'aws-ai-flashcards.html';
 
 export const paths = {
   /** Repository root. Needed by checks that reason about source files themselves. */

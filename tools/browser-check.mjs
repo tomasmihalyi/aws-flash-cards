@@ -13,7 +13,7 @@
  * `npm run check`:
  *
  *   PLAYWRIGHT_PATH=~/.kiro/skills/browser-automation/node_modules/playwright \
- *     node tools/browser-check.mjs dist/aws-ai-native-development-flashcards.html /tmp/out
+ *     node tools/browser-check.mjs dist/aws-ai-flashcards.html /tmp/out
  *
  * Exits non-zero on any failed assertion.
  */
@@ -52,7 +52,7 @@ try {
       'Playwright is deliberately NOT a dependency of this project. Point PLAYWRIGHT_PATH at an\n' +
       'existing install, e.g.:\n' +
       '  PLAYWRIGHT_PATH=~/.kiro/skills/browser-automation/node_modules/playwright \\\n' +
-      '    node tools/browser-check.mjs dist/aws-ai-native-development-flashcards.html',
+      '    node tools/browser-check.mjs dist/aws-ai-flashcards.html',
   );
   process.exit(2);
 }
@@ -70,7 +70,7 @@ try {
  * `https://host/` and `${TARGET}#/card/x` produces the same shape the file form
  * does instead of `https://host#/card/x`.
  */
-const arg = process.argv[2] ?? 'dist/aws-ai-native-development-flashcards.html';
+const arg = process.argv[2] ?? 'dist/aws-ai-flashcards.html';
 const isUrl = /^https?:\/\//i.test(arg);
 const TARGET = isUrl ? new URL(arg).href : `file://${resolve(arg)}`;
 const out = process.argv[3] ?? '/tmp/flashcards-browser-check';

@@ -34,7 +34,7 @@
 
   <rect width="1680" height="1180" fill="#fbfcfd"/>
 
-  <text x="40" y="46" font-size="24" font-weight="700" fill="#111820">AWS AI-Native Development Flashcards — the self-updating mechanism</text>
+  <text x="40" y="46" font-size="24" font-weight="700" fill="#111820">AWS AI Flashcards — the self-updating mechanism</text>
   <text x="40" y="70" class="sm">Facts and prose are separate stores. Only deterministic code may write a fact, so “numbers are never model-generated” is a property of the write path, not a policy.</text>
 
   <!-- legend. Three entries, not four: once section 7 shipped, "built" and "runs

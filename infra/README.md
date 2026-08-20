@@ -22,7 +22,7 @@ BUCKET=$(aws cloudformation describe-stacks --profile demo --region ap-southeast
   --stack-name FlashcardsReadPlane \
   --query 'Stacks[0].Outputs[?OutputKey==`BucketName`].OutputValue' --output text)
 
-aws s3 cp dist/aws-ai-native-development-flashcards.html "s3://$BUCKET/index.html" \
+aws s3 cp dist/aws-ai-flashcards.html "s3://$BUCKET/index.html" \
   --profile demo --region ap-southeast-2 \
   --content-type 'text/html; charset=utf-8' \
   --cache-control 'public, max-age=300'
@@ -47,7 +47,7 @@ or truncated artifact.
 
 ```bash
 curl -s https://<dist>.cloudfront.net/ -o /tmp/live.html
-cmp dist/aws-ai-native-development-flashcards.html /tmp/live.html && echo IDENTICAL
+cmp dist/aws-ai-flashcards.html /tmp/live.html && echo IDENTICAL
 ```
 
 The origin must NOT be reachable directly. Both of these must return 403:

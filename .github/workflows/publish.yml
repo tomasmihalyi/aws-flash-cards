@@ -65,7 +65,7 @@ jobs:
           BUCKET: ${{ vars.DECK_BUCKET }}
         run: |
           set -euo pipefail
-          aws s3 cp dist/aws-ai-native-development-flashcards.html "s3://$BUCKET/index.html" \
+          aws s3 cp dist/aws-ai-flashcards.html "s3://$BUCKET/index.html" \
             --content-type 'text/html; charset=utf-8' \
             --cache-control 'public, max-age=300'
 
@@ -120,7 +120,7 @@ jobs:
           #
           # sha256sum, not shasum: this runs on Linux, and shasum is a perl script
           # that merely happens to be present on GitHub's ubuntu images.
-          expected=$(sha256sum dist/aws-ai-native-development-flashcards.html | cut -d' ' -f1)
+          expected=$(sha256sum dist/aws-ai-flashcards.html | cut -d' ' -f1)
 
           global='NOT CONFIRMED (cloudfront:GetInvalidation not granted to the publish role)'
           if aws cloudfront wait invalidation-completed \
