@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "card_id": "BR-07",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock",
+  "category": "bedrock",
+  "tags": [
+    "bedrock",
+    "agentcore",
+    "web-search",
+    "filtering",
+    "agents"
+  ],
+  "badge_variant": "ga",
+  "badge_text": "GA",
+  "art": "platform",
+  "title": "Web Search domain & date filtering in Bedrock AgentCore",
+  "hook": "What new filtering capabilities does Web Search in Amazon Bedrock AgentCore now support?",
+  "back": {
+    "lead": "Web Search in Amazon Bedrock AgentCore now supports domain filtering and published-date filtering, giving agents per-request control over which web sources and time windows they search.",
+    "hookline": "Agents can now filter web searches by domain and publication date at runtime.",
+    "kv": [
+      {
+        "k": "Domain filtering",
+        "v": "Runtime control over which web sources agents search"
+      },
+      {
+        "k": "Published-date filtering",
+        "v": "Per-request control over time windows"
+      },
+      {
+        "k": "Purpose",
+        "v": "Ground agent responses in current web data"
+      }
+    ]
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
+      "kind": "aws-whats-new",
+      "fetched_at": "2026-08-20T03:25:08.379Z",
+      "content_hash": "sha256:6cc30b715d66db7aacbcf6df78c8dce44505dbb4345a66738a2381e9893f345e"
+    }
+  ],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "New card drafted from coverage gap \"Web Search in Amazon Bedrock AgentCore adds domain and published date filtering, expands to Europe and Asia Pacific\". Every checkable claim verified against the source entry, but a new card's category, kind, lifecycle and framing are judgement calls no source can settle. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0.",
+      "raised_at": "2026-08-20T04:10:23.040Z",
+      "raised_by": "tools/apply-new-card.ts"
+    }
+  ],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-20T04:10:23.040Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/apply-new-card.ts",
+        "reason": "Drafted from coverage gap \"Web Search in Amazon Bedrock AgentCore adds domain and published date filtering, expands to Europe and Asia Pacific\" (August 2026). no checkable (numeric/date/region) claim in the draft — needs a human read regardless"
+      },
+      {
+        "at": "2026-08-20T04:10:23.040Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "tools/apply-new-card.ts",
+        "reason": "New card drafted from coverage gap \"Web Search in Amazon Bedrock AgentCore adds domain and published date filtering, expands to Europe and Asia Pacific\". Every checkable claim verified against the source entry, but a new card's category, kind, lifecycle and framing are judgement calls no source can settle. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0."
+      }
+    ]
+  },
+  "created_at": "2026-08-20T04:10:23.040Z",
+  "updated_at": "2026-08-20T04:10:23.040Z"
+}
