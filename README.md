@@ -3,14 +3,17 @@
 A flashcard deck that keeps its own factual claims current, and that shows a
 learner the difference between a verified fact and an unverified judgement.
 
-Domain: AI-native development — AgentCore, Bedrock, developer-relevant SageMaker
-AI, coding agents (Kiro, Claude Code and Codex on Bedrock, Q Developer), the
-Quick business-vs-engineer boundary, Strands/MCP/A2A, and agentic development
-practice.
+Domain: AWS AI, broadly — AgentCore, Bedrock and its full model catalogue,
+SageMaker AI, coding agents (Kiro, Claude Code and Codex on Bedrock, Q
+Developer), the Quick business-vs-engineer boundary, Strands/MCP/A2A, agentic
+development practice, and AWS's perception/language/personalisation/forecasting
+AI services as they earn a card.
 
 > Renamed from "AgentCore Flashcards" once the deck outgrew AgentCore, and named to
-> match the spec that defines it. Not all AWS AI: the full IN/OUT boundary is in
-> §4 of the project's requirements spec (development artifact, not published here).
+> match the spec that defines it. Scope widened 2026-08-20 from AI-native
+> development to AWS AI broadly (§4 of the project's requirements spec,
+> development artifact, not published here) — depth still varies per service via
+> `content/service-scope.json`, so "in scope" does not mean "tracked exhaustively".
 
 **Status: live and self-maintaining.** The deck publishes from CI and refreshes
 itself every morning at 05:00 AEST — [d1hl3sanj0zgqn.cloudfront.net](https://d1hl3sanj0zgqn.cloudfront.net).
