@@ -27,6 +27,10 @@
       "reason": "Same pattern as the Claude Opus 5 entry: a model roster addition. Notable that a non-Anthropic model arriving is the more interesting signal, and that belongs on the model-agnostic concept card too."
     },
     {
+      "heading": "Amazon Bedrock now supports SpaceXAI Grok 4.6",
+      "reason": "Same pattern as the Claude Opus 5 and GPT-5.6 entries, on Bedrock rather than Kiro: a model-roster addition, not a service capability. BR-01 already carries this as a Tier A fact-governed slot ('the catalogue runs to over N foundation models, from Amazon, Anthropic, DeepSeek, Moonshot AI, MiniMax and OpenAI among others') — a new provider arriving is evidence the pattern holds, not a gap. A card for this exact model (BR-03) was drafted and briefly merged by the new-card pipeline on 2026-08-20 before this suppression rule existed; it has been retired (see docs/decisions/2026-08-20-scope-widened-to-aws-ai-broadly.md) rather than left live as an exception to a rule this repo had already written twice."
+    },
+    {
       "heading": "IDE: Faster Sessions, Compaction Fixes, and PowerShell Trust",
       "reason": "A release roundup, not an announcement. Kiro's changelog titles bundle three unrelated changes per entry ('X, Y, and Z'), unlike AWS release notes which title one feature each. There is no single subject here for a card to be about."
     },

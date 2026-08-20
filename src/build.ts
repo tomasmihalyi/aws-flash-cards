@@ -82,7 +82,18 @@ function main(): void {
     }
   }
 
-  const cards = loadCards().sort((a, b) => a.card_id.localeCompare(b.card_id));
+  // A retired card is a tombstone, not a deleted concept (FR-9/FR-10: an id is
+  // never reused, so the file stays in cards/ forever as the audit trail of
+  // what the deck once said). But it is also not something a learner should
+  // be studying: the schema has no `badge_variant` for "retired" at all
+  // ('ga' | 'pv' | 'core' only), so an unfiltered retired card would publish
+  // looking exactly like a live one with no visual distinction whatsoever.
+  // Excluding it from the PUBLISHED build is the safe default until this
+  // project designs real retired-card UX; the data-level guarantee (never
+  // deleted, id never reused) holds regardless of what gets built.
+  const cards = loadCards()
+    .filter((c) => c.lifecycle !== 'retired')
+    .sort((a, b) => a.card_id.localeCompare(b.card_id));
   const categories = loadCategories();
   const art = loadArt();
   const store = loadFactStore();
