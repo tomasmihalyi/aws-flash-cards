@@ -1,0 +1,114 @@
+name: draft-new-cards-batch
+
+# The batch counterpart to draft-new-card.yml — one click drafts up to N
+# pending coverage gaps instead of one click per gap, each still becoming
+# its own independent PR with its own separate approval.
+#
+# WHY THIS EXISTS ALONGSIDE draft-new-card.yml, NOT INSTEAD OF IT
+#
+# draft-new-card.yml stays exactly as it is — untouched, still the right tool
+# for "draft this ONE specific gap I chose". This workflow answers a
+# different complaint: after notify-new-gaps.ts reports several gaps in one
+# tracking-issue comment, drafting each required its own separate manual
+# `gh workflow run` command copy-pasted from the issue. That is not "one
+# click, one approval" — it is N commands for N gaps. This collapses the
+# TRIGGER to one click; it does not collapse the review. Every drafted card
+# still gets its own branch, its own PR, and needs its own separate reply-to-
+# email approval before it can merge.
+#
+# WHY THE CAP EXISTS AND WHY 3 IS THE DEFAULT
+#
+# tools/draft-new-cards-batch.ts drafts the TOP-N pending gaps by
+# significance (CoverageFinding.rank, already computed by detectCoverage()),
+# never "everything pending". A bad day for AWS's feed still cannot flood
+# the repo with drafts from one trigger — it is bounded the same way this
+# feature's own original design intent stated ("bounded number of new-card
+# drafts per run ... top ~3 by significance").
+#
+# WHY THIS IS ONE TOOL RATHER THAN A DRAFT STEP + A SEPARATE APPLY LOOP
+#
+# Card-id allocation reads the id ledger from disk, and only apply-new-
+# card.ts's saveIdLedger() commits it. Drafting every gap first and applying
+# them all afterward let two gaps in the same run allocate the SAME id —
+# caught live during development (two Bedrock gaps both got "BR-04").
+# tools/draft-new-cards-batch.ts now owns the full per-gap cycle itself
+# (draft -> branch -> apply -> commit -> push -> PR), completing one gap
+# fully before the next gap's draft call ever reads the ledger.
+#
+# WHY THE IAM BOUNDARY IS UNCHANGED
+#
+# Same as draft-new-card.yml: assumes flashcards-draft (bedrock:InvokeModel,
+# nothing else), never flashcards-refresh (Deny bedrock:*). The daily cron
+# still cannot invoke a model, batched or not — this is still a deliberate,
+# manually-triggered act, just one that can ask for several drafts at once.
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'How many of the top pending gaps to draft (ranked by significance)'
+        required: false
+        default: '3'
+        type: string
+
+permissions:
+  contents: write        # push a review branch per card — never main
+  pull-requests: write   # open a PR per card
+  id-token: write        # OIDC; no access key exists anywhere in this repo
+
+concurrency:
+  # One batch at a time, repo-wide — unlike draft-new-card.yml's per-entry
+  # group, a batch run's card-id allocation depends on the ledger state left
+  # by every gap drafted earlier in the SAME run, so two concurrent batches
+  # would race the ledger the same way two concurrent single-gap runs on the
+  # same entry would.
+  group: draft-new-cards-batch
+  cancel-in-progress: false
+
+jobs:
+  draft-batch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Assume the draft role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DRAFT_ROLE_ARN }}
+          aws-region: ap-southeast-2
+
+      - name: Confirm which identity is drafting
+        run: aws sts get-caller-identity
+
+      - name: Configure git identity for the PR commits this run makes
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+      - name: Draft, apply and open a PR for each of the top-N pending gaps
+        id: batch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          node tools/draft-new-cards-batch.ts \
+            --limit "${{ inputs.limit }}" \
+            --region ap-southeast-2 \
+            --run-id "${{ github.run_id }}" \
+            | tee batch.log
+
+      - name: Summarise
+        if: always()
+        run: |
+          {
+            echo "## draft-new-cards-batch"
+            echo '```'
+            cat batch.log 2>/dev/null || echo 'no batch log produced'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
