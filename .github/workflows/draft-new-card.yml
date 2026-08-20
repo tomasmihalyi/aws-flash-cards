@@ -118,7 +118,7 @@ jobs:
             --body-file "drafts/${card_id}.pr.md" \
             --head "$branch" \
             --base main \
-            --request-reviewer tomasmihalyi
+            --reviewer tomasmihalyi
 
           # NO gh pr merge --auto here, by design.
           #
