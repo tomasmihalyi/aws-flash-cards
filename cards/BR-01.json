@@ -49,11 +49,11 @@
       "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
       "title": "bedrock.what-is (aws-docs)",
       "kind": "aws-docs",
-      "fetched_at": "2026-08-20T03:25:07.229Z",
+      "fetched_at": "2026-08-20T19:28:53.570Z",
       "content_hash": "sha256:c6cce9ef2ef00ce131deead51b2ef561b5d4816421bce175ad8d0f07b580ccc7"
     }
   ],
-  "verified_at": "2026-08-20T03:25:07.229Z",
+  "verified_at": "2026-08-20T19:28:53.570Z",
   "confidence": "high",
   "depends_on": [],
   "aka": [],

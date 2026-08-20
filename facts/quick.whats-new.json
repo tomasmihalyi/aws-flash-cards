@@ -3,11 +3,11 @@
   "fact_set_id": "quick.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-20T03:25:08.379Z",
+  "verified_at": "2026-08-20T19:28:55.019Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-20T03:25:08.379Z",
+    "fetched_at": "2026-08-20T19:28:55.019Z",
     "content_hash": "sha256:efe84dce991c87afd8cbbaef0590b5fee2a1484cd106a28fe542cbbbada54d79",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
@@ -100,6 +100,6 @@
     }
   },
   "previous": {
-    "entry-count": 8
+    "entry-count": 7
   }
 }
