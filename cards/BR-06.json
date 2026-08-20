@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "card_id": "BR-06",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock",
+  "category": "bedrock",
+  "tags": [
+    "agentcore",
+    "govcloud",
+    "memory",
+    "policy",
+    "regulated-environments"
+  ],
+  "badge_variant": "ga",
+  "badge_text": "GA",
+  "art": "platform",
+  "title": "AgentCore memory, policy, and harness in GovCloud (US-West)",
+  "hook": "Which Amazon Bedrock AgentCore capabilities are now available in AWS GovCloud (US-West)?",
+  "back": {
+    "lead": "Amazon Bedrock AgentCore introduces memory, policy, and harness capabilities in AWS GovCloud (US-West). Teams operating in regulated environments can build context-aware agents and take them from prototype to production faster, with the controls needed to scale across their organisation.",
+    "hookline": "AgentCore is the platform to build, connect, and optimise agents.",
+    "kv": [
+      {
+        "k": "Region",
+        "v": "AWS GovCloud (US-West)"
+      },
+      {
+        "k": "New capabilities",
+        "v": "Memory, policy, and harness"
+      },
+      {
+        "k": "Use case",
+        "v": "Regulated environments"
+      }
+    ]
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
+      "kind": "aws-whats-new",
+      "fetched_at": "2026-08-20T03:25:08.379Z",
+      "content_hash": "sha256:6cc30b715d66db7aacbcf6df78c8dce44505dbb4345a66738a2381e9893f345e"
+    }
+  ],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "New card drafted from coverage gap \"Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West)\". Every checkable claim verified against the source entry, but a new card's category, kind, lifecycle and framing are judgement calls no source can settle. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0.",
+      "raised_at": "2026-08-20T03:51:44.015Z",
+      "raised_by": "tools/apply-new-card.ts"
+    }
+  ],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-20T03:51:44.015Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/apply-new-card.ts",
+        "reason": "Drafted from coverage gap \"Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West)\" (August 2026). no checkable (numeric/date/region) claim in the draft — needs a human read regardless"
+      },
+      {
+        "at": "2026-08-20T03:51:44.015Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "tools/apply-new-card.ts",
+        "reason": "New card drafted from coverage gap \"Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West)\". Every checkable claim verified against the source entry, but a new card's category, kind, lifecycle and framing are judgement calls no source can settle. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0."
+      }
+    ]
+  },
+  "created_at": "2026-08-20T03:51:44.015Z",
+  "updated_at": "2026-08-20T03:51:44.015Z"
+}
