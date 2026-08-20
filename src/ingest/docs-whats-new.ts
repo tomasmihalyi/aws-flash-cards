@@ -74,7 +74,14 @@ export type WhatsNewEntry = {
   url: string;
 };
 
-type ServiceScope = { service: string; keywords: string[]; depth: 'comprehensive' | 'boundary'; note?: string };
+export type ServiceScope = {
+  service: string;
+  keywords: string[];
+  depth: 'comprehensive' | 'boundary';
+  /** Other service ids whose match on the SAME entry takes precedence over this one. */
+  excludes?: string[];
+  note?: string;
+};
 
 function loadServiceScope(): ServiceScope[] {
   const p = join(paths.content, 'service-scope.json');
@@ -112,6 +119,32 @@ function plain(html: string): string {
 function matchesService(title: string, url: string, keywords: string[]): boolean {
   const hay = `${title} ${url}`.toLowerCase();
   return keywords.some((k) => hay.includes(k.toLowerCase()));
+}
+
+/**
+ * Entries this scope claims, MINUS any that also match a more specific
+ * excluded scope.
+ *
+ * Root cause this exists to fix: every AgentCore announcement's title
+ * literally contains "Amazon Bedrock AgentCore", which is ALSO a substring
+ * match for bedrock's own "amazon bedrock" keyword — so the same entry was
+ * being written into both agentcore.whats-new.json and bedrock.whats-new.json,
+ * and the coverage detector then drafted two near-identical cards for the
+ * same announcement (AC-26 and BR-07, 2026-08-20 — one had to be retired).
+ * agentcore's keyword is strictly more specific (it literally IS bedrock's
+ * keyword plus a word), so excluding on it can never wrongly drop a genuine
+ * Bedrock-only announcement.
+ */
+export function entriesForScope(
+  allEntries: WhatsNewEntry[],
+  scope: ServiceScope,
+  allScopes: ServiceScope[],
+): WhatsNewEntry[] {
+  const excludedScopes = allScopes.filter((s) => scope.excludes?.includes(s.service));
+  return allEntries.filter((e) => {
+    if (!matchesService(e.heading, e.url, scope.keywords)) return false;
+    return !excludedScopes.some((es) => matchesService(e.heading, e.url, es.keywords));
+  });
 }
 
 /** Parse the RSS 2.0 <item> blocks the feed actually returns. */
@@ -168,7 +201,7 @@ async function main(): Promise<void> {
   let anyWritten = false;
 
   for (const scope of scopes) {
-    const entries = allEntries.filter((e) => matchesService(e.heading, e.url, scope.keywords));
+    const entries = entriesForScope(allEntries, scope, scopes);
     const fileName = `${scope.service}.whats-new.json`;
 
     if (!entries.length) {
@@ -233,7 +266,16 @@ async function main(): Promise<void> {
   console.log("docs-whats-new: precision is DAY — but a date match alone is not attestation; the verifier also requires topical relatedness");
 }
 
-main().catch((err) => {
-  console.error(`docs-whats-new: ${err instanceof Error ? err.message : String(err)}`);
-  process.exit(1);
-});
+// Guarded like every other ingest entry point in this repo (unlike this file
+// before 2026-08-21): importing entriesForScope()/ServiceScope/WhatsNewEntry
+// for tests must never trigger a real network fetch and real fact-set
+// writes as a side effect of module load. Confirmed missing here while
+// adding tests for the AgentCore/Bedrock overlap fix — the README's own
+// "five CI defects found only by running" list already named this exact
+// class of bug as fixed once, elsewhere; this file was evidently missed.
+if (import.meta.filename === process.argv[1]) {
+  main().catch((err) => {
+    console.error(`docs-whats-new: ${err instanceof Error ? err.message : String(err)}`);
+    process.exit(1);
+  });
+}
