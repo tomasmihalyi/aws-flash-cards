@@ -144,6 +144,7 @@ const SERVICE_PREFIX: Record<string, string> = {
   strands: 'ST',
   kiro: 'CA', // coding-agents prefix, matches existing CA-xx cards
   quick: 'QK',
+  sagemaker: 'SM', // first SageMaker card ever drafted -- no existing prefix to match, chosen to mirror the service name like BR/ST/QK do
 };
 
 function argOf(flag: string): string | undefined {
