@@ -3,11 +3,11 @@
   "fact_set_id": "sagemaker.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-20T19:28:55.019Z",
+  "verified_at": "2026-08-20T23:56:11.546Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-20T19:28:55.019Z",
+    "fetched_at": "2026-08-20T23:56:11.546Z",
     "content_hash": "sha256:32d48c23693da57c3a1941eddb1d659e85ca313129275d0166e9bbeebf776538",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
@@ -109,6 +109,6 @@
     }
   },
   "previous": {
-    "entry-count": 7
+    "entry-count": 8
   }
 }

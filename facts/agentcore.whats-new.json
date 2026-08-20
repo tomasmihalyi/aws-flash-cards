@@ -3,12 +3,12 @@
   "fact_set_id": "agentcore.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-20T19:28:55.019Z",
+  "verified_at": "2026-08-20T23:56:11.546Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-20T19:28:55.019Z",
-    "content_hash": "sha256:a13bf98ae26812d716994f27d03829eeda58fcea6b9d76793ad6d3c9ee8c462a",
+    "fetched_at": "2026-08-20T23:56:11.546Z",
+    "content_hash": "sha256:36c6dec591127c353f757c7575566c817640d1b89632d137a66cdc8b2db9de22",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
   "evidence": {
@@ -30,28 +30,19 @@
         "heading": "AgentCore payments is now generally available in Amazon Bedrock AgentCore",
         "summary": "Today, AWS announces the general availability of AgentCore payments, a capability within Amazon Bedrock AgentCore that enables AI agents to autonomously discover, access, and pay for paid APIs, MCPs, and content with just a few lines of code. AgentCore payments provides the security, guardrails, and observability enterprises need to deploy transacting agents in production at scale. AgentCore payme",
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/bedrock-agentcore-payments-ga/"
-      },
-      {
-        "iso_date": "2026-08-07",
-        "iso_month": "2026-08",
-        "month_label": "August 2026",
-        "date_label": "August 7, 2026",
-        "heading": "Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West)",
-        "summary": "Today, Amazon Bedrock AgentCore introduces new capabilities in AWS GovCloud (US-West). AgentCore is the platform to build, connect, and optimize agents. With these capabilities, teams operating in regulated environments can build context-aware agents and take them from prototype to production faster, with the controls needed to scale across their organization. AgentCore memory gives agents short-t",
-        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/agentcore-memory-policy-harness-govcloud/"
       }
     ],
-    "text": "August 19, 2026 — Web Search in Amazon Bedrock AgentCore adds domain and published date filtering, expands to Europe and Asia Pacific: Web Search in Amazon Bedrock AgentCore now supports domain filtering and published-date filtering, giving agents per-request control over which web sources and time windows they search. Amazon Bedrock AgentCore provides the infrastructure to build, connect, and optimize AI agents, and Web Search enables those agents to ground responses in current web data. With runtime domain filtering, agents can\nAugust 18, 2026 — AgentCore payments is now generally available in Amazon Bedrock AgentCore: Today, AWS announces the general availability of AgentCore payments, a capability within Amazon Bedrock AgentCore that enables AI agents to autonomously discover, access, and pay for paid APIs, MCPs, and content with just a few lines of code. AgentCore payments provides the security, guardrails, and observability enterprises need to deploy transacting agents in production at scale. AgentCore payme\nAugust 7, 2026 — Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West): Today, Amazon Bedrock AgentCore introduces new capabilities in AWS GovCloud (US-West). AgentCore is the platform to build, connect, and optimize agents. With these capabilities, teams operating in regulated environments can build context-aware agents and take them from prototype to production faster, with the controls needed to scale across their organization. AgentCore memory gives agents short-t"
+    "text": "August 19, 2026 — Web Search in Amazon Bedrock AgentCore adds domain and published date filtering, expands to Europe and Asia Pacific: Web Search in Amazon Bedrock AgentCore now supports domain filtering and published-date filtering, giving agents per-request control over which web sources and time windows they search. Amazon Bedrock AgentCore provides the infrastructure to build, connect, and optimize AI agents, and Web Search enables those agents to ground responses in current web data. With runtime domain filtering, agents can\nAugust 18, 2026 — AgentCore payments is now generally available in Amazon Bedrock AgentCore: Today, AWS announces the general availability of AgentCore payments, a capability within Amazon Bedrock AgentCore that enables AI agents to autonomously discover, access, and pay for paid APIs, MCPs, and content with just a few lines of code. AgentCore payments provides the security, guardrails, and observability enterprises need to deploy transacting agents in production at scale. AgentCore payme"
   },
   "facts": {
     "agentcore.whats-new.entry-count": {
       "type": "integer",
-      "value": 3,
+      "value": 2,
       "note": "Dated agentcore announcements matched from the AWS What's New feed in the fetched window."
     },
     "agentcore.whats-new.earliest-date": {
       "type": "string",
-      "value": "2026-08-07"
+      "value": "2026-08-18"
     },
     "agentcore.whats-new.latest-date": {
       "type": "string",
@@ -64,6 +55,6 @@
     }
   },
   "previous": {
-    "entry-count": 4
+    "entry-count": 3
   }
 }

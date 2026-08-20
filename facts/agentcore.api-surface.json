@@ -3,11 +3,11 @@
   "fact_set_id": "agentcore.api-surface",
   "tier": "A",
   "generator": "src/ingest/botocore-diff.ts",
-  "verified_at": "2026-08-20T19:28:51.161Z",
+  "verified_at": "2026-08-20T23:56:09.417Z",
   "source": {
     "kind": "botocore-model",
     "url": "pkg:pypi/botocore@1.43.3#botocore/data · bedrock-agentcore, bedrock-agentcore-control",
-    "fetched_at": "2026-08-20T19:28:51.161Z",
+    "fetched_at": "2026-08-20T23:56:09.417Z",
     "content_hash": "sha256:dffdbc698f8c87c3e504c862f12b3f7c40810e392c60ae18f7f237dee86bc0d6",
     "retrieved_by": "gunzip + parse botocore/data/{bedrock-agentcore,bedrock-agentcore-control}/<api-version>/service-2.json.gz from botocore 1.43.3"
   },

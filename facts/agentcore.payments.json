@@ -3,11 +3,11 @@
   "fact_set_id": "agentcore.payments",
   "tier": "A",
   "generator": "src/ingest/docs-pages.ts",
-  "verified_at": "2026-08-20T19:28:53.488Z",
+  "verified_at": "2026-08-20T23:56:11.119Z",
   "source": {
     "kind": "aws-docs",
     "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/payments.html",
-    "fetched_at": "2026-08-20T19:28:53.488Z",
+    "fetched_at": "2026-08-20T23:56:11.119Z",
     "content_hash": "sha256:c6d3514482bd80d8b49a20dbb3498abfbe73d3b903b7bfbf1a1ff355395b6750",
     "retrieved_by": "GET https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/payments.md"
   },

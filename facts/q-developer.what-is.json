@@ -3,11 +3,11 @@
   "fact_set_id": "q-developer.what-is",
   "tier": "A",
   "generator": "src/ingest/docs-pages.ts",
-  "verified_at": "2026-08-20T19:28:53.153Z",
+  "verified_at": "2026-08-20T23:56:10.885Z",
   "source": {
     "kind": "aws-docs",
     "url": "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/what-is.html",
-    "fetched_at": "2026-08-20T19:28:53.153Z",
+    "fetched_at": "2026-08-20T23:56:10.885Z",
     "content_hash": "sha256:73bde7d2a1b4f54b3c945ad14f46b3352f4a3b95b04c03be0e93d5240d9fa42f",
     "retrieved_by": "GET https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/what-is.md"
   },
@@ -23,6 +23,6 @@
     }
   },
   "previous": {
-    "content_hash": "sha256:280c9c68b96a8b25e81e3d314c5c03237b7629cd0fbd095a6dfad75b581a1045"
+    "content_hash": "sha256:73bde7d2a1b4f54b3c945ad14f46b3352f4a3b95b04c03be0e93d5240d9fa42f"
   }
 }
