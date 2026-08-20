@@ -24,7 +24,18 @@ const TODAY = '2026-08-07';
 const DECK_SIZE = (() => deck().length)();
 function deck() {
   const cats = loadCategories();
-  return loadCards().sort((a, b) => a.card_id.localeCompare(b.card_id)).map((c) => toLegacyShape(c, cats));
+  // Same exclusion build.ts and verify-parity.ts apply: a retired card is a
+  // tombstone on disk (FR-9/FR-10, id never reused) but is never published,
+  // so a learner's actual study deck never contains it either. Without this
+  // filter, srs.test.ts's content-hash-uniqueness guarantee tests a
+  // population the frontend never sees — caught 2026-08-20 when retiring
+  // BR-07 (a content duplicate of AC-26) left it still counted here,
+  // failing 'chash is present, stable and distinct per card' against a card
+  // that build.ts had already correctly excluded.
+  return loadCards()
+    .filter((c) => c.lifecycle !== 'retired')
+    .sort((a, b) => a.card_id.localeCompare(b.card_id))
+    .map((c) => toLegacyShape(c, cats));
 }
 
 describe('date arithmetic is whole days and timezone-proof', () => {

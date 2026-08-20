@@ -30,11 +30,16 @@ import { toLegacyShape, provenanceLine, formatDate } from '../src/lib/render.ts'
  */
 const DECK_SIZE = (() => {
   const cats = loadCategories();
-  return loadCards().length;
+  // Same exclusion build.ts applies: a retired card is a tombstone on disk,
+  // never published, so the state-machine tests that use DECK_SIZE to bound
+  // navigation/filter counts must not count it either.
+  return loadCards().filter((c) => c.lifecycle !== 'retired').length;
 })();
 
 function realDeck() {
-  const cards = loadCards().sort((a, b) => a.card_id.localeCompare(b.card_id));
+  const cards = loadCards()
+    .filter((c) => c.lifecycle !== 'retired')
+    .sort((a, b) => a.card_id.localeCompare(b.card_id));
   const cats = loadCategories();
   return cards.map((c) => toLegacyShape(c, cats));
 }
