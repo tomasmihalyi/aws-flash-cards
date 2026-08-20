@@ -3,12 +3,12 @@
   "fact_set_id": "bedrock.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-19T19:22:57.428Z",
+  "verified_at": "2026-08-20T03:25:08.379Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-19T19:22:57.428Z",
-    "content_hash": "sha256:5e7274b345aeac906e2964fa7338600722722073525410bb24bf04991f32c737",
+    "fetched_at": "2026-08-20T03:25:08.379Z",
+    "content_hash": "sha256:0b7bc2561dca5ed0d506b03584eccc9e24c4975fd3492036798a65e04e338523",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
   "evidence": {
@@ -18,8 +18,35 @@
         "iso_month": "2026-08",
         "month_label": "August 2026",
         "date_label": "August 19, 2026",
-        "heading": "Amazon Bedrock now supports SpaceXAI Grok 4.6",
-        "summary": "Amazon Bedrock now supports SpaceXAI Grok 4.6, SpaceXAI's latest flagship model built for long-running agents and ambitious interactive and visual work. Grok 4.6 offers a 500K context window and configurable reasoning efforts (low, medium, high, xhigh). Grok 4.6 builds on previous generations of Grok with a particular focus on staying with complex tasks across many steps, whether researching a top",
+        "heading": "Launching External Web Access for Web Search on Amazon Bedrock",
+        "summary": "Earlier this month, we announced Web Search on Amazon Bedrock , a built-in server-side tool that allows you to ground model responses with current web knowledge, while maintaining data within your secured AWS environment with zero data egress. Today, we are expanding Web Search to enable the external_web_access parameter allowing Web Search to retrieve content directly from the public web so model",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-bedrock-web-access-web-search/"
+      },
+      {
+        "iso_date": "2026-08-19",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 19, 2026",
+        "heading": "Web Search in Amazon Bedrock AgentCore adds domain and published date filtering, expands to Europe and Asia Pacific",
+        "summary": "Web Search in Amazon Bedrock AgentCore now supports domain filtering and published-date filtering, giving agents per-request control over which web sources and time windows they search. Amazon Bedrock AgentCore provides the infrastructure to build, connect, and optimize AI agents, and Web Search enables those agents to ground responses in current web data. With runtime domain filtering, agents can",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/web-search-amazon-bedrock/"
+      },
+      {
+        "iso_date": "2026-08-19",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 19, 2026",
+        "heading": "AWS Cost Anomaly Detection supports third-party models on Amazon Bedrock",
+        "summary": "AWS Cost Anomaly Detection now monitors spend on third-party foundation models running on Amazon Bedrock, such as Anthropic Claude and other provider-hosted models. Cost Anomaly Detection uses machine learning to detect and alert on unusual spend, and this launch extends that coverage to third-party model usage on Amazon Bedrock. Teams running production generative AI workloads now get automatic a",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/aws-cost-anomaly-detection-bedrock-3P/"
+      },
+      {
+        "iso_date": "2026-08-19",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 19, 2026",
+        "heading": "Amazon Bedrock now supports SpaceXAI Grok 4.6 with Cross Region Inferencing",
+        "summary": "Amazon Bedrock now supports SpaceXAI Grok 4.6, a frontier model built for coding, agentic tasks, and knowledge work, with US Geo and Global cross-Region inference. Customers can now access Grok 4.6 at scale with cross-Region inference routing requests across multiple AWS Regions for higher throughput and lower inference costs. Cross-Region inference automatically routes inference requests across m",
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-bedrock-grok-4-6/"
       },
       {
@@ -77,12 +104,12 @@
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/agentcore-memory-policy-harness-govcloud/"
       }
     ],
-    "text": "August 19, 2026 — Amazon Bedrock now supports SpaceXAI Grok 4.6: Amazon Bedrock now supports SpaceXAI Grok 4.6, SpaceXAI's latest flagship model built for long-running agents and ambitious interactive and visual work. Grok 4.6 offers a 500K context window and configurable reasoning efforts (low, medium, high, xhigh). Grok 4.6 builds on previous generations of Grok with a particular focus on staying with complex tasks across many steps, whether researching a top\nAugust 18, 2026 — Amazon Bedrock now supports OpenAI models in India: Amazon Bedrock now supports the OpenAI GPT-5.6 models (Terra and Luna) in India, with India Geo cross-Region inference. Customers with regulatory requirements of in-country inferencing can now use OpenAI models at scale ensuring that inferencing is processed within India. Cross-Region inference automatically routes inference requests across multiple AWS Regions to give you higher throughput, witho\nAugust 18, 2026 — AgentCore payments is now generally available in Amazon Bedrock AgentCore: Today, AWS announces the general availability of AgentCore payments, a capability within Amazon Bedrock AgentCore that enables AI agents to autonomously discover, access, and pay for paid APIs, MCPs, and content with just a few lines of code. AgentCore payments provides the security, guardrails, and observability enterprises need to deploy transacting agents in production at scale. AgentCore payme\nAugust 17, 2026 — Amazon Bedrock expands API support and introduces Cross Region Inferencing for OpenAI models: Amazon Bedrock now supports the OpenAI GPT-5.6 models (Sol, Terra, and Luna) on the bedrock-runtime endpoint, with support for the Responses, Converse, and Chat Completions APIs. It also adds support for cross-Region inference, allowing customers to use Global and Geo cross-Region inference to access higher throughput and lower inference costs. Cross-Region inference automatically routes inference\nAugust 13, 2026 — Daybreak Red and Daybreak Blue from OpenAI are now available to eligible customers on Amazon Bedrock: Security teams can now access Daybreak Red and Daybreak Blue from OpenAI on Amazon Bedrock. Both are part of Daybreak, the cyber defense initiative from OpenAI that gives defenders governed access to frontier AI for cybersecurity work. Daybreak Blue is the starting point for most security teams across defensive workflows including vulnerability discovery, detection engineering, and incident respon\nAugust 11, 2026 — Amazon Bedrock expands IAM principal cost allocation to the bedrock-mantle endpoint: Amazon Bedrock is a fully managed service that provides secure, enterprise-grade access to high-performing foundation models from leading AI companies, enabling you to build and scale generative AI applications. Amazon Bedrock now supports cost allocation by AWS Identity and Access Management (IAM) principal, including IAM users and roles, for model inference requests made through the bedrock-mant\nAugust 7, 2026 — Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West): Today, Amazon Bedrock AgentCore introduces new capabilities in AWS GovCloud (US-West). AgentCore is the platform to build, connect, and optimize agents. With these capabilities, teams operating in regulated environments can build context-aware agents and take them from prototype to production faster, with the controls needed to scale across their organization. AgentCore memory gives agents short-t"
+    "text": "August 19, 2026 — Launching External Web Access for Web Search on Amazon Bedrock: Earlier this month, we announced Web Search on Amazon Bedrock , a built-in server-side tool that allows you to ground model responses with current web knowledge, while maintaining data within your secured AWS environment with zero data egress. Today, we are expanding Web Search to enable the external_web_access parameter allowing Web Search to retrieve content directly from the public web so model\nAugust 19, 2026 — Web Search in Amazon Bedrock AgentCore adds domain and published date filtering, expands to Europe and Asia Pacific: Web Search in Amazon Bedrock AgentCore now supports domain filtering and published-date filtering, giving agents per-request control over which web sources and time windows they search. Amazon Bedrock AgentCore provides the infrastructure to build, connect, and optimize AI agents, and Web Search enables those agents to ground responses in current web data. With runtime domain filtering, agents can\nAugust 19, 2026 — AWS Cost Anomaly Detection supports third-party models on Amazon Bedrock: AWS Cost Anomaly Detection now monitors spend on third-party foundation models running on Amazon Bedrock, such as Anthropic Claude and other provider-hosted models. Cost Anomaly Detection uses machine learning to detect and alert on unusual spend, and this launch extends that coverage to third-party model usage on Amazon Bedrock. Teams running production generative AI workloads now get automatic a\nAugust 19, 2026 — Amazon Bedrock now supports SpaceXAI Grok 4.6 with Cross Region Inferencing: Amazon Bedrock now supports SpaceXAI Grok 4.6, a frontier model built for coding, agentic tasks, and knowledge work, with US Geo and Global cross-Region inference. Customers can now access Grok 4.6 at scale with cross-Region inference routing requests across multiple AWS Regions for higher throughput and lower inference costs. Cross-Region inference automatically routes inference requests across m\nAugust 18, 2026 — Amazon Bedrock now supports OpenAI models in India: Amazon Bedrock now supports the OpenAI GPT-5.6 models (Terra and Luna) in India, with India Geo cross-Region inference. Customers with regulatory requirements of in-country inferencing can now use OpenAI models at scale ensuring that inferencing is processed within India. Cross-Region inference automatically routes inference requests across multiple AWS Regions to give you higher throughput, witho\nAugust 18, 2026 — AgentCore payments is now generally available in Amazon Bedrock AgentCore: Today, AWS announces the general availability of AgentCore payments, a capability within Amazon Bedrock AgentCore that enables AI agents to autonomously discover, access, and pay for paid APIs, MCPs, and content with just a few lines of code. AgentCore payments provides the security, guardrails, and observability enterprises need to deploy transacting agents in production at scale. AgentCore payme\nAugust 17, 2026 — Amazon Bedrock expands API support and introduces Cross Region Inferencing for OpenAI models: Amazon Bedrock now supports the OpenAI GPT-5.6 models (Sol, Terra, and Luna) on the bedrock-runtime endpoint, with support for the Responses, Converse, and Chat Completions APIs. It also adds support for cross-Region inference, allowing customers to use Global and Geo cross-Region inference to access higher throughput and lower inference costs. Cross-Region inference automatically routes inference\nAugust 13, 2026 — Daybreak Red and Daybreak Blue from OpenAI are now available to eligible customers on Amazon Bedrock: Security teams can now access Daybreak Red and Daybreak Blue from OpenAI on Amazon Bedrock. Both are part of Daybreak, the cyber defense initiative from OpenAI that gives defenders governed access to frontier AI for cybersecurity work. Daybreak Blue is the starting point for most security teams across defensive workflows including vulnerability discovery, detection engineering, and incident respon\nAugust 11, 2026 — Amazon Bedrock expands IAM principal cost allocation to the bedrock-mantle endpoint: Amazon Bedrock is a fully managed service that provides secure, enterprise-grade access to high-performing foundation models from leading AI companies, enabling you to build and scale generative AI applications. Amazon Bedrock now supports cost allocation by AWS Identity and Access Management (IAM) principal, including IAM users and roles, for model inference requests made through the bedrock-mant\nAugust 7, 2026 — Amazon Bedrock AgentCore adds memory, policy, and harness in AWS GovCloud (US-West): Today, Amazon Bedrock AgentCore introduces new capabilities in AWS GovCloud (US-West). AgentCore is the platform to build, connect, and optimize agents. With these capabilities, teams operating in regulated environments can build context-aware agents and take them from prototype to production faster, with the controls needed to scale across their organization. AgentCore memory gives agents short-t"
   },
   "facts": {
     "bedrock.whats-new.entry-count": {
       "type": "integer",
-      "value": 7,
+      "value": 10,
       "note": "Dated bedrock announcements matched from the AWS What's New feed in the fetched window."
     },
     "bedrock.whats-new.earliest-date": {

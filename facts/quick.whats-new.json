@@ -3,12 +3,12 @@
   "fact_set_id": "quick.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-19T19:22:57.428Z",
+  "verified_at": "2026-08-20T03:25:08.379Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-19T19:22:57.428Z",
-    "content_hash": "sha256:1033744cfc1ef97fc83c92211051891a0653382419215ce9906acdaf19ef2443",
+    "fetched_at": "2026-08-20T03:25:08.379Z",
+    "content_hash": "sha256:efe84dce991c87afd8cbbaef0590b5fee2a1484cd106a28fe542cbbbada54d79",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
   "evidence": {
@@ -75,28 +75,19 @@
         "heading": "Amazon Quick agentic AI capabilities are now available in AWS GovCloud (US-West)",
         "summary": "Today, AWS announces that Amazon Quick's agentic AI capabilities are now available in AWS GovCloud (US-West), bringing an agentic AI teammate to government and regulated-industry teams within an isolated, FedRAMP Class D (formerly High) authorized environment. Building on the analytics and business intelligence capabilities already available to customers in AWS GovCloud (US), Quick now turns quest",
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-quick-aws-govcloud-us-west/"
-      },
-      {
-        "iso_date": "2026-08-06",
-        "iso_month": "2026-08",
-        "month_label": "August 2026",
-        "date_label": "August 6, 2026",
-        "heading": "Amazon Quick supports multi-dataset analytical capabiity",
-        "summary": "Today, Amazon Quick announces supporting multi-dataset topics, enabling users to model relationships across multiple datasets in a single topic and use that model to build dashboards and answer questions in natural language. Previously, answering a question in a Quick Sight visual that spanned datasets required pre-joining the data into a single dataset—adding manual JOIN logic in the data prepara",
-        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-quick/"
       }
     ],
-    "text": "August 19, 2026 — Amazon Quick adds deny by default for custom permissions: Amazon Quick custom permissions now include deny by default, a governance setting that automatically restricts new AI capabilities before they reach users. Previously, new AI capabilities were available to all users on release, requiring administrators to react after the fact. With deny by default, administrators restrict the AI capability category in a custom permissions profile and assign it to \nAugust 17, 2026 — Amazon Quick Microsoft 365 extensions are now generally available: Amazon Quick announces the general availability of Microsoft 365 extensions for Excel, PowerPoint, Word, and Outlook. These extensions enable Quick to perform tasks directly within users' M365 environments, using AI to handle complex local tasks such as redlining documents, building financial models, creating presentation-ready decks, and managing Outlook inboxes. The Excel extension helps with co\nAugust 14, 2026 — Amazon Quick now supports per-user resource limits: Amazon Quick now enables administrators to set per-user limits on index storage and agent hours, giving them direct control over subscription costs. With limits management, administrators can create limit profiles that cap per-user consumption, helping prevent unexpected overage charges and ensuring subscription entitlements are used efficiently across their organization. For example, an organizat\nAugust 14, 2026 — Amazon Quick now supports data loss prevention with Microsoft Purview: Amazon Quick now integrates with Microsoft Purview to enforce data loss prevention (DLP) policies across your Quick environment. Organizations need to ensure that sensitive files aren't shared outside approved channels. With this integration, IT administrators and security teams can apply their existing Purview sensitivity labels to automatically control how files are handled in Quick capabilities\nAugust 14, 2026 — Amazon Quick now supports approval policies for sharing: Amazon Quick now offers approval policies, giving administrators governance controls over how assets are shared within their organization. With approval policies, administrators can require designated approvers to review and approve share requests before access is granted, helping organizations ensure that sharing of sensitive assets is deliberate, compliant, and auditable. Administrators can crea\nAugust 14, 2026 — Amazon Quick now supports customizable no data messages for visuals: Amazon Quick announces support for no data message customization, enabling authors to replace the default \"No data to display\" message with a tailored message when a visual returns no data. Authors can configure a custom title, subtitle, and hyperlink that give readers immediate context about why no data is shown and what steps to take next. All text fields support parameters, so the message can d\nAugust 11, 2026 — Amazon Quick agentic AI capabilities are now available in AWS GovCloud (US-West): Today, AWS announces that Amazon Quick's agentic AI capabilities are now available in AWS GovCloud (US-West), bringing an agentic AI teammate to government and regulated-industry teams within an isolated, FedRAMP Class D (formerly High) authorized environment. Building on the analytics and business intelligence capabilities already available to customers in AWS GovCloud (US), Quick now turns quest\nAugust 6, 2026 — Amazon Quick supports multi-dataset analytical capabiity: Today, Amazon Quick announces supporting multi-dataset topics, enabling users to model relationships across multiple datasets in a single topic and use that model to build dashboards and answer questions in natural language. Previously, answering a question in a Quick Sight visual that spanned datasets required pre-joining the data into a single dataset—adding manual JOIN logic in the data prepara"
+    "text": "August 19, 2026 — Amazon Quick adds deny by default for custom permissions: Amazon Quick custom permissions now include deny by default, a governance setting that automatically restricts new AI capabilities before they reach users. Previously, new AI capabilities were available to all users on release, requiring administrators to react after the fact. With deny by default, administrators restrict the AI capability category in a custom permissions profile and assign it to \nAugust 17, 2026 — Amazon Quick Microsoft 365 extensions are now generally available: Amazon Quick announces the general availability of Microsoft 365 extensions for Excel, PowerPoint, Word, and Outlook. These extensions enable Quick to perform tasks directly within users' M365 environments, using AI to handle complex local tasks such as redlining documents, building financial models, creating presentation-ready decks, and managing Outlook inboxes. The Excel extension helps with co\nAugust 14, 2026 — Amazon Quick now supports per-user resource limits: Amazon Quick now enables administrators to set per-user limits on index storage and agent hours, giving them direct control over subscription costs. With limits management, administrators can create limit profiles that cap per-user consumption, helping prevent unexpected overage charges and ensuring subscription entitlements are used efficiently across their organization. For example, an organizat\nAugust 14, 2026 — Amazon Quick now supports data loss prevention with Microsoft Purview: Amazon Quick now integrates with Microsoft Purview to enforce data loss prevention (DLP) policies across your Quick environment. Organizations need to ensure that sensitive files aren't shared outside approved channels. With this integration, IT administrators and security teams can apply their existing Purview sensitivity labels to automatically control how files are handled in Quick capabilities\nAugust 14, 2026 — Amazon Quick now supports approval policies for sharing: Amazon Quick now offers approval policies, giving administrators governance controls over how assets are shared within their organization. With approval policies, administrators can require designated approvers to review and approve share requests before access is granted, helping organizations ensure that sharing of sensitive assets is deliberate, compliant, and auditable. Administrators can crea\nAugust 14, 2026 — Amazon Quick now supports customizable no data messages for visuals: Amazon Quick announces support for no data message customization, enabling authors to replace the default \"No data to display\" message with a tailored message when a visual returns no data. Authors can configure a custom title, subtitle, and hyperlink that give readers immediate context about why no data is shown and what steps to take next. All text fields support parameters, so the message can d\nAugust 11, 2026 — Amazon Quick agentic AI capabilities are now available in AWS GovCloud (US-West): Today, AWS announces that Amazon Quick's agentic AI capabilities are now available in AWS GovCloud (US-West), bringing an agentic AI teammate to government and regulated-industry teams within an isolated, FedRAMP Class D (formerly High) authorized environment. Building on the analytics and business intelligence capabilities already available to customers in AWS GovCloud (US), Quick now turns quest"
   },
   "facts": {
     "quick.whats-new.entry-count": {
       "type": "integer",
-      "value": 8,
+      "value": 7,
       "note": "Dated quick announcements matched from the AWS What's New feed in the fetched window."
     },
     "quick.whats-new.earliest-date": {
       "type": "string",
-      "value": "2026-08-06"
+      "value": "2026-08-11"
     },
     "quick.whats-new.latest-date": {
       "type": "string",
@@ -109,6 +100,6 @@
     }
   },
   "previous": {
-    "entry-count": 7
+    "entry-count": 8
   }
 }

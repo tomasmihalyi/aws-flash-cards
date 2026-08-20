@@ -3,11 +3,11 @@
   "fact_set_id": "q-developer.what-is",
   "tier": "A",
   "generator": "src/ingest/docs-pages.ts",
-  "verified_at": "2026-08-19T19:22:56.414Z",
+  "verified_at": "2026-08-20T03:25:06.939Z",
   "source": {
     "kind": "aws-docs",
     "url": "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/what-is.html",
-    "fetched_at": "2026-08-19T19:22:56.414Z",
+    "fetched_at": "2026-08-20T03:25:06.939Z",
     "content_hash": "sha256:280c9c68b96a8b25e81e3d314c5c03237b7629cd0fbd095a6dfad75b581a1045",
     "retrieved_by": "GET https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/what-is.md"
   },
