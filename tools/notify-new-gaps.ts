@@ -3,14 +3,23 @@
  *
  * WHY A GITHUB ISSUE AND NOT A NEW EMAIL PATH
  *
- * This project already has exactly one approval channel: GitHub's own
- * reply-to-email PR flow (see draft-new-card.yml). Adding SES, SMTP or any
- * mail-sending credential for this one notification would be new
- * infrastructure for a problem GitHub already solves — GitHub emails every
- * watcher the instant an issue is opened or commented on, using the same
- * `github.token` this repo's workflows already carry. So the "email" here
- * is not sent by this tool at all; it is GitHub's own notification, and this
- * tool's only job is deciding WHEN a gap is new enough to deserve one.
+ * This project already has exactly one approval channel: GitHub's own PR
+ * page, reached via the review-request notification (see draft-new-card.yml).
+ * Adding SES, SMTP or any mail-sending credential for this one notification
+ * would be new infrastructure for a problem GitHub already solves — GitHub
+ * emails every watcher the instant an issue is opened or commented on, using
+ * the same `github.token` this repo's workflows already carry. So the
+ * "email" here is not sent by this tool at all; it is GitHub's own
+ * notification, and this tool's only job is deciding WHEN a gap is new
+ * enough to deserve one.
+ *
+ * A reply to that email posts as an ordinary PR comment — confirmed live
+ * 2026-08-21 (PR #38). GitHub has no reply-to-approve mechanism: a formal
+ * review (the thing that sets reviewDecision and would gate an --auto merge,
+ * if one were ever armed) can only be submitted from the PR page or the API.
+ * So "approve" here means opening the PR and clicking Approve, then Merge —
+ * the email is the notification that a decision is needed, not the decision
+ * channel itself.
  *
  * WHY NOT JUST OPEN A NEW ISSUE PER GAP
  *
@@ -139,7 +148,9 @@ function main(): void {
     ? `${toReport.length} new gap(s) since this issue was last updated:`
     : `${toReport.length} coverage gap(s) found — each is a candidate for a new card. ` +
       'Pick one and run its command (or via the Actions tab: draft-new-card.yml), which opens a ' +
-      'PR you approve by replying to GitHub\'s own review-request email. Nothing merges without that reply.';
+      'PR and requests your review. Open the PR and click Approve, then Merge — GitHub has no ' +
+      "reply-to-approve mechanism, so a reply to the notification email posts as a comment only, " +
+      'never a review. Nothing merges without that approval.';
 
   const body = [intro, '', ...toReport.map(gapLine)].join('\n');
 
