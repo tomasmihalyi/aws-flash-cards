@@ -131,11 +131,13 @@ jobs:
           # stored PAT, which is new infrastructure this project's design
           # explicitly avoids (OIDC only, no long-lived secrets anywhere).
           #
-          # So the human step stays exactly what it always was: reply to
-          # GitHub's review-request email to approve, then merge the PR
-          # yourself (button, or `gh pr merge --squash`). One extra click
-          # versus the fully-armed version, in exchange for not touching the
-          # branch-level guarantee refresh.yml depends on.
+          # So the human step stays exactly what it always was: open the PR,
+          # click Approve, then Merge (button, or `gh pr merge --squash`).
+          # GitHub has no reply-to-approve mechanism — confirmed live
+          # 2026-08-21 (PR #38): a reply to the review-request notification
+          # posts as an ordinary PR comment, not a review, and does not set
+          # reviewDecision. The notification tells a human a decision is
+          # needed; the decision itself still requires visiting the PR.
 
       - name: Summarise
         if: always()
