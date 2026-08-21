@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "card_id": "BR-09",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "bedrock",
+  "category": "bedrock",
+  "tags": [
+    "web-search",
+    "bedrock",
+    "external-web-access",
+    "grounding"
+  ],
+  "badge_variant": "ga",
+  "badge_text": "GA",
+  "art": "platform",
+  "title": "External Web Access for Web Search on Amazon Bedrock",
+  "hook": "What does the external_web_access parameter enable in Amazon Bedrock Web Search?",
+  "back": {
+    "lead": "The external_web_access parameter allows Web Search to retrieve content directly from the public web so models can ground responses with current web knowledge.",
+    "hookline": "Public web retrieval now available for grounding model responses.",
+    "kv": [
+      {
+        "k": "Parameter",
+        "v": "external_web_access"
+      },
+      {
+        "k": "Capability",
+        "v": "Retrieve content directly from public web"
+      },
+      {
+        "k": "Purpose",
+        "v": "Ground model responses with current web knowledge"
+      }
+    ]
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
+      "kind": "aws-whats-new",
+      "fetched_at": "2026-08-20T23:56:11.546Z",
+      "content_hash": "sha256:eb19dded161967c7004255047ec9c1c4a016362a1f047e0088a520e4b887ec80"
+    }
+  ],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "New card drafted from coverage gap \"Launching External Web Access for Web Search on Amazon Bedrock\". Every checkable claim verified against the source entry, but a new card's category, kind, lifecycle and framing are judgement calls no source can settle. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0.",
+      "raised_at": "2026-08-21T01:19:42.184Z",
+      "raised_by": "tools/apply-new-card.ts"
+    }
+  ],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-21T01:19:42.184Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/apply-new-card.ts",
+        "reason": "Drafted from coverage gap \"Launching External Web Access for Web Search on Amazon Bedrock\" (August 2026). no checkable (numeric/date/region) claim in the draft — needs a human read regardless"
+      },
+      {
+        "at": "2026-08-21T01:19:42.184Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "tools/apply-new-card.ts",
+        "reason": "New card drafted from coverage gap \"Launching External Web Access for Web Search on Amazon Bedrock\". Every checkable claim verified against the source entry, but a new card's category, kind, lifecycle and framing are judgement calls no source can settle. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0."
+      }
+    ]
+  },
+  "created_at": "2026-08-21T01:19:42.184Z",
+  "updated_at": "2026-08-21T01:19:42.184Z"
+}
