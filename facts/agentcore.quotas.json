@@ -3,11 +3,11 @@
   "fact_set_id": "agentcore.quotas",
   "tier": "A",
   "generator": "src/ingest/service-quotas.ts",
-  "verified_at": "2026-08-20T23:56:09.159Z",
+  "verified_at": "2026-08-21T19:24:01.045Z",
   "source": {
     "kind": "service-quotas-api",
     "url": "https://ap-southeast-2.console.aws.amazon.com/servicequotas/home/services/bedrock-agentcore/quotas",
-    "fetched_at": "2026-08-20T23:56:09.159Z",
+    "fetched_at": "2026-08-21T19:24:01.045Z",
     "content_hash": "sha256:fbf1d6de7a08b900f1886214a541b4ddafc25cae1be0c706c37c33c4e98ec300",
     "retrieved_by": "aws service-quotas list-service-quotas --service-code bedrock-agentcore --region ap-southeast-2"
   },

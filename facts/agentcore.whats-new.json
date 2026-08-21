@@ -3,11 +3,11 @@
   "fact_set_id": "agentcore.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-20T23:56:11.546Z",
+  "verified_at": "2026-08-21T19:24:03.935Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-20T23:56:11.546Z",
+    "fetched_at": "2026-08-21T19:24:03.935Z",
     "content_hash": "sha256:36c6dec591127c353f757c7575566c817640d1b89632d137a66cdc8b2db9de22",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
@@ -55,6 +55,6 @@
     }
   },
   "previous": {
-    "entry-count": 3
+    "entry-count": 2
   }
 }
