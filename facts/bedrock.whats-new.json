@@ -3,16 +3,25 @@
   "fact_set_id": "bedrock.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-22T19:20:40.399Z",
+  "verified_at": "2026-08-24T19:27:22.141Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-22T19:20:40.399Z",
-    "content_hash": "sha256:1d4cda1aecc6ee21a5a341feed308227b70ca25390073a68432e07556ac9cfa9",
+    "fetched_at": "2026-08-24T19:27:22.141Z",
+    "content_hash": "sha256:9aa1ce3ad1c67b9dee7724e2457e51d5bb367fb5b1cdee02972924a208395e31",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
   "evidence": {
     "canonical": [
+      {
+        "iso_date": "2026-08-24",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 24, 2026",
+        "heading": "OpenAI GPT-5.6 Terra and Luna now available on Amazon Bedrock in AWS GovCloud (US)",
+        "summary": "GPT-5.6 Terra and Luna are now generally available on Amazon Bedrock in AWS GovCloud (US-West) and AWS GovCloud (US-East), bringing the smartest family of models from OpenAI yet to Bedrock's next-generation inference engine built for high-performance, security and reliability. GPT-5.6 sets a new standard for intelligence and efficiency, allowing you to solve harder problems in less time and with m",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/openai-gpt-terra-luna-govcloud/"
+      },
       {
         "iso_date": "2026-08-21",
         "iso_month": "2026-08",
@@ -86,12 +95,12 @@
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-bedrock-expands-iam-principal-cost-allocation-bedrock-mantle/"
       }
     ],
-    "text": "August 21, 2026 — Amazon Bedrock announces reduced pricing for OpenAI GPT-5.6 Sol: Today, OpenAI announced that they are lowering API prices for GPT-5.6 Sol. Following the recent Terra and Luna price reductions, Sol now costs $4 per million input tokens and $20 per million output tokens—20% lower input pricing and 33.3% lower output pricing. This promotional pricing is available at least through November 21, 2026. Whether you're building autonomous coding agents, running complex\nAugust 19, 2026 — Launching External Web Access for Web Search on Amazon Bedrock: Earlier this month, we announced Web Search on Amazon Bedrock , a built-in server-side tool that allows you to ground model responses with current web knowledge, while maintaining data within your secured AWS environment with zero data egress. Today, we are expanding Web Search to enable the external_web_access parameter allowing Web Search to retrieve content directly from the public web so model\nAugust 19, 2026 — AWS Cost Anomaly Detection supports third-party models on Amazon Bedrock: AWS Cost Anomaly Detection now monitors spend on third-party foundation models running on Amazon Bedrock, such as Anthropic Claude and other provider-hosted models. Cost Anomaly Detection uses machine learning to detect and alert on unusual spend, and this launch extends that coverage to third-party model usage on Amazon Bedrock. Teams running production generative AI workloads now get automatic a\nAugust 19, 2026 — Amazon Bedrock now supports SpaceXAI Grok 4.6 with Cross Region Inferencing: Amazon Bedrock now supports SpaceXAI Grok 4.6, a frontier model built for coding, agentic tasks, and knowledge work, with US Geo and Global cross-Region inference. Customers can now access Grok 4.6 at scale with cross-Region inference routing requests across multiple AWS Regions for higher throughput and lower inference costs. Cross-Region inference automatically routes inference requests across m\nAugust 18, 2026 — Amazon Bedrock now supports OpenAI models in India: Amazon Bedrock now supports the OpenAI GPT-5.6 models (Terra and Luna) in India, with India Geo cross-Region inference. Customers with regulatory requirements of in-country inferencing can now use OpenAI models at scale ensuring that inferencing is processed within India. Cross-Region inference automatically routes inference requests across multiple AWS Regions to give you higher throughput, witho\nAugust 17, 2026 — Amazon Bedrock expands API support and introduces Cross Region Inferencing for OpenAI models: Amazon Bedrock now supports the OpenAI GPT-5.6 models (Sol, Terra, and Luna) on the bedrock-runtime endpoint, with support for the Responses, Converse, and Chat Completions APIs. It also adds support for cross-Region inference, allowing customers to use Global and Geo cross-Region inference to access higher throughput and lower inference costs. Cross-Region inference automatically routes inference\nAugust 13, 2026 — Daybreak Red and Daybreak Blue from OpenAI are now available to eligible customers on Amazon Bedrock: Security teams can now access Daybreak Red and Daybreak Blue from OpenAI on Amazon Bedrock. Both are part of Daybreak, the cyber defense initiative from OpenAI that gives defenders governed access to frontier AI for cybersecurity work. Daybreak Blue is the starting point for most security teams across defensive workflows including vulnerability discovery, detection engineering, and incident respon\nAugust 11, 2026 — Amazon Bedrock expands IAM principal cost allocation to the bedrock-mantle endpoint: Amazon Bedrock is a fully managed service that provides secure, enterprise-grade access to high-performing foundation models from leading AI companies, enabling you to build and scale generative AI applications. Amazon Bedrock now supports cost allocation by AWS Identity and Access Management (IAM) principal, including IAM users and roles, for model inference requests made through the bedrock-mant"
+    "text": "August 24, 2026 — OpenAI GPT-5.6 Terra and Luna now available on Amazon Bedrock in AWS GovCloud (US): GPT-5.6 Terra and Luna are now generally available on Amazon Bedrock in AWS GovCloud (US-West) and AWS GovCloud (US-East), bringing the smartest family of models from OpenAI yet to Bedrock's next-generation inference engine built for high-performance, security and reliability. GPT-5.6 sets a new standard for intelligence and efficiency, allowing you to solve harder problems in less time and with m\nAugust 21, 2026 — Amazon Bedrock announces reduced pricing for OpenAI GPT-5.6 Sol: Today, OpenAI announced that they are lowering API prices for GPT-5.6 Sol. Following the recent Terra and Luna price reductions, Sol now costs $4 per million input tokens and $20 per million output tokens—20% lower input pricing and 33.3% lower output pricing. This promotional pricing is available at least through November 21, 2026. Whether you're building autonomous coding agents, running complex\nAugust 19, 2026 — Launching External Web Access for Web Search on Amazon Bedrock: Earlier this month, we announced Web Search on Amazon Bedrock , a built-in server-side tool that allows you to ground model responses with current web knowledge, while maintaining data within your secured AWS environment with zero data egress. Today, we are expanding Web Search to enable the external_web_access parameter allowing Web Search to retrieve content directly from the public web so model\nAugust 19, 2026 — AWS Cost Anomaly Detection supports third-party models on Amazon Bedrock: AWS Cost Anomaly Detection now monitors spend on third-party foundation models running on Amazon Bedrock, such as Anthropic Claude and other provider-hosted models. Cost Anomaly Detection uses machine learning to detect and alert on unusual spend, and this launch extends that coverage to third-party model usage on Amazon Bedrock. Teams running production generative AI workloads now get automatic a\nAugust 19, 2026 — Amazon Bedrock now supports SpaceXAI Grok 4.6 with Cross Region Inferencing: Amazon Bedrock now supports SpaceXAI Grok 4.6, a frontier model built for coding, agentic tasks, and knowledge work, with US Geo and Global cross-Region inference. Customers can now access Grok 4.6 at scale with cross-Region inference routing requests across multiple AWS Regions for higher throughput and lower inference costs. Cross-Region inference automatically routes inference requests across m\nAugust 18, 2026 — Amazon Bedrock now supports OpenAI models in India: Amazon Bedrock now supports the OpenAI GPT-5.6 models (Terra and Luna) in India, with India Geo cross-Region inference. Customers with regulatory requirements of in-country inferencing can now use OpenAI models at scale ensuring that inferencing is processed within India. Cross-Region inference automatically routes inference requests across multiple AWS Regions to give you higher throughput, witho\nAugust 17, 2026 — Amazon Bedrock expands API support and introduces Cross Region Inferencing for OpenAI models: Amazon Bedrock now supports the OpenAI GPT-5.6 models (Sol, Terra, and Luna) on the bedrock-runtime endpoint, with support for the Responses, Converse, and Chat Completions APIs. It also adds support for cross-Region inference, allowing customers to use Global and Geo cross-Region inference to access higher throughput and lower inference costs. Cross-Region inference automatically routes inference\nAugust 13, 2026 — Daybreak Red and Daybreak Blue from OpenAI are now available to eligible customers on Amazon Bedrock: Security teams can now access Daybreak Red and Daybreak Blue from OpenAI on Amazon Bedrock. Both are part of Daybreak, the cyber defense initiative from OpenAI that gives defenders governed access to frontier AI for cybersecurity work. Daybreak Blue is the starting point for most security teams across defensive workflows including vulnerability discovery, detection engineering, and incident respon\nAugust 11, 2026 — Amazon Bedrock expands IAM principal cost allocation to the bedrock-mantle endpoint: Amazon Bedrock is a fully managed service that provides secure, enterprise-grade access to high-performing foundation models from leading AI companies, enabling you to build and scale generative AI applications. Amazon Bedrock now supports cost allocation by AWS Identity and Access Management (IAM) principal, including IAM users and roles, for model inference requests made through the bedrock-mant"
   },
   "facts": {
     "bedrock.whats-new.entry-count": {
       "type": "integer",
-      "value": 8,
+      "value": 9,
       "note": "Dated bedrock announcements matched from the AWS What's New feed in the fetched window."
     },
     "bedrock.whats-new.earliest-date": {
@@ -100,7 +109,7 @@
     },
     "bedrock.whats-new.latest-date": {
       "type": "string",
-      "value": "2026-08-21"
+      "value": "2026-08-24"
     },
     "bedrock.whats-new.precision": {
       "type": "string",
@@ -109,6 +118,6 @@
     }
   },
   "previous": {
-    "entry-count": 7
+    "entry-count": 8
   }
 }

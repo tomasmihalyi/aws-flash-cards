@@ -3,11 +3,11 @@
   "fact_set_id": "kiro.docs",
   "tier": "A",
   "generator": "src/ingest/docs-pages.ts",
-  "verified_at": "2026-08-22T19:20:39.650Z",
+  "verified_at": "2026-08-24T19:27:21.033Z",
   "source": {
     "kind": "vendor-docs",
     "url": "https://kiro.dev/docs/",
-    "fetched_at": "2026-08-22T19:20:39.650Z",
+    "fetched_at": "2026-08-24T19:27:21.033Z",
     "content_hash": "sha256:9f6256cf5cbfd36979dc381431d5488e46f1e77305063f2883c31b3d39ead495",
     "retrieved_by": "GET https://kiro.dev/docs/"
   },

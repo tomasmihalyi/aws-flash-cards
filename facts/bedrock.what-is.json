@@ -3,11 +3,11 @@
   "fact_set_id": "bedrock.what-is",
   "tier": "A",
   "generator": "src/ingest/docs-pages.ts",
-  "verified_at": "2026-08-22T19:20:39.916Z",
+  "verified_at": "2026-08-24T19:27:21.433Z",
   "source": {
     "kind": "aws-docs",
     "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
-    "fetched_at": "2026-08-22T19:20:39.916Z",
+    "fetched_at": "2026-08-24T19:27:21.433Z",
     "content_hash": "sha256:328a8d24c1b9cf5e81fbdd27e0bafa61a89b1cb98dd2ae306d3bcaabfbb64ae9",
     "retrieved_by": "GET https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.md"
   },
@@ -28,6 +28,6 @@
     }
   },
   "previous": {
-    "content_hash": "sha256:e4638667045947c60cd09913de9e21e296b3f2fe2609fd9cba4adf9a2f4645ba"
+    "content_hash": "sha256:328a8d24c1b9cf5e81fbdd27e0bafa61a89b1cb98dd2ae306d3bcaabfbb64ae9"
   }
 }

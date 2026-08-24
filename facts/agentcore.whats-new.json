@@ -3,16 +3,25 @@
   "fact_set_id": "agentcore.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-22T19:20:40.399Z",
+  "verified_at": "2026-08-24T19:27:22.141Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-22T19:20:40.399Z",
-    "content_hash": "sha256:36c6dec591127c353f757c7575566c817640d1b89632d137a66cdc8b2db9de22",
+    "fetched_at": "2026-08-24T19:27:22.141Z",
+    "content_hash": "sha256:8a9d9e8f8c9b75e0261a55ad7c7a0677137ce6d20769d48a39de7311ee6ffa74",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
   "evidence": {
     "canonical": [
+      {
+        "iso_date": "2026-08-20",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 20, 2026",
+        "heading": "Amazon Bedrock AgentCore Memory now supports extracting memories from non-conversational JSON payloads",
+        "summary": "Amazon Bedrock AgentCore memory now accepts a JSON payload type on the CreateEvent API, so agents can extract and consolidate long-term memories from structured data as well as from multi-turn conversations. Developers can pass behavioral events, activity logs, system events, and other JSON data (up to 100 KB per payload) straight into the extraction pipeline. There is no need to reshape it into s",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/agentcore-memory-json-payloads"
+      },
       {
         "iso_date": "2026-08-19",
         "iso_month": "2026-08",
@@ -32,12 +41,12 @@
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/bedrock-agentcore-payments-ga/"
       }
     ],
-    "text": "August 19, 2026 — Web Search in Amazon Bedrock AgentCore adds domain and published date filtering, expands to Europe and Asia Pacific: Web Search in Amazon Bedrock AgentCore now supports domain filtering and published-date filtering, giving agents per-request control over which web sources and time windows they search. Amazon Bedrock AgentCore provides the infrastructure to build, connect, and optimize AI agents, and Web Search enables those agents to ground responses in current web data. With runtime domain filtering, agents can\nAugust 18, 2026 — AgentCore payments is now generally available in Amazon Bedrock AgentCore: Today, AWS announces the general availability of AgentCore payments, a capability within Amazon Bedrock AgentCore that enables AI agents to autonomously discover, access, and pay for paid APIs, MCPs, and content with just a few lines of code. AgentCore payments provides the security, guardrails, and observability enterprises need to deploy transacting agents in production at scale. AgentCore payme"
+    "text": "August 20, 2026 — Amazon Bedrock AgentCore Memory now supports extracting memories from non-conversational JSON payloads: Amazon Bedrock AgentCore memory now accepts a JSON payload type on the CreateEvent API, so agents can extract and consolidate long-term memories from structured data as well as from multi-turn conversations. Developers can pass behavioral events, activity logs, system events, and other JSON data (up to 100 KB per payload) straight into the extraction pipeline. There is no need to reshape it into s\nAugust 19, 2026 — Web Search in Amazon Bedrock AgentCore adds domain and published date filtering, expands to Europe and Asia Pacific: Web Search in Amazon Bedrock AgentCore now supports domain filtering and published-date filtering, giving agents per-request control over which web sources and time windows they search. Amazon Bedrock AgentCore provides the infrastructure to build, connect, and optimize AI agents, and Web Search enables those agents to ground responses in current web data. With runtime domain filtering, agents can\nAugust 18, 2026 — AgentCore payments is now generally available in Amazon Bedrock AgentCore: Today, AWS announces the general availability of AgentCore payments, a capability within Amazon Bedrock AgentCore that enables AI agents to autonomously discover, access, and pay for paid APIs, MCPs, and content with just a few lines of code. AgentCore payments provides the security, guardrails, and observability enterprises need to deploy transacting agents in production at scale. AgentCore payme"
   },
   "facts": {
     "agentcore.whats-new.entry-count": {
       "type": "integer",
-      "value": 2,
+      "value": 3,
       "note": "Dated agentcore announcements matched from the AWS What's New feed in the fetched window."
     },
     "agentcore.whats-new.earliest-date": {
@@ -46,7 +55,7 @@
     },
     "agentcore.whats-new.latest-date": {
       "type": "string",
-      "value": "2026-08-19"
+      "value": "2026-08-20"
     },
     "agentcore.whats-new.precision": {
       "type": "string",
