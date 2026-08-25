@@ -3,12 +3,12 @@
   "fact_set_id": "sagemaker.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-24T19:27:22.141Z",
+  "verified_at": "2026-08-25T19:29:29.866Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-24T19:27:22.141Z",
-    "content_hash": "sha256:28f7f58e10c5755c07151da5ddd03212f25b2518fd1ea2af4c9bc60a1ccda7d6",
+    "fetched_at": "2026-08-25T19:29:29.866Z",
+    "content_hash": "sha256:1d2b9a5f89cd8dacfed8a9d0bd6a12bc36c2eb9800c7b8ef7649e87ec5cf0a6e",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
   "evidence": {
@@ -48,37 +48,19 @@
         "heading": "Amazon SageMaker Unified Studio now supports data profiling and anomaly detection",
         "summary": "Amazon SageMaker Unified Studio now supports data profiling and anomaly detection, powered by AWS Glue Data Quality. Data stewards, engineers and analysts can generate statistical profiles of their data to understand its shape and completeness, and track how these statistics change over time. Anomaly detection helps identify when data points drift from historical patterns without requiring predefi",
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/05/smus-data-profiling"
-      },
-      {
-        "iso_date": "2026-08-11",
-        "iso_month": "2026-08",
-        "month_label": "August 2026",
-        "date_label": "August 11, 2026",
-        "heading": "LocateAnything-3B, Qwen-AgentWorld-35B-A3B, and Qwen3.5-122B-A10B models now available on Amazon SageMaker JumpStart",
-        "summary": "NVIDIA's LocateAnything-3B, Qwen's Qwen-AgentWorld-35B-A3B, and Qwen's Qwen3.5-122B-A10B models are now available on Amazon SageMaker JumpStart, expanding the portfolio of foundation models available to AWS customers. These three models bring specialized capabilities spanning visual grounding, agent environment simulation, and large-scale multimodal reasoning, enabling customers to deploy high-per",
-        "url": "https://aws.amazon.com/about-aws/whats-new/2026/01/locateAnything-3B-qwen-agentworld-35B-A3B-qwen3.5-122B-A10B-on-sagemaker-jumpstart/"
-      },
-      {
-        "iso_date": "2026-08-11",
-        "iso_month": "2026-08",
-        "month_label": "August 2026",
-        "date_label": "August 11, 2026",
-        "heading": "NVIDIA Nemotron 3.5 Lightning model is now available on Amazon SageMaker JumpStart",
-        "summary": "NVIDIA's Nemotron 3.5 Lightning is now available on Amazon SageMaker JumpStart, giving AWS customers access to the fastest open model in its class for persistent agent workloads and rapid task execution. Nemotron 3.5 Lightning is engineered for persistent agents and high-throughput enterprise automation across domains including personal assistants, financial document processing, cybersecurity tria",
-        "url": "https://aws.amazon.com/about-aws/whats-new/2026/01/nvidia-nemotron-3.5-lightning-on-sagemaker-jumpstart/"
       }
     ],
-    "text": "August 24, 2026 — Amazon SageMaker HyperPod enhances support for Ray: Amazon SageMaker HyperPod now enhances support for Ray with built-in observability, resilient training, accelerated inference and managed development environments. Ray is a popular open-source framework for scaling AI workloads on a unified compute layer, from data processing and distributed training to reinforcement learning and model serving. Running Ray on Kubernetes at production scale can be \nAugust 20, 2026 — Generative AI Inference Recommendation for Amazon SageMaker now available in the SageMaker AI Studio: Amazon SageMaker AI now offers Generative AI Inference Recommendations in SageMaker AI Studio, giving customers a guided, low-code, no-code path to find the best inference configuration for their workload. This builds on the API-based launch in April 2026, extending the same benchmarking infrastructure to teams that prefer a visual workflow over programmatic access. Deploying generative AI models \nAugust 19, 2026 — Amazon SageMaker notebooks now support trusted identity propagation: Amazon SageMaker Notebooks now support Trusted Identity Propagation (TIP) with Amazon Athena, Amazon Redshift, and Amazon EMR Serverless, enabling per-user access control for data analytics. When connected to a TIP-enabled compute in a TIP-enabled Project, each notebook user's IAM Identity Center identity flows through to AWS Lake Formation, ensuring they see only the tables, columns, and rows the\nAugust 18, 2026 — Amazon SageMaker Unified Studio now supports data profiling and anomaly detection: Amazon SageMaker Unified Studio now supports data profiling and anomaly detection, powered by AWS Glue Data Quality. Data stewards, engineers and analysts can generate statistical profiles of their data to understand its shape and completeness, and track how these statistics change over time. Anomaly detection helps identify when data points drift from historical patterns without requiring predefi\nAugust 11, 2026 — LocateAnything-3B, Qwen-AgentWorld-35B-A3B, and Qwen3.5-122B-A10B models now available on Amazon SageMaker JumpStart: NVIDIA's LocateAnything-3B, Qwen's Qwen-AgentWorld-35B-A3B, and Qwen's Qwen3.5-122B-A10B models are now available on Amazon SageMaker JumpStart, expanding the portfolio of foundation models available to AWS customers. These three models bring specialized capabilities spanning visual grounding, agent environment simulation, and large-scale multimodal reasoning, enabling customers to deploy high-per\nAugust 11, 2026 — NVIDIA Nemotron 3.5 Lightning model is now available on Amazon SageMaker JumpStart: NVIDIA's Nemotron 3.5 Lightning is now available on Amazon SageMaker JumpStart, giving AWS customers access to the fastest open model in its class for persistent agent workloads and rapid task execution. Nemotron 3.5 Lightning is engineered for persistent agents and high-throughput enterprise automation across domains including personal assistants, financial document processing, cybersecurity tria"
+    "text": "August 24, 2026 — Amazon SageMaker HyperPod enhances support for Ray: Amazon SageMaker HyperPod now enhances support for Ray with built-in observability, resilient training, accelerated inference and managed development environments. Ray is a popular open-source framework for scaling AI workloads on a unified compute layer, from data processing and distributed training to reinforcement learning and model serving. Running Ray on Kubernetes at production scale can be \nAugust 20, 2026 — Generative AI Inference Recommendation for Amazon SageMaker now available in the SageMaker AI Studio: Amazon SageMaker AI now offers Generative AI Inference Recommendations in SageMaker AI Studio, giving customers a guided, low-code, no-code path to find the best inference configuration for their workload. This builds on the API-based launch in April 2026, extending the same benchmarking infrastructure to teams that prefer a visual workflow over programmatic access. Deploying generative AI models \nAugust 19, 2026 — Amazon SageMaker notebooks now support trusted identity propagation: Amazon SageMaker Notebooks now support Trusted Identity Propagation (TIP) with Amazon Athena, Amazon Redshift, and Amazon EMR Serverless, enabling per-user access control for data analytics. When connected to a TIP-enabled compute in a TIP-enabled Project, each notebook user's IAM Identity Center identity flows through to AWS Lake Formation, ensuring they see only the tables, columns, and rows the\nAugust 18, 2026 — Amazon SageMaker Unified Studio now supports data profiling and anomaly detection: Amazon SageMaker Unified Studio now supports data profiling and anomaly detection, powered by AWS Glue Data Quality. Data stewards, engineers and analysts can generate statistical profiles of their data to understand its shape and completeness, and track how these statistics change over time. Anomaly detection helps identify when data points drift from historical patterns without requiring predefi"
   },
   "facts": {
     "sagemaker.whats-new.entry-count": {
       "type": "integer",
-      "value": 6,
+      "value": 4,
       "note": "Dated sagemaker announcements matched from the AWS What's New feed in the fetched window."
     },
     "sagemaker.whats-new.earliest-date": {
       "type": "string",
-      "value": "2026-08-11"
+      "value": "2026-08-18"
     },
     "sagemaker.whats-new.latest-date": {
       "type": "string",
@@ -91,6 +73,6 @@
     }
   },
   "previous": {
-    "entry-count": 8
+    "entry-count": 6
   }
 }
