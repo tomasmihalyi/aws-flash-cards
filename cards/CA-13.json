@@ -15,7 +15,7 @@
   "badge_variant": "ga",
   "badge_text": "GA",
   "art": "platform",
-  "title": "Playwright and agent-browser CLI in sandbox",
+  "title": "Playwright and agent-browser in the sandbox",
   "hook": "How can agents now verify UI changes and reproduce browser-based bugs?",
   "back": {
     "lead": "Playwright and the agent-browser CLI are now available in the agent's sandbox, letting it open apps in a real browser, click through flows, reproduce browser-based bugs, and verify UI changes.",
@@ -76,9 +76,18 @@
         "action": "flag-review",
         "generator": "tools/apply-new-card.ts",
         "reason": "New card drafted from coverage gap \"Web: Playwright and Agent-Browser Support\". Every checkable claim verified against the source entry, but a new card's category, kind, lifecycle and framing are judgement calls no source can settle. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0."
+      },
+      {
+        "at": "2026-08-28T05:20:00.000Z",
+        "tier": "C",
+        "action": "correct",
+        "generator": "human",
+        "before": "Playwright and agent-browser CLI in sandbox",
+        "after": "Playwright and agent-browser in the sandbox",
+        "reason": "Drafted title's standalone 'CLI' token false-matched check-lifecycle.ts against an unrelated Kiro entry, 'CLI: Cloud Sessions Preview and Smarter Command Menus' (Aug 2026, preview) -- same corpus-token-collision class as the AgentCore/Bedrock 'amazon bedrock' bug, but from a model-drafted title rather than a keyword list. Retitled to drop the free-floating 'CLI' token while staying faithful to the source, which names the tool 'agent-browser CLI' as one phrase. publish.yml's gate caught this before it reached main."
       }
     ]
   },
   "created_at": "2026-08-28T04:45:28.015Z",
-  "updated_at": "2026-08-28T04:45:28.015Z"
+  "updated_at": "2026-08-28T05:20:00.000Z"
 }
