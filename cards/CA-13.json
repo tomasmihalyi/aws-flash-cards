@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "card_id": "CA-13",
+  "kind": "service-fact",
+  "lifecycle": "ga",
+  "service": "kiro",
+  "category": "coding-agents",
+  "tags": [
+    "playwright",
+    "agent-browser",
+    "sandbox",
+    "ui-testing",
+    "browser-automation"
+  ],
+  "badge_variant": "ga",
+  "badge_text": "GA",
+  "art": "platform",
+  "title": "Playwright and agent-browser CLI in sandbox",
+  "hook": "How can agents now verify UI changes and reproduce browser-based bugs?",
+  "back": {
+    "lead": "Playwright and the agent-browser CLI are now available in the agent's sandbox, letting it open apps in a real browser, click through flows, reproduce browser-based bugs, and verify UI changes.",
+    "hookline": "Agents can now test what they build in a real browser before you look.",
+    "kv": [
+      {
+        "k": "Tools available",
+        "v": "Playwright and agent-browser CLI"
+      },
+      {
+        "k": "Capabilities",
+        "v": "Open apps, click flows, reproduce bugs, verify UI"
+      },
+      {
+        "k": "Environment",
+        "v": "Agent sandbox"
+      }
+    ]
+  },
+  "slots": {},
+  "facts_used": [],
+  "sources": [
+    {
+      "url": "https://kiro.dev/changelog/",
+      "kind": "aws-whats-new",
+      "fetched_at": "2026-08-25T19:29:30.295Z",
+      "content_hash": "sha256:14e489c07850840decd23b14fb2c5cce84ce2b49fabb97eeb720339a180bb0bf"
+    }
+  ],
+  "verified_at": null,
+  "confidence": "medium",
+  "depends_on": [],
+  "aka": [],
+  "superseded_by": null,
+  "supersedes": [],
+  "needs_review": true,
+  "review_reasons": [
+    {
+      "reason": "New card drafted from coverage gap \"Web: Playwright and Agent-Browser Support\". Every checkable claim verified against the source entry, but a new card's category, kind, lifecycle and framing are judgement calls no source can settle. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0.",
+      "raised_at": "2026-08-28T04:45:28.015Z",
+      "raised_by": "tools/apply-new-card.ts"
+    }
+  ],
+  "provenance": {
+    "tier": "C",
+    "authored_by": "model",
+    "history": [
+      {
+        "at": "2026-08-28T04:45:28.015Z",
+        "tier": "C",
+        "action": "import",
+        "generator": "tools/apply-new-card.ts",
+        "reason": "Drafted from coverage gap \"Web: Playwright and Agent-Browser Support\" (July 2026). no checkable (numeric/date/region) claim in the draft — needs a human read regardless"
+      },
+      {
+        "at": "2026-08-28T04:45:28.015Z",
+        "tier": "C",
+        "action": "flag-review",
+        "generator": "tools/apply-new-card.ts",
+        "reason": "New card drafted from coverage gap \"Web: Playwright and Agent-Browser Support\". Every checkable claim verified against the source entry, but a new card's category, kind, lifecycle and framing are judgement calls no source can settle. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0."
+      }
+    ]
+  },
+  "created_at": "2026-08-28T04:45:28.015Z",
+  "updated_at": "2026-08-28T04:45:28.015Z"
+}
