@@ -141,7 +141,7 @@ const PAGES: PageSpec[] = [
     fetch: 'https://raw.githubusercontent.com/strands-agents/harness-sdk/main/README.md',
     kind: 'vendor-docs',
     expect: 'Strands Agents',
-    bodyStartsAt: 'Strands Agents is a simple yet powerful SDK',
+    bodyStartsAt: 'Strands Agents is an open-source SDK for building and running AI agents',
     title: 'Strands Agents SDK',
     extract: [
       {
