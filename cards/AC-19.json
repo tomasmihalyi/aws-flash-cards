@@ -43,7 +43,7 @@
         "agentcore.regions.count",
         "agentcore.regions.list"
       ],
-      "rendered": "AgentCore is available in 19 AWS regions, including Asia Pacific (Sydney).",
+      "rendered": "AgentCore is available in 21 AWS regions, including Asia Pacific (Sydney).",
       "rendered_from": "tier-a",
       "seed_text": "AgentCore previewed in four regions — including Asia Pacific (Sydney) — and has expanded steadily since."
     },
@@ -54,7 +54,7 @@
         "agentcore.regions.count",
         "agentcore.regions.list"
       ],
-      "rendered": "ap-southeast-2 is in the current bedrock-agentcore region list (19 regions total) — full-stack AgentCore is buildable Sydney-native.",
+      "rendered": "ap-southeast-2 is in the current bedrock-agentcore region list (21 regions total) — full-stack AgentCore is buildable Sydney-native.",
       "rendered_from": "tier-a",
       "seed_text": "In the preview set (Jul 2025) and in the Evaluations GA region list (Mar 2026) — full-stack AgentCore is buildable ap-southeast-2-native."
     }
@@ -68,11 +68,11 @@
       "url": "ssm://aws/service/global-infrastructure/services/bedrock-agentcore/regions",
       "title": "agentcore.regions (ssm-public-parameter)",
       "kind": "ssm-public-parameter",
-      "fetched_at": "2026-08-25T19:29:17.337Z",
-      "content_hash": "sha256:c5cfe622a53ad931055a3b605f11bd6e5fe3b950e2f2947c49bbdc2efe875927"
+      "fetched_at": "2026-08-30T04:30:22.475Z",
+      "content_hash": "sha256:241775d983da14261397ecb19f34593d160320a843f196b18bcf5857277eac04"
     }
   ],
-  "verified_at": "2026-08-25T19:29:17.337Z",
+  "verified_at": "2026-08-30T04:30:22.475Z",
   "confidence": "high",
   "depends_on": [],
   "aka": [],
@@ -162,11 +162,39 @@
         "action": "clear-review",
         "generator": "tools/sign-off.ts",
         "reason": "Signed off by Tomas Mihalyi. Approved: Model-drafted prose refresh. Every checkable claim verified, but prose quality is a judgement no source settles — needs a human read. Model au.anthropic.claude-sonnet-4-5-20250929-v1:0. (The flag-review entries recording why this was raised remain in this history.)"
+      },
+      {
+        "at": "2026-08-30T04:30:46.419Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply.ts",
+        "slot": "region_availability",
+        "before": "AgentCore is available in 19 AWS regions, including Asia Pacific (Sydney).",
+        "after": "AgentCore is available in 21 AWS regions, including Asia Pacific (Sydney).",
+        "facts": [
+          "agentcore.regions.count",
+          "agentcore.regions.list"
+        ],
+        "reason": "Deterministic source disagreed with the rendered claim. Corrected with zero model involvement."
+      },
+      {
+        "at": "2026-08-30T04:30:46.419Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply.ts",
+        "slot": "sydney_availability",
+        "before": "ap-southeast-2 is in the current bedrock-agentcore region list (19 regions total) — full-stack AgentCore is buildable Sydney-native.",
+        "after": "ap-southeast-2 is in the current bedrock-agentcore region list (21 regions total) — full-stack AgentCore is buildable Sydney-native.",
+        "facts": [
+          "agentcore.regions.count",
+          "agentcore.regions.list"
+        ],
+        "reason": "Deterministic source disagreed with the rendered claim. Corrected with zero model involvement."
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-11T05:11:33.078Z",
+  "updated_at": "2026-08-30T04:30:46.419Z",
   "signed_off": {
     "by": "Tomas Mihalyi",
     "at": "2026-08-11T05:11:33.078Z"

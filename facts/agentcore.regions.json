@@ -3,12 +3,12 @@
   "fact_set_id": "agentcore.regions",
   "tier": "A",
   "generator": "src/ingest/ssm-regions.ts",
-  "verified_at": "2026-08-25T19:29:17.337Z",
+  "verified_at": "2026-08-30T04:30:22.475Z",
   "source": {
     "kind": "ssm-public-parameter",
     "url": "ssm://aws/service/global-infrastructure/services/bedrock-agentcore/regions",
-    "fetched_at": "2026-08-25T19:29:17.337Z",
-    "content_hash": "sha256:c5cfe622a53ad931055a3b605f11bd6e5fe3b950e2f2947c49bbdc2efe875927",
+    "fetched_at": "2026-08-30T04:30:22.475Z",
+    "content_hash": "sha256:241775d983da14261397ecb19f34593d160320a843f196b18bcf5857277eac04",
     "retrieved_by": "aws ssm get-parameters-by-path --path /aws/service/global-infrastructure/services/bedrock-agentcore/regions --region us-east-1",
     "aws_region": "us-east-1"
   },
@@ -17,6 +17,7 @@
       "ap-northeast-1",
       "ap-northeast-2",
       "ap-south-1",
+      "ap-south-2",
       "ap-southeast-1",
       "ap-southeast-2",
       "ap-southeast-5",
@@ -32,14 +33,15 @@
       "sa-east-1",
       "us-east-1",
       "us-east-2",
+      "us-west-1",
       "us-west-2"
     ],
-    "text": "bedrock-agentcore is available in 19 AWS regions: ap-northeast-1, ap-northeast-2, ap-south-1, ap-southeast-1, ap-southeast-2, ap-southeast-5, ap-southeast-7, ca-central-1, eu-central-1, eu-north-1, eu-south-1, eu-south-2, eu-west-1, eu-west-2, eu-west-3, sa-east-1, us-east-1, us-east-2, us-west-2."
+    "text": "bedrock-agentcore is available in 21 AWS regions: ap-northeast-1, ap-northeast-2, ap-south-1, ap-south-2, ap-southeast-1, ap-southeast-2, ap-southeast-5, ap-southeast-7, ca-central-1, eu-central-1, eu-north-1, eu-south-1, eu-south-2, eu-west-1, eu-west-2, eu-west-3, sa-east-1, us-east-1, us-east-2, us-west-1, us-west-2."
   },
   "facts": {
     "agentcore.regions.count": {
       "type": "integer",
-      "value": 19,
+      "value": 21,
       "note": "Regions where bedrock-agentcore is available, per AWS global-infrastructure data."
     },
     "agentcore.regions.list": {
@@ -48,6 +50,7 @@
         "ap-northeast-1",
         "ap-northeast-2",
         "ap-south-1",
+        "ap-south-2",
         "ap-southeast-1",
         "ap-southeast-2",
         "ap-southeast-5",
@@ -63,6 +66,7 @@
         "sa-east-1",
         "us-east-1",
         "us-east-2",
+        "us-west-1",
         "us-west-2"
       ]
     },
