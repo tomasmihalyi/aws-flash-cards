@@ -3,16 +3,43 @@
   "fact_set_id": "agentcore.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-25T19:29:29.866Z",
+  "verified_at": "2026-08-30T21:50:11.000Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-25T19:29:29.866Z",
-    "content_hash": "sha256:8a9d9e8f8c9b75e0261a55ad7c7a0677137ce6d20769d48a39de7311ee6ffa74",
+    "fetched_at": "2026-08-30T21:50:11.000Z",
+    "content_hash": "sha256:dd3a607b4c0d97d4c4a62a697614fdb13c637f3115bea7c26988645e64c7880a",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
   "evidence": {
     "canonical": [
+      {
+        "iso_date": "2026-08-28",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 28, 2026",
+        "heading": "Amazon Bedrock AgentCore Memory now supports fine-grained access control",
+        "summary": "Amazon Bedrock AgentCore Memory now supports fine-grained access control (FGAC), enabling you to enforce per-user and per-tenant memory isolation through AgentCore Gateway without building custom authorization logic. With FGAC, you can front your Memory resource with an AgentCore Gateway configured for OAuth (JWT) authentication and attach Cedar policies that restrict access based on the authentic",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/agentcorememory-fine-grained-access-control"
+      },
+      {
+        "iso_date": "2026-08-28",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 28, 2026",
+        "heading": "Amazon Bedrock AgentCore Memory now supports flexible namespace variables",
+        "summary": "Amazon Bedrock AgentCore Memory now lets developers define flexible namespace variables to scope long-term memories along any application-specific dimension - such as organization, tenant, team, or environment - without creating duplicate strategies or overloading built-in variables. This gives multi-tenant and complex-hierarchy applications fine-grained control over how memories are organized, is",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/agentcorememory-flexible-namespaces"
+      },
+      {
+        "iso_date": "2026-08-27",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 27, 2026",
+        "heading": "Amazon Bedrock AgentCore expands to two new regions",
+        "summary": "Amazon Bedrock AgentCore is now available in two additional AWS Regions: US West (N. California) and Asia Pacific (Hyderabad). Amazon Bedrock AgentCore is the platform to build, connect, and optimize agents. It helps engineers ship agents fast with any framework and any model, connect them to enterprise systems and tools, and optimize them continuously, with security enforced at the infrastructure",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/bedrock-agentcore-two-new-regions/"
+      },
       {
         "iso_date": "2026-08-20",
         "iso_month": "2026-08",
@@ -41,12 +68,12 @@
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/bedrock-agentcore-payments-ga/"
       }
     ],
-    "text": "August 20, 2026 — Amazon Bedrock AgentCore Memory now supports extracting memories from non-conversational JSON payloads: Amazon Bedrock AgentCore memory now accepts a JSON payload type on the CreateEvent API, so agents can extract and consolidate long-term memories from structured data as well as from multi-turn conversations. Developers can pass behavioral events, activity logs, system events, and other JSON data (up to 100 KB per payload) straight into the extraction pipeline. There is no need to reshape it into s\nAugust 19, 2026 — Web Search in Amazon Bedrock AgentCore adds domain and published date filtering, expands to Europe and Asia Pacific: Web Search in Amazon Bedrock AgentCore now supports domain filtering and published-date filtering, giving agents per-request control over which web sources and time windows they search. Amazon Bedrock AgentCore provides the infrastructure to build, connect, and optimize AI agents, and Web Search enables those agents to ground responses in current web data. With runtime domain filtering, agents can\nAugust 18, 2026 — AgentCore payments is now generally available in Amazon Bedrock AgentCore: Today, AWS announces the general availability of AgentCore payments, a capability within Amazon Bedrock AgentCore that enables AI agents to autonomously discover, access, and pay for paid APIs, MCPs, and content with just a few lines of code. AgentCore payments provides the security, guardrails, and observability enterprises need to deploy transacting agents in production at scale. AgentCore payme"
+    "text": "August 28, 2026 — Amazon Bedrock AgentCore Memory now supports fine-grained access control: Amazon Bedrock AgentCore Memory now supports fine-grained access control (FGAC), enabling you to enforce per-user and per-tenant memory isolation through AgentCore Gateway without building custom authorization logic. With FGAC, you can front your Memory resource with an AgentCore Gateway configured for OAuth (JWT) authentication and attach Cedar policies that restrict access based on the authentic\nAugust 28, 2026 — Amazon Bedrock AgentCore Memory now supports flexible namespace variables: Amazon Bedrock AgentCore Memory now lets developers define flexible namespace variables to scope long-term memories along any application-specific dimension - such as organization, tenant, team, or environment - without creating duplicate strategies or overloading built-in variables. This gives multi-tenant and complex-hierarchy applications fine-grained control over how memories are organized, is\nAugust 27, 2026 — Amazon Bedrock AgentCore expands to two new regions: Amazon Bedrock AgentCore is now available in two additional AWS Regions: US West (N. California) and Asia Pacific (Hyderabad). Amazon Bedrock AgentCore is the platform to build, connect, and optimize agents. It helps engineers ship agents fast with any framework and any model, connect them to enterprise systems and tools, and optimize them continuously, with security enforced at the infrastructure\nAugust 20, 2026 — Amazon Bedrock AgentCore Memory now supports extracting memories from non-conversational JSON payloads: Amazon Bedrock AgentCore memory now accepts a JSON payload type on the CreateEvent API, so agents can extract and consolidate long-term memories from structured data as well as from multi-turn conversations. Developers can pass behavioral events, activity logs, system events, and other JSON data (up to 100 KB per payload) straight into the extraction pipeline. There is no need to reshape it into s\nAugust 19, 2026 — Web Search in Amazon Bedrock AgentCore adds domain and published date filtering, expands to Europe and Asia Pacific: Web Search in Amazon Bedrock AgentCore now supports domain filtering and published-date filtering, giving agents per-request control over which web sources and time windows they search. Amazon Bedrock AgentCore provides the infrastructure to build, connect, and optimize AI agents, and Web Search enables those agents to ground responses in current web data. With runtime domain filtering, agents can\nAugust 18, 2026 — AgentCore payments is now generally available in Amazon Bedrock AgentCore: Today, AWS announces the general availability of AgentCore payments, a capability within Amazon Bedrock AgentCore that enables AI agents to autonomously discover, access, and pay for paid APIs, MCPs, and content with just a few lines of code. AgentCore payments provides the security, guardrails, and observability enterprises need to deploy transacting agents in production at scale. AgentCore payme"
   },
   "facts": {
     "agentcore.whats-new.entry-count": {
       "type": "integer",
-      "value": 3,
+      "value": 6,
       "note": "Dated agentcore announcements matched from the AWS What's New feed in the fetched window."
     },
     "agentcore.whats-new.earliest-date": {
@@ -55,7 +82,7 @@
     },
     "agentcore.whats-new.latest-date": {
       "type": "string",
-      "value": "2026-08-20"
+      "value": "2026-08-28"
     },
     "agentcore.whats-new.precision": {
       "type": "string",

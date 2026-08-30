@@ -3,16 +3,34 @@
   "fact_set_id": "sagemaker.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-25T19:29:29.866Z",
+  "verified_at": "2026-08-30T21:50:11.000Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-25T19:29:29.866Z",
-    "content_hash": "sha256:1d2b9a5f89cd8dacfed8a9d0bd6a12bc36c2eb9800c7b8ef7649e87ec5cf0a6e",
+    "fetched_at": "2026-08-30T21:50:11.000Z",
+    "content_hash": "sha256:aa36469eafed59cde283947d0d853e6dfae207dd6ee3397c766ca8b518e5bb8d",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
   "evidence": {
     "canonical": [
+      {
+        "iso_date": "2026-08-27",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 27, 2026",
+        "heading": "Cosmos3-Edge, Cosmos3-Nano, and Cosmos3-Super models now available on Amazon SageMaker JumpStart",
+        "summary": "NVIDIA's Cosmos3-Edge, Cosmos3-Nano, and Cosmos3-Super models are now available on Amazon SageMaker JumpStart, expanding the portfolio of foundation models available to AWS customers. These three models form the Cosmos 3 family of open, frontier omnimodal world models for physical AI, enabling customers to build robots, autonomous vehicles, and vision AI that perceive, reason, plan, and act in the",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/01/cosmos3-edge-cosmos3-nano-cosmos3-super-on-sagemaker-jumpstart/"
+      },
+      {
+        "iso_date": "2026-08-27",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 27, 2026",
+        "heading": "Muse-Glimmer-30B and Qwen 3.8-27B models now available on Amazon SageMaker JumpStart",
+        "summary": "Meta's Muse-Glimmer-30B and Alibaba's Qwen 3.8-27B models are now available on Amazon SageMaker JumpStart, expanding the portfolio of foundation models available to AWS customers. These two models bring specialized capabilities spanning autonomous local agentic workflows and multimodal long-horizon reasoning, enabling customers to deploy high-performance, scalable AI solutions on AWS infrastructur",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/01/muse-glimmer-30b-qwen-3.8-27b-on-sagemaker-jumpstart/"
+      },
       {
         "iso_date": "2026-08-24",
         "iso_month": "2026-08",
@@ -39,32 +57,23 @@
         "heading": "Amazon SageMaker notebooks now support trusted identity propagation",
         "summary": "Amazon SageMaker Notebooks now support Trusted Identity Propagation (TIP) with Amazon Athena, Amazon Redshift, and Amazon EMR Serverless, enabling per-user access control for data analytics. When connected to a TIP-enabled compute in a TIP-enabled Project, each notebook user's IAM Identity Center identity flows through to AWS Lake Formation, ensuring they see only the tables, columns, and rows the",
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-sagemaker/"
-      },
-      {
-        "iso_date": "2026-08-18",
-        "iso_month": "2026-08",
-        "month_label": "August 2026",
-        "date_label": "August 18, 2026",
-        "heading": "Amazon SageMaker Unified Studio now supports data profiling and anomaly detection",
-        "summary": "Amazon SageMaker Unified Studio now supports data profiling and anomaly detection, powered by AWS Glue Data Quality. Data stewards, engineers and analysts can generate statistical profiles of their data to understand its shape and completeness, and track how these statistics change over time. Anomaly detection helps identify when data points drift from historical patterns without requiring predefi",
-        "url": "https://aws.amazon.com/about-aws/whats-new/2026/05/smus-data-profiling"
       }
     ],
-    "text": "August 24, 2026 — Amazon SageMaker HyperPod enhances support for Ray: Amazon SageMaker HyperPod now enhances support for Ray with built-in observability, resilient training, accelerated inference and managed development environments. Ray is a popular open-source framework for scaling AI workloads on a unified compute layer, from data processing and distributed training to reinforcement learning and model serving. Running Ray on Kubernetes at production scale can be \nAugust 20, 2026 — Generative AI Inference Recommendation for Amazon SageMaker now available in the SageMaker AI Studio: Amazon SageMaker AI now offers Generative AI Inference Recommendations in SageMaker AI Studio, giving customers a guided, low-code, no-code path to find the best inference configuration for their workload. This builds on the API-based launch in April 2026, extending the same benchmarking infrastructure to teams that prefer a visual workflow over programmatic access. Deploying generative AI models \nAugust 19, 2026 — Amazon SageMaker notebooks now support trusted identity propagation: Amazon SageMaker Notebooks now support Trusted Identity Propagation (TIP) with Amazon Athena, Amazon Redshift, and Amazon EMR Serverless, enabling per-user access control for data analytics. When connected to a TIP-enabled compute in a TIP-enabled Project, each notebook user's IAM Identity Center identity flows through to AWS Lake Formation, ensuring they see only the tables, columns, and rows the\nAugust 18, 2026 — Amazon SageMaker Unified Studio now supports data profiling and anomaly detection: Amazon SageMaker Unified Studio now supports data profiling and anomaly detection, powered by AWS Glue Data Quality. Data stewards, engineers and analysts can generate statistical profiles of their data to understand its shape and completeness, and track how these statistics change over time. Anomaly detection helps identify when data points drift from historical patterns without requiring predefi"
+    "text": "August 27, 2026 — Cosmos3-Edge, Cosmos3-Nano, and Cosmos3-Super models now available on Amazon SageMaker JumpStart: NVIDIA's Cosmos3-Edge, Cosmos3-Nano, and Cosmos3-Super models are now available on Amazon SageMaker JumpStart, expanding the portfolio of foundation models available to AWS customers. These three models form the Cosmos 3 family of open, frontier omnimodal world models for physical AI, enabling customers to build robots, autonomous vehicles, and vision AI that perceive, reason, plan, and act in the\nAugust 27, 2026 — Muse-Glimmer-30B and Qwen 3.8-27B models now available on Amazon SageMaker JumpStart: Meta's Muse-Glimmer-30B and Alibaba's Qwen 3.8-27B models are now available on Amazon SageMaker JumpStart, expanding the portfolio of foundation models available to AWS customers. These two models bring specialized capabilities spanning autonomous local agentic workflows and multimodal long-horizon reasoning, enabling customers to deploy high-performance, scalable AI solutions on AWS infrastructur\nAugust 24, 2026 — Amazon SageMaker HyperPod enhances support for Ray: Amazon SageMaker HyperPod now enhances support for Ray with built-in observability, resilient training, accelerated inference and managed development environments. Ray is a popular open-source framework for scaling AI workloads on a unified compute layer, from data processing and distributed training to reinforcement learning and model serving. Running Ray on Kubernetes at production scale can be \nAugust 20, 2026 — Generative AI Inference Recommendation for Amazon SageMaker now available in the SageMaker AI Studio: Amazon SageMaker AI now offers Generative AI Inference Recommendations in SageMaker AI Studio, giving customers a guided, low-code, no-code path to find the best inference configuration for their workload. This builds on the API-based launch in April 2026, extending the same benchmarking infrastructure to teams that prefer a visual workflow over programmatic access. Deploying generative AI models \nAugust 19, 2026 — Amazon SageMaker notebooks now support trusted identity propagation: Amazon SageMaker Notebooks now support Trusted Identity Propagation (TIP) with Amazon Athena, Amazon Redshift, and Amazon EMR Serverless, enabling per-user access control for data analytics. When connected to a TIP-enabled compute in a TIP-enabled Project, each notebook user's IAM Identity Center identity flows through to AWS Lake Formation, ensuring they see only the tables, columns, and rows the"
   },
   "facts": {
     "sagemaker.whats-new.entry-count": {
       "type": "integer",
-      "value": 4,
+      "value": 5,
       "note": "Dated sagemaker announcements matched from the AWS What's New feed in the fetched window."
     },
     "sagemaker.whats-new.earliest-date": {
       "type": "string",
-      "value": "2026-08-18"
+      "value": "2026-08-19"
     },
     "sagemaker.whats-new.latest-date": {
       "type": "string",
-      "value": "2026-08-24"
+      "value": "2026-08-27"
     },
     "sagemaker.whats-new.precision": {
       "type": "string",
@@ -73,6 +82,6 @@
     }
   },
   "previous": {
-    "entry-count": 6
+    "entry-count": 4
   }
 }

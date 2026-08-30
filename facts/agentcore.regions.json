@@ -3,11 +3,11 @@
   "fact_set_id": "agentcore.regions",
   "tier": "A",
   "generator": "src/ingest/ssm-regions.ts",
-  "verified_at": "2026-08-30T04:30:22.475Z",
+  "verified_at": "2026-08-30T21:49:59.697Z",
   "source": {
     "kind": "ssm-public-parameter",
     "url": "ssm://aws/service/global-infrastructure/services/bedrock-agentcore/regions",
-    "fetched_at": "2026-08-30T04:30:22.475Z",
+    "fetched_at": "2026-08-30T21:49:59.697Z",
     "content_hash": "sha256:241775d983da14261397ecb19f34593d160320a843f196b18bcf5857277eac04",
     "retrieved_by": "aws ssm get-parameters-by-path --path /aws/service/global-infrastructure/services/bedrock-agentcore/regions --region us-east-1",
     "aws_region": "us-east-1"
@@ -81,6 +81,7 @@
       "ap-northeast-1",
       "ap-northeast-2",
       "ap-south-1",
+      "ap-south-2",
       "ap-southeast-1",
       "ap-southeast-2",
       "ap-southeast-5",
@@ -96,8 +97,9 @@
       "sa-east-1",
       "us-east-1",
       "us-east-2",
+      "us-west-1",
       "us-west-2"
     ],
-    "count": 19
+    "count": 21
   }
 }

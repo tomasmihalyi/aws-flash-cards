@@ -3,11 +3,11 @@
   "fact_set_id": "bedrock.doc-history",
   "tier": "A",
   "generator": "src/ingest/docs-doc-history.ts",
-  "verified_at": "2026-08-25T19:29:27.613Z",
+  "verified_at": "2026-08-30T21:50:09.142Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/doc-history.html",
-    "fetched_at": "2026-08-25T19:29:27.613Z",
+    "fetched_at": "2026-08-30T21:50:09.142Z",
     "content_hash": "sha256:73a0fd7951d98f478eb66e3b9ea78ecc6aefe9ab784d92780b43f250b9f72632",
     "retrieved_by": "GET https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-ug-doc-history.md"
   },

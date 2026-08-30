@@ -3,12 +3,12 @@
   "fact_set_id": "agentcore.feature-regions",
   "tier": "A",
   "generator": "src/ingest/docs-feature-regions.ts",
-  "verified_at": "2026-08-25T19:29:27.954Z",
+  "verified_at": "2026-08-30T21:50:09.389Z",
   "source": {
     "kind": "aws-docs",
     "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-regions.html",
-    "fetched_at": "2026-08-25T19:29:27.954Z",
-    "content_hash": "sha256:f3b89f7889ee5168aa29611a47da55a2247e22e3da25ab66f60e7f8f9e852cfa",
+    "fetched_at": "2026-08-30T21:50:09.389Z",
+    "content_hash": "sha256:ce7e465b05f5fc2c2abf1c8ac3f6a462cc63c5ab18b19abc599e131bd1018e59",
     "retrieved_by": "GET https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-regions.md"
   },
   "evidence": {
@@ -16,6 +16,7 @@
       "regions": [
         "US East (N. Virginia)",
         "US East (Ohio)",
+        "US West (N. California)",
         "US West (Oregon)",
         "Europe (Frankfurt)",
         "Europe (Ireland)",
@@ -26,6 +27,7 @@
         "Europe (Stockholm)",
         "Asia Pacific (Malaysia)",
         "Asia Pacific (Mumbai)",
+        "Asia Pacific (Hyderabad)",
         "Asia Pacific (Singapore)",
         "Asia Pacific (Sydney)",
         "Asia Pacific (Thailand)",
@@ -65,6 +67,7 @@
           "regions": [
             "US East (N. Virginia)",
             "US East (Ohio)",
+            "US West (N. California)",
             "US West (Oregon)",
             "Europe (Frankfurt)",
             "Europe (Ireland)",
@@ -75,6 +78,7 @@
             "Europe (Stockholm)",
             "Asia Pacific (Malaysia)",
             "Asia Pacific (Mumbai)",
+            "Asia Pacific (Hyderabad)",
             "Asia Pacific (Singapore)",
             "Asia Pacific (Sydney)",
             "Asia Pacific (Thailand)",
@@ -84,7 +88,7 @@
             "South America (São Paulo)",
             "AWS GovCloud (US-West)"
           ],
-          "count": 20
+          "count": 22
         },
         {
           "feature": "AgentCore Runtime Instances",
@@ -131,6 +135,7 @@
           "regions": [
             "US East (N. Virginia)",
             "US East (Ohio)",
+            "US West (N. California)",
             "US West (Oregon)",
             "Europe (Frankfurt)",
             "Europe (Ireland)",
@@ -141,6 +146,7 @@
             "Europe (Stockholm)",
             "Asia Pacific (Malaysia)",
             "Asia Pacific (Mumbai)",
+            "Asia Pacific (Hyderabad)",
             "Asia Pacific (Singapore)",
             "Asia Pacific (Sydney)",
             "Asia Pacific (Thailand)",
@@ -150,7 +156,7 @@
             "South America (São Paulo)",
             "AWS GovCloud (US-West)"
           ],
-          "count": 20
+          "count": 22
         },
         {
           "feature": "AgentCore Identity",
@@ -158,6 +164,7 @@
           "regions": [
             "US East (N. Virginia)",
             "US East (Ohio)",
+            "US West (N. California)",
             "US West (Oregon)",
             "Europe (Frankfurt)",
             "Europe (Ireland)",
@@ -168,6 +175,7 @@
             "Europe (Stockholm)",
             "Asia Pacific (Malaysia)",
             "Asia Pacific (Mumbai)",
+            "Asia Pacific (Hyderabad)",
             "Asia Pacific (Singapore)",
             "Asia Pacific (Sydney)",
             "Asia Pacific (Thailand)",
@@ -177,7 +185,7 @@
             "South America (São Paulo)",
             "AWS GovCloud (US-West)"
           ],
-          "count": 20
+          "count": 22
         },
         {
           "feature": "AgentCore Built-in Tools",
@@ -185,6 +193,7 @@
           "regions": [
             "US East (N. Virginia)",
             "US East (Ohio)",
+            "US West (N. California)",
             "US West (Oregon)",
             "Europe (Frankfurt)",
             "Europe (Ireland)",
@@ -195,6 +204,7 @@
             "Europe (Stockholm)",
             "Asia Pacific (Malaysia)",
             "Asia Pacific (Mumbai)",
+            "Asia Pacific (Hyderabad)",
             "Asia Pacific (Singapore)",
             "Asia Pacific (Sydney)",
             "Asia Pacific (Thailand)",
@@ -204,7 +214,7 @@
             "South America (São Paulo)",
             "AWS GovCloud (US-West)"
           ],
-          "count": 20
+          "count": 22
         },
         {
           "feature": "AgentCore Observability",
@@ -212,6 +222,7 @@
           "regions": [
             "US East (N. Virginia)",
             "US East (Ohio)",
+            "US West (N. California)",
             "US West (Oregon)",
             "Europe (Frankfurt)",
             "Europe (Ireland)",
@@ -222,6 +233,7 @@
             "Europe (Stockholm)",
             "Asia Pacific (Malaysia)",
             "Asia Pacific (Mumbai)",
+            "Asia Pacific (Hyderabad)",
             "Asia Pacific (Singapore)",
             "Asia Pacific (Sydney)",
             "Asia Pacific (Thailand)",
@@ -231,7 +243,7 @@
             "South America (São Paulo)",
             "AWS GovCloud (US-West)"
           ],
-          "count": 20
+          "count": 22
         },
         {
           "feature": "AgentCore payments",
@@ -258,6 +270,7 @@
           "regions": [
             "US East (N. Virginia)",
             "US East (Ohio)",
+            "US West (N. California)",
             "US West (Oregon)",
             "Europe (Frankfurt)",
             "Europe (Ireland)",
@@ -268,6 +281,7 @@
             "Europe (Stockholm)",
             "Asia Pacific (Malaysia)",
             "Asia Pacific (Mumbai)",
+            "Asia Pacific (Hyderabad)",
             "Asia Pacific (Singapore)",
             "Asia Pacific (Sydney)",
             "Asia Pacific (Thailand)",
@@ -277,7 +291,7 @@
             "South America (São Paulo)",
             "AWS GovCloud (US-West)"
           ],
-          "count": 20
+          "count": 22
         },
         {
           "feature": "AgentCore Evaluations",
@@ -285,22 +299,28 @@
           "regions": [
             "US East (N. Virginia)",
             "US East (Ohio)",
+            "US West (N. California)",
             "US West (Oregon)",
             "Europe (Frankfurt)",
             "Europe (Ireland)",
             "Europe (London)",
+            "Europe (Milan)",
             "Europe (Paris)",
+            "Europe (Spain)",
             "Europe (Stockholm)",
+            "Asia Pacific (Malaysia)",
             "Asia Pacific (Mumbai)",
+            "Asia Pacific (Hyderabad)",
             "Asia Pacific (Singapore)",
             "Asia Pacific (Sydney)",
+            "Asia Pacific (Thailand)",
             "Asia Pacific (Tokyo)",
             "Asia Pacific (Seoul)",
             "Canada (Central)",
             "South America (São Paulo)",
             "AWS GovCloud (US-West)"
           ],
-          "count": 16
+          "count": 22
         },
         {
           "feature": "AgentCore optimization",
@@ -308,21 +328,27 @@
           "regions": [
             "US East (N. Virginia)",
             "US East (Ohio)",
+            "US West (N. California)",
             "US West (Oregon)",
             "Europe (Frankfurt)",
             "Europe (Ireland)",
             "Europe (London)",
+            "Europe (Milan)",
             "Europe (Paris)",
+            "Europe (Spain)",
             "Europe (Stockholm)",
+            "Asia Pacific (Malaysia)",
             "Asia Pacific (Mumbai)",
+            "Asia Pacific (Hyderabad)",
             "Asia Pacific (Singapore)",
             "Asia Pacific (Sydney)",
+            "Asia Pacific (Thailand)",
             "Asia Pacific (Tokyo)",
             "Asia Pacific (Seoul)",
             "Canada (Central)",
             "South America (São Paulo)"
           ],
-          "count": 15
+          "count": 21
         },
         {
           "feature": "AWS Agent Registry",
@@ -348,17 +374,17 @@
         }
       ]
     },
-    "text": "AgentCore harness: available in 16 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Runtime microVMs: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Runtime Instances: available in 9 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo)\nAgentCore Memory: available in 16 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Gateway: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Identity: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Built-in Tools: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Observability: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore payments: available in 12 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Singapore), Asia Pacific (Sydney)\nPolicy in AgentCore: available in 20 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Evaluations: available in 16 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore optimization: available in 15 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo)\nAWS Agent Registry: available in 5 regions — US East (N. Virginia), US West (Oregon), Europe (Ireland), Asia Pacific (Sydney), Asia Pacific (Tokyo)\nWeb Search Tool: available in 3 regions — US East (N. Virginia), Europe (Ireland), Asia Pacific (Tokyo)"
+    "text": "AgentCore harness: available in 16 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Runtime microVMs: available in 22 regions — US East (N. Virginia), US East (Ohio), US West (N. California), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Hyderabad), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Runtime Instances: available in 9 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo)\nAgentCore Memory: available in 16 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Gateway: available in 22 regions — US East (N. Virginia), US East (Ohio), US West (N. California), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Hyderabad), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Identity: available in 22 regions — US East (N. Virginia), US East (Ohio), US West (N. California), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Hyderabad), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Built-in Tools: available in 22 regions — US East (N. Virginia), US East (Ohio), US West (N. California), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Hyderabad), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Observability: available in 22 regions — US East (N. Virginia), US East (Ohio), US West (N. California), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Hyderabad), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore payments: available in 12 regions — US East (N. Virginia), US East (Ohio), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Singapore), Asia Pacific (Sydney)\nPolicy in AgentCore: available in 22 regions — US East (N. Virginia), US East (Ohio), US West (N. California), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Hyderabad), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore Evaluations: available in 22 regions — US East (N. Virginia), US East (Ohio), US West (N. California), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Hyderabad), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo), AWS GovCloud (US-West)\nAgentCore optimization: available in 21 regions — US East (N. Virginia), US East (Ohio), US West (N. California), US West (Oregon), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Milan), Europe (Paris), Europe (Spain), Europe (Stockholm), Asia Pacific (Malaysia), Asia Pacific (Mumbai), Asia Pacific (Hyderabad), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Thailand), Asia Pacific (Tokyo), Asia Pacific (Seoul), Canada (Central), South America (São Paulo)\nAWS Agent Registry: available in 5 regions — US East (N. Virginia), US West (Oregon), Europe (Ireland), Asia Pacific (Sydney), Asia Pacific (Tokyo)\nWeb Search Tool: available in 3 regions — US East (N. Virginia), Europe (Ireland), Asia Pacific (Tokyo)"
   },
   "facts": {
     "agentcore.feature-regions.matrix-region-count": {
       "type": "integer",
-      "value": 20,
+      "value": 22,
       "note": "Region columns in the docs matrix, including 1 GovCloud partition region(s). SSM's global-infrastructure path reports commercial regions only, so the two counts differ legitimately."
     },
     "agentcore.feature-regions.commercial-region-count": {
       "type": "integer",
-      "value": 19
+      "value": 21
     },
     "agentcore.feature-regions.feature-count": {
       "type": "integer",
@@ -392,7 +418,7 @@
     },
     "agentcore.feature-regions.runtime-microvms.count": {
       "type": "integer",
-      "value": 20,
+      "value": 22,
       "note": "Regions where the docs matrix marks \"AgentCore Runtime microVMs\" as supported."
     },
     "agentcore.feature-regions.runtime-microvms.regions": {
@@ -400,6 +426,7 @@
       "value": [
         "US East (N. Virginia)",
         "US East (Ohio)",
+        "US West (N. California)",
         "US West (Oregon)",
         "Europe (Frankfurt)",
         "Europe (Ireland)",
@@ -410,6 +437,7 @@
         "Europe (Stockholm)",
         "Asia Pacific (Malaysia)",
         "Asia Pacific (Mumbai)",
+        "Asia Pacific (Hyderabad)",
         "Asia Pacific (Singapore)",
         "Asia Pacific (Sydney)",
         "Asia Pacific (Thailand)",
@@ -467,7 +495,7 @@
     },
     "agentcore.feature-regions.gateway.count": {
       "type": "integer",
-      "value": 20,
+      "value": 22,
       "note": "Regions where the docs matrix marks \"AgentCore Gateway\" as supported."
     },
     "agentcore.feature-regions.gateway.regions": {
@@ -475,6 +503,7 @@
       "value": [
         "US East (N. Virginia)",
         "US East (Ohio)",
+        "US West (N. California)",
         "US West (Oregon)",
         "Europe (Frankfurt)",
         "Europe (Ireland)",
@@ -485,6 +514,7 @@
         "Europe (Stockholm)",
         "Asia Pacific (Malaysia)",
         "Asia Pacific (Mumbai)",
+        "Asia Pacific (Hyderabad)",
         "Asia Pacific (Singapore)",
         "Asia Pacific (Sydney)",
         "Asia Pacific (Thailand)",
@@ -497,7 +527,7 @@
     },
     "agentcore.feature-regions.identity.count": {
       "type": "integer",
-      "value": 20,
+      "value": 22,
       "note": "Regions where the docs matrix marks \"AgentCore Identity\" as supported."
     },
     "agentcore.feature-regions.identity.regions": {
@@ -505,6 +535,7 @@
       "value": [
         "US East (N. Virginia)",
         "US East (Ohio)",
+        "US West (N. California)",
         "US West (Oregon)",
         "Europe (Frankfurt)",
         "Europe (Ireland)",
@@ -515,6 +546,7 @@
         "Europe (Stockholm)",
         "Asia Pacific (Malaysia)",
         "Asia Pacific (Mumbai)",
+        "Asia Pacific (Hyderabad)",
         "Asia Pacific (Singapore)",
         "Asia Pacific (Sydney)",
         "Asia Pacific (Thailand)",
@@ -527,7 +559,7 @@
     },
     "agentcore.feature-regions.built-in-tools.count": {
       "type": "integer",
-      "value": 20,
+      "value": 22,
       "note": "Regions where the docs matrix marks \"AgentCore Built-in Tools\" as supported."
     },
     "agentcore.feature-regions.built-in-tools.regions": {
@@ -535,6 +567,7 @@
       "value": [
         "US East (N. Virginia)",
         "US East (Ohio)",
+        "US West (N. California)",
         "US West (Oregon)",
         "Europe (Frankfurt)",
         "Europe (Ireland)",
@@ -545,6 +578,7 @@
         "Europe (Stockholm)",
         "Asia Pacific (Malaysia)",
         "Asia Pacific (Mumbai)",
+        "Asia Pacific (Hyderabad)",
         "Asia Pacific (Singapore)",
         "Asia Pacific (Sydney)",
         "Asia Pacific (Thailand)",
@@ -557,7 +591,7 @@
     },
     "agentcore.feature-regions.observability.count": {
       "type": "integer",
-      "value": 20,
+      "value": 22,
       "note": "Regions where the docs matrix marks \"AgentCore Observability\" as supported."
     },
     "agentcore.feature-regions.observability.regions": {
@@ -565,6 +599,7 @@
       "value": [
         "US East (N. Virginia)",
         "US East (Ohio)",
+        "US West (N. California)",
         "US West (Oregon)",
         "Europe (Frankfurt)",
         "Europe (Ireland)",
@@ -575,6 +610,7 @@
         "Europe (Stockholm)",
         "Asia Pacific (Malaysia)",
         "Asia Pacific (Mumbai)",
+        "Asia Pacific (Hyderabad)",
         "Asia Pacific (Singapore)",
         "Asia Pacific (Sydney)",
         "Asia Pacific (Thailand)",
@@ -609,7 +645,7 @@
     },
     "agentcore.feature-regions.policy.count": {
       "type": "integer",
-      "value": 20,
+      "value": 22,
       "note": "Regions where the docs matrix marks \"Policy in AgentCore\" as supported."
     },
     "agentcore.feature-regions.policy.regions": {
@@ -617,6 +653,7 @@
       "value": [
         "US East (N. Virginia)",
         "US East (Ohio)",
+        "US West (N. California)",
         "US West (Oregon)",
         "Europe (Frankfurt)",
         "Europe (Ireland)",
@@ -627,6 +664,7 @@
         "Europe (Stockholm)",
         "Asia Pacific (Malaysia)",
         "Asia Pacific (Mumbai)",
+        "Asia Pacific (Hyderabad)",
         "Asia Pacific (Singapore)",
         "Asia Pacific (Sydney)",
         "Asia Pacific (Thailand)",
@@ -639,7 +677,7 @@
     },
     "agentcore.feature-regions.evaluations.count": {
       "type": "integer",
-      "value": 16,
+      "value": 22,
       "note": "Regions where the docs matrix marks \"AgentCore Evaluations\" as supported."
     },
     "agentcore.feature-regions.evaluations.regions": {
@@ -647,15 +685,21 @@
       "value": [
         "US East (N. Virginia)",
         "US East (Ohio)",
+        "US West (N. California)",
         "US West (Oregon)",
         "Europe (Frankfurt)",
         "Europe (Ireland)",
         "Europe (London)",
+        "Europe (Milan)",
         "Europe (Paris)",
+        "Europe (Spain)",
         "Europe (Stockholm)",
+        "Asia Pacific (Malaysia)",
         "Asia Pacific (Mumbai)",
+        "Asia Pacific (Hyderabad)",
         "Asia Pacific (Singapore)",
         "Asia Pacific (Sydney)",
+        "Asia Pacific (Thailand)",
         "Asia Pacific (Tokyo)",
         "Asia Pacific (Seoul)",
         "Canada (Central)",
@@ -665,7 +709,7 @@
     },
     "agentcore.feature-regions.optimization.count": {
       "type": "integer",
-      "value": 15,
+      "value": 21,
       "note": "Regions where the docs matrix marks \"AgentCore optimization\" as supported."
     },
     "agentcore.feature-regions.optimization.regions": {
@@ -673,15 +717,21 @@
       "value": [
         "US East (N. Virginia)",
         "US East (Ohio)",
+        "US West (N. California)",
         "US West (Oregon)",
         "Europe (Frankfurt)",
         "Europe (Ireland)",
         "Europe (London)",
+        "Europe (Milan)",
         "Europe (Paris)",
+        "Europe (Spain)",
         "Europe (Stockholm)",
+        "Asia Pacific (Malaysia)",
         "Asia Pacific (Mumbai)",
+        "Asia Pacific (Hyderabad)",
         "Asia Pacific (Singapore)",
         "Asia Pacific (Sydney)",
+        "Asia Pacific (Thailand)",
         "Asia Pacific (Tokyo)",
         "Asia Pacific (Seoul)",
         "Canada (Central)",

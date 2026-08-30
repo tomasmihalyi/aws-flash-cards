@@ -3,16 +3,25 @@
   "fact_set_id": "bedrock.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-25T19:29:29.866Z",
+  "verified_at": "2026-08-30T21:50:11.000Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-25T19:29:29.866Z",
-    "content_hash": "sha256:fe6dbc77e739a095d125c7a3df43a82773775a6253e85958bf5ff79610c452ea",
+    "fetched_at": "2026-08-30T21:50:11.000Z",
+    "content_hash": "sha256:e7cf1ff37a27e46bbef86221f4d62908370068b5cca57c7d7551bf26b0adc110",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
   "evidence": {
     "canonical": [
+      {
+        "iso_date": "2026-08-28",
+        "iso_month": "2026-08",
+        "month_label": "August 2026",
+        "date_label": "August 28, 2026",
+        "heading": "SpaceXAI Grok 4.6 now available on Amazon Bedrock in AWS GovCloud (US)",
+        "summary": "Amazon Bedrock in AWS GovCloud (US) now supports SpaceXAI Grok 4.6, a frontier model built for coding, agentic tasks, and knowledge work. Grok 4.6 is SpaceXAI’s latest flagship model, built for long-running agents and ambitious interactive and visual work. It offers 500k context window and configurable reasoning efforts (low, medium, high, xhigh). The model runs on the bedrock-runtime endpoint wit",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/spacexai-grok-4-6-govcloud/"
+      },
       {
         "iso_date": "2026-08-24",
         "iso_month": "2026-08",
@@ -66,41 +75,23 @@
         "heading": "Amazon Bedrock now supports OpenAI models in India",
         "summary": "Amazon Bedrock now supports the OpenAI GPT-5.6 models (Terra and Luna) in India, with India Geo cross-Region inference. Customers with regulatory requirements of in-country inferencing can now use OpenAI models at scale ensuring that inferencing is processed within India. Cross-Region inference automatically routes inference requests across multiple AWS Regions to give you higher throughput, witho",
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-bedrock-openai-india-v1/"
-      },
-      {
-        "iso_date": "2026-08-17",
-        "iso_month": "2026-08",
-        "month_label": "August 2026",
-        "date_label": "August 17, 2026",
-        "heading": "Amazon Bedrock expands API support and introduces Cross Region Inferencing for OpenAI models",
-        "summary": "Amazon Bedrock now supports the OpenAI GPT-5.6 models (Sol, Terra, and Luna) on the bedrock-runtime endpoint, with support for the Responses, Converse, and Chat Completions APIs. It also adds support for cross-Region inference, allowing customers to use Global and Geo cross-Region inference to access higher throughput and lower inference costs. Cross-Region inference automatically routes inference",
-        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-bedrock-cross-region-openai-v2/"
-      },
-      {
-        "iso_date": "2026-08-13",
-        "iso_month": "2026-08",
-        "month_label": "August 2026",
-        "date_label": "August 13, 2026",
-        "heading": "Daybreak Red and Daybreak Blue from OpenAI are now available to eligible customers on Amazon Bedrock",
-        "summary": "Security teams can now access Daybreak Red and Daybreak Blue from OpenAI on Amazon Bedrock. Both are part of Daybreak, the cyber defense initiative from OpenAI that gives defenders governed access to frontier AI for cybersecurity work. Daybreak Blue is the starting point for most security teams across defensive workflows including vulnerability discovery, detection engineering, and incident respon",
-        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/openai-daybreak-red-and-blue-on-amazon-bedrock/"
       }
     ],
-    "text": "August 24, 2026 — OpenAI GPT-5.6 Terra and Luna now available on Amazon Bedrock in AWS GovCloud (US): GPT-5.6 Terra and Luna are now generally available on Amazon Bedrock in AWS GovCloud (US-West) and AWS GovCloud (US-East), bringing the smartest family of models from OpenAI yet to Bedrock's next-generation inference engine built for high-performance, security and reliability. GPT-5.6 sets a new standard for intelligence and efficiency, allowing you to solve harder problems in less time and with m\nAugust 21, 2026 — Amazon Bedrock announces reduced pricing for OpenAI GPT-5.6 Sol: Today, OpenAI announced that they are lowering API prices for GPT-5.6 Sol. Following the recent Terra and Luna price reductions, Sol now costs $4 per million input tokens and $20 per million output tokens—20% lower input pricing and 33.3% lower output pricing. This promotional pricing is available at least through November 21, 2026. Whether you're building autonomous coding agents, running complex\nAugust 19, 2026 — Launching External Web Access for Web Search on Amazon Bedrock: Earlier this month, we announced Web Search on Amazon Bedrock , a built-in server-side tool that allows you to ground model responses with current web knowledge, while maintaining data within your secured AWS environment with zero data egress. Today, we are expanding Web Search to enable the external_web_access parameter allowing Web Search to retrieve content directly from the public web so model\nAugust 19, 2026 — AWS Cost Anomaly Detection supports third-party models on Amazon Bedrock: AWS Cost Anomaly Detection now monitors spend on third-party foundation models running on Amazon Bedrock, such as Anthropic Claude and other provider-hosted models. Cost Anomaly Detection uses machine learning to detect and alert on unusual spend, and this launch extends that coverage to third-party model usage on Amazon Bedrock. Teams running production generative AI workloads now get automatic a\nAugust 19, 2026 — Amazon Bedrock now supports SpaceXAI Grok 4.6 with Cross Region Inferencing: Amazon Bedrock now supports SpaceXAI Grok 4.6, a frontier model built for coding, agentic tasks, and knowledge work, with US Geo and Global cross-Region inference. Customers can now access Grok 4.6 at scale with cross-Region inference routing requests across multiple AWS Regions for higher throughput and lower inference costs. Cross-Region inference automatically routes inference requests across m\nAugust 18, 2026 — Amazon Bedrock now supports OpenAI models in India: Amazon Bedrock now supports the OpenAI GPT-5.6 models (Terra and Luna) in India, with India Geo cross-Region inference. Customers with regulatory requirements of in-country inferencing can now use OpenAI models at scale ensuring that inferencing is processed within India. Cross-Region inference automatically routes inference requests across multiple AWS Regions to give you higher throughput, witho\nAugust 17, 2026 — Amazon Bedrock expands API support and introduces Cross Region Inferencing for OpenAI models: Amazon Bedrock now supports the OpenAI GPT-5.6 models (Sol, Terra, and Luna) on the bedrock-runtime endpoint, with support for the Responses, Converse, and Chat Completions APIs. It also adds support for cross-Region inference, allowing customers to use Global and Geo cross-Region inference to access higher throughput and lower inference costs. Cross-Region inference automatically routes inference\nAugust 13, 2026 — Daybreak Red and Daybreak Blue from OpenAI are now available to eligible customers on Amazon Bedrock: Security teams can now access Daybreak Red and Daybreak Blue from OpenAI on Amazon Bedrock. Both are part of Daybreak, the cyber defense initiative from OpenAI that gives defenders governed access to frontier AI for cybersecurity work. Daybreak Blue is the starting point for most security teams across defensive workflows including vulnerability discovery, detection engineering, and incident respon"
+    "text": "August 28, 2026 — SpaceXAI Grok 4.6 now available on Amazon Bedrock in AWS GovCloud (US): Amazon Bedrock in AWS GovCloud (US) now supports SpaceXAI Grok 4.6, a frontier model built for coding, agentic tasks, and knowledge work. Grok 4.6 is SpaceXAI’s latest flagship model, built for long-running agents and ambitious interactive and visual work. It offers 500k context window and configurable reasoning efforts (low, medium, high, xhigh). The model runs on the bedrock-runtime endpoint wit\nAugust 24, 2026 — OpenAI GPT-5.6 Terra and Luna now available on Amazon Bedrock in AWS GovCloud (US): GPT-5.6 Terra and Luna are now generally available on Amazon Bedrock in AWS GovCloud (US-West) and AWS GovCloud (US-East), bringing the smartest family of models from OpenAI yet to Bedrock's next-generation inference engine built for high-performance, security and reliability. GPT-5.6 sets a new standard for intelligence and efficiency, allowing you to solve harder problems in less time and with m\nAugust 21, 2026 — Amazon Bedrock announces reduced pricing for OpenAI GPT-5.6 Sol: Today, OpenAI announced that they are lowering API prices for GPT-5.6 Sol. Following the recent Terra and Luna price reductions, Sol now costs $4 per million input tokens and $20 per million output tokens—20% lower input pricing and 33.3% lower output pricing. This promotional pricing is available at least through November 21, 2026. Whether you're building autonomous coding agents, running complex\nAugust 19, 2026 — Launching External Web Access for Web Search on Amazon Bedrock: Earlier this month, we announced Web Search on Amazon Bedrock , a built-in server-side tool that allows you to ground model responses with current web knowledge, while maintaining data within your secured AWS environment with zero data egress. Today, we are expanding Web Search to enable the external_web_access parameter allowing Web Search to retrieve content directly from the public web so model\nAugust 19, 2026 — AWS Cost Anomaly Detection supports third-party models on Amazon Bedrock: AWS Cost Anomaly Detection now monitors spend on third-party foundation models running on Amazon Bedrock, such as Anthropic Claude and other provider-hosted models. Cost Anomaly Detection uses machine learning to detect and alert on unusual spend, and this launch extends that coverage to third-party model usage on Amazon Bedrock. Teams running production generative AI workloads now get automatic a\nAugust 19, 2026 — Amazon Bedrock now supports SpaceXAI Grok 4.6 with Cross Region Inferencing: Amazon Bedrock now supports SpaceXAI Grok 4.6, a frontier model built for coding, agentic tasks, and knowledge work, with US Geo and Global cross-Region inference. Customers can now access Grok 4.6 at scale with cross-Region inference routing requests across multiple AWS Regions for higher throughput and lower inference costs. Cross-Region inference automatically routes inference requests across m\nAugust 18, 2026 — Amazon Bedrock now supports OpenAI models in India: Amazon Bedrock now supports the OpenAI GPT-5.6 models (Terra and Luna) in India, with India Geo cross-Region inference. Customers with regulatory requirements of in-country inferencing can now use OpenAI models at scale ensuring that inferencing is processed within India. Cross-Region inference automatically routes inference requests across multiple AWS Regions to give you higher throughput, witho"
   },
   "facts": {
     "bedrock.whats-new.entry-count": {
       "type": "integer",
-      "value": 8,
+      "value": 7,
       "note": "Dated bedrock announcements matched from the AWS What's New feed in the fetched window."
     },
     "bedrock.whats-new.earliest-date": {
       "type": "string",
-      "value": "2026-08-13"
+      "value": "2026-08-18"
     },
     "bedrock.whats-new.latest-date": {
       "type": "string",
-      "value": "2026-08-24"
+      "value": "2026-08-28"
     },
     "bedrock.whats-new.precision": {
       "type": "string",
@@ -109,6 +100,6 @@
     }
   },
   "previous": {
-    "entry-count": 9
+    "entry-count": 8
   }
 }

@@ -41,7 +41,7 @@
         "agentcore.feature-regions.evaluations.count",
         "agentcore.feature-regions.evaluations.regions"
       ],
-      "rendered": "GA in 16 regions incl. Sydney, Tokyo, Singapore, Frankfurt, Ireland, and US East/West.",
+      "rendered": "GA in 22 regions incl. Sydney, Tokyo, Singapore, Frankfurt, Ireland, and US East/West.",
       "rendered_from": "tier-a",
       "seed_text": "GA in 9 regions incl. Sydney, Tokyo, Singapore, Frankfurt, Ireland, and US East/West."
     }
@@ -55,11 +55,11 @@
       "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-regions.html",
       "title": "agentcore.feature-regions (aws-docs)",
       "kind": "aws-docs",
-      "fetched_at": "2026-08-25T19:29:27.954Z",
-      "content_hash": "sha256:f3b89f7889ee5168aa29611a47da55a2247e22e3da25ab66f60e7f8f9e852cfa"
+      "fetched_at": "2026-08-30T21:50:09.389Z",
+      "content_hash": "sha256:ce7e465b05f5fc2c2abf1c8ac3f6a462cc63c5ab18b19abc599e131bd1018e59"
     }
   ],
-  "verified_at": "2026-08-25T19:29:27.954Z",
+  "verified_at": "2026-08-30T21:50:09.389Z",
   "confidence": "high",
   "depends_on": [],
   "aka": [],
@@ -106,9 +106,23 @@
           "agentcore.feature-regions.evaluations.regions"
         ],
         "reason": "Deterministic source disagreed with the rendered claim. Corrected with zero model involvement."
+      },
+      {
+        "at": "2026-08-30T21:50:12.859Z",
+        "tier": "A",
+        "action": "correct",
+        "generator": "src/ingest/apply.ts",
+        "slot": "evaluations_regions",
+        "before": "GA in 16 regions incl. Sydney, Tokyo, Singapore, Frankfurt, Ireland, and US East/West.",
+        "after": "GA in 22 regions incl. Sydney, Tokyo, Singapore, Frankfurt, Ireland, and US East/West.",
+        "facts": [
+          "agentcore.feature-regions.evaluations.count",
+          "agentcore.feature-regions.evaluations.regions"
+        ],
+        "reason": "Deterministic source disagreed with the rendered claim. Corrected with zero model involvement."
       }
     ]
   },
   "created_at": "2026-08-06T12:57:02.398Z",
-  "updated_at": "2026-08-08T14:02:23.508Z"
+  "updated_at": "2026-08-30T21:50:12.859Z"
 }

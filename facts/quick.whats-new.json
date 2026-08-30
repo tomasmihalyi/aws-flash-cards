@@ -3,12 +3,12 @@
   "fact_set_id": "quick.whats-new",
   "tier": "A",
   "generator": "src/ingest/docs-whats-new.ts",
-  "verified_at": "2026-08-25T19:29:29.866Z",
+  "verified_at": "2026-08-30T21:50:11.000Z",
   "source": {
     "kind": "aws-docs-doc-history",
     "url": "https://aws.amazon.com/about-aws/whats-new/recent/feed/",
-    "fetched_at": "2026-08-25T19:29:29.866Z",
-    "content_hash": "sha256:ae4502161b07c2b9ade9a7dc9a67491e6580ac4204e0f36f482873d1a507b58f",
+    "fetched_at": "2026-08-30T21:50:11.000Z",
+    "content_hash": "sha256:9474d76586bc56273dc3c7b9e50a2f0b39b3c69e4ec9de31bca8d18354dcf982",
     "retrieved_by": "GET https://aws.amazon.com/about-aws/whats-new/recent/feed/"
   },
   "evidence": {
@@ -21,64 +21,19 @@
         "heading": "Amazon Quick adds deny by default for custom permissions",
         "summary": "Amazon Quick custom permissions now include deny by default, a governance setting that automatically restricts new AI capabilities before they reach users. Previously, new AI capabilities were available to all users on release, requiring administrators to react after the fact. With deny by default, administrators restrict the AI capability category in a custom permissions profile and assign it to ",
         "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-quick-deny-by-default/"
-      },
-      {
-        "iso_date": "2026-08-17",
-        "iso_month": "2026-08",
-        "month_label": "August 2026",
-        "date_label": "August 17, 2026",
-        "heading": "Amazon Quick Microsoft 365 extensions are now generally available",
-        "summary": "Amazon Quick announces the general availability of Microsoft 365 extensions for Excel, PowerPoint, Word, and Outlook. These extensions enable Quick to perform tasks directly within users' M365 environments, using AI to handle complex local tasks such as redlining documents, building financial models, creating presentation-ready decks, and managing Outlook inboxes. The Excel extension helps with co",
-        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-quick-microsoft-365-extensions-generally-available"
-      },
-      {
-        "iso_date": "2026-08-14",
-        "iso_month": "2026-08",
-        "month_label": "August 2026",
-        "date_label": "August 14, 2026",
-        "heading": "Amazon Quick now supports per-user resource limits",
-        "summary": "Amazon Quick now enables administrators to set per-user limits on index storage and agent hours, giving them direct control over subscription costs. With limits management, administrators can create limit profiles that cap per-user consumption, helping prevent unexpected overage charges and ensuring subscription entitlements are used efficiently across their organization. For example, an organizat",
-        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-quick-per-user-resource-limits/"
-      },
-      {
-        "iso_date": "2026-08-14",
-        "iso_month": "2026-08",
-        "month_label": "August 2026",
-        "date_label": "August 14, 2026",
-        "heading": "Amazon Quick now supports data loss prevention with Microsoft Purview",
-        "summary": "Amazon Quick now integrates with Microsoft Purview to enforce data loss prevention (DLP) policies across your Quick environment. Organizations need to ensure that sensitive files aren't shared outside approved channels. With this integration, IT administrators and security teams can apply their existing Purview sensitivity labels to automatically control how files are handled in Quick capabilities",
-        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-quick-dlp-purview/"
-      },
-      {
-        "iso_date": "2026-08-14",
-        "iso_month": "2026-08",
-        "month_label": "August 2026",
-        "date_label": "August 14, 2026",
-        "heading": "Amazon Quick now supports approval policies for sharing",
-        "summary": "Amazon Quick now offers approval policies, giving administrators governance controls over how assets are shared within their organization. With approval policies, administrators can require designated approvers to review and approve share requests before access is granted, helping organizations ensure that sharing of sensitive assets is deliberate, compliant, and auditable. Administrators can crea",
-        "url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-quick-approval-policies-sharing/"
-      },
-      {
-        "iso_date": "2026-08-14",
-        "iso_month": "2026-08",
-        "month_label": "August 2026",
-        "date_label": "August 14, 2026",
-        "heading": "Amazon Quick now supports customizable no data messages for visuals",
-        "summary": "Amazon Quick announces support for no data message customization, enabling authors to replace the default \"No data to display\" message with a tailored message when a visual returns no data. Authors can configure a custom title, subtitle, and hyperlink that give readers immediate context about why no data is shown and what steps to take next. All text fields support parameters, so the message can d",
-        "url": "https://aws.amazon.com/about-aws/whats-new/2025/08/amazon-quick-custom-no-data-message/"
       }
     ],
-    "text": "August 19, 2026 — Amazon Quick adds deny by default for custom permissions: Amazon Quick custom permissions now include deny by default, a governance setting that automatically restricts new AI capabilities before they reach users. Previously, new AI capabilities were available to all users on release, requiring administrators to react after the fact. With deny by default, administrators restrict the AI capability category in a custom permissions profile and assign it to \nAugust 17, 2026 — Amazon Quick Microsoft 365 extensions are now generally available: Amazon Quick announces the general availability of Microsoft 365 extensions for Excel, PowerPoint, Word, and Outlook. These extensions enable Quick to perform tasks directly within users' M365 environments, using AI to handle complex local tasks such as redlining documents, building financial models, creating presentation-ready decks, and managing Outlook inboxes. The Excel extension helps with co\nAugust 14, 2026 — Amazon Quick now supports per-user resource limits: Amazon Quick now enables administrators to set per-user limits on index storage and agent hours, giving them direct control over subscription costs. With limits management, administrators can create limit profiles that cap per-user consumption, helping prevent unexpected overage charges and ensuring subscription entitlements are used efficiently across their organization. For example, an organizat\nAugust 14, 2026 — Amazon Quick now supports data loss prevention with Microsoft Purview: Amazon Quick now integrates with Microsoft Purview to enforce data loss prevention (DLP) policies across your Quick environment. Organizations need to ensure that sensitive files aren't shared outside approved channels. With this integration, IT administrators and security teams can apply their existing Purview sensitivity labels to automatically control how files are handled in Quick capabilities\nAugust 14, 2026 — Amazon Quick now supports approval policies for sharing: Amazon Quick now offers approval policies, giving administrators governance controls over how assets are shared within their organization. With approval policies, administrators can require designated approvers to review and approve share requests before access is granted, helping organizations ensure that sharing of sensitive assets is deliberate, compliant, and auditable. Administrators can crea\nAugust 14, 2026 — Amazon Quick now supports customizable no data messages for visuals: Amazon Quick announces support for no data message customization, enabling authors to replace the default \"No data to display\" message with a tailored message when a visual returns no data. Authors can configure a custom title, subtitle, and hyperlink that give readers immediate context about why no data is shown and what steps to take next. All text fields support parameters, so the message can d"
+    "text": "August 19, 2026 — Amazon Quick adds deny by default for custom permissions: Amazon Quick custom permissions now include deny by default, a governance setting that automatically restricts new AI capabilities before they reach users. Previously, new AI capabilities were available to all users on release, requiring administrators to react after the fact. With deny by default, administrators restrict the AI capability category in a custom permissions profile and assign it to "
   },
   "facts": {
     "quick.whats-new.entry-count": {
       "type": "integer",
-      "value": 6,
+      "value": 1,
       "note": "Dated quick announcements matched from the AWS What's New feed in the fetched window."
     },
     "quick.whats-new.earliest-date": {
       "type": "string",
-      "value": "2026-08-14"
+      "value": "2026-08-19"
     },
     "quick.whats-new.latest-date": {
       "type": "string",
@@ -91,6 +46,6 @@
     }
   },
   "previous": {
-    "entry-count": 7
+    "entry-count": 6
   }
 }
