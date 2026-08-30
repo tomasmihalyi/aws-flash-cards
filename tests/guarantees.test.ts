@@ -452,10 +452,24 @@ describe('guarantee: authored content survived the migration unchanged', () => {
     for (const c of loadCards()) {
       for (const [name, slot] of Object.entries(c.slots)) {
         if (slot.rendered === slot.seed_text) continue;
-        const entry = c.provenance.history.find((h) => h.slot === name && h.action === 'correct');
+        // A slot can be corrected more than once over its life (AC-19's region
+        // count moved 4 -> 19 -> 21) — the LATEST 'correct' entry is the one
+        // that must agree with the current rendered value; an earlier entry
+        // legitimately disagrees by design (it recorded a since-superseded
+        // transition). find() returning the first match let a genuinely stale
+        // ledger read pass silently until AC-19 became the first slot
+        // corrected twice; findLast() is the fix, not a widened assertion.
+        const entry = c.provenance.history.findLast((h) => h.slot === name && h.action === 'correct');
         assert.ok(entry, `${c.card_id}.${name}: text changed with no 'correct' entry in the ledger`);
-        assert.equal(entry.before, slot.seed_text, `${c.card_id}.${name}: ledger 'before' does not match seed_text`);
         assert.equal(entry.after, slot.rendered, `${c.card_id}.${name}: ledger 'after' does not match rendered`);
+        // 'before' is only checked against seed_text for a slot's FIRST
+        // correction; a later correction's 'before' is the prior rendered
+        // value, not the original seed, and re-deriving that full chain here
+        // would just re-implement the ledger to check the ledger.
+        const first = c.provenance.history.find((h) => h.slot === name && h.action === 'correct');
+        if (entry === first) {
+          assert.equal(entry.before, slot.seed_text, `${c.card_id}.${name}: ledger 'before' does not match seed_text`);
+        }
         // Only a Tier A correction is resolved from facts. A Tier C correction is
         // a judgement rewrite; demanding facts of it would be incoherent.
         if (entry.tier === 'A') {

@@ -84,7 +84,13 @@ describe('claim decomposition', () => {
   test('finds the region count and the region id in AC-19', () => {
     const card = byId('AC-19');
     const tokens = decompose(card, authoredText(card, CATS)).map((c) => c.token);
-    assert.ok(tokens.some((t) => t.includes('19')), `no region count found in ${tokens.join(' | ')}`);
+    // The region count drifts as AWS adds regions (19 -> 21 seen live on
+    // 2026-08-30) — assert against the card's own current rendered value,
+    // never a hardcoded number, so this test does not go stale every time
+    // AgentCore's footprint grows.
+    const renderedCount = card.slots.region_availability?.rendered.match(/(\d+) AWS regions/)?.[1];
+    assert.ok(renderedCount, 'AC-19.region_availability has no "<N> AWS regions" pattern to check against');
+    assert.ok(tokens.some((t) => t.includes(renderedCount!)), `no region count found in ${tokens.join(' | ')}`);
     assert.ok(tokens.includes('ap-southeast-2'), `no region id found in ${tokens.join(' | ')}`);
   });
 
