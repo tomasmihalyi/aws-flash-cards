@@ -18,7 +18,7 @@
  * Exits non-zero on any failed assertion.
  */
 
-import { mkdirSync, existsSync, statSync } from 'node:fs';
+import { mkdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -394,15 +394,24 @@ try {
   console.log('\n[the card that used to be unverifiable]');
   // AC-12's Evaluations region count could not be verified from service-level
   // SSM data. A feature x region docs matrix now settles it, so this card should
-  // show a real citation — and the number should be 16, not the stale 9.
+  // show a real citation. The count itself keeps moving as AWS adds regions (9 ->
+  // 16 -> 22 seen live) — assert against the CARD'S OWN current rendered value,
+  // never a hardcoded number. A hardcoded '16 regions' check here is exactly the
+  // bug already fixed once in verifier.test.ts (AC-19's '19' fixture) and
+  // guarantees.test.ts (find() vs findLast()) during this same weekend's real
+  // region-count drift — same lesson, different file.
   await chooseCategory(page, 1);
   ok('AC-12 is reachable', await goTo(page, 'AC-12'));
   await page.keyboard.press('ArrowDown');
   await page.waitForTimeout(650);
   const back12 = await page.$eval('.back', (e) => e.innerText.replace(/\s+/g, ' ').trim()).catch(() => null);
   const prov12 = await page.$eval('.back .prov', (e) => e.innerText.replace(/\s+/g, ' ').trim()).catch(() => null);
+  const currentRegions12 = JSON.parse(readFileSync(join(import.meta.dirname, '..', 'cards', 'AC-12.json'), 'utf8'))
+    .slots?.evaluations_regions?.rendered.match(/(\d+) regions/)?.[1];
   ok('the stale region count is gone', Boolean(back12 && !/\b9 regions\b/.test(back12)), back12?.slice(0, 90) ?? 'no back face');
-  ok('it shows the corrected count from the docs matrix', Boolean(back12 && /16 regions/.test(back12)), back12?.slice(0, 90) ?? 'no back face');
+  ok('it shows the corrected count from the docs matrix',
+    Boolean(currentRegions12 && back12 && new RegExp(`${currentRegions12} regions`).test(back12)),
+    back12?.slice(0, 90) ?? 'no back face');
   ok('it now carries a verification date and source', Boolean(prov12 && /verified/i.test(prov12) && /source/i.test(prov12)), prov12 ?? 'no footer');
   await page.focus('.back h3');
   await page.keyboard.press('Tab');
