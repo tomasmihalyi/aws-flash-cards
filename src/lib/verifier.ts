@@ -605,8 +605,16 @@ function numberMatchIndices(text: string, token: string, requireCurrency = false
       continue;
     }
     const after = haystack.slice(m.index + m[0].length, m.index + m[0].length + 48).toLowerCase();
-    // Already counting something else.
-    if (/^\s*(?:%|percent)/.test(after) && !unit.startsWith('percent')) continue;
+    // Already counting something else — UNLESS the claim's own unit is a
+    // percentage, in which case the source writing "33.3%" IS the match, not
+    // a coincidence to reject. unitOf() returns the symbol '%' for a percent
+    // claim (see its own comment: "a percentage's unit is the sign"), so the
+    // exception must check for that symbol, not the word "percent" — no
+    // claim's unit is ever literally the string "percent", so this guard
+    // silently rejected every scalar percentage claim in the corpus's
+    // history. Found live: "33.3% lower output pricing" sat verbatim in the
+    // retained source text and was reported as "no source contains 33.3%".
+    if (/^\s*(?:%|percent)/.test(after) && unit !== '%') continue;
     if (new RegExp(`^(?:\\s+[\\w().,'-]+){0,3}\\s*${unit}`).test(after)) out.push(m.index);
   }
   return out;
